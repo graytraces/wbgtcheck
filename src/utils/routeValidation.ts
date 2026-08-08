@@ -1,9 +1,5 @@
 export const SUPPORTED_LANGS = ['en', 'es'] as const
 
-// PATH_ALIASES: maps legacy/short paths to canonical paths.
-// Worker issues 301 redirects for these at the tool-slug level (without lang prefix).
-export const PATH_ALIASES: Record<string, string> = {}
-
 // Content page slugs that map 1:1 to a React route under /:lang/<slug>.
 // Keep this set in sync with src/App.tsx route children. Worker pre-validates
 // against this for /:lang/<slug> requests; missing entries → 404 even for

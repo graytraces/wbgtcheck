@@ -1,4 +1,4 @@
-import { SUPPORTED_LANGS, isValidPath, PATH_ALIASES } from './utils/routeValidation'
+import { SUPPORTED_LANGS, isValidPath } from './utils/routeValidation'
 
 const SUPPORTED_LANGS_SET = new Set<string>(SUPPORTED_LANGS)
 const HSTS = 'max-age=31536000; includeSubDomains; preload'
@@ -175,17 +175,6 @@ export default {
     // Static files (sitemap.xml, robots.txt, favicon.ico, etc.) — pass directly to ASSETS
     if (/\.\w+$/.test(path)) {
       return env.ASSETS.fetch(new Request(new URL(request.url).toString()))
-    }
-
-    const segments = path.split('/').filter(Boolean)
-
-    // PATH_ALIASES: 301 redirect short/legacy tool slugs to canonical paths
-    if (segments.length === 2 && SUPPORTED_LANGS_SET.has(segments[0]) && PATH_ALIASES[segments[1]]) {
-      url.pathname = `/${segments[0]}/${PATH_ALIASES[segments[1]]}`
-      return new Response(null, {
-        status: 301,
-        headers: { Location: url.toString(), 'Strict-Transport-Security': HSTS },
-      })
     }
 
     // Lang-prefixed path: validate then serve via ASSETS or 404 + noindex

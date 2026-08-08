@@ -10,8 +10,3 @@ import { guidelineSentences as shared } from '../lib/guidelineSentences.js'
 export function guidelineSentences(flag: FlagColor, g: BandGuideline, t: TFunction): string[] {
   return shared(flag, g, (key, params) => t(key, params ?? {}))
 }
-
-/** The single most important line for the verdict card. */
-export function primaryGuideline(flag: FlagColor, g: BandGuideline, t: TFunction): string {
-  return guidelineSentences(flag, g, t)[0] ?? t('guideline.normal')
-}

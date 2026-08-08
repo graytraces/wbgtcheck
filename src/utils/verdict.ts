@@ -18,18 +18,6 @@ export interface DaySummary {
   hours: HourVerdict[]
 }
 
-const FLAG_SEVERITY: Record<FlagColor, number> = {
-  green: 0,
-  yellow: 1,
-  orange: 2,
-  red: 3,
-  black: 4,
-}
-
-export function flagSeverity(flag: FlagColor): number {
-  return FLAG_SEVERITY[flag]
-}
-
 function localParts(timeMs: number, timeZone: string): { date: string; hour: number } {
   const parts = new Intl.DateTimeFormat('en-US', {
     timeZone,

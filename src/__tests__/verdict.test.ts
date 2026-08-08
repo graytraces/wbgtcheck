@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { annotateHours, groupByDay, currentVerdict, timelineHours, flagSeverity } from '../utils/verdict'
+import { annotateHours, groupByDay, currentVerdict, timelineHours } from '../utils/verdict'
 import type { HourPoint } from '../utils/nws'
 import { UIL_CLASS_3, classifyWbgt } from '../data/policyOracle'
 
@@ -51,10 +51,4 @@ describe('verdict annotation', () => {
     expect(windowHours.length).toBe(16)
   })
 
-  it('flag severity is monotonic green→black', () => {
-    expect(flagSeverity('green')).toBeLessThan(flagSeverity('yellow'))
-    expect(flagSeverity('yellow')).toBeLessThan(flagSeverity('orange'))
-    expect(flagSeverity('orange')).toBeLessThan(flagSeverity('red'))
-    expect(flagSeverity('red')).toBeLessThan(flagSeverity('black'))
-  })
 })

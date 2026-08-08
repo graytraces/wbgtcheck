@@ -1,5 +1,4 @@
 export const SITE_URL = 'https://wbgtcheck.com'
-export const SITE_NAME = 'WBGT Check'
 
 export interface PageSEO {
   path: string
