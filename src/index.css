@@ -1,6 +1,6 @@
 @import 'tailwindcss';
-@import '@fontsource/anton';
-@import 'tw-animate-css';
+/* latin subset only — the ES display copy uses no glyphs beyond latin */
+@import '@fontsource/anton/latin.css';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
