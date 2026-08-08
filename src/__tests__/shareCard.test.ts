@@ -16,6 +16,10 @@ const OPTS = {
   locationLabel: 'Austin, TX',
   policyName: 'Texas UIL — Class 3',
   peakFlagLabel: 'RED',
+  peakCaption: 'WBGT peak',
+  estLabel: 'EST',
+  safetyNote: 'Remote estimates read LOW vs on-site meters. Confirm on site.',
+  complianceNote: null as string | null,
   title: "Today's heat flags",
   estimatedNote: 'ESTIMATED',
   lang: 'en',
@@ -33,6 +37,23 @@ describe('share card model', () => {
     expect(model.hours[1]).toMatchObject({ label: '12p', estimated: true })
     expect(model.anyEstimated).toBe(true)
     expect(model.siteUrl).toBe('wbgtcheck.com')
+  })
+
+  it('always carries the safety note and the localized labels (card leaves the site)', () => {
+    const day = groupByDay(annotateHours([point(6, 91)], UIL_CLASS_3, 'America/Chicago'))[0]
+    const model = buildShareCardModel(day, OPTS)!
+    expect(model.safetyNote).toBe(OPTS.safetyNote)
+    expect(model.safetyNote.length).toBeGreaterThan(0)
+    expect(model.peakCaption).toBe('WBGT peak')
+    expect(model.estLabel).toBe('EST')
+    expect(model.complianceNote).toBeNull()
+  })
+
+  it('carries the compliance warning for device-required policies', () => {
+    const day = groupByDay(annotateHours([point(6, 85)], UIL_CLASS_3, 'America/Chicago'))[0]
+    const compliance = 'GHSA requires an on-site instrument. Not a compliance tool.'
+    const model = buildShareCardModel(day, { ...OPTS, complianceNote: compliance })!
+    expect(model.complianceNote).toBe(compliance)
   })
 
   it('keeps only the 6:00-21:00 planning window when full-day data exists', () => {

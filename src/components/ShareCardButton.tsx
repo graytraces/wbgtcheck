@@ -33,6 +33,15 @@ export default function ShareCardButton({ day, policy, locationLabel }: ShareCar
       locationLabel,
       policyName: t(`policies.${policy.id}`),
       peakFlagLabel: t(`flags.${day.peak.flag}.label`),
+      peakCaption: t('share.wbgtPeakLabel'),
+      estLabel: t('share.estShort'),
+      // The card is the only artifact that leaves the site — the conservative
+      // bias + verify-on-site notice always travels with it.
+      safetyNote: `${t('verdict.conservativeNotice')} ${t('verdict.verifyOnsite')}`,
+      complianceNote:
+        policy.remoteEstimatesAllowed === 'device-required'
+          ? t('verdict.deviceOnlyNotice', { body: policy.source.name.split(' ')[0] })
+          : null,
       title: t('share.todayFlags'),
       estimatedNote: t('verdict.estimatedBadge'),
       lang: i18n.language,

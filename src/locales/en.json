@@ -110,7 +110,9 @@
     "shareSystem": "Share…",
     "generated": "wbgtcheck.com",
     "shareFailed": "Sharing is not available here — the PNG was downloaded instead.",
-    "todayFlags": "Today's heat flags"
+    "todayFlags": "Today's heat flags",
+    "wbgtPeakLabel": "WBGT peak",
+    "estShort": "EST"
   },
   "measurement": {
     "uilTiming": "UIL: read WBGT within {{before}} min before practice, then every {{interval}} min during.",

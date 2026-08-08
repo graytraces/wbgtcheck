@@ -110,7 +110,9 @@
     "shareSystem": "Compartir…",
     "generated": "wbgtcheck.com",
     "shareFailed": "Compartir no está disponible aquí — se descargó el PNG en su lugar.",
-    "todayFlags": "Banderas de calor de hoy"
+    "todayFlags": "Banderas de calor de hoy",
+    "wbgtPeakLabel": "WBGT máximo",
+    "estShort": "EST"
   },
   "measurement": {
     "uilTiming": "UIL: lea el WBGT dentro de los {{before}} min previos a la práctica y luego cada {{interval}} min.",
