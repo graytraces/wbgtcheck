@@ -63,7 +63,7 @@
       },
       {
         "heading": "Built to be conservative",
-        "body": "Field studies show remote WBGT estimates read about 1 °C low on average versus an on-site meter, and 2-3 °C low in the hottest conditions — the dangerous direction. WBGT Check flags borderline hours and tells you to plan for the higher category. A forecast plans the schedule; only an on-site reading runs the practice."
+        "body": "Field studies show remote WBGT estimates read about {{min}} °C low on average versus an on-site meter, and up to {{max}} °C low in the hottest conditions — the dangerous direction. WBGT Check flags borderline hours and tells you to plan for the higher category. A forecast plans the schedule; only an on-site reading runs the practice."
       },
       {
         "heading": "Know your state's rules",
@@ -91,7 +91,7 @@
     "estimatedBadge": "ESTIMATED",
     "estimatedExplain": "NWS does not publish WBGT for this grid — value modeled (Liljegren) from temperature, humidity, wind and cloud cover.",
     "nwsBadge": "NWS forecast",
-    "conservativeNotice": "Remote estimates read LOW vs on-site meters (−1 to −3 °C in studies). Near a boundary, treat it as the higher flag.",
+    "conservativeNotice": "Remote estimates read LOW vs on-site meters (−{{min}} to −{{max}} °C in studies). Near a boundary, treat it as the higher flag.",
     "borderlineNotice": "Within {{margin}} °F of the {{nextFlag}} boundary — plan for {{nextFlag}}.",
     "verifyOnsite": "Confirm on site before and during activity — this forecast is a planning aid, not a measurement.",
     "deviceOnlyNotice": "{{body}} requires an on-site, scientifically-approved WBGT instrument. This site's readings do NOT satisfy compliance — use them for planning only.",
@@ -260,7 +260,7 @@
   },
   "disclaimerPage": {
     "pageTitle": "Disclaimer",
-    "notMeasurement": "WBGT Check is a forecast-based planning aid. It is not a measuring instrument, and its numbers are not measurements. On-site WBGT at your field can differ substantially from any remote estimate — published comparisons found remote values average about 1 °C low, and 2-3 °C low in the most dangerous conditions, which is the unsafe direction.",
+    "notMeasurement": "WBGT Check is a forecast-based planning aid. It is not a measuring instrument, and its numbers are not measurements. On-site WBGT at your field can differ substantially from any remote estimate — published comparisons found remote values roughly {{min}} °C low on average, and up to {{max}} °C low in the most dangerous conditions, which is the unsafe direction.",
     "notCompliance": "This site does not satisfy any association's measurement requirement in states that mandate an on-site instrument (e.g. Georgia GHSA, Kentucky KHSAA). Where internet-based readings are accepted (e.g. Texas UIL), the governing reading is still the one taken at the required time and place under the association's rules.",
     "notMedical": "Nothing here is medical advice. Heat illness decisions belong to qualified medical personnel — athletic trainers, team physicians, EMS. If someone shows signs of exertional heat stroke, call emergency services and begin rapid cooling immediately; do not consult a website.",
     "conditions": "Conditions change during a session. A morning forecast cannot govern an afternoon practice; re-check and re-measure at the intervals your policy requires.",

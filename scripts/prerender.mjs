@@ -29,6 +29,8 @@ import {
   GHSA_READING_LEAD_MINUTES,
   GHSA_CALIBRATION_INTERVAL_YEARS,
   GHSA_FAQ_WBGT_HI_COMPARISON,
+  REMOTE_UNDERESTIMATE_MIN_C,
+  REMOTE_UNDERESTIMATE_MAX_C,
 } from '../src/data/policyData.js'
 import { guidelineSentences } from '../src/lib/guidelineSentences.js'
 import { STATE_DIRECTORY } from '../src/data/stateDirectory.js'
@@ -42,6 +44,10 @@ const localeMap = { en: 'en_US', es: 'es_US' }
 const SITE_URL = 'https://wbgtcheck.com'
 
 const today = new Date().toISOString().split('T')[0]
+
+// Grundstein bias numbers interpolate from the oracle constants — locale
+// JSON holds only {{min}}/{{max}} templates (mirrors the React call sites).
+const BIAS_PARAMS = { min: REMOTE_UNDERESTIMATE_MIN_C, max: REMOTE_UNDERESTIMATE_MAX_C }
 
 // key must match the seo.* namespace in the locale files AND src/seo.ts
 const pages = [
@@ -179,9 +185,13 @@ function generateBodyContent(lang, page) {
   if (page.path === '') {
     push(`<h1>${escapeHtml(t('home.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('home.intro'))}</p>`)
-    const sections = locales[lang].home?.sections ?? locales.en.home.sections
-    for (const s of sections) {
-      push(`<h2>${escapeHtml(s.heading)}</h2><p>${escapeHtml(s.body)}</p>`)
+    const sectionCount = (locales[lang].home?.sections ?? locales.en.home.sections).length
+    for (let i = 0; i < sectionCount; i++) {
+      push(
+        `<h2>${escapeHtml(t(`home.sections.${i}.heading`))}</h2><p>${escapeHtml(
+          t(`home.sections.${i}.body`, BIAS_PARAMS),
+        )}</p>`,
+      )
     }
     push('<nav><ul>')
     for (const p of pages) {
@@ -279,7 +289,7 @@ function generateBodyContent(lang, page) {
   } else if (page.key === 'disclaimer') {
     push(`<h1>${escapeHtml(t('disclaimerPage.pageTitle'))}</h1>`)
     for (const key of ['notMeasurement', 'notCompliance', 'notMedical', 'conditions', 'accuracy', 'liability']) {
-      push(`<p>${escapeHtml(t(`disclaimerPage.${key}`))}</p>`)
+      push(`<p>${escapeHtml(t(`disclaimerPage.${key}`, BIAS_PARAMS))}</p>`)
     }
   }
 

@@ -63,7 +63,7 @@
       },
       {
         "heading": "Diseñado para ser conservador",
-        "body": "Los estudios de campo muestran que las estimaciones remotas de WBGT marcan en promedio 1 °C menos que un medidor en el sitio, y 2-3 °C menos en las condiciones más calurosas — la dirección peligrosa. WBGT Check señala las horas limítrofes y le indica planificar para la categoría superior. El pronóstico planifica el horario; solo una lectura en el sitio dirige la práctica."
+        "body": "Los estudios de campo muestran que las estimaciones remotas de WBGT marcan en promedio {{min}} °C menos que un medidor en el sitio, y hasta {{max}} °C menos en las condiciones más calurosas — la dirección peligrosa. WBGT Check señala las horas limítrofes y le indica planificar para la categoría superior. El pronóstico planifica el horario; solo una lectura en el sitio dirige la práctica."
       },
       {
         "heading": "Conozca las reglas de su estado",
@@ -91,7 +91,7 @@
     "estimatedBadge": "ESTIMADO",
     "estimatedExplain": "El NWS no publica WBGT para esta cuadrícula — valor modelado (Liljegren) a partir de temperatura, humedad, viento y nubosidad.",
     "nwsBadge": "Pronóstico NWS",
-    "conservativeNotice": "Las estimaciones remotas marcan MENOS que los medidores en el campo (−1 a −3 °C en estudios). Cerca de un límite, trátela como la bandera superior.",
+    "conservativeNotice": "Las estimaciones remotas marcan MENOS que los medidores en el campo (−{{min}} a −{{max}} °C en estudios). Cerca de un límite, trátela como la bandera superior.",
     "borderlineNotice": "A menos de {{margin}} °F del límite de {{nextFlag}} — planifique para {{nextFlag}}.",
     "verifyOnsite": "Confirme en el sitio antes y durante la actividad — este pronóstico es una ayuda de planificación, no una medición.",
     "deviceOnlyNotice": "{{body}} exige un instrumento WBGT aprobado científicamente en el sitio. Las lecturas de este sitio NO satisfacen el cumplimiento — úselas solo para planificar.",
@@ -260,7 +260,7 @@
   },
   "disclaimerPage": {
     "pageTitle": "Aviso legal",
-    "notMeasurement": "WBGT Check es una ayuda de planificación basada en pronósticos. No es un instrumento de medición y sus números no son mediciones. El WBGT en su campo puede diferir sustancialmente de cualquier estimación remota — comparaciones publicadas hallaron valores remotos en promedio 1 °C bajos, y 2-3 °C bajos en las condiciones más peligrosas, que es la dirección insegura.",
+    "notMeasurement": "WBGT Check es una ayuda de planificación basada en pronósticos. No es un instrumento de medición y sus números no son mediciones. El WBGT en su campo puede diferir sustancialmente de cualquier estimación remota — comparaciones publicadas hallaron valores remotos en promedio {{min}} °C bajos, y hasta {{max}} °C bajos en las condiciones más peligrosas, que es la dirección insegura.",
     "notCompliance": "Este sitio no satisface el requisito de medición de ninguna asociación en estados que exigen instrumento en el sitio (p. ej. GHSA de Georgia, KHSAA de Kentucky). Donde se aceptan lecturas por internet (p. ej. UIL de Texas), la lectura que rige sigue siendo la tomada en el momento y lugar requeridos según las reglas de la asociación.",
     "notMedical": "Nada aquí es consejo médico. Las decisiones sobre enfermedades por calor corresponden a personal médico calificado — preparadores físicos, médicos de equipo, servicios de emergencia. Si alguien muestra signos de golpe de calor por esfuerzo, llame a emergencias y comience el enfriamiento rápido de inmediato; no consulte un sitio web.",
     "conditions": "Las condiciones cambian durante una sesión. Un pronóstico matutino no puede regir una práctica vespertina; vuelva a verificar y medir en los intervalos que exige su política.",

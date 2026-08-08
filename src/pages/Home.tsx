@@ -19,6 +19,8 @@ import {
   GHSA_READING_INTERVAL_MINUTES,
   GHSA_READING_LEAD_MINUTES,
   GHSA_CALIBRATION_INTERVAL_YEARS,
+  REMOTE_UNDERESTIMATE_MIN_C,
+  REMOTE_UNDERESTIMATE_MAX_C,
 } from '../data/policyOracle'
 
 interface HomeSection {
@@ -172,10 +174,18 @@ export default function Home() {
 
       <section className="max-w-3xl space-y-5">
         <p className="text-base">{t('home.intro')}</p>
-        {sections.map((s) => (
-          <div key={s.heading}>
-            <h2 className="display-num mb-1 text-xl uppercase">{s.heading}</h2>
-            <p className="text-ink-muted">{s.body}</p>
+        {sections.map((_, i) => (
+          // Indexed t() calls: i18next does not interpolate inside
+          // returnObjects trees, and the bias numbers must come from the
+          // oracle constants.
+          <div key={t(`home.sections.${i}.heading`)}>
+            <h2 className="display-num mb-1 text-xl uppercase">{t(`home.sections.${i}.heading`)}</h2>
+            <p className="text-ink-muted">
+              {t(`home.sections.${i}.body`, {
+                min: REMOTE_UNDERESTIMATE_MIN_C,
+                max: REMOTE_UNDERESTIMATE_MAX_C,
+              })}
+            </p>
           </div>
         ))}
         <p className="text-sm">

@@ -5,6 +5,7 @@ import type { DaySummary } from '../utils/verdict'
 import type { HeatPolicy } from '../data/policyOracle'
 import { buildShareCardModel, drawShareCard, SHARE_CARD_SIZE } from '../utils/shareCard'
 import { trackShareCard } from '../utils/analytics'
+import { REMOTE_UNDERESTIMATE_MIN_C, REMOTE_UNDERESTIMATE_MAX_C } from '../data/policyOracle'
 
 interface ShareCardButtonProps {
   day: DaySummary
@@ -37,7 +38,10 @@ export default function ShareCardButton({ day, policy, locationLabel }: ShareCar
       estLabel: t('share.estShort'),
       // The card is the only artifact that leaves the site — the conservative
       // bias + verify-on-site notice always travels with it.
-      safetyNote: `${t('verdict.conservativeNotice')} ${t('verdict.verifyOnsite')}`,
+      safetyNote: `${t('verdict.conservativeNotice', {
+        min: REMOTE_UNDERESTIMATE_MIN_C,
+        max: REMOTE_UNDERESTIMATE_MAX_C,
+      })} ${t('verdict.verifyOnsite')}`,
       complianceNote:
         policy.remoteEstimatesAllowed === 'device-required'
           ? t('verdict.deviceOnlyNotice', { body: policy.source.name.split(' ')[0] })

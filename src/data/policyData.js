@@ -42,9 +42,14 @@ export const GHSA_INSTRUMENT_QUOTE =
 export const GHSA_FAQ_WBGT_HI_COMPARISON = { wbgtF: 92, heatIndexMinF: 104, heatIndexMaxF: 105 }
 
 // --- Grundstein remote-estimate bias + borderline nudge -------------------
+// Published range: remote estimates −1 to −3 °C vs on-site measurement
+// (Grundstein 2025 GeoHealth, doi:10.1029/2025GH001347). All UI copy showing
+// these numbers interpolates from the °C constants; the °F pair is derived.
 
-export const REMOTE_UNDERESTIMATE_MIN_F = 1.9
-export const REMOTE_UNDERESTIMATE_MAX_F = 5.4
+export const REMOTE_UNDERESTIMATE_MIN_C = 1
+export const REMOTE_UNDERESTIMATE_MAX_C = 3
+export const REMOTE_UNDERESTIMATE_MIN_F = REMOTE_UNDERESTIMATE_MIN_C * 1.8
+export const REMOTE_UNDERESTIMATE_MAX_F = REMOTE_UNDERESTIMATE_MAX_C * 1.8
 export const BORDERLINE_MARGIN_F = 2.0
 
 // --- Band guideline blocks ------------------------------------------------

@@ -9,8 +9,16 @@ import Texas from '../pages/Texas'
 import Georgia from '../pages/Georgia'
 import States from '../pages/States'
 import Disclaimer from '../pages/Disclaimer'
-import { UIL_CLASS_2, UIL_CLASS_3, GHSA } from '../data/policyOracle'
+import {
+  UIL_CLASS_2,
+  UIL_CLASS_3,
+  GHSA,
+  REMOTE_UNDERESTIMATE_MIN_C,
+  REMOTE_UNDERESTIMATE_MAX_C,
+} from '../data/policyOracle'
 import { STATE_DIRECTORY } from '../data/stateDirectory'
+
+const BIAS_PARAMS = { min: REMOTE_UNDERESTIMATE_MIN_C, max: REMOTE_UNDERESTIMATE_MAX_C }
 
 /**
  * Rendered-DOM (post-JS) prose survival guards — the WRS-visible tree, not
@@ -73,7 +81,10 @@ describe('post-JS rendered DOM', () => {
 
   it('Disclaimer renders the not-a-measurement and not-compliance sections', () => {
     renderAt('/en/disclaimer', <Disclaimer />)
-    expect(screen.getByText(en.disclaimerPage.notMeasurement)).toBeInTheDocument()
+    // notMeasurement interpolates the oracle bias constants
+    expect(
+      screen.getByText(i18n.t('disclaimerPage.notMeasurement', BIAS_PARAMS)),
+    ).toBeInTheDocument()
     expect(screen.getByText(en.disclaimerPage.notCompliance)).toBeInTheDocument()
   })
 })

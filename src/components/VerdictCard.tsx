@@ -2,7 +2,13 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MapPin } from 'lucide-react'
 import type { HeatPolicy } from '../data/policyOracle'
-import { classifyWbgt, nextBandBoundary, BORDERLINE_MARGIN_F } from '../data/policyOracle'
+import {
+  classifyWbgt,
+  nextBandBoundary,
+  BORDERLINE_MARGIN_F,
+  REMOTE_UNDERESTIMATE_MIN_C,
+  REMOTE_UNDERESTIMATE_MAX_C,
+} from '../data/policyOracle'
 import type { HourVerdict } from '../utils/verdict'
 import { guidelineSentences } from '../utils/guidelineText'
 import { FLAG_ICON, FLAG_SOLID } from '../utils/flagStyles'
@@ -108,7 +114,12 @@ export default function VerdictCard({
       {/* Opaque neutral strip: the safety notices were the least readable
           text on the card as a translucent overlay (CR 2.9-4.1 measured). */}
       <div className="space-y-1 bg-ink px-5 py-3 text-sm text-bg sm:px-8">
-        <p className="font-semibold">{t('verdict.conservativeNotice')}</p>
+        <p className="font-semibold">
+          {t('verdict.conservativeNotice', {
+            min: REMOTE_UNDERESTIMATE_MIN_C,
+            max: REMOTE_UNDERESTIMATE_MAX_C,
+          })}
+        </p>
         <p>{t('verdict.verifyOnsite')}</p>
         {policy.remoteEstimatesAllowed === 'device-required' && (
           <p className="font-bold">

@@ -3,7 +3,13 @@ import { render, screen } from '@testing-library/react'
 import i18n from '../i18n'
 import en from '../locales/en.json'
 import VerdictCard from '../components/VerdictCard'
-import { UIL_CLASS_3, GHSA, classifyWbgt } from '../data/policyOracle'
+import {
+  UIL_CLASS_3,
+  GHSA,
+  classifyWbgt,
+  REMOTE_UNDERESTIMATE_MIN_C,
+  REMOTE_UNDERESTIMATE_MAX_C,
+} from '../data/policyOracle'
 import type { HourVerdict } from '../utils/verdict'
 import { isBorderline } from '../data/policyOracle'
 
@@ -38,8 +44,15 @@ describe('VerdictCard', () => {
     expect(screen.getByText('88')).toBeInTheDocument()
     const expectedFlag = classifyWbgt(UIL_CLASS_3, 88.4).flag
     expect(screen.getAllByText(en.flags[expectedFlag].label).length).toBeGreaterThan(0)
-    // Non-negotiable permanent notices
-    expect(screen.getByText(en.verdict.conservativeNotice)).toBeInTheDocument()
+    // Non-negotiable permanent notices (bias numbers interpolate from the oracle)
+    expect(
+      screen.getByText(
+        i18n.t('verdict.conservativeNotice', {
+          min: REMOTE_UNDERESTIMATE_MIN_C,
+          max: REMOTE_UNDERESTIMATE_MAX_C,
+        }),
+      ),
+    ).toBeInTheDocument()
     expect(screen.getByText(en.verdict.verifyOnsite)).toBeInTheDocument()
   })
 

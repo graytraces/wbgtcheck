@@ -3,7 +3,12 @@ import en from '../locales/en.json'
 import es from '../locales/es.json'
 import i18n from '../i18n'
 import { guidelineSentences } from '../utils/guidelineText'
-import { UIL_CLASS_3, GHSA } from '../data/policyOracle'
+import {
+  UIL_CLASS_3,
+  GHSA,
+  REMOTE_UNDERESTIMATE_MIN_C,
+  REMOTE_UNDERESTIMATE_MAX_C,
+} from '../data/policyOracle'
 
 /**
  * Oracle→copy derivation guard (content policy): guideline numbers may only
@@ -68,5 +73,34 @@ describe('guideline copy derives from the oracle', () => {
     const prose = JSON.stringify([en, es]).toLowerCase()
     expect(prose).not.toContain('safe to practice')
     expect(prose).not.toContain('seguro practicar')
+  })
+
+  it('Grundstein bias copy interpolates from the oracle (no digit literals in the 6 strings)', () => {
+    for (const locale of [en, es]) {
+      const strings = [
+        locale.verdict.conservativeNotice,
+        locale.disclaimerPage.notMeasurement,
+        locale.home.sections[1].body,
+      ]
+      for (const s of strings) {
+        expect(s).toContain('{{min}}')
+        expect(s).toContain('{{max}}')
+        expect(s, `bias string must not hardcode digits: ${s.slice(0, 60)}…`).not.toMatch(
+          /\d\s*°C/,
+        )
+      }
+    }
+  })
+
+  it('rendered bias copy carries the oracle constants (EN + ES)', async () => {
+    const params = { min: REMOTE_UNDERESTIMATE_MIN_C, max: REMOTE_UNDERESTIMATE_MAX_C }
+    for (const lang of ['en', 'es']) {
+      await i18n.changeLanguage(lang)
+      const rendered = i18n.t('verdict.conservativeNotice', params)
+      expect(rendered).toContain(String(REMOTE_UNDERESTIMATE_MIN_C))
+      expect(rendered).toContain(String(REMOTE_UNDERESTIMATE_MAX_C))
+      expect(rendered).not.toContain('{{')
+    }
+    await i18n.changeLanguage('en')
   })
 })

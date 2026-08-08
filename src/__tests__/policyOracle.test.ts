@@ -9,6 +9,8 @@ import {
   isBorderline,
   nextBandBoundary,
   BORDERLINE_MARGIN_F,
+  REMOTE_UNDERESTIMATE_MIN_C,
+  REMOTE_UNDERESTIMATE_MAX_C,
   REMOTE_UNDERESTIMATE_MIN_F,
   REMOTE_UNDERESTIMATE_MAX_F,
   UIL_EFFECTIVE_DATE,
@@ -142,8 +144,10 @@ describe('borderline advisory (conservative bias)', () => {
     expect(nextBandBoundary(UIL_CLASS_3, classifyWbgt(UIL_CLASS_3, 99))).toBeNull()
   })
 
-  it('Grundstein bias constants bracket the published -1 to -3 °C in °F', () => {
-    expect(REMOTE_UNDERESTIMATE_MIN_F).toBeCloseTo(1.9, 5)
-    expect(REMOTE_UNDERESTIMATE_MAX_F).toBeCloseTo(5.4, 5)
+  it('Grundstein bias constants: published −1 to −3 °C range, °F derived from °C', () => {
+    expect(REMOTE_UNDERESTIMATE_MIN_C).toBe(1)
+    expect(REMOTE_UNDERESTIMATE_MAX_C).toBe(3)
+    expect(REMOTE_UNDERESTIMATE_MIN_F).toBeCloseTo(REMOTE_UNDERESTIMATE_MIN_C * 1.8, 5)
+    expect(REMOTE_UNDERESTIMATE_MAX_F).toBeCloseTo(REMOTE_UNDERESTIMATE_MAX_C * 1.8, 5)
   })
 })
