@@ -1,0 +1,285 @@
+{
+  "common": {
+    "siteName": "WBGT Check",
+    "tagline": "Heat safety planning for coaches and band directors",
+    "skipToContent": "Skip to content",
+    "nav": {
+      "home": "Forecast",
+      "texas": "Texas UIL",
+      "georgia": "Georgia GHSA",
+      "wbgtVsHeatIndex": "WBGT vs Heat Index",
+      "states": "All states"
+    },
+    "footer": {
+      "safetySummary": "WBGT Check shows forecast-based remote estimates for planning. Remote estimates tend to read LOWER than on-site measurement — treat borderline readings as the higher category and confirm with an on-site WBGT meter before activity decisions. Your association's policy and your athletic trainer's judgment control.",
+      "dataCredit": "Weather data: NOAA / National Weather Service. WBGT model ported from ECMWF thermofeel (Apache-2.0).",
+      "privacy": "Privacy",
+      "disclaimer": "Disclaimer",
+      "rights": "© {{year}} WBGT Check"
+    },
+    "themeToggle": "Toggle dark mode",
+    "languageLabel": "Language",
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "retry": "Try again"
+  },
+  "flags": {
+    "green": { "name": "Green flag", "label": "GREEN" },
+    "yellow": { "name": "Yellow flag", "label": "YELLOW" },
+    "orange": { "name": "Orange flag", "label": "ORANGE" },
+    "red": { "name": "Red flag", "label": "RED" },
+    "black": { "name": "Black flag", "label": "BLACK" }
+  },
+  "guideline": {
+    "normal": "Normal activities.",
+    "discretion": "Use discretion for intense or prolonged exercise; watch at-risk participants closely.",
+    "restBreaks": "At least {{n}} separate rest breaks each hour, minimum {{minutes}} min each.",
+    "restMinutes": "At least {{minutes}} min of rest breaks distributed through each hour.",
+    "maxPracticeMinutes": "Maximum practice time: {{minutes}} min.",
+    "footballHelmetShoulderShorts": "Football: helmet, shoulder pads and shorts only.",
+    "footballNoEquipment": "Football: no protective equipment.",
+    "noConditioning": "No conditioning activities.",
+    "coolingZone": "Mandatory on-site rapid cooling zone (tub or tarp).",
+    "noOutdoor": "No outdoor workouts. Delay practice until a cooler WBGT is reached."
+  },
+  "policies": {
+    "uil-class-2": "Texas UIL — Class 2",
+    "uil-class-3": "Texas UIL — Class 3",
+    "ghsa": "Georgia GHSA",
+    "generic": "General guideline (NATA)",
+    "pickerLabel": "Policy",
+    "pickerHelp": "Pick your state association. Texas: Class 2 vs Class 3 depends on your region — check the UIL map.",
+    "uilMapLink": "UIL regional class map",
+    "sourceLabel": "Source",
+    "verifiedOn": "verified {{date}}"
+  },
+  "home": {
+    "pageTitle": "WBGT Forecast with State Heat Policy Flags",
+    "intro": "One screen for the morning call: hourly wet bulb globe temperature for your field, translated into your state's activity flags — rest ratios, equipment limits, practice caps — with a card you can drop in the team chat.",
+    "sections": [
+      {
+        "heading": "How it works",
+        "body": "Enter a ZIP or tap the location button. We pull the National Weather Service hourly WBGT forecast for your exact grid cell; where NWS doesn't publish WBGT (parts of central Texas, for example) we model it from temperature, humidity, wind and cloud cover using the Liljegren method and mark it ESTIMATED. Then your selected policy — Texas UIL Class 2 or 3, Georgia GHSA, or the NATA example guideline — turns each hour into a flag."
+      },
+      {
+        "heading": "Built to be conservative",
+        "body": "Field studies show remote WBGT estimates read about 1 °C low on average versus an on-site meter, and 2-3 °C low in the hottest conditions — the dangerous direction. WBGT Check flags borderline hours and tells you to plan for the higher category. A forecast plans the schedule; only an on-site reading runs the practice."
+      },
+      {
+        "heading": "Know your state's rules",
+        "body": "Texas UIL explicitly accepts internet-based readings; Georgia GHSA requires a calibrated on-site instrument; other states fall everywhere in between. See the state-by-state table, the Texas UIL guide, and the Georgia GHSA guide for what your association actually requires."
+      }
+    ]
+  },
+  "location": {
+    "heading": "Where is practice?",
+    "zipPlaceholder": "ZIP code",
+    "zipButton": "Get forecast",
+    "geoButton": "Use my location",
+    "geoDenied": "Location permission was denied. Enter a ZIP code instead.",
+    "geoUnavailable": "Location is unavailable on this device. Enter a ZIP code instead.",
+    "zipInvalid": "Enter a 5-digit US ZIP code.",
+    "zipNotFound": "That ZIP code was not found.",
+    "lookupFailed": "Could not look up that location. Try again.",
+    "forecastFailed": "Could not load the forecast. Try again.",
+    "change": "Change location"
+  },
+  "verdict": {
+    "nowHeading": "Right now",
+    "atTime": "at {{time}}",
+    "wbgtLabel": "WBGT",
+    "estimatedBadge": "ESTIMATED",
+    "estimatedExplain": "NWS does not publish WBGT for this grid — value modeled (Liljegren) from temperature, humidity, wind and cloud cover.",
+    "nwsBadge": "NWS forecast",
+    "conservativeNotice": "Remote estimates read LOW vs on-site meters (−1 to −3 °C in studies). Near a boundary, treat it as the higher flag.",
+    "borderlineNotice": "Within {{margin}} °F of the {{nextFlag}} boundary — plan for {{nextFlag}}.",
+    "verifyOnsite": "Confirm on site before and during activity — this forecast is a planning aid, not a measurement.",
+    "deviceOnlyNotice": "{{body}} requires an on-site, scientifically-approved WBGT instrument. This site's readings do NOT satisfy compliance — use them for planning only.",
+    "todayHeading": "Today by hour",
+    "weekHeading": "This week",
+    "peakLabel": "Peak",
+    "noData": "No forecast data for this period.",
+    "boundariesHeading": "Flag thresholds — {{policy}}",
+    "boundariesNote": "Thresholds in °F WBGT, exactly as published by the source.",
+    "shareButton": "Share today's flags",
+    "measurementRules": "Measurement rules"
+  },
+  "share": {
+    "heading": "Share card",
+    "download": "Download PNG",
+    "shareSystem": "Share…",
+    "generated": "wbgtcheck.com",
+    "shareFailed": "Sharing is not available here — the PNG was downloaded instead.",
+    "todayFlags": "Today's heat flags"
+  },
+  "measurement": {
+    "uilTiming": "UIL: read WBGT within {{before}} min before practice, then every {{interval}} min during.",
+    "uilApps": "UIL explicitly allows \"{{quote}}\" — forecasts like this one may be used for planning and readings.",
+    "ghsaTiming": "GHSA: readings at least every {{interval}} min, beginning {{lead}} min before practice, from an on-site instrument.",
+    "ghsaCalibration": "GHSA WBGT monitors must be calibrated at least every {{years}} years."
+  },
+  "seo": {
+    "home": {
+      "title": "WBGT Forecast with State Heat Policy Flags | WBGT Check",
+      "description": "Free wet bulb globe temperature forecast with UIL and GHSA activity flags. Hourly WBGT, practice modification guidance, and a shareable heat flag card for coaches.",
+      "keywords": "WBGT forecast, wet bulb globe temperature, heat safety, UIL WBGT, GHSA heat policy, practice heat guidelines, marching band heat"
+    },
+    "texas": {
+      "title": "Texas UIL WBGT Rules: Thresholds, Classes & Measurement | WBGT Check",
+      "description": "UIL WBGT requirements for Texas athletics and marching band: Class 2 vs Class 3 thresholds, activity modifications, 15-minute pre-practice readings, and app-based measurement rules.",
+      "keywords": "UIL WBGT policy, Texas heat rules football, UIL heat stress plan, UIL Class 2 Class 3 WBGT, Texas marching band heat rules"
+    },
+    "georgia": {
+      "title": "Georgia GHSA WBGT Policy: Thresholds & Device Rules | WBGT Check",
+      "description": "GHSA By-law 2.67 explained: WBGT thresholds, rest break requirements, and why Georgia requires an on-site calibrated WBGT instrument — apps and websites do not count.",
+      "keywords": "GHSA heat policy, Georgia WBGT rules, GHSA By-law 2.67, GHSA WBGT device requirement, Georgia football heat rules"
+    },
+    "wbgtVsHeatIndex": {
+      "title": "WBGT vs Heat Index vs Wet Bulb: What's the Difference? | WBGT Check",
+      "description": "WBGT is not the heat index and not the plain wet bulb. What each number measures, why sports policies use WBGT, and how the scales roughly compare.",
+      "keywords": "WBGT vs heat index, wet bulb vs WBGT, wet bulb globe temperature explained, heat index sports, WBGT meaning"
+    },
+    "states": {
+      "title": "WBGT Rules by State: App-Allowed vs Device-Only | WBGT Check",
+      "description": "Which states mandate WBGT for high school sports, which accept app or web readings, and which require an on-site instrument. Sourced classification with caveats.",
+      "keywords": "WBGT rules by state, state heat policies high school sports, WBGT device requirement states, heat acclimatization rules"
+    },
+    "privacy": {
+      "title": "Privacy Policy | WBGT Check",
+      "description": "How WBGT Check handles your location data, analytics, and cookies.",
+      "keywords": "WBGT Check privacy policy"
+    },
+    "disclaimer": {
+      "title": "Disclaimer | WBGT Check",
+      "description": "WBGT Check is a planning aid, not a measurement instrument or compliance tool. Read the full disclaimer.",
+      "keywords": "WBGT Check disclaimer"
+    }
+  },
+  "texas": {
+    "pageTitle": "Texas UIL WBGT Rules",
+    "intro": "Starting {{effectiveDate}}, WBGT-based activity modification is a required standard for all UIL outdoor athletic activities — and marching band. Here is the policy in plain terms, with every number taken from UIL's published chart.",
+    "classesHeading": "Class 2 vs Class 3",
+    "classesBody": "UIL assigns each region of Texas to a WBGT class on its regional map; hotter regions get higher (more permissive) thresholds because athletes there are more heat-acclimatized. Check the UIL map and select your class — when in doubt, use the stricter Class 2 thresholds.",
+    "tableHeading": "Activity guidelines by WBGT (°F)",
+    "tableClass2": "Class 2",
+    "tableClass3": "Class 3",
+    "tableGuidelines": "Required modifications",
+    "measurementHeading": "Measurement rules",
+    "measurementApps": "UIL accepts internet-based readings: the plan permits a scientifically approved WBGT instrument \"or other scientifically proven method, such as an internet-based weather station software or application.\" That makes forecast tools legitimate planning aids in Texas — but the reading that governs is the one taken at practice time.",
+    "competitionNote": "The activity chart governs practices. For competitions, a rapid cooling zone must still be on site and available at all times above threshold temperatures.",
+    "bandNote": "Marching band is covered: the UIL requirement applies to outdoor rehearsals, not just athletics.",
+    "sourceHeading": "Source",
+    "sourceBody": "All thresholds and modification text above derive from the UIL Heat Stress & Athletic Participation plan and its WBGT Activity Guidelines chart, cross-checked on {{verifiedOn}}.",
+    "ctaButton": "Check today's Texas flags"
+  },
+  "georgia": {
+    "pageTitle": "Georgia GHSA WBGT Policy",
+    "intro": "GHSA By-law 2.67 makes WBGT-based practice modification mandatory year-round, in all sports, during periods of high heat — with a hard rule that catches many programs off guard: the reading must come from an on-site instrument.",
+    "deviceHeading": "Georgia is a device-only state",
+    "deviceBody": "The by-law's wording: \"{{quote}}\". Readings must be taken at least every {{interval}} minutes beginning {{lead}} minutes before practice, and monitors must be calibrated at least every {{years}} years.",
+    "deviceWarning": "App and web estimates — including this site — are NOT accepted for GHSA compliance. Use WBGT Check to plan tomorrow's schedule; use your calibrated on-site meter to run practice.",
+    "tableHeading": "Activity guidelines by WBGT (°F)",
+    "tableRange": "WBGT",
+    "tableGuidelines": "Required modifications",
+    "practiceDefHeading": "What counts as practice",
+    "practiceDefBody": "Practice time runs from when players report to the practice area until they leave it. Conditioning (weights, sprints, timed runs) counts as practice time — including \"voluntary\" workouts. Walk-throughs are separate: max one hour, no equipment, no conditioning, no contact.",
+    "sourceHeading": "Source",
+    "sourceBody": "All thresholds and modification text above derive from GHSA By-law 2.67 (Practice Policy for Heat and Humidity), cross-checked on {{verifiedOn}}.",
+    "ctaButton": "Plan around Georgia's flags"
+  },
+  "wbgtVsHi": {
+    "pageTitle": "WBGT vs Heat Index (vs Wet Bulb)",
+    "intro": "Three different numbers get called \"wet bulb\" in team group chats, and mixing them up leads to bad practice decisions. Here is what each one actually measures.",
+    "wbgtHeading": "WBGT — wet bulb globe temperature",
+    "wbgtBody": "A weighted composite built for people exerting themselves outdoors: 70% natural wet bulb (evaporative cooling power), 20% black globe (solar radiation load), 10% dry air temperature. Wind, sun, humidity and heat all move it. Sports heat policies (UIL, GHSA, NCAA, the military) are written against WBGT.",
+    "wetbulbHeading": "Plain wet bulb is not WBGT",
+    "wetbulbBody": "The plain (psychrometric) wet bulb only captures evaporation — no sun load. On a sunny field, WBGT runs well above plain wet bulb. If your weather app shows \"wet bulb 78°\" on a cloudless afternoon, the WBGT on the turf can already be in flag territory.",
+    "hiHeading": "Heat index — a different scale entirely",
+    "hiBody": "Heat index models how hot it feels to a person at rest in the shade, in normal clothes. It has little relevance to a football practice. The scales do not line up: per GHSA's own FAQ, a WBGT of {{wbgtExample}} is roughly comparable to a heat index of {{hiExampleRange}}.",
+    "hiNote": "Some states (e.g. New York) write their policies against heat index instead — that is a policy choice, not an equivalence. Never read a WBGT threshold with a heat index number, or vice versa.",
+    "tableHeading": "At a glance",
+    "tableMeasure": "Number",
+    "tableSun": "Sun load?",
+    "tableWind": "Wind?",
+    "tableUse": "Built for",
+    "tableWbgtUse": "Exercise & work heat policy",
+    "tableWetbulbUse": "Meteorology, climate limits",
+    "tableHiUse": "General public at rest",
+    "yes": "Yes",
+    "no": "No",
+    "ctaButton": "See today's WBGT"
+  },
+  "states": {
+    "pageTitle": "WBGT Rules by State",
+    "intro": "No public roster classifies how each state lets you MEASURE WBGT — so we built one. Three buckets: apps and web readings accepted, on-site device required, or not specified by the association. Only Texas and Georgia have been re-verified against primary documents by this site; every other row comes from our research pass and deserves a call to your association before you rely on it.",
+    "legendHeading": "How to read this table",
+    "legendApps": "Apps allowed — the association explicitly accepts internet/app-based readings.",
+    "legendDevice": "Device only — an on-site scientifically-approved instrument is mandated; app/web readings do not satisfy the policy.",
+    "legendUnverified": "Not specified / unverified — confirm with the association.",
+    "colState": "State",
+    "colBody": "Governing body",
+    "colMandate": "WBGT mandate",
+    "colMeasurement": "Measurement",
+    "colNote": "Notes",
+    "mandate": {
+      "wbgt-required": "WBGT required",
+      "conditional": "Conditional / preferred",
+      "heat-index": "Heat index based",
+      "standard-pending": "Standard pending"
+    },
+    "measurement": {
+      "apps-allowed": "Apps allowed",
+      "device-required": "Device only",
+      "unverified": "Confirm with association"
+    },
+    "verifiedBadge": "Primary source verified",
+    "researchBadge": "Research pass — confirm locally",
+    "notes": {
+      "tx": "Effective {{effectiveDate}}; covers athletics and marching band. Class 2/3 regional thresholds — see the Texas guide.",
+      "ga": "On-site calibrated instrument required at each practice — see the Georgia guide.",
+      "ky": "KHSAA names WBGT only and explicitly rules out websites, phone apps and computer programs as substitutes; Form GE20 record-keeping.",
+      "sc": "SCHSL policy wording is written around an on-site device.",
+      "ia": "On-site readings every 30 minutes per policy; applies year-round above 80 °F air temperature.",
+      "fl": "Zachary Martin Act legislates WBGT-based safety requirements; FHSAA operates on WBGT.",
+      "nc": "NCHSAA guidance says its plan \"must be followed\"; a free UNC tool displays WBGT categories.",
+      "va": "Code §22.1-271.10 puts WBGT-based thresholds on school boards from 2025-07-01; measurement method not regulated.",
+      "tn": "TSSAA requires monitoring but allows WBGT or heat index; its FAQ accepts phone apps for heat index. Marching band not covered.",
+      "mo": "MSHSAA: WBGT must be utilized above 80 °F air temperature (2025 update); field-oriented wording.",
+      "md": "MPSSAA delegates to district policies; WBGT and heat index both appear.",
+      "ny": "NYSPHSAA works from heat index and explicitly directs schools to a weather app by ZIP code.",
+      "nj": "Legislated heat participation rules since 2020.",
+      "la": "Legislated WBGT-based rules.",
+      "ca": "AB 1653 orders CIF to set a standard; details pending.",
+      "ma": "WBGT-based policy reported (~2020); year unverified."
+    },
+    "caveat": "This table is a navigation aid, not legal advice. Policies change midseason; the association's current document controls. Found an error? Tell your athletic trainer first, then us.",
+    "texasLink": "Texas UIL guide",
+    "georgiaLink": "Georgia GHSA guide"
+  },
+  "disclaimerPage": {
+    "pageTitle": "Disclaimer",
+    "notMeasurement": "WBGT Check is a forecast-based planning aid. It is not a measuring instrument, and its numbers are not measurements. On-site WBGT at your field can differ substantially from any remote estimate — published comparisons found remote values average about 1 °C low, and 2-3 °C low in the most dangerous conditions, which is the unsafe direction.",
+    "notCompliance": "This site does not satisfy any association's measurement requirement in states that mandate an on-site instrument (e.g. Georgia GHSA, Kentucky KHSAA). Where internet-based readings are accepted (e.g. Texas UIL), the governing reading is still the one taken at the required time and place under the association's rules.",
+    "notMedical": "Nothing here is medical advice. Heat illness decisions belong to qualified medical personnel — athletic trainers, team physicians, EMS. If someone shows signs of exertional heat stroke, call emergency services and begin rapid cooling immediately; do not consult a website.",
+    "conditions": "Conditions change during a session. A morning forecast cannot govern an afternoon practice; re-check and re-measure at the intervals your policy requires.",
+    "accuracy": "We cross-check policy numbers against association primary documents and date-stamp each verification, but associations revise policies without notice. The association's current published document always controls over anything shown here.",
+    "liability": "Use of this site is at your own risk. To the maximum extent permitted by law, WBGT Check and its operator disclaim all liability arising from reliance on the information provided."
+  },
+  "privacy": {
+    "pageTitle": "Privacy Policy",
+    "intro": "WBGT Check is built to need as little of your data as possible.",
+    "locationTitle": "Location",
+    "locationContent": "ZIP codes and geolocation coordinates are used only to fetch a forecast for that point. Coordinates are sent to our forecast proxy and to the ZIP lookup service (zippopotam.us), are not stored server-side, and never leave the request path. Your last location is saved in your browser's localStorage so the verdict loads instantly next time; clear it with your browser data.",
+    "analyticsTitle": "Analytics",
+    "analyticsContent": "We use Google Analytics 4 to understand aggregate usage (which pages are read, whether the share card is used). GA4 sets cookies; in EEA/UK regions consent defaults to denied. We do not run ads on this site today.",
+    "dataTitle": "Weather data",
+    "dataContent": "Forecast data comes from NOAA's National Weather Service API. Requests are proxied through our server with only the coordinates being requested.",
+    "contactTitle": "Contact",
+    "contactContent": "Questions: graytraces@gmail.com"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "That page doesn't exist. Check the address, or head to the forecast.",
+    "cta": "Go to forecast"
+  }
+}

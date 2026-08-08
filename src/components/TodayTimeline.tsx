@@ -1,0 +1,54 @@
+import { useTranslation } from 'react-i18next'
+import type { HourVerdict } from '../utils/verdict'
+import { FLAG_ICON, FLAG_SOLID } from '../utils/flagStyles'
+import { cn } from '../lib/utils'
+
+interface TodayTimelineProps {
+  hours: HourVerdict[]
+  currentTime?: number
+}
+
+function hourLabel(h: number): string {
+  if (h === 0) return '12a'
+  if (h < 12) return `${h}a`
+  if (h === 12) return '12p'
+  return `${h - 12}p`
+}
+
+export default function TodayTimeline({ hours, currentTime }: TodayTimelineProps) {
+  const { t } = useTranslation()
+  if (hours.length === 0) {
+    return <p className="text-sm text-ink-muted">{t('verdict.noData')}</p>
+  }
+  return (
+    <ol className="-mx-4 flex gap-1 overflow-x-auto px-4 pb-2" aria-label={t('verdict.todayHeading')}>
+      {hours.map((h) => {
+        const Icon = FLAG_ICON[h.flag]
+        const isNow = currentTime !== undefined && h.time === Math.floor(currentTime / 3600_000) * 3600_000
+        return (
+          <li key={h.time} className="flex min-w-14 flex-col items-center gap-1">
+            <span className={cn('text-xs font-semibold', isNow ? 'text-ink' : 'text-ink-muted')}>
+              {hourLabel(h.localHour)}
+            </span>
+            <span
+              className={cn(
+                'flex w-full flex-col items-center gap-0.5 py-2',
+                FLAG_SOLID[h.flag],
+                isNow && 'ring-2 ring-ink ring-offset-2 ring-offset-bg',
+              )}
+              title={`${Math.round(h.wbgtF)} °F — ${t(`flags.${h.flag}.name`)}${h.source === 'estimated' ? ` (${t('verdict.estimatedBadge')})` : ''}`}
+            >
+              <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+              <span className="display-num text-lg">{Math.round(h.wbgtF)}</span>
+              {h.source === 'estimated' && (
+                <span className="text-[9px] font-bold leading-none" aria-label={t('verdict.estimatedBadge')}>
+                  EST
+                </span>
+              )}
+            </span>
+          </li>
+        )
+      })}
+    </ol>
+  )
+}
