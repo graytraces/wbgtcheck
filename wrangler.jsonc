@@ -3,6 +3,10 @@
   "name": "wbgtcheck",
   "compatibility_date": "2025-08-23",
   "main": "src/worker.ts",
+  "routes": [
+    { "pattern": "wbgtcheck.com", "custom_domain": true },
+    { "pattern": "www.wbgtcheck.com", "custom_domain": true }
+  ],
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
