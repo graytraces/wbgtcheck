@@ -1,0 +1,27 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "wbgtcheck",
+  "compatibility_date": "2025-08-23",
+  "main": "src/worker.ts",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": [
+      "/*",
+      "!/assets/*",
+      "!/*.js",
+      "!/*.css",
+      "!/*.png",
+      "!/*.jpg",
+      "!/*.jpeg",
+      "!/*.svg",
+      "!/*.ico",
+      "!/*.webp",
+      "!/*.xml",
+      "!/*.txt",
+      "!/*.webmanifest",
+      "!/*.woff",
+      "!/*.woff2"
+    ]
+  }
+}

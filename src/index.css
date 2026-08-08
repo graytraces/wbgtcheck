@@ -1,0 +1,83 @@
+@import 'tailwindcss';
+@import '@fontsource/anton';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * WBGT Check design system.
+ *
+ * The five policy flag colors ARE the visual identity: scoreboard-style
+ * condensed display type (Anton, self-hosted) over high-contrast surfaces,
+ * with the flag color carrying the verdict. Flags are never communicated by
+ * color alone — every flag surface pairs color with an icon and a text label
+ * (color-vision safety), and the ladder keeps distinct luminance steps:
+ * yellow > orange > red > green > black.
+ */
+@theme {
+  --font-display: 'Anton', 'Arial Narrow', 'Helvetica Neue', sans-serif;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Flag palette (WCAG-checked against their on-colors) */
+  --color-flag-green: #177245;
+  --color-flag-yellow: #f5c518;
+  --color-flag-orange: #e8720c;
+  --color-flag-red: #cf2233;
+  --color-flag-black: #101418;
+
+  --color-on-flag-green: #ffffff;
+  --color-on-flag-yellow: #101418;
+  --color-on-flag-orange: #101418;
+  --color-on-flag-red: #ffffff;
+  --color-on-flag-black: #ffffff;
+
+  /* Soft tints for timeline chips / table rows (light mode) */
+  --color-tint-green: #e2f2e9;
+  --color-tint-yellow: #fdf3cd;
+  --color-tint-orange: #fce8d4;
+  --color-tint-red: #fadbdf;
+  --color-tint-black: #e4e6e9;
+
+  /* Neutral surfaces — light is default (morning outdoor readability) */
+  --color-bg: #f4f5f2;
+  --color-surface: #ffffff;
+  --color-ink: #131a22;
+  --color-ink-muted: #4c5866;
+  --color-line: #d7dbd2;
+  --color-accent: #131a22;
+}
+
+.dark {
+  --color-bg: #0c0f14;
+  --color-surface: #161b23;
+  --color-ink: #f2f4f0;
+  --color-ink-muted: #9aa5b1;
+  --color-line: #2a323d;
+  --color-accent: #f2f4f0;
+
+  --color-tint-green: #12301f;
+  --color-tint-yellow: #38300a;
+  --color-tint-orange: #3a230c;
+  --color-tint-red: #391217;
+  --color-tint-black: #1d232b;
+  --color-flag-black: #000000;
+}
+
+html {
+  background-color: var(--color-bg);
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scoreboard numerals: tall, tight, unmissable */
+.display-num {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+}
