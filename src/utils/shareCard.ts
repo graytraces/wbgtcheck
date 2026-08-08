@@ -200,12 +200,12 @@ export function drawShareCard(canvas: HTMLCanvasElement, model: ShareCardModel):
   ctx.fillText(model.locationLabel, margin, 108, S - margin * 2)
 
   ctx.font = display(340)
-  ctx.fillText(String(Math.round(model.peakWbgtF)), 48, 168)
+  ctx.fillText(String(Math.round(model.peakWbgtF)), 48, 190)
   const numWidth = ctx.measureText(String(Math.round(model.peakWbgtF))).width
   ctx.font = display(84)
-  ctx.fillText('°F', 64 + numWidth, 210)
+  ctx.fillText('°F', 64 + numWidth, 232)
   ctx.font = sans(34)
-  ctx.fillText(model.peakCaption.toUpperCase(), 64 + numWidth, 306)
+  ctx.fillText(model.peakCaption.toUpperCase(), 64 + numWidth, 328)
 
   ctx.font = display(110)
   ctx.fillText(model.peakFlagLabel.toUpperCase(), margin, 478)
@@ -242,30 +242,33 @@ export function drawShareCard(canvas: HTMLCanvasElement, model: ShareCardModel):
   ctx.fillRect(0, footerTop, S, S - footerTop)
 
   ctx.textAlign = 'left'
-  ctx.font = sans(25, 600)
+  ctx.font = sans(24, 600)
   ctx.fillStyle = '#f2f4f0'
-  let y = footerTop + 28
+  let y = footerTop + 22
   for (const line of wrapText(ctx, model.safetyNote, S - margin * 2, 3)) {
     ctx.fillText(line, margin, y, S - margin * 2)
-    y += 33
+    y += 31
   }
   if (model.complianceNote) {
-    ctx.font = sans(25, 700)
+    ctx.font = sans(24, 700)
     ctx.fillStyle = '#f5c518'
     for (const line of wrapText(ctx, model.complianceNote, S - margin * 2, 2)) {
       ctx.fillText(line, margin, y, S - margin * 2)
-      y += 33
+      y += 31
     }
   }
 
+  // Bottom row sits below whatever the notes needed (the compliance case
+  // runs five lines) instead of at a fixed offset that the text can collide with.
+  const bottomRowY = Math.max(y + 6, S - 60)
   ctx.fillStyle = '#f2f4f0'
-  ctx.font = display(38)
-  ctx.fillText(model.siteUrl, margin, S - 56)
+  ctx.font = display(36)
+  ctx.fillText(model.siteUrl, margin, bottomRowY)
   ctx.textAlign = 'right'
-  ctx.font = sans(23, 600)
+  ctx.font = sans(22, 600)
   ctx.fillStyle = '#9aa5b1'
   const footerNote = model.anyEstimated
     ? `${model.policyName} · ${model.estimatedNote}`
     : model.policyName
-  ctx.fillText(footerNote, S - margin, S - 48, S - margin * 2 - 320)
+  ctx.fillText(footerNote, S - margin, bottomRowY + 8, S - margin * 2 - 320)
 }
