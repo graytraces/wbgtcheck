@@ -1,0 +1,263 @@
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import type { WbgtApiResponse } from '../utils/nws'
+import { zipToLocation } from '../utils/geocode'
+import { trackLocationSet } from '../utils/analytics'
+import type { PolicyId } from '../data/policyOracle'
+import { POLICIES } from '../data/policyOracle'
+
+const LOCATION_KEY = 'wbgt-location'
+const POLICY_KEY = 'wbgt-policy'
+
+export interface SavedLocation {
+  lat: number
+  lon: number
+  /** Display label, e.g. "Austin, TX" or "78701". */
+  label: string
+  stateAbbr: string | null
+}
+
+export type WbgtStatus = 'idle' | 'locating' | 'loading' | 'ready' | 'error'
+
+/**
+ * Default policy per state. Texas defaults to the STRICTER Class 2 thresholds
+ * — the user confirms their class against the UIL regional map; when unsure,
+ * the lower boundaries are the safe assumption.
+ */
+export function defaultPolicyFor(stateAbbr: string | null): PolicyId {
+  if (stateAbbr === 'TX') return 'uil-class-2'
+  if (stateAbbr === 'GA') return 'ghsa'
+  return 'generic'
+}
+
+function loadSaved<T>(key: string): T | null {
+  try {
+    const raw = window.localStorage.getItem(key)
+    return raw ? (JSON.parse(raw) as T) : null
+  } catch {
+    return null
+  }
+}
+
+function save(key: string, value: unknown) {
+  try {
+    window.localStorage.setItem(key, JSON.stringify(value))
+  } catch {
+    // storage full/blocked — non-fatal
+  }
+}
+
+const NWS_HEADERS = { Accept: 'application/geo+json' }
+
+/**
+ * Dev-mode fallback: `vite dev` has no worker, so we compose the same
+ * points→gridpoint flow directly against api.weather.gov (which serves CORS).
+ * Production always goes through /api/wbgt (User-Agent + edge cache).
+ */
+async function fetchWbgtDev(lat: number, lon: number): Promise<WbgtApiResponse> {
+  const points = await fetch(
+    `https://api.weather.gov/points/${lat.toFixed(2)},${lon.toFixed(2)}`,
+    { headers: NWS_HEADERS },
+  ).then((r) => {
+    if (!r.ok) throw new Error(`points ${r.status}`)
+    return r.json() as Promise<{
+      properties: {
+        forecastGridData: string
+        timeZone?: string
+        relativeLocation?: { properties?: { city?: string; state?: string } }
+      }
+    }>
+  })
+  const grid = await fetch(points.properties.forecastGridData, { headers: NWS_HEADERS }).then(
+    (r) => {
+      if (!r.ok) throw new Error(`grid ${r.status}`)
+      return r.json() as Promise<{ properties: Record<string, unknown> }>
+    },
+  )
+  const pick = (k: string) => {
+    const layer = grid.properties[k] as WbgtApiResponse['temperature']
+    return layer && Array.isArray(layer.values) && layer.values.length > 0 ? layer : null
+  }
+  const wbgt = pick('wetBulbGlobeTemperature')
+  return {
+    location: {
+      lat,
+      lon,
+      city: points.properties.relativeLocation?.properties?.city ?? null,
+      state: points.properties.relativeLocation?.properties?.state ?? null,
+      timeZone: points.properties.timeZone ?? null,
+    },
+    hasWbgt: wbgt !== null,
+    wetBulbGlobeTemperature: wbgt,
+    temperature: pick('temperature'),
+    relativeHumidity: pick('relativeHumidity'),
+    windSpeed: pick('windSpeed'),
+    skyCover: pick('skyCover'),
+  }
+}
+
+async function fetchWbgt(lat: number, lon: number): Promise<WbgtApiResponse> {
+  if (import.meta.env.DEV) return fetchWbgtDev(lat, lon)
+  const res = await fetch(`/api/wbgt?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}`)
+  if (!res.ok) throw new Error(`api ${res.status}`)
+  return res.json() as Promise<WbgtApiResponse>
+}
+
+export function useWbgt() {
+  const [location, setLocation] = useState<SavedLocation | null>(() =>
+    loadSaved<SavedLocation>(LOCATION_KEY),
+  )
+  const [policyId, setPolicyIdState] = useState<PolicyId>(() => {
+    const saved = loadSaved<PolicyId>(POLICY_KEY)
+    return saved && saved in POLICIES ? saved : defaultPolicyFor(loadSaved<SavedLocation>(LOCATION_KEY)?.stateAbbr ?? null)
+  })
+  const [status, setStatus] = useState<WbgtStatus>(location ? 'loading' : 'idle')
+  const [data, setData] = useState<WbgtApiResponse | null>(null)
+  const [errorKey, setErrorKey] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (!location) return
+    let cancelled = false
+    setStatus('loading')
+    setErrorKey(null)
+    fetchWbgt(location.lat, location.lon)
+      .then((res) => {
+        if (cancelled) return
+        setData(res)
+        setStatus('ready')
+      })
+      .catch(() => {
+        if (cancelled) return
+        setStatus('error')
+        setErrorKey('location.forecastFailed')
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [location])
+
+  const applyLocation = useCallback(
+    (loc: SavedLocation, method: 'zip' | 'geolocation') => {
+      setLocation(loc)
+      save(LOCATION_KEY, loc)
+      trackLocationSet(method)
+      // Re-derive the policy default only when the state actually changed —
+      // an explicit user choice within the same state is preserved.
+      setPolicyIdState((cur) => {
+        const next = defaultPolicyFor(loc.stateAbbr)
+        const curPolicy = POLICIES[cur]
+        const sameFamily =
+          (loc.stateAbbr === 'TX' && curPolicy.id.startsWith('uil')) ||
+          (loc.stateAbbr === 'GA' && curPolicy.id === 'ghsa')
+        const resolved = sameFamily ? cur : next
+        save(POLICY_KEY, resolved)
+        return resolved
+      })
+    },
+    [],
+  )
+
+  const setZip = useCallback(
+    async (zip: string) => {
+      setStatus('locating')
+      setErrorKey(null)
+      try {
+        const geo = await zipToLocation(zip)
+        applyLocation(
+          { lat: geo.lat, lon: geo.lon, label: `${geo.city}, ${geo.stateAbbr}`, stateAbbr: geo.stateAbbr },
+          'zip',
+        )
+      } catch (e) {
+        setStatus(location ? 'ready' : 'idle')
+        const msg = e instanceof Error ? e.message : ''
+        setErrorKey(
+          msg === 'invalid-zip'
+            ? 'location.zipInvalid'
+            : msg === 'zip-not-found'
+              ? 'location.zipNotFound'
+              : 'location.lookupFailed',
+        )
+      }
+    },
+    [applyLocation, location],
+  )
+
+  const useMyLocation = useCallback(() => {
+    if (!('geolocation' in navigator)) {
+      setErrorKey('location.geoUnavailable')
+      return
+    }
+    setStatus('locating')
+    setErrorKey(null)
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        applyLocation(
+          {
+            lat: pos.coords.latitude,
+            lon: pos.coords.longitude,
+            label: `${pos.coords.latitude.toFixed(2)}, ${pos.coords.longitude.toFixed(2)}`,
+            stateAbbr: null,
+          },
+          'geolocation',
+        )
+      },
+      (err) => {
+        setStatus(location ? 'ready' : 'idle')
+        setErrorKey(err.code === err.PERMISSION_DENIED ? 'location.geoDenied' : 'location.geoUnavailable')
+      },
+      { maximumAge: 300_000, timeout: 15_000 },
+    )
+  }, [applyLocation, location])
+
+  const setPolicyId = useCallback((id: PolicyId) => {
+    setPolicyIdState(id)
+    save(POLICY_KEY, id)
+  }, [])
+
+  const clearLocation = useCallback(() => {
+    setLocation(null)
+    setData(null)
+    setStatus('idle')
+    try {
+      window.localStorage.removeItem(LOCATION_KEY)
+    } catch {
+      // ignore
+    }
+  }, [])
+
+  // When geolocation gave no state, adopt the state NWS reports for the point.
+  useEffect(() => {
+    if (data && location && !location.stateAbbr && data.location.state) {
+      const upgraded: SavedLocation = {
+        ...location,
+        stateAbbr: data.location.state,
+        label: data.location.city ? `${data.location.city}, ${data.location.state}` : location.label,
+      }
+      setLocation(upgraded)
+      save(LOCATION_KEY, upgraded)
+      setPolicyIdState((cur) => {
+        const curPolicy = POLICIES[cur]
+        const sameFamily =
+          (upgraded.stateAbbr === 'TX' && curPolicy.id.startsWith('uil')) ||
+          (upgraded.stateAbbr === 'GA' && curPolicy.id === 'ghsa')
+        const resolved = sameFamily ? cur : defaultPolicyFor(upgraded.stateAbbr)
+        save(POLICY_KEY, resolved)
+        return resolved
+      })
+    }
+  }, [data, location])
+
+  const policy = useMemo(() => POLICIES[policyId], [policyId])
+
+  return {
+    location,
+    policy,
+    policyId,
+    status,
+    data,
+    errorKey,
+    setZip,
+    useMyLocation,
+    setPolicyId,
+    clearLocation,
+  }
+}
