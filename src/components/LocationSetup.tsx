@@ -46,7 +46,7 @@ export default function LocationSetup({ onZip, onGeolocate, busy, errorKey, comp
             placeholder={t('location.zipPlaceholder')}
             value={zip}
             onChange={(e) => setZip(e.target.value.replace(/\D/g, ''))}
-            className="w-full min-w-0 border-2 border-ink bg-bg px-4 py-3 text-lg font-semibold tabular-nums placeholder:text-ink-muted focus:outline-none"
+            className="w-full min-w-0 border-2 border-ink bg-bg px-4 py-3 text-lg font-semibold tabular-nums placeholder:text-ink-muted focus:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-bg"
           />
           <button
             type="submit"

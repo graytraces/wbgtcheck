@@ -51,7 +51,7 @@ export const FLAG_TEXT: Record<FlagColor, string> = {
 
 /** Hex values for canvas rendering (share card) — keep in sync with index.css. */
 export const FLAG_HEX: Record<FlagColor, { bg: string; fg: string }> = {
-  green: { bg: '#177245', fg: '#ffffff' },
+  green: { bg: '#0f5a35', fg: '#ffffff' },
   yellow: { bg: '#f5c518', fg: '#101418' },
   orange: { bg: '#e8720c', fg: '#101418' },
   red: { bg: '#cf2233', fg: '#ffffff' },

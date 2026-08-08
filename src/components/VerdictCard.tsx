@@ -42,8 +42,10 @@ export default function VerdictCard({
     minute: '2-digit',
   }).format(new Date(hour.time))
 
+  // ring-line keeps the card's edge visible when the flag surface nearly
+  // matches the page background (black flag on dark mode: CR ~1.1).
   return (
-    <section className={cn('overflow-hidden', FLAG_SOLID[band.flag])} aria-live="polite">
+    <section className={cn('overflow-hidden ring-1 ring-line', FLAG_SOLID[band.flag])} aria-live="polite">
       <div className="px-5 pb-6 pt-5 sm:px-8">
         <div className="flex flex-wrap items-center justify-between gap-2 text-sm font-semibold uppercase tracking-wider opacity-90">
           <span className="inline-flex items-center gap-1.5">
@@ -67,7 +69,7 @@ export default function VerdictCard({
               {t('verdict.wbgtLabel')}
               {' · '}
               {hour.source === 'estimated' ? (
-                <span className="rounded-sm bg-white/25 px-1.5 py-0.5 dark:bg-black/25">
+                <span className="rounded-sm bg-white px-1.5 py-0.5 text-[#101418]">
                   {t('verdict.estimatedBadge')}
                 </span>
               ) : (
@@ -103,9 +105,11 @@ export default function VerdictCard({
         )}
       </div>
 
-      <div className="space-y-1 bg-black/15 px-5 py-3 text-sm sm:px-8 dark:bg-black/30">
+      {/* Opaque neutral strip: the safety notices were the least readable
+          text on the card as a translucent overlay (CR 2.9-4.1 measured). */}
+      <div className="space-y-1 bg-ink px-5 py-3 text-sm text-bg sm:px-8">
         <p className="font-semibold">{t('verdict.conservativeNotice')}</p>
-        <p className="opacity-90">{t('verdict.verifyOnsite')}</p>
+        <p>{t('verdict.verifyOnsite')}</p>
         {policy.remoteEstimatesAllowed === 'device-required' && (
           <p className="font-bold">
             {t('verdict.deviceOnlyNotice', { body: policy.source.name.split(' ')[0] })}
