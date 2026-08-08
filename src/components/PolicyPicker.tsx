@@ -20,7 +20,7 @@ export default function PolicyPicker({ value, onChange }: PolicyPickerProps) {
         id="policy-picker"
         value={value}
         onChange={(e) => onChange(e.target.value as PolicyId)}
-        className="border-2 border-ink bg-surface px-3 py-2 font-semibold"
+        className="h-11 border-2 border-ink bg-surface px-3 font-semibold"
       >
         {(Object.keys(POLICIES) as PolicyId[]).map((id) => (
           <option key={id} value={id}>

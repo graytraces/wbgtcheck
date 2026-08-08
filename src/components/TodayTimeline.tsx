@@ -21,12 +21,15 @@ export default function TodayTimeline({ hours, currentTime }: TodayTimelineProps
     return <p className="text-sm text-ink-muted">{t('verdict.noData')}</p>
   }
   return (
-    <ol className="-mx-4 flex gap-1 overflow-x-auto px-4 pb-2" aria-label={t('verdict.todayHeading')}>
+    // Right-edge fade signals the horizontal scroller — a full morning view
+    // is 16 chips (~1000 px) and the overflow is otherwise invisible.
+    <div className="relative -mx-4">
+      <ol className="flex gap-1 overflow-x-auto px-4 pb-2" aria-label={t('verdict.todayHeading')}>
       {hours.map((h) => {
         const Icon = FLAG_ICON[h.flag]
         const isNow = currentTime !== undefined && h.time === Math.floor(currentTime / 3600_000) * 3600_000
         return (
-          <li key={h.time} className="flex min-w-14 flex-col items-center gap-1">
+          <li key={h.time} className="flex min-w-16 flex-col items-center gap-1">
             <span className={cn('text-xs font-semibold', isNow ? 'text-ink' : 'text-ink-muted')}>
               {hourLabel(h.localHour)}
             </span>
@@ -49,6 +52,11 @@ export default function TodayTimeline({ hours, currentTime }: TodayTimelineProps
           </li>
         )
       })}
-    </ol>
+      </ol>
+      <div
+        className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-bg to-transparent"
+        aria-hidden="true"
+      />
+    </div>
   )
 }

@@ -53,15 +53,14 @@ export default function Home() {
     <div className="space-y-8">
       <SEO pageKey="home" />
 
+      {/* sr-only: the keyword H1 stays first in the DOM for SEO/H1-sync while
+          the verdict (or the location CTA) owns the visual top of the page. */}
       <header>
-        <h1 className="text-sm font-bold uppercase tracking-widest text-ink-muted">
-          {t('home.pageTitle')}
-        </h1>
+        <h1 className="sr-only">{t('home.pageTitle')}</h1>
       </header>
 
       {!location && (
         <>
-          <p className="max-w-2xl text-lg font-medium">{t('home.intro')}</p>
           <LocationSetup onZip={setZip} onGeolocate={useMyLocation} busy={busy} errorKey={errorKey} />
           <div className="max-w-sm">
             <PolicyPicker value={policyId} onChange={setPolicyId} />
@@ -109,7 +108,7 @@ export default function Home() {
             <button
               type="button"
               onClick={clearLocation}
-              className="border-2 border-line px-3 py-2 text-sm font-semibold text-ink-muted hover:text-ink"
+              className="inline-flex min-h-11 items-center border-2 border-line px-4 text-sm font-semibold text-ink-muted hover:text-ink"
             >
               {t('location.change')}
             </button>
@@ -172,7 +171,7 @@ export default function Home() {
       </section>
 
       <section className="max-w-3xl space-y-5">
-        {location && <p className="text-base">{t('home.intro')}</p>}
+        <p className="text-base">{t('home.intro')}</p>
         {sections.map((s) => (
           <div key={s.heading}>
             <h2 className="display-num mb-1 text-xl uppercase">{s.heading}</h2>

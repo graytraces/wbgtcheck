@@ -43,7 +43,7 @@ export default function Layout() {
             <div className="flex items-center gap-1">
               <Link
                 to={`/${otherLang}${pathAfterLang}`}
-                className="px-2 py-1 text-sm font-semibold text-ink-muted hover:text-ink"
+                className="flex h-11 min-w-11 items-center justify-center px-2 text-sm font-semibold text-ink-muted hover:text-ink"
                 aria-label={t('common.languageLabel')}
                 lang={otherLang}
               >
@@ -52,7 +52,7 @@ export default function Layout() {
               <button
                 type="button"
                 onClick={toggle}
-                className="p-2 text-ink-muted hover:text-ink"
+                className="flex h-11 w-11 items-center justify-center text-ink-muted hover:text-ink"
                 aria-label={t('common.themeToggle')}
               >
                 {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
@@ -69,7 +69,7 @@ export default function Layout() {
                 <Link
                   key={item.to}
                   to={item.to}
-                  className={`whitespace-nowrap rounded px-3 py-1.5 ${
+                  className={`inline-flex min-h-11 items-center whitespace-nowrap rounded px-3 ${
                     active ? 'bg-ink text-bg' : 'text-ink-muted hover:bg-tint-black hover:text-ink'
                   }`}
                   aria-current={active ? 'page' : undefined}

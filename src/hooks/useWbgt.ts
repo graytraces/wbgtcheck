@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { WbgtApiResponse } from '../utils/nws'
 import { zipToLocation } from '../utils/geocode'
 import { trackLocationSet } from '../utils/analytics'
@@ -113,6 +113,13 @@ export function useWbgt() {
   const [status, setStatus] = useState<WbgtStatus>(location ? 'loading' : 'idle')
   const [data, setData] = useState<WbgtApiResponse | null>(null)
   const [errorKey, setErrorKey] = useState<string | null>(null)
+
+  // location_set('saved'): a restored localStorage location counts as a
+  // returning session — fire once on mount, not on later changes.
+  const restoredFromStorage = useRef(location !== null)
+  useEffect(() => {
+    if (restoredFromStorage.current) trackLocationSet('saved')
+  }, [])
 
   useEffect(() => {
     if (!location) return
