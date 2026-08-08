@@ -1,0 +1,23 @@
+WBGT Check
+Copyright 2026 graytraces
+
+This product includes a TypeScript port of the Liljegren WBGT implementation
+from thermofeel (https://github.com/ecmwf/thermofeel):
+
+  (C) Copyright 1996- ECMWF.
+
+  This software is licensed under the terms of the Apache Licence Version 2.0
+  which can be obtained at http://www.apache.org/licenses/LICENSE-2.0.
+  In applying this licence, ECMWF does not waive the privileges and immunities
+  granted to it by virtue of its status as an intergovernmental organisation
+  nor does it submit to any jurisdiction.
+
+The port lives in src/lib/liljegren.ts and is validated against thermofeel's
+own regression fixtures (src/test/fixtures/thermofeel_testcases.csv and
+src/test/fixtures/wbgt_liljegren.csv, copied from thermofeel/tests/).
+
+thermofeel constants and property functions are in turn transcribed from
+Liljegren's reference C code (MIT-licensed mirror github.com/mdljts/wbgt) and
+Kong & Huber (2022), per thermofeel's own attribution.
+
+Reference: Liljegren et al. (2008) https://doi.org/10.1080/15459620802310770
