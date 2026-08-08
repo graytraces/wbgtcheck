@@ -31,6 +31,9 @@ export default defineConfig({
         globIgnores: ['index.html'],
         navigateFallback: null,
         navigateFallbackDenylist: [/\.\w+$/],
+        // No gtag runtime caching: CacheFirst on a cross-origin opaque
+        // response can pin a failed fetch for its full TTL, and GA4 is the
+        // success gauge for this experiment — let the network own it.
         runtimeCaching: [
           {
             urlPattern: /\/assets\/.+\.js$/,
@@ -38,14 +41,6 @@ export default defineConfig({
             options: {
               cacheName: 'js-chunks',
               expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 365 },
-            },
-          },
-          {
-            urlPattern: /^https:\/\/www\.googletagmanager\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'ga-cache',
-              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 7 },
             },
           },
         ],
