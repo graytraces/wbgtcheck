@@ -96,6 +96,7 @@ import {
 import { guidelineSentences } from '../src/lib/guidelineSentences.js'
 import { STATE_DIRECTORY } from '../src/data/stateDirectory.js'
 import { feedbackMailto } from '../src/data/feedbackContact.js'
+import { MAX_LOG_ENTRIES } from '../src/data/logRetention.js'
 import {
   WA_AIR_POLICY,
   OR_AIR_POLICY,
@@ -837,8 +838,12 @@ function generateBodyContent(lang, page) {
   } else if (page.key === 'privacy') {
     push(`<h1>${escapeHtml(t('privacy.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('privacy.intro'))}</p>`)
-    for (const key of ['location', 'analytics', 'data', 'contact']) {
-      push(`<h2>${escapeHtml(t(`privacy.${key}Title`))}</h2><p>${escapeHtml(t(`privacy.${key}Content`))}</p>`)
+    for (const key of ['location', 'log', 'storage', 'analytics', 'data', 'contact']) {
+      push(
+        `<h2>${escapeHtml(t(`privacy.${key}Title`))}</h2><p>${escapeHtml(
+          t(`privacy.${key}Content`, { max: MAX_LOG_ENTRIES }),
+        )}</p>`,
+      )
     }
   } else if (page.key === 'disclaimer') {
     push(`<h1>${escapeHtml(t('disclaimerPage.pageTitle'))}</h1>`)

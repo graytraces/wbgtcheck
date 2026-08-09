@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { MAX_LOG_ENTRIES } from '../data/logRetention.js'
 
 /**
  * Session reading log — the pooldose light-log pattern ported: localStorage,
@@ -12,7 +13,10 @@ import { useCallback, useEffect, useState } from 'react'
  */
 
 export const WBGT_LOG_KEY = 'wbgt:log:v1'
-export const MAX_LOG_ENTRIES = 200
+// Re-exported so callers keep importing it from the hook; the value lives in
+// plain JS because the privacy policy quotes it and the prerender renders that
+// page (see src/data/logRetention.js).
+export { MAX_LOG_ENTRIES }
 
 export type WbgtLogSource = 'forecast' | 'onsite'
 
