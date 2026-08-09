@@ -174,7 +174,10 @@ describe('post-JS rendered DOM', () => {
 
   it('CaliforniaAir renders the bylaw quote and its threshold', () => {
     renderAt('/en/california-air-quality', <CaliforniaAir />)
-    expect(screen.getByText(CA_RULE_QUOTE)).toBeInTheDocument()
+    // ruleBody frames the quote in a sentence — match by containment.
+    expect(
+      screen.getByText((content) => content.includes(CA_RULE_QUOTE)),
+    ).toBeInTheDocument()
     expect(
       screen.getAllByText(new RegExp(String(CA_REFRAIN_AT_OR_ABOVE_AQI))).length,
     ).toBeGreaterThan(0)

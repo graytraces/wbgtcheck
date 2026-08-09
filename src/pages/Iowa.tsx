@@ -40,6 +40,12 @@ export default function Iowa() {
       <section>
         <h2 className="display-num mb-2 text-2xl uppercase">{t('iowa.tableHeading')}</h2>
         <PolicyBandsTable policy={IOWA_CATEGORY_2} showSource={false} />
+        <p className="mt-3 text-sm text-ink-muted">
+          {t('iowa.boundaryNote', {
+            tableLow: IOWA_CATEGORY_2.bands[4].sourceLabel,
+            tableNext: IOWA_CATEGORY_2.bands[3].sourceLabel,
+          })}
+        </p>
       </section>
 
       <section className="border-2 border-flag-orange bg-surface p-5">

@@ -60,7 +60,7 @@ export default function NewYork() {
             <tbody>
               {rows.map((row) => (
                 <tr key={row.sourceLabel} className="border-b border-line align-top">
-                  <td className="display-num py-2 pr-3 text-lg">{row.sourceLabel}</td>
+                  <td className="py-2 pr-3 font-semibold">{row.sourceLabel}</td>
                   <td className="py-2 pr-3">
                     <div className="font-semibold">{t(`newYork.tiers.${row.tierKey}`)}</div>
                     <div className="mt-0.5 text-xs uppercase tracking-wide text-ink-muted">

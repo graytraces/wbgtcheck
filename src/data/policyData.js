@@ -269,6 +269,12 @@ export const SCHSL_REQUIRED_QUOTE =
  * locale copy so the threshold-literal guard stays satisfiable.
  */
 export const SCHSL_TOP_BOUNDARY_TEXT_QUOTE = 'at 92.1 or above'
+/**
+ * Red-band (90.0-92.0) sentence for continuous-effort events where the
+ * prescribed breaks cannot happen — cross country is the source's example.
+ */
+export const SCHSL_CONTINUOUS_QUOTE =
+  'Competitions involving high intensity effort, in which breaks are not possible (e.g. Cross Country meets), should be delayed until WBGT reading is below 90 or canceled.'
 
 // --- Iowa administrative constants ---------------------------------------
 // Source: IHSAA/IGHSAU/IHSMA/IHSSA WBGT Heat Modification Guidance (8.5.24).

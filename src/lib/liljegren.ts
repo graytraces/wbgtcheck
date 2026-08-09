@@ -61,7 +61,7 @@ const LSRDT = [
 const URBAN_EXP = [0.15, 0.15, 0.2, 0.25, 0.3, 0.3]
 
 /** Saturation vapour pressure over liquid water [hPa], Buck (1981). */
-export function esat(tk: number): number {
+function esat(tk: number): number {
   const y = (tk - 273.15) / (tk - 32.18)
   return 1.004 * 6.1121 * Math.exp(17.502 * y)
 }
@@ -136,7 +136,7 @@ function hCylinderInAir(tk: number, pair: number, speed: number): number {
  * Globe temperature [degC] by fixed-point iteration of the energy balance.
  * rh is a fraction. NaN when the iteration does not converge within the cap.
  */
-export function solveGlobe(
+function solveGlobe(
   ta: number,
   rh: number,
   pair: number,
@@ -176,7 +176,7 @@ export function solveGlobe(
  * term entering WBGT); rad=0 gives the psychrometric wet bulb. NaN where not
  * converged.
  */
-export function solveWetbulb(
+function solveWetbulb(
   ta: number,
   rh: number,
   pair: number,

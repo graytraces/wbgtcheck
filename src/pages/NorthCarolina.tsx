@@ -61,7 +61,7 @@ export default function NorthCarolina() {
             <tbody>
               {rows.map((row) => (
                 <tr key={row.sourceLabel} className="border-b border-line align-top">
-                  <td className="display-num py-2 pr-3 text-lg">{row.sourceLabel}</td>
+                  <td className="py-2 pr-3 font-semibold">{row.sourceLabel}</td>
                   <td className="py-2">
                     <ul className="list-inside list-disc space-y-0.5">
                       {row.textKeys.map((key) => (

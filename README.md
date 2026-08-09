@@ -19,7 +19,7 @@ fallback), with a shareable team-chat card.
 ```bash
 npm run dev     # NWS called directly (no worker in dev)
 npm test        # tsc + vitest
-npm run build   # tsc + vite + prerender (14 locale HTML files + sitemap)
+npm run build   # tsc + vite + prerender (32 locale HTML files + sitemap)
 ```
 
 ## Backlog (deliberately deferred)
@@ -103,3 +103,18 @@ monetization) — all pending an explicit go decision:
 - **WA's table is PM2.5-keyed, and we honour that.** If a future jurisdiction
   keys to the overall AQI while WA keys to PM2.5, keep `indexBasis` per policy —
   do not unify onto one number.
+
+From the 2026-08-09 three-perspective review gate (record only):
+
+- **KY retry**: khsaa.org still answers nothing to automated fetches — the KY
+  guide stays blocked, not deferred.
+- **SCHSL and NYSPHSAA edition checks**: no newer editions were reachable to
+  confirm currency; their verifiedOn dates attest the copies we hold.
+- **TSSAA 2026-27 edition**: re-verify before the 2027 season — the current
+  policy is the October 2024 revision.
+- **CIF EXTREME_HEAT PDF**: unreadable through every route tried (Cloudflare
+  and CloudFront blocks); the heat side of CIF remains unverified.
+- **Pre-season source freshness re-verification (2027-05)**: walk EVERY
+  source block in policyData.js and airPolicyData.js and confirm the cited
+  document is still the current edition — verifiedOn means "confirmed
+  current that day", and the NC/WA rebuilds are what it costs when it slips.

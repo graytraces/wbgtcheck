@@ -40,15 +40,6 @@ export const FLAG_TINT: Record<FlagColor, string> = {
   black: 'bg-tint-black',
 }
 
-/** Text-on-surface accent for small labels/icons over neutral surfaces. */
-export const FLAG_TEXT: Record<FlagColor, string> = {
-  green: 'text-flag-green',
-  yellow: 'text-flag-yellow',
-  orange: 'text-flag-orange',
-  red: 'text-flag-red',
-  black: 'text-flag-black dark:text-ink',
-}
-
 /** Hex values for canvas rendering (share card) — keep in sync with index.css. */
 export const FLAG_HEX: Record<FlagColor, { bg: string; fg: string }> = {
   green: { bg: '#0f5a35', fg: '#ffffff' },

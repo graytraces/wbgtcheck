@@ -37,7 +37,7 @@ export function isStale(fetchedAt: number | null, now: number): boolean {
  * pick their class from the UIL map. Never flip this default to the more
  * permissive Class 3.
  */
-export function defaultPolicyFor(stateAbbr: string | null): PolicyId {
+function defaultPolicyFor(stateAbbr: string | null): PolicyId {
   if (stateAbbr === 'TX') return 'uil-class-2'
   if (stateAbbr === 'GA') return 'ghsa'
   // Both verified safe to auto-select: SCHSL's thresholds equal the generic

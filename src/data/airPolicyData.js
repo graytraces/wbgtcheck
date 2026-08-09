@@ -17,9 +17,9 @@
  *    for the Reporting of Daily Air Quality – the Air Quality Index (AQI)",
  *    Table 1 (p.3) and Table 2 (p.4).
  *    https://document.airnow.gov/technical-assistance-document-for-the-reporting-of-daily-air-quailty.pdf
- *  - WA: "Washington Air Quality Guide for School & Child Care Activities",
- *    DOH 334-332, April 2022.
- *    https://cdnsm5-ss18.sharpschool.com/UserFiles/Servers/Server_520831/File/Public%20Health/School%20guidance%20Smoke.pdf
+ *  - WA: "Washington Children and Youth Activities Guide for Air Quality",
+ *    DOH 334-332, May 2026 revision.
+ *    https://doh.wa.gov/sites/default/files/legacy/Documents/Pubs/334-332.pdf
  *  - OR: OSAA 2025-2026 Handbook, Executive Board Policies §5 "AIR QUALITY
  *    GUIDELINES (Revised February 2024)", pp. 52-53.
  *    https://www.osaa.org/docs/handbooks/osaahandbook.pdf
@@ -410,7 +410,7 @@ const NFHS_SOURCE = {
 }
 
 export const NFHS_531_QUOTE =
-  'Using an online satellite map, locate three landmarks that can be seen from a specific venue. The landmarks you choose should be 1 mile away, 3 miles away and 5 miles away. Standing with the sun behind you, look at the three objects and when the outline of the landmark can no longer be seen, then the visibility range is less than the distance marker.'
+  'Using an online satellite map, locate three landmarks that can be seen from a specific venue. The landmarks you choose should be 1 mile away, 3 miles away and 5 miles away. […] Standing with the sun behind you, look at the three objects and when the outline of the landmark can no longer be seen, then the visibility range is less than the distance marker.'
 
 export const NFHS_RECHECK_QUOTE =
   'When the air is smoky and hazy, monitoring the AQI or the Visibility Index should be done at least hourly during competitions and practices as conditions can change quickly.'

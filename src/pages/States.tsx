@@ -18,6 +18,18 @@ const STATE_GUIDES = [
   { slug: 'virginia', labelKey: 'states.virginiaLink' },
 ] as const
 
+/** State guides that exist on this site — rendered as a per-row link. */
+const GUIDE_SLUGS: Record<string, string> = {
+  TX: 'texas',
+  GA: 'georgia',
+  SC: 'south-carolina',
+  TN: 'tennessee',
+  IA: 'iowa',
+  NC: 'north-carolina',
+  NY: 'new-york',
+  VA: 'virginia',
+}
+
 const MEASUREMENT_STYLE: Record<MeasurementClass, { icon: typeof CircleCheck; cls: string }> = {
   'apps-allowed': { icon: CircleCheck, cls: 'bg-tint-green text-ink' },
   'device-required': { icon: MonitorX, cls: 'bg-tint-red text-ink' },
@@ -82,7 +94,15 @@ export default function States() {
                     </span>
                   </td>
                   <td className="py-2 text-ink-muted">
-                    {t(`states.notes.${row.noteKey}`, { effectiveDate: UIL_EFFECTIVE_DATE })}
+                    {t(`states.notes.${row.noteKey}`, { effectiveDate: UIL_EFFECTIVE_DATE })}{' '}
+                    {GUIDE_SLUGS[row.abbr] && (
+                      <Link
+                        to={`/${lang}/${GUIDE_SLUGS[row.abbr]}`}
+                        className="font-semibold underline"
+                      >
+                        {t('states.rowGuideLink')}
+                      </Link>
+                    )}
                     <span className="mt-0.5 block text-xs">
                       {row.verified === 'primary' ? t('states.verifiedBadge') : t('states.researchBadge')}
                     </span>

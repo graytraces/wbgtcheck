@@ -14,6 +14,7 @@ import {
   SCHSL_READING_LEAD_MINUTES,
   SCHSL_REQUIRED_QUOTE,
   SCHSL_TOP_BOUNDARY_TEXT_QUOTE,
+  SCHSL_CONTINUOUS_QUOTE,
 } from '../data/policyOracle'
 
 /** The black band's printed label — the table half of the boundary mismatch. */
@@ -76,6 +77,9 @@ export default function SouthCarolina() {
         </p>
         <p className="mt-2">
           {t('southCarolina.immersionNote', { immersion: SCHSL_COLD_IMMERSION_WBGT_F })}
+        </p>
+        <p className="mt-2">
+          {t('southCarolina.continuousNote', { quote: SCHSL_CONTINUOUS_QUOTE })}
         </p>
       </section>
 

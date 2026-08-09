@@ -43,6 +43,7 @@ import {
   SCHSL_READING_LEAD_MINUTES,
   SCHSL_REQUIRED_QUOTE,
   SCHSL_TOP_BOUNDARY_TEXT_QUOTE,
+  SCHSL_CONTINUOUS_QUOTE,
   TSSAA_APP_QUOTE,
   TSSAA_COLD_TUB_QUOTE,
   TSSAA_EITHER_QUOTE,
@@ -473,6 +474,11 @@ function generateBodyContent(lang, page) {
       )}</p>`,
     )
     push(
+      `<p>${escapeHtml(
+        t('southCarolina.continuousNote', { quote: SCHSL_CONTINUOUS_QUOTE }),
+      )}</p>`,
+    )
+    push(
       `<p>${escapeHtml(t('southCarolina.sourceBody', { verifiedOn: SCHSL.source.verifiedOn }))} <a href="${SCHSL.source.url}">${escapeHtml(SCHSL.source.name)}</a></p>`,
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
@@ -524,6 +530,14 @@ function generateBodyContent(lang, page) {
     push(`<p>${escapeHtml(t('iowa.triggerNote', { trigger: IOWA_AMBIENT_TRIGGER_F }))}</p>`)
     push(`<h2>${escapeHtml(t('iowa.tableHeading'))}</h2>`)
     push(policyTableHtml(IOWA_CATEGORY_2, t))
+    push(
+      `<p>${escapeHtml(
+        t('iowa.boundaryNote', {
+          tableLow: IOWA_CATEGORY_2.bands[4].sourceLabel,
+          tableNext: IOWA_CATEGORY_2.bands[3].sourceLabel,
+        }),
+      )}</p>`,
+    )
     push(`<h2>${escapeHtml(t('iowa.appsHeading'))}</h2>`)
     push(`<p>${escapeHtml(t('iowa.appsBody', { apps: IOWA_APP_QUOTE }))}</p>`)
     push(`<h2>${escapeHtml(t('iowa.measurementHeading'))}</h2>`)
@@ -655,7 +669,7 @@ function generateBodyContent(lang, page) {
         row.verified === 'primary' ? t('states.verifiedBadge') : t('states.researchBadge')
       return `<tr><td>${row.abbr}</td><td>${escapeHtml(row.body)}</td><td>${escapeHtml(
         t(`states.mandate.${row.mandate}`),
-      )}</td><td>${escapeHtml(t(`states.measurement.${row.measurement}`))}</td><td>${escapeHtml(note)} ${escapeHtml(badge)}</td></tr>`
+      )}</td><td>${escapeHtml(t(`states.measurement.${row.measurement}`))}</td><td>${escapeHtml(note)} ${GUIDE_SLUGS[row.abbr] ? `<a href="/${lang}/${GUIDE_SLUGS[row.abbr]}">${escapeHtml(t('states.rowGuideLink'))}</a> ` : ''}${escapeHtml(badge)}</td></tr>`
     }).join('')
     push(
       `<table><thead><tr><th>${escapeHtml(t('states.colState'))}</th><th>${escapeHtml(t('states.colBody'))}</th><th>${escapeHtml(t('states.colMandate'))}</th><th>${escapeHtml(t('states.colMeasurement'))}</th><th>${escapeHtml(t('states.colNote'))}</th></tr></thead><tbody>${rows}</tbody></table>`,
@@ -744,6 +758,11 @@ function generateBodyContent(lang, page) {
   }
 
   return parts.length > 0 ? `<div data-prerender="true">${parts.join('\n')}</div>` : ''
+}
+
+const GUIDE_SLUGS = {
+  TX: 'texas', GA: 'georgia', SC: 'south-carolina', TN: 'tennessee',
+  IA: 'iowa', NC: 'north-carolina', NY: 'new-york', VA: 'virginia',
 }
 
 const SITEMAP_EXCLUDE_KEYS = new Set(['privacy', 'disclaimer'])

@@ -362,6 +362,7 @@
       "device-required": "Device only",
       "unverified": "Confirm with association"
     },
+    "rowGuideLink": "Guide →",
     "verifiedBadge": "Primary source verified",
     "researchBadge": "Research pass — confirm locally",
     "notes": {
@@ -405,6 +406,7 @@
     "measurementHold": "The range-hold rule is unusual and worth knowing: once a reading has stayed in a range for {{hold}} minutes, that range's restrictions lock in and cannot be relaxed to a lower range. Time already spent does not carry over into a new category.",
     "measurementCalibration": "WBGT devices must be recalibrated every {{years}} years, or sooner if the manufacturer says so.",
     "immersionNote": "Cold immersion has its own trigger: from WBGT {{immersion}} upward, a cold immersion tub or equivalent water-based cooling must be immediately available — supplies ready to use, not merely owned.",
+    "continuousNote": "The red band has a sentence cross-country coaches should read twice: \"{{quote}}\" If your event cannot take the prescribed breaks, the remedy is delay or cancellation, not shorter breaks.",
     "sourceHeading": "Source",
     "sourceBody": "All thresholds and modification text above derive from the SCHSL Heat and Acclimatization Guidelines, cross-checked on {{verifiedOn}}.",
     "boundaryNote": "One wrinkle in the source: the table prints the top band as \"{{tableLabel}}\" while the text elsewhere says \"{{textLabel}}\". This site resolves that gap upward — the hotter category — so a reading in between is treated as the black flag.",
@@ -412,6 +414,7 @@
   },
   "iowa": {
     "pageTitle": "Iowa WBGT Heat Rules",
+    "boundaryNote": "One boundary quirk: the table prints \"{{tableLow}}\" and then \"{{tableNext}}\", leaving the boundary value itself unassigned. This site resolves that gap upward — it reads as the yellow flag.",
     "intro": "Iowa is the state that remembered the band. Its WBGT guidance is issued jointly by the two athletic associations and the music and speech associations, so marching band and cheerleading get their own modification rows instead of being left to guess.",
     "recommendedHeading": "Recommended, not mandated — read the wording carefully",
     "recommendedBody": "Iowa's document approves WBGT as \"the recommended measurement practice and device\", and says: \"{{recommended}}\" That is guidance, not a mandate, and this site says so rather than overstating it. Your conference or district may still require it.",
@@ -551,7 +554,7 @@
     "belowRangeHeading": "Below the table's first row",
     "belowRangeBody": "The chart starts at its moderate band. OSAA states no action below that, and we will not invent one — a silent document is not a clearance.",
     "conservativeHeading": "When two metrics disagree",
-    "conservativeBody": "{{quote}}",
+    "conservativeBody": "OSAA's own instruction when readings differ: \"{{quote}}\"",
     "sourceHeading": "Source",
     "sourceBody": "Every threshold and action on this page was read off the primary document."
   },
@@ -559,9 +562,9 @@
     "pageTitle": "California CIF air quality bylaw: the outdoor practice threshold",
     "intro": "California's rule is a single hard line rather than graduated guidance. At or above one reading, CIF member schools must stop outdoor practice and competition; below it the bylaw says nothing at all.",
     "ruleHeading": "The bylaw",
-    "ruleBody": "{{quote}}",
+    "ruleBody": "The bylaw's operative sentence, in full: \"{{quote}}\"",
     "readingsHeading": "Which readings the bylaw accepts",
-    "readingsBody": "{{quote}}",
+    "readingsBody": "The same bylaw names its acceptable sources: \"{{quote}}\"",
     "readingsNote": "That sentence is why this site's air gate reads AirNow: the bylaw names it as an acceptable source. It still does not make a website the decision-maker — your designated monitor is.",
     "belowHeading": "Below the threshold",
     "belowBody": "The bylaw is silent below that reading. Your section, district or local health department may set something stricter, and the heat gate is unaffected either way.",

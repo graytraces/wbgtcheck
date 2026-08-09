@@ -7,7 +7,7 @@
       "home": "Pronóstico",
       "texas": "UIL de Texas",
       "georgia": "GHSA de Georgia",
-      "wbgtVsHeatIndex": "WBGT vs índice de calor",
+      "wbgtVsHeatIndex": "WBGT vs índice",
       "states": "Todos los estados",
       "washingtonAir": "Aire de Washington",
       "oregonAir": "Aire de Oregón",
@@ -362,6 +362,7 @@
       "device-required": "Solo instrumento",
       "unverified": "Confirmar con la asociación"
     },
+    "rowGuideLink": "Guía →",
     "verifiedBadge": "Fuente primaria verificada",
     "researchBadge": "Investigación — confirme localmente",
     "notes": {
@@ -405,6 +406,7 @@
     "measurementHold": "La regla de permanencia es inusual y conviene conocerla: una vez que una lectura se mantiene en un rango durante {{hold}} minutos, las restricciones de ese rango quedan fijadas y no pueden relajarse a un rango inferior. El tiempo ya transcurrido no se arrastra a una nueva categoría.",
     "measurementCalibration": "Los instrumentos WBGT deben recalibrarse cada {{years}} años, o antes si el fabricante lo indica.",
     "immersionNote": "La inmersión fría tiene su propio disparador: desde WBGT {{immersion}} hacia arriba, una tina de inmersión fría o un método equivalente con agua debe estar disponible de inmediato — con los insumos listos para usar, no solo en inventario.",
+    "continuousNote": "La banda roja tiene una frase que los entrenadores de campo traviesa deben leer dos veces: «{{quote}}» Si su evento no admite los descansos prescritos, el remedio es la demora o la cancelación, no descansos más cortos.",
     "sourceHeading": "Fuente",
     "sourceBody": "Todos los umbrales y textos de modificación derivan de las Heat and Acclimatization Guidelines de la SCHSL, cotejados el {{verifiedOn}}.",
     "boundaryNote": "Un detalle de la fuente: la tabla imprime la banda superior como \"{{tableLabel}}\" mientras el texto en otro punto dice \"{{textLabel}}\". Este sitio resuelve ese hueco hacia arriba — la categoría más caliente — de modo que una lectura intermedia se trata como bandera negra.",
@@ -412,6 +414,7 @@
   },
   "iowa": {
     "pageTitle": "Reglas WBGT de calor de Iowa",
+    "boundaryNote": "Una particularidad del límite: la tabla imprime «{{tableLow}}» y luego «{{tableNext}}», dejando sin asignar el valor limítrofe. Este sitio resuelve esa brecha hacia arriba — se lee como bandera amarilla.",
     "intro": "Iowa es el estado que se acordó de la banda. Su guía WBGT la emiten en conjunto las dos asociaciones atléticas y las asociaciones de música y oratoria, así que la banda de marcha y las porristas tienen sus propias filas de modificación en vez de quedar a la deriva.",
     "recommendedHeading": "Recomendado, no obligatorio — lea bien la redacción",
     "recommendedBody": "El documento de Iowa aprueba el WBGT como \"the recommended measurement practice and device\", y dice: \"{{recommended}}\" Eso es una guía, no un mandato, y este sitio lo dice así en vez de exagerarlo. Su conferencia o distrito todavía puede exigirlo.",
@@ -551,7 +554,7 @@
     "belowRangeHeading": "Por debajo de la primera fila de la tabla",
     "belowRangeBody": "El cuadro empieza en su banda moderada. OSAA no indica ninguna acción por debajo de eso, y no vamos a inventarla — un documento que no dice nada no es una autorización.",
     "conservativeHeading": "Cuando dos métricas no coinciden",
-    "conservativeBody": "{{quote}}",
+    "conservativeBody": "La propia instrucción de OSAA cuando las lecturas difieren: «{{quote}}»",
     "sourceHeading": "Fuente",
     "sourceBody": "Cada umbral y acción de esta página se leyó del documento primario."
   },
@@ -559,9 +562,9 @@
     "pageTitle": "Reglamento de calidad del aire de CIF en California: el umbral para practicar al aire libre",
     "intro": "La regla de California es una línea única y firme, no una guía graduada. A partir de una lectura, las escuelas miembro de CIF deben detener la práctica y la competencia al aire libre; por debajo, el reglamento no dice nada.",
     "ruleHeading": "El reglamento",
-    "ruleBody": "{{quote}}",
+    "ruleBody": "La frase operativa del reglamento, completa: «{{quote}}»",
     "readingsHeading": "Qué lecturas acepta el reglamento",
-    "readingsBody": "{{quote}}",
+    "readingsBody": "El mismo reglamento nombra sus fuentes aceptables: «{{quote}}»",
     "readingsNote": "Esa frase es la razón por la que la puerta de aire de este sitio lee AirNow: el reglamento lo nombra como fuente aceptable. Aun así, eso no convierte a un sitio web en quien decide — decide la persona designada para vigilar.",
     "belowHeading": "Por debajo del umbral",
     "belowBody": "El reglamento no dice nada por debajo de esa lectura. Su sección, su distrito o su departamento de salud local pueden fijar algo más estricto, y la puerta del calor no cambia en ningún caso.",

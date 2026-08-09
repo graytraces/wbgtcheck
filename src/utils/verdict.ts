@@ -76,8 +76,8 @@ export function currentVerdict(hours: HourVerdict[], nowMs: number): HourVerdict
 }
 
 /** Daytime window shown on the today timeline (planning hours, local time). */
-export const TIMELINE_START_HOUR = 6
-export const TIMELINE_END_HOUR = 21
+const TIMELINE_START_HOUR = 6
+const TIMELINE_END_HOUR = 21
 
 export function timelineHours(day: DaySummary): HourVerdict[] {
   return day.hours.filter(
