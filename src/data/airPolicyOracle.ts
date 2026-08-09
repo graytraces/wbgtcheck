@@ -17,7 +17,6 @@ import {
 } from './airPolicyData.js'
 
 export {
-  AQI_SCALE_MAX,
   ACTIVITY_IDS,
   ACTIVITY_DURATIONS,
   DEFAULT_ACTIVITY_ID,
@@ -150,19 +149,4 @@ export function airPolicyForState(stateAbbr: string | null): AirPolicy | null {
   if (!stateAbbr) return null
   const id = AIR_POLICY_BY_STATE[stateAbbr.toUpperCase()]
   return id ? AIR_POLICIES[id] : null
-}
-
-/**
- * True when the band's prescribed action stops outdoor activity outright.
- * Used only to decide emphasis in the UI — never to alter the heat verdict.
- */
-export function airStopsOutdoorActivity(action: string | null): boolean {
-  if (!action) return false
-  return (
-    action === 'refrainOutdoor' ||
-    action === 'cancelOrMoveLowerAqi' ||
-    action.startsWith('cancelOrMove') ||
-    action === 'allIndoorsLight' ||
-    action === 'allIndoorsFilteredLight'
-  )
 }

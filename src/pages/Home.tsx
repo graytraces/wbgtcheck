@@ -85,6 +85,7 @@ export default function Home() {
     data: airData,
     activity,
     setActivity,
+    refetch: refetchAir,
   } = useAirQuality(location?.lat ?? null, location?.lon ?? null)
   const airPolicy = airPolicyForState(location?.stateAbbr ?? null)
   const airPageKey = airPolicy ? airPageKeyByPolicy[airPolicy.id] : undefined
@@ -136,7 +137,10 @@ export default function Home() {
           </p>
           <button
             type="button"
-            onClick={refetch}
+            onClick={() => {
+              refetch()
+              refetchAir()
+            }}
             className="inline-flex min-h-11 items-center gap-2 bg-ink px-4 font-bold uppercase tracking-wide text-bg hover:opacity-90"
           >
             <RefreshCw className="h-4 w-4" aria-hidden="true" />

@@ -66,6 +66,7 @@ export function useAirQuality(lat: number | null, lon: number | null) {
   const [status, setStatus] = useState<AirStatus>('idle')
   const [data, setData] = useState<AqiPayload | null>(null)
   const [activity, setActivityState] = useState<ActivityId>(loadActivity)
+  const [fetchTick, setFetchTick] = useState(0)
 
   useEffect(() => {
     if (lat === null || lon === null) {
@@ -89,7 +90,16 @@ export function useAirQuality(lat: number | null, lon: number | null) {
     return () => {
       cancelled = true
     }
-  }, [lat, lon])
+  }, [lat, lon, fetchTick])
+
+  /**
+   * Re-read AirNow. Wired to the same button as the WBGT refresh: refreshing
+   * the heat forecast while leaving an hour-old air reading on screen would be
+   * exactly the silent-stale failure the stale notice exists to prevent.
+   */
+  const refetch = useCallback(() => {
+    setFetchTick((t) => t + 1)
+  }, [])
 
   const setActivity = useCallback((next: ActivityId) => {
     setActivityState(next)
@@ -100,5 +110,5 @@ export function useAirQuality(lat: number | null, lon: number | null) {
     }
   }, [])
 
-  return { status, data, activity, setActivity }
+  return { status, data, activity, setActivity, refetch }
 }

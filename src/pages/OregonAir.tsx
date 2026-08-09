@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import SEO from '../components/SEO'
+import AirDataSources from '../components/AirDataSources'
 import {
   OR_AIR_POLICY,
   OR_CONSERVATIVE_METRIC_QUOTE,
@@ -108,6 +109,7 @@ export default function OregonAir() {
         </p>
         <p className="mt-2 text-ink-muted">{t('common.footer.affiliation')}</p>
       </section>
+      <AirDataSources withVisibilityQuote />
     </article>
   )
 }

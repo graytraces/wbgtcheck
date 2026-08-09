@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import SEO from '../components/SEO'
+import AirDataSources from '../components/AirDataSources'
 import {
   CA_AIR_POLICY,
   CA_RULE_QUOTE,
@@ -86,6 +87,7 @@ export default function CaliforniaAir() {
         </p>
         <p className="mt-2 text-ink-muted">{t('common.footer.affiliation')}</p>
       </section>
+      <AirDataSources withVisibilityQuote />
     </article>
   )
 }

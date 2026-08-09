@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import SEO from '../components/SEO'
+import AirDataSources from '../components/AirDataSources'
 import {
   WA_AIR_POLICY,
   WA_HEALTH_CONDITIONS_QUOTE,
@@ -126,6 +127,7 @@ export default function WashingtonAir() {
         </p>
         <p className="mt-2 text-ink-muted">{t('common.footer.affiliation')}</p>
       </section>
+      <AirDataSources />
     </article>
   )
 }

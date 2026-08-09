@@ -205,7 +205,9 @@
     "tableAqi": "AQI",
     "tableAction": "Required action",
     "tableActivity": "Activity",
-    "tableVisibility": "5-3-1 visibility"
+    "tableVisibility": "5-3-1 visibility",
+    "dataSourcesHeading": "Where the air number comes from",
+    "dataSourcesBody": "Readings come from the EPA AirNow program, which republishes hourly observations from state, local and tribal air agencies. Credit belongs to those agencies first. Category colors follow the RGB values EPA specifies for the AQI, unaltered."
   },
   "seo": {
     "home": {

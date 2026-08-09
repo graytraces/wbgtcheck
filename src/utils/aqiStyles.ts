@@ -55,12 +55,3 @@ export const AQI_SWATCH: Record<AqiColor, AqiSwatch> = Object.fromEntries(
 export function aqiSwatchFor(category: AqiCategory): AqiSwatch {
   return AQI_SWATCH[category.color]
 }
-
-/**
- * Border color for outlined AQI chips on neutral surfaces. Yellow at full
- * chroma disappears against the light page background, so the outline reuses
- * the fill for every band and relies on the text label for meaning.
- */
-export function aqiOutlineFor(category: AqiCategory): { borderColor: string } {
-  return { borderColor: category.hex }
-}

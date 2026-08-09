@@ -109,15 +109,20 @@ export const EPA_AQI_SOURCE = {
   verifiedOn: '2026-08-09',
 }
 
-/**
- * TAD FAQ (p.23): "All AQI values above 300 are part of the Hazardous
- * category. This includes values above 500". The scale itself runs 0-500.
- */
-export const AQI_SCALE_MAX = 500
+// TAD FAQ (p.23): "All AQI values above 300 are part of the Hazardous
+// category. This includes values above 500" — so the top category is
+// open-ended (maxAqi: null) rather than capped at the 500 scale end.
 
 // --- Activity axis (the WA table's rows) ----------------------------------
 // WA DOH 334-332 is the only one of the three jurisdictions whose guidance
 // varies by activity type/duration, and its row labels carry the durations.
+
+// ⚠️ BAND ORDER DIFFERS FROM policyData.js. The WBGT policies list bands
+// hottest-first (descending) because classifyWbgt scans top-down. Air bands
+// below are listed CLEANEST-FIRST (ascending by minAqi), matching how every
+// source prints its own table, and classifyAirBand walks them in reverse.
+// airPolicyOracle.test.ts pins the ascending order — do not "fix" one file to
+// match the other without changing its classifier in the same commit.
 
 export const ACTIVITY_IDS = ['recess', 'pe', 'athletics']
 
@@ -154,7 +159,7 @@ const WA_SOURCE = {
  * source's own wording in `quote` so the state page can show the primary
  * document verbatim next to our paraphrase.
  */
-export const WA_BANDS = [
+const WA_BANDS = [
   {
     id: 'good',
     minAqi: 0,
@@ -205,7 +210,7 @@ export const WA_BANDS = [
   },
 ]
 
-export const WA_ACTION_QUOTES = {
+const WA_ACTION_QUOTES = {
   noRestrictions: 'No restrictions.',
   sensitiveMayStayIndoors: 'Allow children with health conditions (see below*) to stay indoors.',
   sensitiveMayStayIndoorsMonitor:
@@ -263,7 +268,7 @@ const OR_SOURCE = {
   verifiedOn: '2026-08-09',
 }
 
-export const OR_BANDS = [
+const OR_BANDS = [
   {
     id: 'notStated',
     minAqi: 0,
@@ -303,7 +308,7 @@ export const OR_BANDS = [
   },
 ]
 
-export const OR_ACTION_QUOTES = {
+const OR_ACTION_QUOTES = {
   sensitiveConsiderIndoor:
     'Athletes who are unusually sensitive to air pollution should consider indoor activities only. Athletes with asthma should have rescue inhalers readily available and pretreat before exercise if directed by their healthcare provider. All athletes with respiratory illness, asthma, lung or heart disease should monitor symptoms and reduce/cease activity if symptoms arise. Increase rest periods as needed.',
   addRestBreaksConsiderReschedule:
@@ -356,7 +361,7 @@ export const CA_RULE_QUOTE =
 export const CA_READING_SOURCE_QUOTE =
   'Schools may use readings for their local area obtained through www.airnow.gov or a measurement device located outdoors on their physical campus.'
 
-export const CA_BANDS = [
+const CA_BANDS = [
   {
     id: 'belowThreshold',
     minAqi: 0,
@@ -371,7 +376,7 @@ export const CA_BANDS = [
   },
 ]
 
-export const CA_ACTION_QUOTES = {
+const CA_ACTION_QUOTES = {
   refrainOutdoor: CA_RULE_QUOTE,
 }
 

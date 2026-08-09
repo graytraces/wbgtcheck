@@ -69,6 +69,15 @@ describe('worker — bare path redirect', () => {
     expect(res.headers.get('location')).toContain('/en')
   })
 
+  it('redirects the air-quality slugs too', async () => {
+    const res = await worker.fetch(
+      req('https://wbgtcheck.com/oregon-air-quality', { 'Accept-Language': 'en' }),
+      makeEnv(),
+    )
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toContain('/en/oregon-air-quality')
+  })
+
   it('redirects /texas to /en/texas', async () => {
     const res = await worker.fetch(
       req('https://wbgtcheck.com/texas', { 'Accept-Language': 'en' }),

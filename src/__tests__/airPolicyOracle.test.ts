@@ -10,6 +10,16 @@ import {
   WA_INDOOR_PM25_THRESHOLD_UG_M3,
   NFHS_LANDMARK_MILES,
   NFHS_INDOOR_WORSE_QUOTE,
+  NFHS_531_QUOTE,
+  NFHS_RECHECK_QUOTE,
+  NFHS_SCOPE_QUOTE,
+  NFHS_AIR_SOURCE,
+  AIRNOW_SOURCE,
+  AIRNOW_PRELIMINARY_QUOTE,
+  AIRNOW_CREDIT_QUOTE,
+  AIRNOW_NOT_FOR_DECISIONS_QUOTE,
+  AIRNOW_PROGRAM_CREDIT,
+  EPA_AQI_SOURCE,
   classifyAqi,
   classifyAirBand,
   airActionFor,
@@ -18,6 +28,8 @@ import {
   ACTIVITY_IDS,
 } from '../data/airPolicyOracle'
 import { AQI_SWATCH } from '../utils/aqiStyles'
+import en from '../locales/en.json'
+import es from '../locales/es.json'
 
 /**
  * Air oracle ↔ primary source pins.
@@ -211,6 +223,20 @@ describe('air policy registry', () => {
     expect(airPolicyForState(null)).toBeNull()
   })
 
+  it('bands stay ascending by minAqi (classifyAirBand walks them in reverse)', () => {
+    // The WBGT oracle orders bands hottest-first; this one is the opposite.
+    // Reordering these arrays without changing the classifier would silently
+    // return the wrong band for every reading.
+    for (const policy of Object.values(AIR_POLICIES)) {
+      const mins = policy.bands.map((b) => b.minAqi)
+      expect(mins, `${policy.id} bands must be ascending`).toEqual(
+        [...mins].sort((a, b) => a - b),
+      )
+      expect(mins[0], `${policy.id} must start at 0`).toBe(0)
+      expect(new Set(mins).size, `${policy.id} has duplicate band edges`).toBe(mins.length)
+    }
+  })
+
   it('every policy names a primary source with a verification date', () => {
     for (const policy of Object.values(AIR_POLICIES)) {
       expect(policy.source.url).toMatch(/^https:\/\//)
@@ -238,9 +264,59 @@ describe('air policy registry', () => {
 describe('NFHS 5-3-1 visibility method (April 2023)', () => {
   it('carries the three landmark distances and no invented AQI mapping', () => {
     expect(NFHS_LANDMARK_MILES).toEqual([1, 3, 5])
+    // NFHS describes the method but maps no AQI numbers onto the distances.
+    // Only OSAA publishes such a mapping, and it lives on OR_BANDS.
+    expect(NFHS_531_QUOTE).not.toMatch(/AQI\s*\d/)
   })
 
   it('keeps the indoor-may-be-worse warning', () => {
     expect(NFHS_INDOOR_WORSE_QUOTE).toContain('MAY BE WORSE than the outdoor air')
+  })
+
+  it('quotes the method and the at-least-hourly recheck verbatim', () => {
+    expect(NFHS_531_QUOTE).toContain('1 mile away, 3 miles away and 5 miles away')
+    expect(NFHS_531_QUOTE).toContain('sun behind you')
+    expect(NFHS_RECHECK_QUOTE).toContain('at least hourly')
+  })
+
+  it('scope quote includes marching band (added in the April 2023 revision)', () => {
+    // This product's second audience is band directors; the 2019 statement did
+    // not name them and the 2023 one does, which is why we cite 2023.
+    expect(NFHS_SCOPE_QUOTE).toContain('marching band')
+    expect(NFHS_AIR_SOURCE.name).toContain('April 2023')
+  })
+})
+
+describe('AirNow data conditions bind the displayed copy', () => {
+  it('pins the three obligations we act on, verbatim', () => {
+    expect(AIRNOW_PRELIMINARY_QUOTE).toContain('should be considered preliminary')
+    expect(AIRNOW_CREDIT_QUOTE).toContain('Credit should first be given')
+    expect(AIRNOW_NOT_FOR_DECISIONS_QUOTE).toContain('act as guidance')
+    expect(AIRNOW_SOURCE.url).toContain('DataUseGuidelines')
+  })
+
+  it('the preliminary notice we display carries the source clause', () => {
+    // The guidelines require displays to "indicate that these data are
+    // preliminary"; our EN notice quotes the operative wording.
+    expect(en.air.preliminaryNotice).toContain('not fully verified or validated')
+    expect(en.air.preliminaryNotice.toLowerCase()).toContain('preliminary')
+    expect(es.air.preliminaryNotice.toLowerCase()).toContain('preliminar')
+  })
+
+  it('the credit line names the agencies before the EPA program', () => {
+    for (const locale of [en, es]) {
+      expect(locale.air.creditLabel).toContain('{{agencies}}')
+      expect(locale.air.creditLabel).toContain('EPA AirNow')
+      expect(locale.air.creditLabel.indexOf('{{agencies}}')).toBeLessThan(
+        locale.air.creditLabel.indexOf('EPA AirNow'),
+      )
+    }
+    expect(AIRNOW_PROGRAM_CREDIT).toBe('EPA AirNow')
+  })
+
+  it('EPA color spec is cited as the authority for the palette', () => {
+    expect(EPA_AQI_SOURCE.name).toContain('Air Quality Index')
+    expect(EPA_AQI_SOURCE.url).toMatch(/^https:\/\//)
+    expect(EPA_AQI_SOURCE.verifiedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/)
   })
 })

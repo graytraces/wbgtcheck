@@ -47,6 +47,10 @@ import {
   NFHS_LANDMARK_MILES,
   ACTIVITY_IDS,
   ACTIVITY_DURATIONS,
+  AIRNOW_SOURCE,
+  EPA_AQI_SOURCE,
+  NFHS_AIR_SOURCE,
+  NFHS_531_QUOTE,
 } from '../src/data/airPolicyData.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -208,6 +212,19 @@ function visibilityBody(t) {
     mid: NFHS_LANDMARK_MILES[1],
     far: NFHS_LANDMARK_MILES[2],
   })
+}
+
+/** Attribution block — mirrors components/AirDataSources.tsx. */
+function airDataSourcesHtml(t, withVisibilityQuote) {
+  const links = [AIRNOW_SOURCE, EPA_AQI_SOURCE, NFHS_AIR_SOURCE]
+    .map((s) => `<li><a href="${s.url}">${escapeHtml(s.name)}</a></li>`)
+    .join('')
+  const quote = withVisibilityQuote
+    ? `<blockquote>${escapeHtml(NFHS_531_QUOTE)}</blockquote>`
+    : ''
+  return `<h2>${escapeHtml(t('air.dataSourcesHeading'))}</h2><p>${escapeHtml(
+    t('air.dataSourcesBody'),
+  )}</p>${quote}<ul>${links}</ul>`
 }
 
 /** AQI band × activity table (WA) — same cells as pages/WashingtonAir.tsx. */
@@ -372,6 +389,7 @@ function generateBodyContent(lang, page) {
     )
     push(`<p>${escapeHtml(t('air.verifiedOn', { date: WA_AIR_POLICY.source.verifiedOn }))}</p>`)
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+    push(airDataSourcesHtml(t, false))
   } else if (page.key === 'oregonAir') {
     push(`<h1>${escapeHtml(t('oregonAir.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('oregonAir.intro'))}</p>`)
@@ -392,6 +410,7 @@ function generateBodyContent(lang, page) {
     )
     push(`<p>${escapeHtml(t('air.verifiedOn', { date: OR_AIR_POLICY.source.verifiedOn }))}</p>`)
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+    push(airDataSourcesHtml(t, true))
   } else if (page.key === 'californiaAir') {
     push(`<h1>${escapeHtml(t('californiaAir.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('californiaAir.intro'))}</p>`)
@@ -415,6 +434,7 @@ function generateBodyContent(lang, page) {
     )
     push(`<p>${escapeHtml(t('air.verifiedOn', { date: CA_AIR_POLICY.source.verifiedOn }))}</p>`)
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+    push(airDataSourcesHtml(t, true))
   } else if (page.key === 'privacy') {
     push(`<h1>${escapeHtml(t('privacy.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('privacy.intro'))}</p>`)

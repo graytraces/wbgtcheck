@@ -205,7 +205,9 @@
     "tableAqi": "ICA",
     "tableAction": "Acción requerida",
     "tableActivity": "Actividad",
-    "tableVisibility": "Visibilidad 5-3-1"
+    "tableVisibility": "Visibilidad 5-3-1",
+    "dataSourcesHeading": "De dónde viene la cifra del aire",
+    "dataSourcesBody": "Las lecturas provienen del programa AirNow de la EPA, que republica observaciones horarias de agencias estatales, locales y tribales. El crédito corresponde primero a esas agencias. Los colores de categoría siguen los valores RGB que la EPA especifica para el ICA, sin alterarlos."
   },
   "seo": {
     "home": {
