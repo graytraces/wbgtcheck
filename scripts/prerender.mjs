@@ -694,6 +694,9 @@ function generateBodyContent(lang, page) {
       `<p>${escapeHtml(t('washingtonAir.dataSourceBody', { quote: WA_DATA_SOURCE_QUOTE }))}</p>`,
     )
     push(
+      `<h2>${escapeHtml(t('air.sourceQuoteLabel'))}</h2><blockquote>${escapeHtml(WA_AIR_POLICY.actionQuotes.limitLightOrHourModerate)}</blockquote>`,
+    )
+    push(
       `<h2>${escapeHtml(t('washingtonAir.sourceHeading'))}</h2><p>${escapeHtml(t('washingtonAir.sourceBody'))} <a href="${WA_AIR_POLICY.source.url}">${escapeHtml(WA_AIR_POLICY.source.name)}</a></p>`,
     )
     push(`<p>${escapeHtml(t('air.verifiedOn', { date: WA_AIR_POLICY.source.verifiedOn }))}</p>`)
