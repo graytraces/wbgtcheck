@@ -35,13 +35,24 @@ export default function TodayTimeline({ hours, currentTime }: TodayTimelineProps
             </span>
             <span
               className={cn(
-                'flex w-full flex-col items-center gap-0.5 py-2',
+                // `relative` is load-bearing: the sr-only label below is
+                // position:absolute, and without a containing block here it
+                // resolves against the outer wrapper, escaping this list's
+                // overflow-x clip and adding the scroller's full content
+                // width to the document (the sweep catches it at 320px).
+                'relative flex w-full flex-col items-center gap-0.5 py-2',
                 FLAG_SOLID[h.flag],
                 isNow && 'ring-2 ring-ink ring-offset-2 ring-offset-bg',
               )}
               title={`${Math.round(h.wbgtF)} °F — ${t(`flags.${h.flag}.name`)}${h.source === 'estimated' ? ` (${t('verdict.estimatedBadge')})` : ''}`}
             >
               <Icon className="h-3.5 w-3.5" aria-hidden="true" />
+              {/* The chip is too narrow for a visible flag word, but the icon
+                  is aria-hidden and `title` is unreliable for screen readers
+                  and unreachable on touch — without this an hour announces as
+                  a bare number. Every other flag surface (FlagBadge,
+                  WeekStrip, share canvas) carries the label outright. */}
+              <span className="sr-only">{t(`flags.${h.flag}.name`)}</span>
               <span className="display-num text-lg">{Math.round(h.wbgtF)}</span>
               {h.source === 'estimated' && (
                 <span className="text-[9px] font-bold leading-none" aria-label={t('verdict.estimatedBadge')}>
