@@ -252,6 +252,7 @@ export default function Home() {
 
       <section className="space-y-1 border-l-4 border-ink pl-4 text-sm">
         <h2 className="font-bold uppercase tracking-wide">{t('verdict.measurementRules')}</h2>
+        <p className="text-ink-muted">{t('verdict.dataResolutionNote')}</p>
         {policyId.startsWith('uil') && (
           <>
             <p>

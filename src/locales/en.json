@@ -148,7 +148,8 @@
     "boundariesHeading": "Flag thresholds — {{policy}}",
     "boundariesNote": "Thresholds in °F WBGT, exactly as published by the source.",
     "shareButton": "Share today's flags",
-    "measurementRules": "Measurement rules"
+    "measurementRules": "Measurement rules",
+    "dataResolutionNote": "Forecast values are NWS gridpoint data — one value for the grid cell around your point, not a reading at your exact field. Hours marked EST are modeled from temperature, humidity, wind and cloud cover (Liljegren method) where NWS publishes no WBGT."
   },
   "share": {
     "heading": "Share card",

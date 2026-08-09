@@ -88,6 +88,11 @@ describe('post-JS rendered DOM', () => {
     expect(screen.getByText(en.home.heroBadge)).toBeInTheDocument()
   })
 
+  it('Home states the data source and resolution next to the measurement rules', () => {
+    renderAt('/en', <Home />)
+    expect(screen.getByText(en.verdict.dataResolutionNote)).toBeInTheDocument()
+  })
+
   it('Texas renders every oracle band label for both classes', () => {
     renderAt('/en/texas', <Texas />)
     for (const band of [...UIL_CLASS_2.bands, ...UIL_CLASS_3.bands]) {
