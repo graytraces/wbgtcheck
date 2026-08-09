@@ -181,6 +181,19 @@ describe('policy oracle — guideline facts vs primary sources', () => {
     }
   })
 
+  it('GHSA orange keeps conditioning stricter than practice', () => {
+    // The by-law's 87.0-89.9 cell restricts practice to helmet/shoulder pads/
+    // shorts AND requires all protective equipment off during conditioning.
+    // The second half had no field to live in, so it shipped missing — the
+    // permissive direction, on the band where football equipment first bites.
+    const orange = GHSA.bands.find((b) => b.flag === 'orange')!
+    expect(orange.guideline.footballEquipment).toBe('helmet-shoulder-pads-shorts')
+    expect(orange.guideline.extraKeys).toContain('guideline.ghsaConditioningNoEquipment')
+    // Conditioning is restricted at orange, not banned — that is red.
+    expect(orange.guideline.noConditioning).toBe(false)
+    expect(GHSA.bands.find((b) => b.flag === 'red')!.guideline.noConditioning).toBe(true)
+  })
+
   it('GHSA black band prohibits outdoor workouts', () => {
     expect(GHSA.bands.find((b) => b.flag === 'black')!.guideline.noOutdoorWorkouts).toBe(true)
   })

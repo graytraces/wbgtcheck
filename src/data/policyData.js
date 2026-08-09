@@ -296,6 +296,29 @@ const GHSA_RED = {
   noOutdoorWorkouts: false,
 }
 
+/**
+ * By-law 2.67 "87.0 - 89.9" cell, verbatim and complete (PDF re-read
+ * 2026-08-10):
+ *
+ *   "Maximum practice time is 2 hours. For Football: players are restricted to
+ *   helmet, shoulder pads, and shorts during practice, and all protective
+ *   equipment must be removed during conditioning activities. If the WBGT
+ *   rises to this level during practice, players may continue to work out
+ *   wearing football pants without changing to shorts. For All Sports: Provide
+ *   at least four separate rest breaks each hour with a minimum duration of 4
+ *   minutes each."
+ *
+ * `footballEquipment` carries the practice restriction, but conditioning is a
+ * SEPARATE and stricter rule inside the same sentence with no field to live
+ * in — so it shipped missing, in the permissive direction. It rides an
+ * extraKey, exactly as TSSAA's contact/conditioning split does.
+ *
+ * The third sentence (pants may stay on when the WBGT rises mid-practice) is
+ * deliberately not rendered: it governs a transition inside a practice already
+ * under way, which is the on-site instrument's call. Surfacing a relaxation on
+ * a page whose flags are read the night before would invite it to be applied
+ * to the wrong decision.
+ */
 const GHSA_ORANGE = {
   maxPracticeMinutes: 120,
   restBreaksPerHour: 4,
@@ -305,6 +328,7 @@ const GHSA_ORANGE = {
   noConditioning: false,
   coolingZoneRequired: false,
   noOutdoorWorkouts: false,
+  extraKeys: ['guideline.ghsaConditioningNoEquipment'],
 }
 
 const GHSA_YELLOW = {

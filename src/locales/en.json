@@ -49,6 +49,7 @@
     "tssaaFootballNonContactNoEquipment": "Football: no protective equipment for non-contact practice; it may be worn only for drills that do involve contact.",
     "maxPracticeMinutes": "Maximum practice time: {{minutes}} min.",
     "footballHelmetShoulderShorts": "Football: helmet, shoulder pads and shorts only.",
+    "ghsaConditioningNoEquipment": "Football: all protective equipment must be removed for conditioning activities.",
     "footballNoEquipment": "Football: no protective equipment.",
     "noConditioning": "No conditioning activities.",
     "coolingZone": "Mandatory on-site rapid cooling zone (tub or tarp).",
