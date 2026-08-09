@@ -97,6 +97,100 @@ export function buildShareCardModel(
   }
 }
 
+/**
+ * Verdict-block geometry.
+ *
+ * `textBaseline = 'top'` is not a fixed origin across engines. Measured
+ * 2026-08-10 (playwright 1.60, webkit-2287 vs chromium-1234) for Anton at
+ * 340px, the 'top' origin sits 400px above the alphabetic baseline in WebKit
+ * and 265.67px above it in Chromium — a 134px disagreement. Fixed 'top'
+ * coordinates therefore dropped the big number that much lower in WebKit,
+ * where its ink ran to y593 and buried the flag label (ink from y512) under
+ * it: "BLACK" was unreadable in every Safari and iOS share. Chromium cleared
+ * it by 10px, which is why only WebKit shows the bug.
+ *
+ * Both engines report the ink box relative to the ALPHABETIC baseline
+ * identically, so every piece of display type below is placed from measured
+ * ink: the number hangs from a fixed ink top, the flag label stands on a fixed
+ * ink bottom, and the gap between them absorbs whatever the font does.
+ */
+const NUMBER_INK_TOP = 168
+const LABEL_INK_BOTTOM = 596
+/** Ink boxes never come closer than this; the number shrinks if they would. */
+const MIN_INK_GAP = 24
+const NUMBER_PX = 340
+const UNIT_PX = 84
+const LABEL_PX = 110
+const ICON_PX = 132
+/** Ink-top offsets from the number's ink top, in unscaled number-size units. */
+const UNIT_INK_DROP = 65
+const CAPTION_INK_DROP = 164
+/**
+ * Anton's own ink ratios (measured with the alphabetic baseline at 340px:
+ * ascent 294.84, descent 2.66). Used only when an engine declines to report
+ * an ink box, so the stack still clears instead of collapsing to NaN.
+ */
+const ANTON_INK_ASCENT_RATIO = 294.84 / 340
+const ANTON_INK_DESCENT_RATIO = 2.66 / 340
+
+/** An ink box relative to the alphabetic baseline: ascent up, descent down. */
+export interface InkExtent {
+  ascent: number
+  descent: number
+}
+
+export interface VerdictLayout {
+  /** Applied to the number (and its unit/caption offsets) when space is tight. */
+  numberScale: number
+  numberBaselineY: number
+  numberInkTop: number
+  numberInkBottom: number
+  labelBaselineY: number
+  labelInkTop: number
+  labelInkBottom: number
+  iconY: number
+  /** Vertical clearance between the two ink boxes. Must stay positive. */
+  gap: number
+}
+
+/**
+ * Stack the peak number above the flag label from their measured ink. The
+ * label is the anchor (fixed ink bottom, so it always sits inside the coloured
+ * panel); the number hangs from the top and gives up size if the two would
+ * meet.
+ */
+export function layoutVerdictBlock(number: InkExtent, label: InkExtent): VerdictLayout {
+  const labelInkH = Math.max(label.ascent + label.descent, 0)
+  const numberInkH = Math.max(number.ascent + number.descent, 0)
+  const room = LABEL_INK_BOTTOM - NUMBER_INK_TOP - labelInkH - MIN_INK_GAP
+  const fit = numberInkH > 0 ? room / numberInkH : 1
+  const numberScale = Math.min(1, Math.max(0.5, fit))
+  const numberBaselineY = NUMBER_INK_TOP + number.ascent * numberScale
+  const numberInkBottom = numberBaselineY + number.descent * numberScale
+  const labelBaselineY = LABEL_INK_BOTTOM - label.descent
+  const labelInkTop = labelBaselineY - label.ascent
+  return {
+    numberScale,
+    numberBaselineY,
+    numberInkTop: NUMBER_INK_TOP,
+    numberInkBottom,
+    labelBaselineY,
+    labelInkTop,
+    labelInkBottom: LABEL_INK_BOTTOM,
+    iconY: labelInkTop + (labelInkH - ICON_PX) / 2,
+    gap: labelInkTop - numberInkBottom,
+  }
+}
+
+/** Ink box of `text` in the current font. Requires `textBaseline` alphabetic. */
+function inkExtent(ctx: CanvasRenderingContext2D, text: string, px: number): InkExtent {
+  const m = ctx.measureText(text)
+  if (!Number.isFinite(m.actualBoundingBoxAscent) || !Number.isFinite(m.actualBoundingBoxDescent)) {
+    return { ascent: px * ANTON_INK_ASCENT_RATIO, descent: px * ANTON_INK_DESCENT_RATIO }
+  }
+  return { ascent: m.actualBoundingBoxAscent, descent: m.actualBoundingBoxDescent }
+}
+
 // Lucide-derived stroke geometry (24×24 space) so the card keeps the same
 // triple coding (color + icon + label) as every in-app flag surface.
 const OCTAGON = 'M7.05 2h9.9L22 7.05v9.9L16.95 22h-9.9L2 16.95v-9.9L7.05 2Z'
@@ -199,17 +293,39 @@ export function drawShareCard(canvas: HTMLCanvasElement, model: ShareCardModel):
   ctx.font = sans(40)
   ctx.fillText(model.locationLabel, margin, 108, S - margin * 2)
 
-  ctx.font = display(340)
-  ctx.fillText(String(Math.round(model.peakWbgtF)), 48, 190)
-  const numWidth = ctx.measureText(String(Math.round(model.peakWbgtF))).width
-  ctx.font = display(84)
-  ctx.fillText('°F', 64 + numWidth, 232)
-  ctx.font = sans(34)
-  ctx.fillText(model.peakCaption.toUpperCase(), 64 + numWidth, 328)
+  // Display type is placed from measured ink (see layoutVerdictBlock) — fixed
+  // 'top' coordinates put the number 134px lower in WebKit than in Chromium.
+  const numText = String(Math.round(model.peakWbgtF))
+  const labelText = model.peakFlagLabel.toUpperCase()
+  ctx.textBaseline = 'alphabetic'
+  ctx.font = display(NUMBER_PX)
+  const numInk = inkExtent(ctx, numText, NUMBER_PX)
+  ctx.font = display(LABEL_PX)
+  const labelInk = inkExtent(ctx, labelText, LABEL_PX)
+  const layout = layoutVerdictBlock(numInk, labelInk)
 
-  ctx.font = display(110)
-  ctx.fillText(model.peakFlagLabel.toUpperCase(), margin, 478)
-  drawFlagIcon(ctx, model.peakFlag, S - margin - 132, 458, 132, peak.fg)
+  const scale = layout.numberScale
+  ctx.font = display(NUMBER_PX * scale)
+  ctx.fillText(numText, 48, layout.numberBaselineY)
+  const numWidth = ctx.measureText(numText).width
+
+  ctx.font = display(UNIT_PX * scale)
+  const unitInk = inkExtent(ctx, '°F', UNIT_PX * scale)
+  ctx.fillText('°F', 64 + numWidth, layout.numberInkTop + UNIT_INK_DROP * scale + unitInk.ascent)
+
+  ctx.font = sans(34)
+  const captionText = model.peakCaption.toUpperCase()
+  const captionInk = inkExtent(ctx, captionText, 34)
+  ctx.fillText(
+    captionText,
+    64 + numWidth,
+    layout.numberInkTop + CAPTION_INK_DROP * scale + captionInk.ascent,
+  )
+
+  ctx.font = display(LABEL_PX)
+  ctx.fillText(labelText, margin, layout.labelBaselineY)
+  drawFlagIcon(ctx, model.peakFlag, S - margin - ICON_PX, layout.iconY, ICON_PX, peak.fg)
+  ctx.textBaseline = 'top'
 
   // Hourly flag band on the white base
   const bandTop = 660

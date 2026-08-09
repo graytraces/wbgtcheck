@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildShareCardModel } from '../utils/shareCard'
+import { buildShareCardModel, layoutVerdictBlock } from '../utils/shareCard'
 import { annotateHours, groupByDay } from '../utils/verdict'
 import type { HourPoint } from '../utils/nws'
 import { UIL_CLASS_3, classifyWbgt } from '../data/policyOracle'
@@ -67,5 +67,57 @@ describe('share card model', () => {
 
   it('returns null when the day has no data', () => {
     expect(buildShareCardModel({ date: '2026-08-10', peak: null, hours: [] }, OPTS)).toBeNull()
+  })
+})
+
+/**
+ * Anton ink boxes relative to the ALPHABETIC baseline, measured 2026-08-10 in
+ * both Playwright engines (webkit-2287 and chromium-1234). The two agree to
+ * 0.01px — which is the whole reason the verdict block is anchored here.
+ *
+ * The same glyphs measured from `textBaseline = 'top'` disagree by 134px:
+ * WebKit places that origin a full 400px above the alphabetic baseline where
+ * Chromium places it 265.67px above. The card used to draw at fixed 'top'
+ * coordinates, so in WebKit the 340px number's ink ran from y295 to y593 and
+ * swallowed the 110px flag label (ink from y512) whole — "BLACK" was
+ * unreadable in every Safari and iOS share, while Chromium cleared it by 10px
+ * and showed nothing wrong. `.omc/share-card-engine-check.mjs` re-renders the
+ * real card in both engines and scans the pixels.
+ */
+const ANTON_NUMBER_340 = { ascent: 294.84, descent: 2.66 }
+const ANTON_LABEL_110 = { ascent: 95.39, descent: 0.86 }
+/** Height of the flag-coloured panel drawShareCard paints behind the block. */
+const VERDICT_PANEL_H = 620
+
+describe('share card verdict layout', () => {
+  it('keeps the peak number clear of the flag label', () => {
+    const layout = layoutVerdictBlock(ANTON_NUMBER_340, ANTON_LABEL_110)
+    expect(layout.numberScale).toBe(1)
+    expect(layout.numberInkBottom).toBeLessThan(layout.labelInkTop)
+    expect(layout.gap).toBeGreaterThanOrEqual(24)
+  })
+
+  it('pins the ink positions both engines now render', () => {
+    const layout = layoutVerdictBlock(ANTON_NUMBER_340, ANTON_LABEL_110)
+    expect(Math.round(layout.numberInkTop)).toBe(168)
+    expect(Math.round(layout.numberInkBottom)).toBe(466)
+    expect(Math.round(layout.labelInkTop)).toBe(500)
+    expect(layout.labelInkBottom).toBe(596)
+  })
+
+  it('keeps both ink boxes inside the coloured verdict panel', () => {
+    const layout = layoutVerdictBlock(ANTON_NUMBER_340, ANTON_LABEL_110)
+    expect(layout.numberInkTop).toBeGreaterThan(0)
+    expect(layout.labelInkBottom).toBeLessThanOrEqual(VERDICT_PANEL_H)
+  })
+
+  it('shrinks the number rather than letting a taller face collide', () => {
+    // Twice Anton's ink. No real face does this — the point is that the stack
+    // degrades by giving up number size, never by overlapping the label.
+    const tall = { ascent: ANTON_NUMBER_340.ascent * 2, descent: ANTON_NUMBER_340.descent * 2 }
+    const layout = layoutVerdictBlock(tall, ANTON_LABEL_110)
+    expect(layout.numberScale).toBeLessThan(1)
+    expect(layout.numberInkBottom).toBeLessThan(layout.labelInkTop)
+    expect(layout.gap).toBeGreaterThanOrEqual(24 - 1e-9)
   })
 })
