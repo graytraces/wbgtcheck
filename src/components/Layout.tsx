@@ -22,12 +22,16 @@ export default function Layout() {
   const otherLang: SupportedLanguage = currentLang === 'en' ? 'es' : 'en'
   const pathAfterLang = location.pathname.replace(new RegExp(`^/${currentLang}`), '') || ''
 
+  // "All states" is the hub for the six guides with no nav entry of their own
+  // (SC, TN, IA, NC, NY, VA), so it comes second. At 390px the nav scroller
+  // shows about three items and this sat fifth, at x=572 — off-screen, with
+  // nothing to suggest it was there.
   const nav = [
     { to: `/${currentLang}`, label: t('common.nav.home') },
+    { to: `/${currentLang}/states`, label: t('common.nav.states') },
     { to: `/${currentLang}/texas`, label: t('common.nav.texas') },
     { to: `/${currentLang}/georgia`, label: t('common.nav.georgia') },
     { to: `/${currentLang}/wbgt-vs-heat-index`, label: t('common.nav.wbgtVsHeatIndex') },
-    { to: `/${currentLang}/states`, label: t('common.nav.states') },
     { to: `/${currentLang}/washington-air-quality`, label: t('common.nav.washingtonAir') },
     { to: `/${currentLang}/oregon-air-quality`, label: t('common.nav.oregonAir') },
     { to: `/${currentLang}/california-air-quality`, label: t('common.nav.californiaAir') },

@@ -38,3 +38,19 @@ export const airPageKeyByPolicy: Record<string, string> = {
   'or-osaa': 'oregonAir',
   'ca-cif': 'californiaAir',
 }
+
+/**
+ * Heat policy id → the pageSEO key of its guide page — the heat-axis mirror of
+ * airPageKeyByPolicy. Without it the tool linked the same four pages whichever
+ * policy was selected, so choosing SCHSL, TSSAA or Iowa gave no route to that
+ * state's guide at all. 'generic' is deliberately absent: NATA is not a
+ * jurisdiction and has no guide page; /states is the fallback there.
+ */
+export const statePageKeyByPolicy: Record<string, string> = {
+  'uil-class-2': 'texas',
+  'uil-class-3': 'texas',
+  ghsa: 'georgia',
+  schsl: 'southCarolina',
+  tssaa: 'tennessee',
+  iowa: 'iowa',
+}

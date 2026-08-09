@@ -63,7 +63,9 @@
     "iowa": "Iowa (Category 2)",
     "generic": "General guideline (NATA)",
     "pickerLabel": "Policy",
-    "pickerHelp": "Pick your state association. Texas: Class 2 vs Class 3 depends on your region — check the UIL map.",
+    "pickerHelp": "Pick your state association.",
+    "pickerHelpTexas": "Class 2 vs Class 3 depends on your region —",
+    "readGuide": "Read the {{policy}} guide →",
     "uilMapLink": "UIL regional class map",
     "txClassHint": "Texas: most of eastern and central Texas — including the Houston, Dallas–Fort Worth, Austin and San Antonio areas — is Class 3; the Panhandle and far West Texas are Class 2. You can change your class here any time.",
     "classPrompt": {

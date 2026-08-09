@@ -63,7 +63,9 @@
     "iowa": "Iowa (Categoría 2)",
     "generic": "Guía general (NATA)",
     "pickerLabel": "Política",
-    "pickerHelp": "Elija su asociación estatal. Texas: Clase 2 o Clase 3 depende de su región — consulte el mapa de la UIL.",
+    "pickerHelp": "Elija su asociación estatal.",
+    "pickerHelpTexas": "Clase 2 o Clase 3 depende de su región —",
+    "readGuide": "Lea la guía de {{policy}} →",
     "uilMapLink": "Mapa de clases regionales de la UIL",
     "txClassHint": "Texas: la mayor parte del este y centro de Texas — incluidas las áreas de Houston, Dallas–Fort Worth, Austin y San Antonio — es Clase 3; el Panhandle y el extremo oeste de Texas son Clase 2. Puede cambiar su clase aquí cuando quiera.",
     "classPrompt": {
