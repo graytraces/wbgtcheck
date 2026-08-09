@@ -8,7 +8,10 @@
       "texas": "UIL de Texas",
       "georgia": "GHSA de Georgia",
       "wbgtVsHeatIndex": "WBGT vs índice de calor",
-      "states": "Todos los estados"
+      "states": "Todos los estados",
+      "washingtonAir": "Aire de Washington",
+      "oregonAir": "Aire de Oregón",
+      "californiaAir": "Aire de California"
     },
     "footer": {
       "safetySummary": "WBGT Check muestra estimaciones remotas basadas en pronósticos, solo para planificar. Las estimaciones remotas tienden a marcar MENOS que la medición en el sitio: trate las lecturas limítrofes como la categoría superior y confirme con un medidor WBGT en el campo antes de decidir actividades. La política de su asociación y el criterio de su preparador físico mandan.",
@@ -136,6 +139,69 @@
     "ghsaTiming": "GHSA: lecturas al menos cada {{interval}} min, comenzando {{lead}} min antes de la práctica, con un instrumento en el sitio.",
     "ghsaCalibration": "Los monitores WBGT de la GHSA deben calibrarse al menos cada {{years}} años."
   },
+  "air": {
+    "gateHeading": "Calidad del aire",
+    "bothGatesNotice": "El calor y el aire son dos puertas distintas. Ninguna anula a la otra — siga la más estricta.",
+    "aqiLabel": "ICA",
+    "aqiBasisOverall": "ICA general · {{pollutant}}",
+    "aqiBasisPm25": "ICA de PM2.5",
+    "pm25AlsoLabel": "Subíndice de PM2.5",
+    "activityLabel": "¿Cuánto tiempo estarán afuera?",
+    "activity": {
+      "recess": "Recreo",
+      "pe": "Clase de educación física",
+      "athletics": "Práctica o partido"
+    },
+    "activityMinutes": "{{minutes}} min",
+    "activityHours": "{{hoursMin}}-{{hoursMax}} h, vigorosa",
+    "actions": {
+      "noRestrictions": "No se indican restricciones.",
+      "sensitiveMayStayIndoors": "Permita que los estudiantes con asma u otra afección de la lista se queden adentro.",
+      "sensitiveMayStayIndoorsMonitor": "Permita que los estudiantes con una afección de la lista se queden adentro; vigile los síntomas de quienes participen y agregue descansos según se necesite.",
+      "sensitiveMayOptOut": "Permita que los estudiantes con una afección de la lista no participen; vigile los síntomas de quienes se sumen y deles descansos adicionales.",
+      "sensitiveIndoorsLight": "Mantenga adentro y en actividad ligera a los estudiantes con una afección de la lista, salvo que el PM2.5 interior esté por debajo de {{pm25}} µg/m³.",
+      "sensitiveIndoorsOthersLightOutdoor": "Mantenga adentro y en actividad ligera a los estudiantes con una afección de la lista, salvo que el PM2.5 interior esté por debajo de {{pm25}} µg/m³. Limite a los demás a actividad ligera al aire libre y permita que cualquier estudiante se quede adentro.",
+      "allIndoorsLight": "Mantenga a todos los estudiantes adentro y en actividad ligera, salvo que el PM2.5 interior esté por debajo de {{pm25}} µg/m³.",
+      "allIndoorsFilteredLight": "Mantenga a todos los estudiantes adentro y en actividad ligera, salvo que el aire interior esté filtrado y el PM2.5 interior esté por debajo de {{pm25}} µg/m³.",
+      "cancelOrMove": "Cancele los eventos y las prácticas atléticas al aire libre, o trasládelos a un lugar con aire más seguro — bajo techo o a otra ubicación.",
+      "cancelOrMoveConsiderTransit": "Cancele los eventos y las prácticas atléticas al aire libre, o trasládelos a un lugar con aire más seguro. Cuente el tiempo expuesto al aire malo durante el traslado.",
+      "cancelOrMoveFilteredConsiderTransit": "Cancele los eventos y las prácticas atléticas al aire libre, o trasládelos bajo techo con aire filtrado o a otra ubicación. Cuente el tiempo expuesto al aire malo durante el traslado.",
+      "sensitiveConsiderIndoor": "Los atletas inusualmente sensibles a la contaminación deberían considerar solo actividades bajo techo. Inhaladores de rescate a mano, y pretratamiento si su profesional de salud lo indica. Quien tenga enfermedad respiratoria, asma o enfermedad pulmonar o cardíaca debe vigilar los síntomas y reducir o cesar la actividad si aparecen. Aumente los descansos según se necesite.",
+      "addRestBreaksConsiderReschedule": "Todo lo anterior, más descansos adicionales para asma, otras enfermedades pulmonares, afecciones cardíacas o diabetes. Considere cambiar la práctica de horario o llevarla a una zona con ICA más bajo, y pese en conjunto varios días con ICA elevado. Bajo techo no siempre es más limpio — revise la ventilación.",
+      "cancelOrMoveLowerAqi": "Toda actividad al aire libre, tanto práctica como competencia, deberá cancelarse o trasladarse a una zona con ICA más bajo. Bajo techo no siempre es más limpio — revise la ventilación.",
+      "refrainOutdoor": "Sin práctica ni competencia al aire libre. Las escuelas miembro de CIF deben abstenerse a partir de esta lectura."
+    },
+    "policyName": {
+      "wa-doh": "Guía escolar del DOH de Washington",
+      "or-osaa": "Directrices de calidad del aire de OSAA",
+      "ca-cif": "Reglamento de calidad del aire de CIF"
+    },
+    "noPolicyHeading": "Sin política verificada para este estado",
+    "noPolicyBody": "Solo incluimos reglas de práctica por calidad del aire que hayamos leído en el documento propio de la asociación o del departamento de salud — hasta ahora Washington, Oregón y California. En los demás lugares verá la categoría de la EPA y nada más: consulte a su asociación estatal y a su distrito.",
+    "noActionStated": "Esta fuente no indica ninguna acción en este nivel. Eso no es permiso — significa que el documento no dice nada al respecto.",
+    "areaLabel": "Zona de reporte",
+    "areaBody": "{{area}} — a unas {{mi}} millas de su campo.",
+    "areaFarNotice": "El monitor más cercano está a unas {{mi}} millas. El humo puede variar mucho en esa distancia — use la verificación 5-3-1 y mire su propio cielo.",
+    "preliminaryNotice": "Lectura horaria preliminar. Las observaciones de AirNow no están totalmente verificadas ni validadas y pueden cambiar.",
+    "creditLabel": "Datos: {{agencies}} — vía EPA AirNow.",
+    "staleNotice": "Esta lectura es de las {{time}} y puede que ya no describa el aire de afuera.",
+    "notClearance": "Información de planificación, no autorización para jugar. Decide, en el sitio, la persona que su escuela designe para vigilar la calidad del aire.",
+    "visibilityHeading": "¿Sin monitor cerca? Use la verificación de visibilidad 5-3-1",
+    "visibilityBody": "En un día despejado, elija puntos de referencia a unas {{near}}, {{mid}} y {{far}} millas del campo. Párese con el sol a su espalda: cuando ya no se distingue el contorno de un punto de referencia, la visibilidad es menor que esa distancia.",
+    "visibilityRecheck": "Con humo o neblina, revise el ICA o el índice de visibilidad al menos cada hora durante prácticas y partidos — las condiciones cambian rápido.",
+    "indoorWarning": "Entrar bajo techo no es automáticamente más seguro. Si la ventilación no puede con el humo, el aire interior puede ser peor que el de afuera — y un gimnasio se calienta más, así que la puerta del calor sigue aplicando.",
+    "sourceLabel": "Fuente",
+    "sourceQuoteLabel": "Las palabras de la fuente",
+    "verifiedOn": "Verificado contra el documento primario el {{date}}",
+    "loading": "Leyendo la calidad del aire…",
+    "loadFailed": "La calidad del aire no está disponible ahora. Consulte AirNow directamente antes de decidir.",
+    "tableAqi": "ICA",
+    "tableAction": "Acción requerida",
+    "tableActivity": "Actividad",
+    "tableVisibility": "Visibilidad 5-3-1",
+    "dataSourcesHeading": "De dónde viene la cifra del aire",
+    "dataSourcesBody": "Las lecturas provienen del programa AirNow de la EPA, que republica observaciones horarias de agencias estatales, locales y tribales. El crédito corresponde primero a esas agencias. Los colores de categoría siguen los valores RGB que la EPA especifica para el ICA, sin alterarlos."
+  },
   "seo": {
     "home": {
       "title": "Pronóstico WBGT con banderas de política estatal | WBGT Check",
@@ -201,6 +267,21 @@
       "title": "Aviso legal | WBGT Check",
       "description": "WBGT Check es una ayuda de planificación, no un instrumento de medición ni de cumplimiento. Lea el aviso completo.",
       "keywords": "aviso legal WBGT Check"
+    },
+    "washingtonAir": {
+      "title": "Calidad del Aire Escolar en Washington: ¿Cancelar la Práctica? | WBGT Check",
+      "description": "Guía del DOH de Washington por actividad — recreo, educación física y prácticas atléticas vigorosas — con la lectura actual de su campo y la verificación de visibilidad 5-3-1.",
+      "keywords": "política calidad del aire escuelas Washington, humo incendios cancelar práctica Washington, guía DOH humo escuelas, ICA cancelar práctica Washington"
+    },
+    "oregonAir": {
+      "title": "Reglas de Calidad del Aire de OSAA en Oregón: Cancelaciones | WBGT Check",
+      "description": "Acciones requeridas por banda de ICA para las escuelas de Oregón, la correspondencia 5-3-1 de visibilidad que publica OSAA y la lectura actual de su campo.",
+      "keywords": "directrices calidad del aire OSAA, humo cancelar práctica Oregón, reglas ICA preparatorias Oregón, índice visibilidad 5-3-1 Oregón"
+    },
+    "californiaAir": {
+      "title": "Reglamento de Calidad del Aire de CIF en California: El Umbral | WBGT Check",
+      "description": "El reglamento estatal de calidad del aire de CIF para escuelas miembro, las lecturas que acepta y el ICA actual de su campo — junto a la bandera de calor.",
+      "keywords": "reglamento calidad del aire CIF, ICA práctica preparatorias California, política humo escuelas California, CIF práctica aire libre calidad del aire"
     }
   },
   "texas": {
@@ -456,12 +537,49 @@
     "sourceBody": "Los requisitos y las citas anteriores provienen del texto del Código de Virginia {{section}}, cotejado el {{verifiedOn}}. La fecha de entrada en vigor no aparece impresa en la página del código — confírmela, junto con los umbrales de su distrito, localmente.",
     "ctaButton": "Ver el pronóstico WBGT"
   },
+  "washingtonAir": {
+    "pageTitle": "Calidad del aire escolar en Washington: ¿cancelar o trasladar la práctica?",
+    "intro": "El departamento de salud de Washington publica guía de calidad del aire para escuelas según la actividad, porque el tiempo que los estudiantes pasan afuera cambia lo que conviene hacer con la misma lectura. Esta página reproduce esa tabla tal como está impresa, junto con la lectura actual de su campo.",
+    "basisHeading": "Está referida al PM2.5, no al ICA general",
+    "basisBody": "La tabla se titula \"Outside Air Quality Index: PM2.5\", así que sus umbrales siguen el subíndice de PM2.5. El ICA general puede estar determinado por el ozono, y en un día con humo ambos pueden diferir — por eso la página del pronóstico le muestra las dos cifras.",
+    "tableHeading": "Guía según la actividad",
+    "healthConditionsHeading": "Quiénes cuentan como grupo sensible aquí",
+    "healthConditionsBody": "{{quote}}",
+    "athleticsNote": "La fila de atletismo es la que necesitan la mayoría de los entrenadores y directores de banda: supone actividad vigorosa de un par de horas, y por eso llega a la cancelación una categoría antes que el recreo.",
+    "sourceHeading": "Fuente",
+    "sourceBody": "Cada umbral y acción de esta página se leyó del documento primario."
+  },
+  "oregonAir": {
+    "pageTitle": "Reglas de calidad del aire de OSAA en Oregón para prácticas y competencias",
+    "intro": "Las directrices de calidad del aire de OSAA fijan acciones requeridas por banda de ICA, y son la única fuente que verificamos que además publica una correspondencia entre ICA y visibilidad — lo que importa cuando el monitor más cercano queda lejos de su campo.",
+    "tableHeading": "Acciones requeridas por banda de ICA",
+    "belowRangeHeading": "Por debajo de la primera fila de la tabla",
+    "belowRangeBody": "El cuadro empieza en su banda moderada. OSAA no indica ninguna acción por debajo de eso, y no vamos a inventarla — un documento que no dice nada no es una autorización.",
+    "conservativeHeading": "Cuando dos métricas no coinciden",
+    "conservativeBody": "{{quote}}",
+    "sourceHeading": "Fuente",
+    "sourceBody": "Cada umbral y acción de esta página se leyó del documento primario."
+  },
+  "californiaAir": {
+    "pageTitle": "Reglamento de calidad del aire de CIF en California: el umbral para practicar al aire libre",
+    "intro": "La regla de California es una línea única y firme, no una guía graduada. A partir de una lectura, las escuelas miembro de CIF deben detener la práctica y la competencia al aire libre; por debajo, el reglamento no dice nada.",
+    "ruleHeading": "El reglamento",
+    "ruleBody": "{{quote}}",
+    "readingsHeading": "Qué lecturas acepta el reglamento",
+    "readingsBody": "{{quote}}",
+    "readingsNote": "Esa frase es la razón por la que la puerta de aire de este sitio lee AirNow: el reglamento lo nombra como fuente aceptable. Aun así, eso no convierte a un sitio web en quien decide — decide la persona designada para vigilar.",
+    "belowHeading": "Por debajo del umbral",
+    "belowBody": "El reglamento no dice nada por debajo de esa lectura. Su sección, su distrito o su departamento de salud local pueden fijar algo más estricto, y la puerta del calor no cambia en ningún caso.",
+    "sourceHeading": "Fuente",
+    "sourceBody": "Cada umbral y cita de esta página se leyó del documento primario."
+  },
   "disclaimerPage": {
     "pageTitle": "Aviso legal",
     "notMeasurement": "WBGT Check es una ayuda de planificación basada en pronósticos. No es un instrumento de medición y sus números no son mediciones. El WBGT en su campo puede diferir sustancialmente de cualquier estimación remota — comparaciones publicadas hallaron valores remotos en promedio {{min}} °C bajos, y hasta {{max}} °C bajos en las condiciones más peligrosas, que es la dirección insegura.",
     "notCompliance": "Este sitio no satisface el requisito de medición de ninguna asociación en estados que exigen instrumento en el sitio (p. ej. GHSA de Georgia, KHSAA de Kentucky). Donde se aceptan lecturas por internet (p. ej. UIL de Texas), la lectura que rige sigue siendo la tomada en el momento y lugar requeridos según las reglas de la asociación.",
     "notMedical": "Nada aquí es consejo médico. Las decisiones sobre enfermedades por calor corresponden a personal médico calificado — preparadores físicos, médicos de equipo, servicios de emergencia. Si alguien muestra signos de golpe de calor por esfuerzo, llame a emergencias y comience el enfriamiento rápido de inmediato; no consulte un sitio web. Este servicio no está destinado a funcionar como sistema primario de alerta de emergencia, ni para decisiones de emergencia o de seguridad de vidas.",
     "conditions": "Las condiciones cambian durante una sesión. Un pronóstico matutino no puede regir una práctica vespertina; vuelva a verificar y medir en los intervalos que exige su política. Preste atención a la fecha y hora de los datos mostrados — un veredicto solo es tan actual como el pronóstico del que se cargó.",
+    "airQuality": "La calidad del aire en este sitio es una lectura horaria preliminar de toda una zona de reporte — no una medición en su campo. Las observaciones de AirNow no están totalmente verificadas ni validadas y pueden cambiar, se actualizan aproximadamente una vez por hora, y el monitor más cercano puede estar a muchas millas, así que el humo puede ser mucho peor o mucho mejor donde usted está. La EPA indica que estos datos no deben usarse como guía ni para respaldar decisiones públicas. Trate la puerta de aire como un insumo para el juicio en el sitio de la persona que su escuela designe, junto con la verificación de visibilidad 5-3-1. La calidad del aire nunca baja una bandera de calor: donde aplican ambas puertas, rige la más estricta.",
     "availability": "Este servicio depende de datos del Servicio Meteorológico Nacional (NWS), que a su vez no garantiza que sus datos lleguen a internet a tiempo o en absoluto — y nosotros tampoco. No garantizamos que este servicio sea ininterrumpido, puntual ni libre de errores; puede no estar disponible, llegar con retraso o ser incorrecto precisamente cuando las condiciones son más peligrosas. Tenga siempre un plan de medición en el campo que no dependa de esta herramienta.",
     "accuracy": "Cotejamos los números de política contra documentos primarios de las asociaciones y fechamos cada verificación, pero las asociaciones revisan sus políticas sin aviso. El documento vigente de la asociación siempre prevalece sobre lo mostrado aquí.",
     "liability": "Este servicio se proporciona \"TAL CUAL\" y \"según disponibilidad\", sin garantías de ningún tipo, expresas o implícitas, incluidas las garantías implícitas de comerciabilidad e idoneidad para un fin determinado. En la máxima medida permitida por la ley, WBGT Check y su operador no serán responsables de lesiones personales, muerte o daños a la propiedad, ni de daños indirectos, incidentales, consecuentes, especiales o punitivos, derivados del uso de este servicio o de la confianza depositada en él. Este servicio no sustituye el juicio independiente, las medidas de seguridad adicionales ni el sentido común.",

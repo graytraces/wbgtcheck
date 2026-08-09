@@ -69,6 +69,15 @@ describe('worker — bare path redirect', () => {
     expect(res.headers.get('location')).toContain('/en')
   })
 
+  it('redirects the air-quality slugs too', async () => {
+    const res = await worker.fetch(
+      req('https://wbgtcheck.com/oregon-air-quality', { 'Accept-Language': 'en' }),
+      makeEnv(),
+    )
+    expect(res.status).toBe(302)
+    expect(res.headers.get('location')).toContain('/en/oregon-air-quality')
+  })
+
   it('redirects /texas to /en/texas', async () => {
     const res = await worker.fetch(
       req('https://wbgtcheck.com/texas', { 'Accept-Language': 'en' }),
@@ -260,5 +269,99 @@ describe('worker — /api/wbgt NWS proxy', () => {
     )
     expect(res.status).toBe(502)
     expect(res.headers.get('cache-control')).toBe('no-store')
+  })
+})
+
+describe('worker — /api/aqi AirNow proxy', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  const DAT = [
+    '08/08/26|08/08/26|23:00|PDT|0|O|Y|Seattle-Bellevue-Kent Valley|WA|47.6062|-122.3321|PM2.5|105|Unhealthy for Sensitive Groups|Yes||Puget Sound Clean Air Agency',
+    '08/08/26|08/08/26|23:00|PDT|0|O|N|Seattle-Bellevue-Kent Valley|WA|47.6062|-122.3321|OZONE|44|Good|No||Puget Sound Clean Air Agency',
+    '08/08/26|08/07/26||PDT|-1|Y|Y|Seattle-Bellevue-Kent Valley|WA|47.6062|-122.3321|PM2.5|60|Moderate|No||Puget Sound Clean Air Agency',
+    '08/08/26|08/08/26|23:00|EDT|0|O|Y|Atlanta|GA|33.7490|-84.3880|PM2.5|41|Good|No||Georgia Environmental Protection Division',
+  ].join('\n')
+
+  function stubAirNow(body = DAT, status = 200) {
+    const fetchMock = vi.fn().mockImplementation((input: string | URL) => {
+      if (String(input).includes('files.airnowtech.org')) {
+        return Promise.resolve(new Response(body, { status }))
+      }
+      return Promise.resolve(new Response('not found', { status: 404 }))
+    })
+    vi.stubGlobal('fetch', fetchMock)
+    return fetchMock
+  }
+
+  it('400s on missing, non-numeric, or out-of-range coordinates', async () => {
+    expect((await worker.fetch(req('https://wbgtcheck.com/api/aqi'), makeEnv())).status).toBe(400)
+    expect(
+      (await worker.fetch(req('https://wbgtcheck.com/api/aqi?lat=abc&lon=1'), makeEnv())).status,
+    ).toBe(400)
+    expect(
+      (await worker.fetch(req('https://wbgtcheck.com/api/aqi?lat=85&lon=-97'), makeEnv())).status,
+    ).toBe(400)
+  })
+
+  it('returns the nearest area with the max sub-index and an hour of edge cache', async () => {
+    stubAirNow()
+    const res = await worker.fetch(
+      req('https://wbgtcheck.com/api/aqi?lat=47.61&lon=-122.33'),
+      makeEnv(),
+    )
+    expect(res.status).toBe(200)
+    expect(res.headers.get('cache-control')).toBe('public, max-age=3600')
+    const body = (await res.json()) as {
+      area: { name: string; state: string }
+      overall: { aqi: number; parameter: string }
+      pm25: { aqi: number } | null
+      agencies: string[]
+      preliminary: boolean
+    }
+    expect(body.area).toMatchObject({ name: 'Seattle-Bellevue-Kent Valley', state: 'WA' })
+    expect(body.overall).toMatchObject({ aqi: 105, parameter: 'PM2.5' })
+    expect(body.pm25?.aqi).toBe(105)
+    expect(body.agencies).toEqual(['Puget Sound Clean Air Agency'])
+    expect(body.preliminary).toBe(true)
+  })
+
+  it('picks the geographically nearest area, not the first row', async () => {
+    stubAirNow()
+    const res = await worker.fetch(
+      req('https://wbgtcheck.com/api/aqi?lat=33.75&lon=-84.39'),
+      makeEnv(),
+    )
+    const body = (await res.json()) as { area: { name: string } }
+    expect(body.area.name).toBe('Atlanta')
+  })
+
+  it('502s when AirNow is down', async () => {
+    stubAirNow('upstream error', 500)
+    const res = await worker.fetch(
+      req('https://wbgtcheck.com/api/aqi?lat=47.61&lon=-122.33'),
+      makeEnv(),
+    )
+    expect(res.status).toBe(502)
+    expect(res.headers.get('cache-control')).toBe('no-store')
+  })
+
+  it('503s when the file parses but holds no current observation', async () => {
+    stubAirNow(
+      '08/06/26|08/09/26||PDT|3|F|Y|Aberdeen|WA|47.1076|-123.7837|PM2.5|28|Good|No||Olympic Region Clean Air Agency',
+    )
+    const res = await worker.fetch(
+      req('https://wbgtcheck.com/api/aqi?lat=47.11&lon=-123.78'),
+      makeEnv(),
+    )
+    expect(res.status).toBe(503)
+  })
+
+  it('does not collide with page routing', async () => {
+    stubAirNow()
+    const assets = okFetch()
+    await worker.fetch(req('https://wbgtcheck.com/api/aqi?lat=47.61&lon=-122.33'), makeEnv(assets))
+    expect(assets.mock.calls.length).toBe(0)
   })
 })

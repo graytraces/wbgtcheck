@@ -27,6 +27,9 @@ export default function Layout() {
     { to: `/${currentLang}/georgia`, label: t('common.nav.georgia') },
     { to: `/${currentLang}/wbgt-vs-heat-index`, label: t('common.nav.wbgtVsHeatIndex') },
     { to: `/${currentLang}/states`, label: t('common.nav.states') },
+    { to: `/${currentLang}/washington-air-quality`, label: t('common.nav.washingtonAir') },
+    { to: `/${currentLang}/oregon-air-quality`, label: t('common.nav.oregonAir') },
+    { to: `/${currentLang}/california-air-quality`, label: t('common.nav.californiaAir') },
   ]
 
   return (

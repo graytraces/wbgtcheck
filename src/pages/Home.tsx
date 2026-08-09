@@ -10,7 +10,11 @@ import TodayTimeline from '../components/TodayTimeline'
 import WeekStrip from '../components/WeekStrip'
 import PolicyBandsTable from '../components/PolicyBandsTable'
 import ShareCardButton from '../components/ShareCardButton'
+import AirQualityGate from '../components/AirQualityGate'
 import { useWbgt, isStale } from '../hooks/useWbgt'
+import { useAirQuality } from '../hooks/useAirQuality'
+import { airPolicyForState } from '../data/airPolicyOracle'
+import { airPageKeyByPolicy, pageSEO } from '../seo'
 import { buildHourlySeries } from '../utils/nws'
 import { annotateHours, groupByDay, currentVerdict, timelineHours } from '../utils/verdict'
 import {
@@ -73,6 +77,20 @@ export default function Home() {
   const lang = i18n.language
   const sections = t('home.sections', { returnObjects: true }) as HomeSection[]
 
+  // Air axis. Deliberately a separate hook and a separate card: the AQI never
+  // feeds into `policy`, `days`, or `current` above, so it cannot move a heat
+  // flag in either direction.
+  const {
+    status: airStatus,
+    data: airData,
+    activity,
+    setActivity,
+    refetch: refetchAir,
+  } = useAirQuality(location?.lat ?? null, location?.lon ?? null)
+  const airPolicy = airPolicyForState(location?.stateAbbr ?? null)
+  const airPageKey = airPolicy ? airPageKeyByPolicy[airPolicy.id] : undefined
+  const airPageSlug = airPageKey ? pageSEO[airPageKey].path : null
+
   return (
     <div className="space-y-8">
       <SEO pageKey="home" />
@@ -119,7 +137,10 @@ export default function Home() {
           </p>
           <button
             type="button"
-            onClick={refetch}
+            onClick={() => {
+              refetch()
+              refetchAir()
+            }}
             className="inline-flex min-h-11 items-center gap-2 bg-ink px-4 font-bold uppercase tracking-wide text-bg hover:opacity-90"
           >
             <RefreshCw className="h-4 w-4" aria-hidden="true" />
@@ -142,6 +163,25 @@ export default function Home() {
       {location && status === 'ready' && !current && (
         <div className="border-2 border-line bg-surface p-5">
           <p>{t('verdict.noData')}</p>
+        </div>
+      )}
+
+      {/* Sits directly under the heat verdict, as a second gate of equal
+          standing — see air.bothGatesNotice. */}
+      {/* airStatus is checked here too: the negative margin that joins this
+          card to the verdict above would still collapse the section gap if the
+          gate itself rendered nothing. */}
+      {location && airStatus !== 'idle' && (
+        <div className="-mt-8">
+          <AirQualityGate
+            status={airStatus}
+            data={airData}
+            policy={airPolicy}
+            activity={activity}
+            onActivityChange={setActivity}
+            statePageSlug={airPageSlug}
+            now={now}
+          />
         </div>
       )}
 
@@ -250,8 +290,17 @@ export default function Home() {
           <Link to={`/${lang}/georgia`} className="mr-4 font-semibold underline">
             {t('common.nav.georgia')}
           </Link>
-          <Link to={`/${lang}/wbgt-vs-heat-index`} className="font-semibold underline">
+          <Link to={`/${lang}/wbgt-vs-heat-index`} className="mr-4 font-semibold underline">
             {t('common.nav.wbgtVsHeatIndex')}
+          </Link>
+          <Link to={`/${lang}/washington-air-quality`} className="mr-4 font-semibold underline">
+            {t('common.nav.washingtonAir')}
+          </Link>
+          <Link to={`/${lang}/oregon-air-quality`} className="mr-4 font-semibold underline">
+            {t('common.nav.oregonAir')}
+          </Link>
+          <Link to={`/${lang}/california-air-quality`} className="font-semibold underline">
+            {t('common.nav.californiaAir')}
           </Link>
         </p>
       </section>

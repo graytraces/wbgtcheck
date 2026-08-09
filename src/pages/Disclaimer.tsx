@@ -7,6 +7,9 @@ const SECTIONS = [
   'notCompliance',
   'notMedical',
   'conditions',
+  // Air quality gets its own clause, one step stronger than the WBGT ones:
+  // the reading is preliminary, hourly, and area-wide rather than field-level.
+  'airQuality',
   'availability',
   'accuracy',
   'liability',

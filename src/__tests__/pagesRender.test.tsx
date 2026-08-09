@@ -15,6 +15,15 @@ import NewYork from '../pages/NewYork'
 import Virginia from '../pages/Virginia'
 import States from '../pages/States'
 import Disclaimer from '../pages/Disclaimer'
+import WashingtonAir from '../pages/WashingtonAir'
+import OregonAir from '../pages/OregonAir'
+import CaliforniaAir from '../pages/CaliforniaAir'
+import {
+  WA_AIR_POLICY,
+  OR_AIR_POLICY,
+  CA_REFRAIN_AT_OR_ABOVE_AQI,
+  CA_RULE_QUOTE,
+} from '../data/airPolicyOracle'
 import {
   UIL_CLASS_2,
   UIL_CLASS_3,
@@ -143,6 +152,32 @@ describe('post-JS rendered DOM', () => {
     expect(
       screen.getByText(i18n.t('virginia.iceBody', { ice: VA_ICE_WBGT_F })),
     ).toBeInTheDocument()
+  })
+
+  it('WashingtonAir renders every band label and all three activity columns', () => {
+    renderAt('/en/washington-air-quality', <WashingtonAir />)
+    for (const band of WA_AIR_POLICY.bands) {
+      expect(screen.getAllByText(band.sourceLabel).length).toBeGreaterThan(0)
+    }
+    for (const activity of ['recess', 'pe', 'athletics'] as const) {
+      expect(screen.getAllByText(en.air.activity[activity]).length).toBeGreaterThan(0)
+    }
+  })
+
+  it('OregonAir renders each stated band with its published visibility range', () => {
+    renderAt('/en/oregon-air-quality', <OregonAir />)
+    for (const band of OR_AIR_POLICY.bands.filter((b) => b.action !== null)) {
+      expect(screen.getAllByText(band.sourceLabel).length).toBeGreaterThan(0)
+      expect(screen.getAllByText(band.visibilityLabel!).length).toBeGreaterThan(0)
+    }
+  })
+
+  it('CaliforniaAir renders the bylaw quote and its threshold', () => {
+    renderAt('/en/california-air-quality', <CaliforniaAir />)
+    expect(screen.getByText(CA_RULE_QUOTE)).toBeInTheDocument()
+    expect(
+      screen.getAllByText(new RegExp(String(CA_REFRAIN_AT_OR_ABOVE_AQI))).length,
+    ).toBeGreaterThan(0)
   })
 
   it('Disclaimer renders the not-a-measurement and not-compliance sections', () => {

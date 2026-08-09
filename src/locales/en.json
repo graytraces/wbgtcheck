@@ -8,7 +8,10 @@
       "texas": "Texas UIL",
       "georgia": "Georgia GHSA",
       "wbgtVsHeatIndex": "WBGT vs Heat Index",
-      "states": "All states"
+      "states": "All states",
+      "washingtonAir": "Washington air",
+      "oregonAir": "Oregon air",
+      "californiaAir": "California air"
     },
     "footer": {
       "safetySummary": "WBGT Check shows forecast-based remote estimates for planning. Remote estimates tend to read LOWER than on-site measurement — treat borderline readings as the higher category and confirm with an on-site WBGT meter before activity decisions. Your association's policy and your athletic trainer's judgment control.",
@@ -136,6 +139,69 @@
     "ghsaTiming": "GHSA: readings at least every {{interval}} min, beginning {{lead}} min before practice, from an on-site instrument.",
     "ghsaCalibration": "GHSA WBGT monitors must be calibrated at least every {{years}} years."
   },
+  "air": {
+    "gateHeading": "Air quality",
+    "bothGatesNotice": "Heat and air are two separate gates. Neither one clears the other — follow whichever is stricter.",
+    "aqiLabel": "AQI",
+    "aqiBasisOverall": "Overall AQI · {{pollutant}}",
+    "aqiBasisPm25": "PM2.5 AQI",
+    "pm25AlsoLabel": "PM2.5 sub-index",
+    "activityLabel": "How long are they outside?",
+    "activity": {
+      "recess": "Recess",
+      "pe": "P.E. class",
+      "athletics": "Practice or game"
+    },
+    "activityMinutes": "{{minutes}} min",
+    "activityHours": "{{hoursMin}}-{{hoursMax}} hr, vigorous",
+    "actions": {
+      "noRestrictions": "No restrictions stated.",
+      "sensitiveMayStayIndoors": "Let students with asthma or another listed health condition stay indoors.",
+      "sensitiveMayStayIndoorsMonitor": "Let students with a listed health condition stay indoors; watch symptoms in those who take part and add rest as needed.",
+      "sensitiveMayOptOut": "Let students with a listed health condition opt out; watch symptoms in those who join and give them extra rest.",
+      "sensitiveIndoorsLight": "Keep students with a listed health condition indoors on light activity, unless indoor PM2.5 is below {{pm25}} µg/m³.",
+      "sensitiveIndoorsOthersLightOutdoor": "Keep students with a listed health condition indoors on light activity, unless indoor PM2.5 is below {{pm25}} µg/m³. Limit everyone else to light outdoor activity, and let any student stay in.",
+      "allIndoorsLight": "Keep all students indoors on light activity, unless indoor PM2.5 is below {{pm25}} µg/m³.",
+      "allIndoorsFilteredLight": "Keep all students indoors on light activity, unless the indoor air is filtered and indoor PM2.5 is below {{pm25}} µg/m³.",
+      "cancelOrMove": "Cancel outdoor athletic events and practices, or move them somewhere with safer air — indoors or a different location.",
+      "cancelOrMoveConsiderTransit": "Cancel outdoor athletic events and practices, or move them somewhere with safer air. Count the time spent in bad air getting there.",
+      "cancelOrMoveFilteredConsiderTransit": "Cancel outdoor athletic events and practices, or move them indoors with filtered air or to a different location. Count the time spent in bad air getting there.",
+      "sensitiveConsiderIndoor": "Athletes unusually sensitive to air pollution should consider indoor activity only. Rescue inhalers on hand, and pretreatment if their provider directs it. Anyone with respiratory illness, asthma, lung or heart disease watches symptoms and reduces or stops activity if they appear. Add rest periods as needed.",
+      "addRestBreaksConsiderReschedule": "All of the above, plus extra rest breaks for asthma, other lung disease, heart conditions or diabetes. Consider moving practice to another time or an area with a lower AQI, and weigh several days of elevated AQI together. Indoors may not be cleaner — check the ventilation.",
+      "cancelOrMoveLowerAqi": "All outdoor activity, practice and competition alike, shall be canceled or moved to an area with a lower AQI. Indoors may not be cleaner — check the ventilation.",
+      "refrainOutdoor": "No outdoor practice or competition. CIF member schools must refrain at or above this reading."
+    },
+    "policyName": {
+      "wa-doh": "Washington DOH school guidance",
+      "or-osaa": "OSAA air quality guidelines",
+      "ca-cif": "CIF air quality bylaw"
+    },
+    "noPolicyHeading": "No verified policy for this state",
+    "noPolicyBody": "We only carry air-quality practice rules we have read in the association's or health department's own document — Washington, Oregon and California so far. Everywhere else you get the EPA category and nothing more: ask your state association and your district what applies.",
+    "noActionStated": "This source states no action at this level. That is not permission — it means the document is silent here.",
+    "areaLabel": "Reporting area",
+    "areaBody": "{{area}} — about {{mi}} miles from your field.",
+    "areaFarNotice": "The nearest monitor is about {{mi}} miles away. Smoke can differ sharply over that distance — use the 5-3-1 check and look at your own sky.",
+    "preliminaryNotice": "Preliminary hourly reading. AirNow observations are not fully verified or validated and can change.",
+    "creditLabel": "Data: {{agencies}} — via EPA AirNow.",
+    "staleNotice": "This reading is from {{time}} and may no longer describe the air outside.",
+    "notClearance": "Planning input, not clearance to play. The person your school designates to monitor air quality decides, on site.",
+    "visibilityHeading": "No monitor nearby? Use the 5-3-1 visibility check",
+    "visibilityBody": "On a clear day, pick landmarks about {{near}}, {{mid}} and {{far}} miles from the field. Stand with the sun behind you: when a landmark's outline can no longer be seen, visibility is shorter than that distance.",
+    "visibilityRecheck": "In smoke or haze, check the AQI or the visibility index at least hourly during practices and games — conditions turn over fast.",
+    "indoorWarning": "Moving indoors is not automatically safer. If the ventilation cannot handle the smoke, indoor air may be worse than outside — and a gym runs hotter, so the heat gate still applies.",
+    "sourceLabel": "Source",
+    "sourceQuoteLabel": "The source's own words",
+    "verifiedOn": "Cross-checked against the primary document on {{date}}",
+    "loading": "Reading air quality…",
+    "loadFailed": "Air quality is unavailable right now. Check AirNow directly before you decide.",
+    "tableAqi": "AQI",
+    "tableAction": "Required action",
+    "tableActivity": "Activity",
+    "tableVisibility": "5-3-1 visibility",
+    "dataSourcesHeading": "Where the air number comes from",
+    "dataSourcesBody": "Readings come from the EPA AirNow program, which republishes hourly observations from state, local and tribal air agencies. Credit belongs to those agencies first. Category colors follow the RGB values EPA specifies for the AQI, unaltered."
+  },
   "seo": {
     "home": {
       "title": "WBGT Forecast with State Heat Policy Flags | WBGT Check",
@@ -201,6 +267,21 @@
       "title": "Disclaimer | WBGT Check",
       "description": "WBGT Check is a planning aid, not a measurement instrument or compliance tool. Read the full disclaimer.",
       "keywords": "WBGT Check disclaimer"
+    },
+    "washingtonAir": {
+      "title": "Washington School Air Quality: Cancel or Move Practice? | WBGT Check",
+      "description": "Washington DOH school air-quality guidance by activity — recess, P.E. and vigorous athletic practices — with the current reading for your field and the 5-3-1 visibility check.",
+      "keywords": "Washington school air quality policy, wildfire smoke practice cancellation Washington, WA DOH school smoke guidance, Washington AQI cancel practice"
+    },
+    "oregonAir": {
+      "title": "Oregon OSAA Air Quality Rules: Practice & Contest Cancellation | WBGT Check",
+      "description": "OSAA's required actions by AQI band for Oregon schools, its published 5-3-1 visibility mapping, and the current reading for your field.",
+      "keywords": "OSAA air quality guidelines, Oregon smoke practice cancellation, Oregon high school AQI rules, 5-3-1 visibility index Oregon"
+    },
+    "californiaAir": {
+      "title": "California CIF Air Quality Bylaw: Outdoor Practice Threshold | WBGT Check",
+      "description": "CIF's statewide air-quality bylaw for member schools, the readings it accepts, and the current AQI for your field — shown next to the heat flag.",
+      "keywords": "CIF air quality bylaw, California high school AQI practice, California school smoke policy, CIF outdoor practice air quality"
     }
   },
   "texas": {
@@ -456,12 +537,49 @@
     "sourceBody": "The requirements and quotations above come from the text of Code of Virginia {{section}}, cross-checked on {{verifiedOn}}. The effective date is not printed on the code page — confirm it, and your district's thresholds, locally.",
     "ctaButton": "See the WBGT forecast"
   },
+  "washingtonAir": {
+    "pageTitle": "Washington school air quality: cancel or move practice?",
+    "intro": "Washington's health department publishes school air-quality guidance by activity, because how long students are outside changes what you should do at the same reading. This page carries that table as printed, alongside the current reading for your field.",
+    "basisHeading": "It is keyed to PM2.5, not the overall AQI",
+    "basisBody": "The table is headed \"Outside Air Quality Index: PM2.5\", so its thresholds follow the PM2.5 sub-index. The overall AQI can be driven by ozone instead, and on a smoky day the two can differ — so the forecast page shows you both numbers.",
+    "tableHeading": "Guidance by activity",
+    "healthConditionsHeading": "Who counts as a sensitive group here",
+    "healthConditionsBody": "{{quote}}",
+    "athleticsNote": "The athletics row is the one most coaches and band directors need: it assumes vigorous activity lasting a couple of hours, which is why it turns to cancellation a full category earlier than recess does.",
+    "sourceHeading": "Source",
+    "sourceBody": "Every threshold and action on this page was read off the primary document."
+  },
+  "oregonAir": {
+    "pageTitle": "Oregon OSAA air quality rules for practices and contests",
+    "intro": "OSAA's air quality guidelines set required actions by AQI band, and they are the only source we verified that also publishes an AQI-to-visibility mapping — which matters when the nearest monitor sits far from your field.",
+    "tableHeading": "Required actions by AQI band",
+    "belowRangeHeading": "Below the table's first row",
+    "belowRangeBody": "The chart starts at its moderate band. OSAA states no action below that, and we will not invent one — a silent document is not a clearance.",
+    "conservativeHeading": "When two metrics disagree",
+    "conservativeBody": "{{quote}}",
+    "sourceHeading": "Source",
+    "sourceBody": "Every threshold and action on this page was read off the primary document."
+  },
+  "californiaAir": {
+    "pageTitle": "California CIF air quality bylaw: the outdoor practice threshold",
+    "intro": "California's rule is a single hard line rather than graduated guidance. At or above one reading, CIF member schools must stop outdoor practice and competition; below it the bylaw says nothing at all.",
+    "ruleHeading": "The bylaw",
+    "ruleBody": "{{quote}}",
+    "readingsHeading": "Which readings the bylaw accepts",
+    "readingsBody": "{{quote}}",
+    "readingsNote": "That sentence is why this site's air gate reads AirNow: the bylaw names it as an acceptable source. It still does not make a website the decision-maker — your designated monitor is.",
+    "belowHeading": "Below the threshold",
+    "belowBody": "The bylaw is silent below that reading. Your section, district or local health department may set something stricter, and the heat gate is unaffected either way.",
+    "sourceHeading": "Source",
+    "sourceBody": "Every threshold and quotation on this page was read off the primary document."
+  },
   "disclaimerPage": {
     "pageTitle": "Disclaimer",
     "notMeasurement": "WBGT Check is a forecast-based planning aid. It is not a measuring instrument, and its numbers are not measurements. On-site WBGT at your field can differ substantially from any remote estimate — published comparisons found remote values roughly {{min}} °C low on average, and up to {{max}} °C low in the most dangerous conditions, which is the unsafe direction.",
     "notCompliance": "This site does not satisfy any association's measurement requirement in states that mandate an on-site instrument (e.g. Georgia GHSA, Kentucky KHSAA). Where internet-based readings are accepted (e.g. Texas UIL), the governing reading is still the one taken at the required time and place under the association's rules.",
     "notMedical": "Nothing here is medical advice. Heat illness decisions belong to qualified medical personnel — athletic trainers, team physicians, EMS. If someone shows signs of exertional heat stroke, call emergency services and begin rapid cooling immediately; do not consult a website. This service is not intended to serve as a primary emergency warning system, nor for emergency or life-safety decisions.",
     "conditions": "Conditions change during a session. A morning forecast cannot govern an afternoon practice; re-check and re-measure at the intervals your policy requires. Pay attention to the date and time of the data displayed — a verdict is only as current as the forecast it was loaded from.",
+    "airQuality": "Air quality on this site is a preliminary hourly reading for an entire reporting area — not a measurement at your field. AirNow observations are not fully verified or validated and are subject to change, they refresh about once an hour, and the nearest monitor can be many miles away, so smoke may be far worse or far better where you are standing. EPA states these data should not be used to act as guidance or to support public decision-making. Treat the air gate as one input to an on-site judgment made by the person your school designates, alongside the 5-3-1 visibility check. Air quality never lowers a heat flag: where both gates apply, the stricter one does.",
     "availability": "This service depends on data from the National Weather Service, which itself makes no guarantee that its data reaches the internet on time or at all — and neither do we. We do not warrant that this service will be uninterrupted, timely, or error-free; it may be unavailable, delayed, or wrong precisely when conditions are most dangerous. Always have an on-site measurement plan that does not depend on this tool.",
     "accuracy": "We cross-check policy numbers against association primary documents and date-stamp each verification, but associations revise policies without notice. The association's current published document always controls over anything shown here.",
     "liability": "This service is provided \"AS IS\" and \"as available\", without warranties of any kind, express or implied, including the implied warranties of merchantability and fitness for a particular purpose. To the maximum extent permitted by law, WBGT Check and its operator shall not be liable for personal injury, death, or property damage, nor for any indirect, incidental, consequential, special, or punitive damages, arising from use of or reliance on this service. This service is not a substitute for independent judgment, additional safety measures, or common sense.",
