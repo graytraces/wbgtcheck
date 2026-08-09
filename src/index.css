@@ -88,17 +88,28 @@ body {
  * yields a submission-ready log sheet instead of the whole app.
  */
 @media print {
-  body.print-wbgt-log * {
-    visibility: hidden;
+  /*
+   * `visibility: hidden` was the wrong tool: it hides the ink but keeps every
+   * box, so the app's full scroll height still paginated. A two-entry log came
+   * out as four sheets, three of them blank. These rules COLLAPSE the boxes —
+   * each sibling along the log's ancestor chain is display:none, so only the
+   * log occupies the printed flow.
+   */
+  body.print-wbgt-log > div > header,
+  body.print-wbgt-log > div > footer {
+    display: none;
   }
-  body.print-wbgt-log #wbgt-log,
-  body.print-wbgt-log #wbgt-log * {
-    visibility: visible;
+  body.print-wbgt-log main > *:not(:has(#wbgt-log)) {
+    display: none;
+  }
+  body.print-wbgt-log main > * > *:not(#wbgt-log) {
+    display: none;
+  }
+  body.print-wbgt-log main {
+    padding: 0;
   }
   body.print-wbgt-log #wbgt-log {
-    position: absolute;
-    left: 0;
-    top: 0;
+    position: static;
     width: 100%;
   }
 }

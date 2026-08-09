@@ -114,6 +114,7 @@
     "cadenceHint": "UIL's rhythm: a reading within {{before}} minutes before practice, then every {{interval}} minutes during. Other associations set their own cadence.",
     "saveForecast": "Log current estimate ({{value}} °F)",
     "savedToast": "Logged",
+    "printHeader": "WBGT reading log — {{location}} — {{range}}",
     "saveFailedNote": "That reading is showing below but could not be written to your browser's storage, so it will be gone when you close this tab. Storage is full or blocked. Print the log now if you need to keep it.",
     "onsiteLabel": "On-site meter reading (°F)",
     "onsiteButton": "Log reading",

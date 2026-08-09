@@ -79,7 +79,7 @@ function LogRow({ entry, onRemove }: { entry: WbgtLogEntry; onRemove: (id: strin
  * index.css can isolate this section for a paper submission.
  */
 export default function WbgtLog({ currentWbgtF, policy, policyId, locationLabel }: WbgtLogProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { entries, addEntry, removeEntry, clearAll } = useWbgtLog()
   const [onsiteRaw, setOnsiteRaw] = useState('')
   const [savedTick, setSavedTick] = useState(0)
@@ -111,6 +111,15 @@ export default function WbgtLog({ currentWbgtF, policy, policyId, locationLabel 
       setTimeout(() => setSavedTick(0), 2000)
     }
   }
+
+  // Oldest→newest span of what is on the sheet. Entries are newest-first.
+  const printRange = (() => {
+    if (entries.length === 0) return ''
+    const fmt = new Intl.DateTimeFormat(i18n.language, { dateStyle: 'medium' })
+    const newest = fmt.format(new Date(entries[0].timestamp))
+    const oldest = fmt.format(new Date(entries[entries.length - 1].timestamp))
+    return oldest === newest ? newest : `${oldest} – ${newest}`
+  })()
 
   const printLog = () => {
     document.body.classList.add('print-wbgt-log')
@@ -192,6 +201,15 @@ export default function WbgtLog({ currentWbgtF, policy, policyId, locationLabel 
 
       {entries.length > 0 && (
         <div className="mt-4">
+          {/* Print-only identification line. On screen the location and dates
+              are obvious from context; on a sheet handed to an athletic
+              director they are the first thing missing. */}
+          <p className="hidden text-sm font-semibold print:block">
+            {t('wbgtLog.printHeader', {
+              location: locationLabel,
+              range: printRange,
+            })}
+          </p>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="text-sm font-bold uppercase tracking-wide">
               {t('wbgtLog.historyTitle')} ({entries.length})
