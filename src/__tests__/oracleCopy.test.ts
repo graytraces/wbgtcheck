@@ -8,6 +8,8 @@ import {
   UIL_CLASS_3,
   UIL_MANDATE_2026_QUOTE,
   GHSA,
+  SCHSL,
+  requiresOnSiteReading,
   REMOTE_UNDERESTIMATE_MIN_C,
   REMOTE_UNDERESTIMATE_MAX_C,
 } from '../data/policyOracle'
@@ -177,6 +179,23 @@ describe('guideline copy derives from the oracle', () => {
     // The no-approval-list caveat has to survive alongside it.
     expect(en.texas.legalityNoList).toContain('approved')
     expect(es.texas.legalityNoList).toContain('aprobado')
+  })
+
+  it('the disclaimer only names device-required states the oracle actually verified', () => {
+    // It used to cite "Kentucky KHSAA" as a device-required example while
+    // /states says the KHSAA documents were unreachable and asks the reader to
+    // confirm directly. The site contradicted itself, and the disclaimer — the
+    // page most likely to be quoted at someone — was the confident half.
+    for (const locale of [en, es]) {
+      expect(locale.disclaimerPage.notCompliance).not.toMatch(/KHSAA|Kentucky/i)
+      // The named examples must be policies whose stance is verified primary.
+      expect(locale.disclaimerPage.notCompliance).toMatch(/GHSA/)
+      expect(locale.disclaimerPage.notCompliance).toMatch(/SCHSL/)
+      // …and /states must still be the place that says KY is unconfirmed.
+      expect(locale.states.notes.ky.length).toBeGreaterThan(0)
+    }
+    expect(requiresOnSiteReading(GHSA)).toBe(true)
+    expect(requiresOnSiteReading(SCHSL)).toBe(true)
   })
 
   it('bias copy claims a range and nothing about its shape', () => {
