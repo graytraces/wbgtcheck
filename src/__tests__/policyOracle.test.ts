@@ -344,6 +344,15 @@ describe('policy oracle — measurement/compliance stance', () => {
     }
   })
 
+  it('the UIL source names the chart file it was actually read from', () => {
+    // The label claimed a "2026-27 ... chart". The 2026-27 plan page links
+    // 25-26WBGTChart.png (200); 26-27WBGTChart.png is a 404 (checked
+    // 2026-08-10). Numbers were right, the edition label was not.
+    expect(UIL_CLASS_3.source.name).toContain('25-26WBGTChart.png')
+    expect(UIL_CLASS_3.source.name).not.toMatch(/2026-27 WBGT Activity Guidelines chart/)
+    expect(UIL_CLASS_2.source).toBe(UIL_CLASS_3.source)
+  })
+
   it('reference tables carry a primary-source URL and verification date', () => {
     for (const table of [NCHSAA_REFERENCE, NYSPHSAA_HEAT_INDEX_REFERENCE]) {
       expect(table.source.url).toMatch(/^https:\/\//)

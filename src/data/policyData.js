@@ -363,8 +363,17 @@ const GHSA_GREEN = {
 
 // --- Policies (bands ordered hottest first) -------------------------------
 
+/**
+ * The label used to read "(2026-27 WBGT Activity Guidelines chart)", which
+ * claims an edition that does not exist as a file. Re-checked 2026-08-10:
+ * the 2026-27 plan page links `files/athletics/25-26WBGTChart.png` (HTTP 200),
+ * and `26-27WBGTChart.png` is a 404. The thresholds themselves are correct and
+ * unchanged — this is the chart the current plan page serves — so only the
+ * label moves. Naming the file is what makes the next re-verification
+ * checkable rather than a guess about which edition we read.
+ */
 const UIL_SOURCE = {
-  name: 'UIL Heat Stress & Athletic Participation (2026-27 WBGT Activity Guidelines chart)',
+  name: 'UIL Heat Stress & Athletic Participation — WBGT chart as linked from the 2026-27 plan page (file 25-26WBGTChart.png)',
   url: 'https://www.uiltexas.org/health/info/heat-stress-and-athletic-participation',
   verifiedOn: '2026-08-09',
 }
