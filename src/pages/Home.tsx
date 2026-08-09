@@ -7,6 +7,7 @@ import LocationSetup from '../components/LocationSetup'
 import PolicyPicker from '../components/PolicyPicker'
 import UilClassPrompt from '../components/UilClassPrompt'
 import VerdictCard from '../components/VerdictCard'
+import LogQuickAdd from '../components/LogQuickAdd'
 import TodayTimeline from '../components/TodayTimeline'
 import WeekStrip from '../components/WeekStrip'
 import PolicyBandsTable from '../components/PolicyBandsTable'
@@ -190,6 +191,18 @@ export default function Home() {
           stateAbbr={location.stateAbbr}
           timeZone={timeZone}
           fetchedAt={fetchedAt}
+        />
+      )}
+
+      {/* Recording a reading belongs beside the reading. The full log is
+          about 2.5 screens down, which is the right place to review the record
+          and the wrong place to start one. */}
+      {location && status === 'ready' && current && (
+        <LogQuickAdd
+          currentWbgtF={current.wbgtF}
+          policy={policy}
+          policyId={policyId}
+          locationLabel={location.label}
         />
       )}
 

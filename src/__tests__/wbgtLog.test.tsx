@@ -3,6 +3,8 @@ import { render, screen, fireEvent } from '@testing-library/react'
 import i18n from '../i18n'
 import en from '../locales/en.json'
 import WbgtLog from '../components/WbgtLog'
+import LogQuickAdd from '../components/LogQuickAdd'
+import { readWbgtLog } from '../hooks/useWbgtLog'
 import { GENERIC_NATA } from '../data/policyOracle'
 
 /**
@@ -124,5 +126,48 @@ describe('WbgtLog when the write fails', () => {
     renderLog(88.4)
     fireEvent.click(screen.getByRole('button', { name: /log current estimate/i }))
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+})
+
+describe('LogQuickAdd beside the verdict', () => {
+  it('writes to the same log the history below reads', () => {
+    installMemoryStorage()
+    render(
+      <>
+        <LogQuickAdd
+          currentWbgtF={88.4}
+          policy={GENERIC_NATA}
+          policyId="generic"
+          locationLabel="Austin, TX"
+        />
+        <WbgtLog
+          currentWbgtF={88.4}
+          policy={GENERIC_NATA}
+          policyId="generic"
+          locationLabel="Austin, TX"
+        />
+      </>,
+    )
+    // One shared listener set, so saving from the quick button fills the
+    // history further down the same page without a reload.
+    fireEvent.click(screen.getByRole('button', { name: /log 88\.4/i }))
+    expect(readWbgtLog()).toHaveLength(1)
+    expect(screen.getByLabelText(en.wbgtLog.historyTitle)).toBeInTheDocument()
+  })
+
+  it('points at the full log once there is something in it', () => {
+    installMemoryStorage()
+    render(
+      <LogQuickAdd
+        currentWbgtF={88.4}
+        policy={GENERIC_NATA}
+        policyId="generic"
+        locationLabel="Austin, TX"
+      />,
+    )
+    // Nothing logged yet — no link to an empty list.
+    expect(screen.queryByRole('link')).not.toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /log 88\.4/i }))
+    expect(screen.getByRole('link')).toHaveAttribute('href', '#wbgt-log')
   })
 })
