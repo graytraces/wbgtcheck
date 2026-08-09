@@ -473,6 +473,21 @@ export const SCHSL_CONTINUOUS_QUOTE =
 // --- Iowa administrative constants ---------------------------------------
 // Source: IHSAA/IGHSAU/IHSMA/IHSSA WBGT Heat Modification Guidance (8.5.24).
 
+/**
+ * The document's single cadence statement, quoted in full under "Additional
+ * information": "WBGT should be measured every 30 minutes (where the activity
+ * is being held)".
+ *
+ * Re-verified 2026-08-10 against the cited PDF (sha256
+ * 809dab2bc0481d6a15873f3aa83386bd0b2fd747e2b11d39efc4ed8b048c461b, 7 pages).
+ * A reported "every 20 to 30 minutes" variant was searched for across every
+ * page and does NOT appear in this edition — the only occurrences of "20" are
+ * "15 - 20 times greater than at rest" and the red band's "20 minutes of rest
+ * breaks". So there is no in-document conflict to resolve here, unlike the
+ * SCHSL top boundary or the 79.7 gap below. If a future edition or a separate
+ * IHSAA FAQ does print a 20-30 range, record it here and keep 30 (the chart is
+ * normative, and the longer interval is the permissive reading).
+ */
 export const IOWA_READING_INTERVAL_MINUTES = 30
 export const IOWA_ACCLIMATIZE_DEVICE_MIN_MINUTES = 15
 export const IOWA_ACCLIMATIZE_DEVICE_MAX_MINUTES = 20
