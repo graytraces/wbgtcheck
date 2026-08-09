@@ -175,7 +175,7 @@
   },
   "measurement": {
     "uilTiming": "UIL: lea el WBGT dentro de los {{before}} min previos a la práctica y luego cada {{interval}} min.",
-    "uilApps": "La UIL acepta explícitamente lecturas por internet: \"{{quote}}\" — los pronósticos como este son ayudas legítimas de planificación y lectura.",
+    "uilApps": "El plan de la UIL nombra \"{{quote}}\" como método que acepta. No define \"aprobado\" ni publica una lista de recursos de internet aprobados, así que si este sitio puede ser su lectura oficial es decisión de su distrito — planifique con él y confírmelo antes de usarlo como la lectura.",
     "ghsaTiming": "GHSA: lecturas al menos cada {{interval}} min, comenzando {{lead}} min antes de la práctica, con un instrumento en el sitio.",
     "ghsaCalibration": "Los monitores WBGT de la GHSA deben calibrarse al menos cada {{years}} años."
   },

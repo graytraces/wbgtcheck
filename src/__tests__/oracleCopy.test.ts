@@ -136,6 +136,24 @@ describe('guideline copy derives from the oracle', () => {
     expect(es.texas.recordkeepingNote.toLowerCase()).not.toContain('cadencia es obligatoria')
   })
 
+  it('the home measurement note carries the no-approval-list caveat', () => {
+    // The home copy used to read "UIL explicitly allows ... forecasts like this
+    // one may be used for planning AND READINGS", which claims more than the
+    // site's own verification supports: the FAQ says "approved internet-based
+    // WBGT forecasting resource" and neither UIL document defines "approved"
+    // or lists approved resources. /texas states that limit correctly; the home
+    // page was the one surface that overrode it.
+    expect(en.measurement.uilApps).toContain('approved')
+    expect(en.measurement.uilApps.toLowerCase()).toContain("district's call")
+    expect(es.measurement.uilApps).toContain('aprobado')
+    expect(es.measurement.uilApps.toLowerCase()).toContain('decisión de su distrito')
+    for (const locale of [en, es]) {
+      // No surface may present the forecast as usable AS the official reading.
+      expect(locale.measurement.uilApps.toLowerCase()).not.toContain('may be used for planning and readings')
+      expect(locale.measurement.uilApps.toLowerCase()).not.toContain('planificación y lectura')
+    }
+  })
+
   it('the UIL-linked tool is presented as a link, never as an approval', () => {
     // Naming the one tool UIL links is honest; letting it read as an
     // endorsement would manufacture the approval the documents never give.

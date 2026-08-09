@@ -175,7 +175,7 @@
   },
   "measurement": {
     "uilTiming": "UIL: read WBGT within {{before}} min before practice, then every {{interval}} min during.",
-    "uilApps": "UIL explicitly allows \"{{quote}}\" — forecasts like this one may be used for planning and readings.",
+    "uilApps": "UIL's plan names \"{{quote}}\" as a method it accepts. It does not define \"approved\" or publish a list of approved internet resources, so whether this site can be your official reading is your district's call — plan with it, and confirm before relying on it as the reading.",
     "ghsaTiming": "GHSA: readings at least every {{interval}} min, beginning {{lead}} min before practice, from an on-site instrument.",
     "ghsaCalibration": "GHSA WBGT monitors must be calibrated at least every {{years}} years."
   },
