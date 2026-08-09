@@ -18,9 +18,8 @@ import {
   UIL_RECORDKEEPING_QUOTE,
   UIL_INTERNET_CADENCE_QUOTE,
   UIL_LINKED_TOOL,
+  UIL_REGION_MAP_URL,
 } from '../data/policyOracle'
-
-const UIL_MAP_URL = 'https://www.uiltexas.org/files/health/WBGTMap.jpg'
 
 export default function Texas() {
   const { t, i18n } = useTranslation()
@@ -55,7 +54,7 @@ export default function Texas() {
         <h2 className="display-num mb-2 text-2xl uppercase">{t('texas.classesHeading')}</h2>
         <p>{t('texas.classesBody')}</p>
         <p className="mt-2">
-          <a href={UIL_MAP_URL} target="_blank" rel="noopener noreferrer" className="font-semibold underline">
+          <a href={UIL_REGION_MAP_URL} target="_blank" rel="noopener noreferrer" className="font-semibold underline">
             {t('policies.uilMapLink')}
           </a>
         </p>

@@ -100,8 +100,10 @@ describe('guideline copy derives from the oracle', () => {
 
   it('every policy in the picker has a display name in both locales', () => {
     for (const id of Object.keys(POLICIES)) {
-      expect((en.policies as Record<string, string>)[id], `en policies.${id}`).toBeTruthy()
-      expect((es.policies as Record<string, string>)[id], `es policies.${id}`).toBeTruthy()
+      // Record<string, unknown>: policies also holds nested copy blocks
+      // (classPrompt), so it is not a flat string map.
+      expect((en.policies as Record<string, unknown>)[id], `en policies.${id}`).toBeTruthy()
+      expect((es.policies as Record<string, unknown>)[id], `es policies.${id}`).toBeTruthy()
     }
   })
 

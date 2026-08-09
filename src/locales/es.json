@@ -65,7 +65,13 @@
     "pickerLabel": "Política",
     "pickerHelp": "Elija su asociación estatal. Texas: Clase 2 o Clase 3 depende de su región — consulte el mapa de la UIL.",
     "uilMapLink": "Mapa de clases regionales de la UIL",
-    "txClassHint": "Texas: la mayor parte del este y centro de Texas — incluidas las áreas de Houston, Dallas–Fort Worth, Austin y San Antonio — es Clase 3; el Panhandle y el extremo oeste de Texas son Clase 2. Ubique su condado en el mapa de la UIL y elija su clase (este sitio usa por defecto la Clase 2, más estricta, hasta que lo haga).",
+    "txClassHint": "Texas: la mayor parte del este y centro de Texas — incluidas las áreas de Houston, Dallas–Fort Worth, Austin y San Antonio — es Clase 3; el Panhandle y el extremo oeste de Texas son Clase 2. Puede cambiar su clase aquí cuando quiera.",
+    "classPrompt": {
+      "heading": "¿Qué clase de la UIL es su escuela?",
+      "body": "La UIL aplica dos escalas de umbrales distintas en Texas y no coinciden en cuándo hay que detener la práctica. La mayor parte del este y centro de Texas — incluidas las áreas de Houston, Dallas–Fort Worth, Austin y San Antonio — es Clase 3; el Panhandle y el extremo oeste de Texas son Clase 2.",
+      "pending": "Hasta que elija, todas las banderas de esta página usan la Clase 2, más estricta.",
+      "mapLink": "Ubique su condado en el mapa de la UIL"
+    },
     "districtNote": "La política de su distrito escolar puede ser más estricta que la estatal — en Virginia y Maryland, los distritos fijan sus propios umbrales por ley. Rige la regla aplicable más estricta.",
     "sourceLabel": "Fuente",
     "verifiedOn": "verificado el {{date}}"

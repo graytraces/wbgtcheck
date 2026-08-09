@@ -90,6 +90,16 @@ export const UIL_LINKED_TOOL = {
   verifiedOn: '2026-08-09',
 }
 
+/**
+ * UIL's own regional class map — the only authoritative way for a school to
+ * learn whether it is Class 2 or Class 3. We do not derive the class from the
+ * county: no machine-readable county→class list is published (README backlog),
+ * and guessing it in the permissive direction is the failure mode this site
+ * exists to prevent. Every surface that asks a Texas user for their class
+ * links here. (verified 2026-08-09)
+ */
+export const UIL_REGION_MAP_URL = 'https://www.uiltexas.org/files/health/WBGTMap.jpg'
+
 // --- GHSA (Georgia) administrative constants ------------------------------
 
 export const GHSA_READING_INTERVAL_MINUTES = 30

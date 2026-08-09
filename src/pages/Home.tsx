@@ -5,6 +5,7 @@ import { RefreshCw } from 'lucide-react'
 import SEO from '../components/SEO'
 import LocationSetup from '../components/LocationSetup'
 import PolicyPicker from '../components/PolicyPicker'
+import UilClassPrompt from '../components/UilClassPrompt'
 import VerdictCard from '../components/VerdictCard'
 import TodayTimeline from '../components/TodayTimeline'
 import WeekStrip from '../components/WeekStrip'
@@ -41,6 +42,7 @@ export default function Home() {
     location,
     policy,
     policyId,
+    uilClassChosen,
     status,
     data,
     fetchedAt,
@@ -113,6 +115,12 @@ export default function Home() {
             <PolicyPicker value={policyId} onChange={setPolicyId} />
           </div>
         </>
+      )}
+
+      {/* Above the verdict, not below the picker: until this is answered every
+          Texas verdict on the page is the stricter Class 2 guess. */}
+      {location?.stateAbbr === 'TX' && !uilClassChosen && (
+        <UilClassPrompt onChoose={setPolicyId} />
       )}
 
       {location && status === 'error' && (
@@ -209,7 +217,9 @@ export default function Home() {
               <ShareCardButton day={today} policy={policy} locationLabel={location.label} />
             )}
           </div>
-          {location.stateAbbr === 'TX' && policyId.startsWith('uil') && (
+          {/* Once the class is chosen the prompt above is gone, so this is the
+              reminder that the choice is a region call and is changeable. */}
+          {location.stateAbbr === 'TX' && policyId.startsWith('uil') && uilClassChosen && (
             <p className="max-w-2xl border-l-4 border-flag-orange pl-3 text-sm font-semibold">
               {t('policies.txClassHint')}
             </p>

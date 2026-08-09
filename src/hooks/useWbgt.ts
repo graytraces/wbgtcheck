@@ -7,6 +7,13 @@ import { POLICIES } from '../data/policyOracle'
 
 const LOCATION_KEY = 'wbgt-location'
 const POLICY_KEY = 'wbgt-policy'
+/**
+ * Records that a Texas user has answered the UIL class question, so the prompt
+ * is asked once and not on every visit. Separate from POLICY_KEY because that
+ * key cannot distinguish "defaulted to Class 2" from "chose Class 2" — and the
+ * whole point of the prompt is that the default is a guess.
+ */
+const UIL_CLASS_KEY = 'wbgt-uil-class'
 
 export interface SavedLocation {
   lat: number
@@ -137,6 +144,9 @@ export function useWbgt() {
     const saved = loadSaved<PolicyId>(POLICY_KEY)
     return saved && saved in POLICIES ? saved : defaultPolicyFor(loadSaved<SavedLocation>(LOCATION_KEY)?.stateAbbr ?? null)
   })
+  const [uilClassChosen, setUilClassChosen] = useState<boolean>(
+    () => loadSaved<PolicyId>(UIL_CLASS_KEY) !== null,
+  )
   const [status, setStatus] = useState<WbgtStatus>(location ? 'loading' : 'idle')
   const [data, setData] = useState<WbgtApiResponse | null>(null)
   const [fetchedAt, setFetchedAt] = useState<number | null>(null)
@@ -249,6 +259,12 @@ export function useWbgt() {
   const setPolicyId = useCallback((id: PolicyId) => {
     setPolicyIdState(id)
     save(POLICY_KEY, id)
+    // Any explicit UIL pick — from the prompt or from the picker — answers the
+    // class question for good.
+    if (id.startsWith('uil')) {
+      save(UIL_CLASS_KEY, id)
+      setUilClassChosen(true)
+    }
   }, [])
 
   const clearLocation = useCallback(() => {
@@ -288,6 +304,7 @@ export function useWbgt() {
     location,
     policy,
     policyId,
+    uilClassChosen,
     status,
     data,
     fetchedAt,

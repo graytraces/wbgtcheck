@@ -1,8 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import type { PolicyId } from '../data/policyOracle'
-import { POLICIES } from '../data/policyOracle'
-
-const UIL_MAP_URL = 'https://www.uiltexas.org/files/health/WBGTMap.jpg'
+import { POLICIES, UIL_REGION_MAP_URL } from '../data/policyOracle'
 
 interface PolicyPickerProps {
   value: PolicyId
@@ -31,7 +29,7 @@ export default function PolicyPicker({ value, onChange }: PolicyPickerProps) {
       <p className="text-xs text-ink-muted">
         {t('policies.pickerHelp')}{' '}
         {value.startsWith('uil') && (
-          <a href={UIL_MAP_URL} target="_blank" rel="noopener noreferrer" className="underline">
+          <a href={UIL_REGION_MAP_URL} target="_blank" rel="noopener noreferrer" className="underline">
             {t('policies.uilMapLink')}
           </a>
         )}

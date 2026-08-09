@@ -65,7 +65,13 @@
     "pickerLabel": "Policy",
     "pickerHelp": "Pick your state association. Texas: Class 2 vs Class 3 depends on your region — check the UIL map.",
     "uilMapLink": "UIL regional class map",
-    "txClassHint": "Texas: most of eastern and central Texas — including the Houston, Dallas–Fort Worth, Austin and San Antonio areas — is Class 3; the Panhandle and far West Texas are Class 2. Find your county on the UIL map and pick your class (this site defaults to the stricter Class 2 until you do).",
+    "txClassHint": "Texas: most of eastern and central Texas — including the Houston, Dallas–Fort Worth, Austin and San Antonio areas — is Class 3; the Panhandle and far West Texas are Class 2. You can change your class here any time.",
+    "classPrompt": {
+      "heading": "Which UIL class is your school?",
+      "body": "UIL runs two threshold ladders in Texas and they disagree about when practice has to stop. Most of eastern and central Texas — including the Houston, Dallas–Fort Worth, Austin and San Antonio areas — is Class 3; the Panhandle and far West Texas are Class 2.",
+      "pending": "Until you choose, every flag on this page uses the stricter Class 2.",
+      "mapLink": "Find your county on the UIL map"
+    },
     "districtNote": "Your school district's policy may be stricter than the state policy — in Virginia and Maryland, districts set their own thresholds by law. The strictest applicable rule wins.",
     "sourceLabel": "Source",
     "verifiedOn": "verified {{date}}"
