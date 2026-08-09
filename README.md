@@ -77,12 +77,11 @@ monetization) — all pending an explicit go decision:
 
 ## AQI axis follow-ups (opened by Phase 1)
 
-- **Notify EPA AirNow that we use their data** — an operational obligation, not
-  code. The AirNow Data Exchange Guidelines require that products relying on
-  these data "be made known to the relevant federal, state, local, and tribal
-  air quality agencies and the EPA AirNow program", and the guidelines document
-  ends in a form to return to `dmc@airnowtech.org`. Send it, and keep the
-  contact address current so we get schema-change notices.
+- ~~**Notify EPA AirNow that we use their data**~~ — **done 2026-08-09**: the
+  completed Data Exchange Guidelines agreement form was emailed to
+  `dmc@airnowtech.org` from cardi.workshop@gmail.com (contact of record).
+  Remaining obligation is passive: keep that contact address current so we get
+  schema-change notices, and respond if the DMC replies.
 - **AQI axis Phase 2** (deliberately out of Phase 1 scope): CO / UT / MN / WI
   policies, multi-day AQI forecasts, PurpleAir sensors, and any alerting. Each
   new jurisdiction is gated on fetching its primary document first. Note that
