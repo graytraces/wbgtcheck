@@ -21,6 +21,11 @@ import {
   UIL_CLASS_2,
   UIL_CLASS_3,
   GHSA,
+  SCHSL,
+  TSSAA,
+  IOWA_CATEGORY_2,
+  NCHSAA_REFERENCE,
+  NYSPHSAA_HEAT_INDEX_REFERENCE,
   UIL_EFFECTIVE_DATE,
   UIL_READING_BEFORE_PRACTICE_MAX_MINUTES,
   UIL_READING_INTERVAL_MINUTES,
@@ -29,6 +34,46 @@ import {
   GHSA_READING_LEAD_MINUTES,
   GHSA_CALIBRATION_INTERVAL_YEARS,
   GHSA_FAQ_WBGT_HI_COMPARISON,
+  SCHSL_APP_QUOTE,
+  SCHSL_CALIBRATION_INTERVAL_YEARS,
+  SCHSL_COLD_IMMERSION_WBGT_F,
+  SCHSL_DEVICE_QUOTE,
+  SCHSL_RANGE_HOLD_MINUTES,
+  SCHSL_READING_INTERVAL_MINUTES,
+  SCHSL_READING_LEAD_MINUTES,
+  SCHSL_REQUIRED_QUOTE,
+  SCHSL_TOP_BOUNDARY_TEXT_QUOTE,
+  TSSAA_APP_QUOTE,
+  TSSAA_EITHER_QUOTE,
+  TSSAA_HEAT_INDEX_BANDS,
+  TSSAA_REVISION,
+  TSSAA_WBGT_FIRST_CHOICE_QUOTE,
+  IOWA_ACCLIMATIZE_DEVICE_MAX_MINUTES,
+  IOWA_ACCLIMATIZE_DEVICE_MIN_MINUTES,
+  IOWA_AMBIENT_TRIGGER_F,
+  IOWA_APP_QUOTE,
+  IOWA_CATEGORY_NUMBER,
+  IOWA_DEVICE_HEIGHT_FEET,
+  IOWA_READING_INTERVAL_MINUTES,
+  IOWA_RECOMMENDED_QUOTE,
+  NCHSAA_REMOTE_QUOTE,
+  NCHSAA_STAFFING_QUOTE,
+  NCHSAA_WEATHER_STATION_RADIUS_MAX_MILES,
+  NCHSAA_WEATHER_STATION_RADIUS_MIN_MILES,
+  NYSPHSAA_AMBIENT_TRIGGER_F,
+  NYSPHSAA_APPROVED_ON,
+  NYSPHSAA_APP_QUOTE,
+  NYSPHSAA_CHECK_LEAD_HOURS,
+  NYSPHSAA_UPDATED_ON,
+  NYSPHSAA_WARNING_BREAK_INTERVAL_MINUTES,
+  NYSPHSAA_ZIP_QUOTE,
+  VA_CANCEL_QUOTE,
+  VA_CODE_CITATION,
+  VA_CODE_SECTION,
+  VA_CONSISTENCY_QUOTE,
+  VA_ICE_WBGT_F,
+  VA_MIN_TIERS,
+  VA_STATUTE_SOURCE,
   REMOTE_UNDERESTIMATE_MIN_C,
   REMOTE_UNDERESTIMATE_MAX_C,
 } from '../src/data/policyData.js'
@@ -54,6 +99,12 @@ const pages = [
   { key: 'home', path: '', dateModified: today },
   { key: 'texas', path: 'texas', dateModified: today },
   { key: 'georgia', path: 'georgia', dateModified: today },
+  { key: 'southCarolina', path: 'south-carolina', dateModified: today },
+  { key: 'tennessee', path: 'tennessee', dateModified: today },
+  { key: 'iowa', path: 'iowa', dateModified: today },
+  { key: 'northCarolina', path: 'north-carolina', dateModified: today },
+  { key: 'newYork', path: 'new-york', dateModified: today },
+  { key: 'virginia', path: 'virginia', dateModified: today },
   { key: 'wbgtVsHeatIndex', path: 'wbgt-vs-heat-index', dateModified: today },
   { key: 'states', path: 'states', dateModified: today },
   { key: 'privacy', path: 'privacy', dateModified: today },
@@ -177,6 +228,56 @@ function policyTableHtml(policy, t) {
   return `<table><thead><tr><th>${escapeHtml(t('verdict.wbgtLabel'))} (°F)</th><th>${escapeHtml(t('texas.tableGuidelines'))}</th></tr></thead><tbody>${rows}</tbody></table>`
 }
 
+/** NCHSAA's chart — its own colour code, coolest row first (mirrors the page). */
+function referenceTableHtml(table, t) {
+  const rows = [...table.rows]
+    .reverse()
+    .map((row) => {
+      const items = row.textKeys.map((key) => `<li>${escapeHtml(t(key))}</li>`)
+      if (row.breakMinutes !== null && row.breakEveryMinutes !== null) {
+        items.push(
+          `<li>${escapeHtml(
+            t('northCarolina.breakCell', {
+              minutes: row.breakMinutes,
+              every: row.breakEveryMinutes,
+            }),
+          )}</li>`,
+        )
+      }
+      return `<tr><td>${escapeHtml(row.sourceLabel)}</td><td>${escapeHtml(
+        t(`northCarolina.colors.${row.colorKey}`),
+      )}</td><td><ul>${items.join('')}</ul></td></tr>`
+    })
+    .join('')
+  return `<table><thead><tr><th>${escapeHtml(t('northCarolina.colWbgt'))}</th><th>${escapeHtml(
+    t('northCarolina.colColor'),
+  )}</th><th>${escapeHtml(t('northCarolina.colGuideline'))}</th></tr></thead><tbody>${rows}</tbody></table>`
+}
+
+/** NYSPHSAA's heat-index ladder — HEAT INDEX degrees, never WBGT. */
+function newYorkTableHtml(t) {
+  const rows = [...NYSPHSAA_HEAT_INDEX_REFERENCE.rows]
+    .reverse()
+    .map((row) => {
+      const items = row.textKeys
+        .map(
+          (key) =>
+            `<li>${escapeHtml(t(key, { minutes: NYSPHSAA_WARNING_BREAK_INTERVAL_MINUTES }))}</li>`,
+        )
+        .join('')
+      const tier = `${t(`newYork.tiers.${row.tierKey}`)} — ${
+        row.required ? t('newYork.requiredLabel') : t('newYork.recommendedLabel')
+      }`
+      return `<tr><td>${escapeHtml(row.sourceLabel)}</td><td>${escapeHtml(
+        tier,
+      )}</td><td><ul>${items}</ul></td></tr>`
+    })
+    .join('')
+  return `<table><thead><tr><th>${escapeHtml(t('newYork.colHeatIndex'))}</th><th>${escapeHtml(
+    t('newYork.colTier'),
+  )}</th><th>${escapeHtml(t('newYork.colAction'))}</th></tr></thead><tbody>${rows}</tbody></table>`
+}
+
 function generateBodyContent(lang, page) {
   const t = makeT(lang)
   const parts = []
@@ -247,6 +348,207 @@ function generateBodyContent(lang, page) {
     push(`<h2>${escapeHtml(t('georgia.practiceDefHeading'))}</h2><p>${escapeHtml(t('georgia.practiceDefBody'))}</p>`)
     push(
       `<p>${escapeHtml(t('georgia.sourceBody', { verifiedOn: GHSA.source.verifiedOn }))} <a href="${GHSA.source.url}">${escapeHtml(GHSA.source.name)}</a></p>`,
+    )
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+  } else if (page.key === 'southCarolina') {
+    push(`<h1>${escapeHtml(t('southCarolina.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('southCarolina.intro'))}</p>`)
+    push(`<h2>${escapeHtml(t('southCarolina.deviceHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('southCarolina.deviceBody', {
+          required: SCHSL_REQUIRED_QUOTE,
+          device: SCHSL_DEVICE_QUOTE,
+          apps: SCHSL_APP_QUOTE,
+        }),
+      )}</p>`,
+    )
+    push(`<p>${escapeHtml(t('southCarolina.deviceWarning'))}</p>`)
+    push(`<h2>${escapeHtml(t('southCarolina.tableHeading'))}</h2>`)
+    push(policyTableHtml(SCHSL, t))
+    push(
+      `<p>${escapeHtml(
+        t('southCarolina.boundaryNote', {
+          tableLabel: SCHSL.bands[0].sourceLabel,
+          textLabel: SCHSL_TOP_BOUNDARY_TEXT_QUOTE,
+        }),
+      )}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('southCarolina.measurementHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('southCarolina.measurementTiming', {
+          lead: SCHSL_READING_LEAD_MINUTES,
+          interval: SCHSL_READING_INTERVAL_MINUTES,
+        }),
+      )}</p>`,
+    )
+    push(
+      `<p>${escapeHtml(t('southCarolina.measurementHold', { hold: SCHSL_RANGE_HOLD_MINUTES }))}</p>`,
+    )
+    push(
+      `<p>${escapeHtml(
+        t('southCarolina.measurementCalibration', { years: SCHSL_CALIBRATION_INTERVAL_YEARS }),
+      )}</p>`,
+    )
+    push(
+      `<p>${escapeHtml(
+        t('southCarolina.immersionNote', { immersion: SCHSL_COLD_IMMERSION_WBGT_F }),
+      )}</p>`,
+    )
+    push(
+      `<p>${escapeHtml(t('southCarolina.sourceBody', { verifiedOn: SCHSL.source.verifiedOn }))} <a href="${SCHSL.source.url}">${escapeHtml(SCHSL.source.name)}</a></p>`,
+    )
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+  } else if (page.key === 'tennessee') {
+    push(`<h1>${escapeHtml(t('tennessee.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('tennessee.intro'))}</p>`)
+    push(`<h2>${escapeHtml(t('tennessee.choiceHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('tennessee.choiceBody', {
+          either: TSSAA_EITHER_QUOTE,
+          firstChoice: TSSAA_WBGT_FIRST_CHOICE_QUOTE,
+        }),
+      )}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('tennessee.tableHeading'))}</h2>`)
+    push(policyTableHtml(TSSAA, t))
+    push(`<p>${escapeHtml(t('tennessee.lowBandNote'))}</p>`)
+    push(`<h2>${escapeHtml(t('tennessee.hiTableHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('tennessee.hiTableNote'))}</p>`)
+    push(
+      `<table><thead><tr><th>${escapeHtml(t('tennessee.hiColHeatIndex'))}</th><th>${escapeHtml(
+        t('tennessee.hiColWbgt'),
+      )}</th></tr></thead><tbody>${TSSAA_HEAT_INDEX_BANDS.map(
+        (b) => `<tr><td>${escapeHtml(b.sourceLabel)}</td><td>${escapeHtml(b.pairsWithWbgt)}</td></tr>`,
+      ).join('')}</tbody></table>`,
+    )
+    push(`<h2>${escapeHtml(t('tennessee.appsHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('tennessee.appsBody', { apps: TSSAA_APP_QUOTE }))}</p>`)
+    push(`<h2>${escapeHtml(t('tennessee.scopeHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('tennessee.scopeBody'))}</p>`)
+    push(
+      `<p>${escapeHtml(
+        t('tennessee.sourceBody', {
+          revision: TSSAA_REVISION,
+          verifiedOn: TSSAA.source.verifiedOn,
+        }),
+      )} <a href="${TSSAA.source.url}">${escapeHtml(TSSAA.source.name)}</a></p>`,
+    )
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+  } else if (page.key === 'iowa') {
+    push(`<h1>${escapeHtml(t('iowa.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('iowa.intro'))}</p>`)
+    push(`<h2>${escapeHtml(t('iowa.recommendedHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('iowa.recommendedBody', { recommended: IOWA_RECOMMENDED_QUOTE }))}</p>`)
+    push(`<p>${escapeHtml(t('iowa.categoryBody', { category: IOWA_CATEGORY_NUMBER }))}</p>`)
+    push(`<p>${escapeHtml(t('iowa.triggerNote', { trigger: IOWA_AMBIENT_TRIGGER_F }))}</p>`)
+    push(`<h2>${escapeHtml(t('iowa.tableHeading'))}</h2>`)
+    push(policyTableHtml(IOWA_CATEGORY_2, t))
+    push(`<h2>${escapeHtml(t('iowa.appsHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('iowa.appsBody', { apps: IOWA_APP_QUOTE }))}</p>`)
+    push(`<h2>${escapeHtml(t('iowa.measurementHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('iowa.measurementBody', {
+          accMin: IOWA_ACCLIMATIZE_DEVICE_MIN_MINUTES,
+          accMax: IOWA_ACCLIMATIZE_DEVICE_MAX_MINUTES,
+          height: IOWA_DEVICE_HEIGHT_FEET,
+          interval: IOWA_READING_INTERVAL_MINUTES,
+        }),
+      )}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('iowa.bandHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('iowa.bandBody'))}</p>`)
+    push(
+      `<p>${escapeHtml(t('iowa.sourceBody', { verifiedOn: IOWA_CATEGORY_2.source.verifiedOn }))} <a href="${IOWA_CATEGORY_2.source.url}">${escapeHtml(IOWA_CATEGORY_2.source.name)}</a></p>`,
+    )
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+  } else if (page.key === 'northCarolina') {
+    push(`<h1>${escapeHtml(t('northCarolina.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('northCarolina.intro'))}</p>`)
+    push(`<h2>${escapeHtml(t('northCarolina.remoteHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('northCarolina.remoteBody', {
+          remote: NCHSAA_REMOTE_QUOTE,
+          min: NCHSAA_WEATHER_STATION_RADIUS_MIN_MILES,
+          max: NCHSAA_WEATHER_STATION_RADIUS_MAX_MILES,
+        }),
+      )}</p>`,
+    )
+    push(`<p>${escapeHtml(t('northCarolina.remoteCaveat'))}</p>`)
+    push(`<h2>${escapeHtml(t('northCarolina.colorHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('northCarolina.colorBody'))}</p>`)
+    push(`<h2>${escapeHtml(t('northCarolina.tableHeading'))}</h2>`)
+    push(referenceTableHtml(NCHSAA_REFERENCE, t))
+    push(`<h2>${escapeHtml(t('northCarolina.mandateHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(t('northCarolina.mandateBody', { staffing: NCHSAA_STAFFING_QUOTE }))}</p>`,
+    )
+    push(
+      `<p>${escapeHtml(t('northCarolina.sourceBody', { verifiedOn: NCHSAA_REFERENCE.source.verifiedOn }))} <a href="${NCHSAA_REFERENCE.source.url}">${escapeHtml(NCHSAA_REFERENCE.source.name)}</a></p>`,
+    )
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+  } else if (page.key === 'newYork') {
+    push(`<h1>${escapeHtml(t('newYork.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('newYork.intro'))}</p>`)
+    push(`<h2>${escapeHtml(t('newYork.notWbgtHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('newYork.notWbgtBody', {
+          lead: NYSPHSAA_CHECK_LEAD_HOURS,
+          trigger: NYSPHSAA_AMBIENT_TRIGGER_F,
+        }),
+      )}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('newYork.appHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(t('newYork.appBody', { app: NYSPHSAA_APP_QUOTE, zip: NYSPHSAA_ZIP_QUOTE }))}</p>`,
+    )
+    push(`<p>${escapeHtml(t('newYork.appCaveat'))}</p>`)
+    push(`<h2>${escapeHtml(t('newYork.tableHeading'))}</h2>`)
+    push(newYorkTableHtml(t))
+    push(`<p>${escapeHtml(t('newYork.wbgtChartNote'))}</p>`)
+    push(
+      `<p>${escapeHtml(
+        t('newYork.sourceBody', {
+          approved: NYSPHSAA_APPROVED_ON,
+          updated: NYSPHSAA_UPDATED_ON,
+          verifiedOn: NYSPHSAA_HEAT_INDEX_REFERENCE.source.verifiedOn,
+        }),
+      )} <a href="${NYSPHSAA_HEAT_INDEX_REFERENCE.source.url}">${escapeHtml(NYSPHSAA_HEAT_INDEX_REFERENCE.source.name)}</a></p>`,
+    )
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+  } else if (page.key === 'virginia') {
+    push(`<h1>${escapeHtml(t('virginia.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('virginia.intro'))}</p>`)
+    push(`<h2>${escapeHtml(t('virginia.statuteHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('virginia.statuteBody', { section: VA_CODE_SECTION, citation: VA_CODE_CITATION }),
+      )}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('virginia.districtHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('virginia.districtBody', { cancel: VA_CANCEL_QUOTE }))}</p>`)
+    push(
+      `<p>${escapeHtml(t('virginia.consistencyBody', { consistency: VA_CONSISTENCY_QUOTE }))}</p>`,
+    )
+    push(`<p>${escapeHtml(t('virginia.tiersBody', { tiers: VA_MIN_TIERS }))}</p>`)
+    push(`<h2>${escapeHtml(t('virginia.iceHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('virginia.iceBody', { ice: VA_ICE_WBGT_F }))}</p>`)
+    push(`<h2>${escapeHtml(t('virginia.measurementHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('virginia.measurementBody'))}</p>`)
+    push(`<p>${escapeHtml(t('virginia.reportingBody'))}</p>`)
+    push(`<p>${escapeHtml(t('virginia.noTableNotice'))}</p>`)
+    push(
+      `<p>${escapeHtml(
+        t('virginia.sourceBody', {
+          section: VA_CODE_SECTION,
+          verifiedOn: VA_STATUTE_SOURCE.verifiedOn,
+        }),
+      )} <a href="${VA_STATUTE_SOURCE.url}">${escapeHtml(VA_STATUTE_SOURCE.name)}</a></p>`,
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
   } else if (page.key === 'wbgtVsHeatIndex') {

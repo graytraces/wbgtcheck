@@ -7,12 +7,25 @@ import en from '../locales/en.json'
 import Home from '../pages/Home'
 import Texas from '../pages/Texas'
 import Georgia from '../pages/Georgia'
+import SouthCarolina from '../pages/SouthCarolina'
+import Tennessee from '../pages/Tennessee'
+import Iowa from '../pages/Iowa'
+import NorthCarolina from '../pages/NorthCarolina'
+import NewYork from '../pages/NewYork'
+import Virginia from '../pages/Virginia'
 import States from '../pages/States'
 import Disclaimer from '../pages/Disclaimer'
 import {
   UIL_CLASS_2,
   UIL_CLASS_3,
   GHSA,
+  SCHSL,
+  TSSAA,
+  TSSAA_HEAT_INDEX_BANDS,
+  IOWA_CATEGORY_2,
+  NCHSAA_REFERENCE,
+  NYSPHSAA_HEAT_INDEX_REFERENCE,
+  VA_ICE_WBGT_F,
   REMOTE_UNDERESTIMATE_MIN_C,
   REMOTE_UNDERESTIMATE_MAX_C,
 } from '../data/policyOracle'
@@ -77,6 +90,59 @@ describe('post-JS rendered DOM', () => {
     for (const row of STATE_DIRECTORY) {
       expect(screen.getAllByText(row.abbr).length).toBeGreaterThan(0)
     }
+  })
+
+  it('South Carolina renders every SCHSL band label and the device-only warning', () => {
+    renderAt('/en/south-carolina', <SouthCarolina />)
+    for (const band of SCHSL.bands) {
+      expect(screen.getAllByText(band.sourceLabel).length).toBeGreaterThan(0)
+    }
+    expect(screen.getByText(en.southCarolina.deviceWarning)).toBeInTheDocument()
+  })
+
+  it('Iowa renders every band label and the marching band section', () => {
+    renderAt('/en/iowa', <Iowa />)
+    for (const band of IOWA_CATEGORY_2.bands) {
+      expect(screen.getAllByText(band.sourceLabel).length).toBeGreaterThan(0)
+    }
+    expect(screen.getByText(en.iowa.bandBody)).toBeInTheDocument()
+  })
+
+  it('Tennessee renders both ladders and flags the silent low band', () => {
+    renderAt('/en/tennessee', <Tennessee />)
+    for (const band of TSSAA.bands) {
+      expect(screen.getAllByText(band.sourceLabel).length).toBeGreaterThan(0)
+    }
+    for (const hi of TSSAA_HEAT_INDEX_BANDS) {
+      expect(screen.getAllByText(hi.sourceLabel).length).toBeGreaterThan(0)
+    }
+    // The source states nothing below its lowest band — say so, don't invent.
+    expect(screen.getByText(en.guideline.notAddressedBelow)).toBeInTheDocument()
+  })
+
+  it('North Carolina renders its own colour code, not this site’s flag labels', () => {
+    renderAt('/en/north-carolina', <NorthCarolina />)
+    for (const row of NCHSAA_REFERENCE.rows) {
+      expect(screen.getAllByText(row.sourceLabel).length).toBeGreaterThan(0)
+    }
+    expect(screen.getAllByText(en.northCarolina.colors.amber).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(en.northCarolina.colors.white).length).toBeGreaterThan(0)
+  })
+
+  it('New York renders heat index rows and the not-WBGT caveat', () => {
+    renderAt('/en/new-york', <NewYork />)
+    for (const row of NYSPHSAA_HEAT_INDEX_REFERENCE.rows) {
+      expect(screen.getAllByText(row.sourceLabel).length).toBeGreaterThan(0)
+    }
+    expect(screen.getByText(en.newYork.appCaveat)).toBeInTheDocument()
+  })
+
+  it('Virginia renders the no-threshold-table notice and the statutory ice level', () => {
+    renderAt('/en/virginia', <Virginia />)
+    expect(screen.getByText(en.virginia.noTableNotice)).toBeInTheDocument()
+    expect(
+      screen.getByText(i18n.t('virginia.iceBody', { ice: VA_ICE_WBGT_F })),
+    ).toBeInTheDocument()
   })
 
   it('Disclaimer renders the not-a-measurement and not-compliance sections', () => {

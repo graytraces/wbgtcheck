@@ -15,6 +15,12 @@ function detectLang(): string {
 
 const Texas = lazy(() => import('./pages/Texas'))
 const Georgia = lazy(() => import('./pages/Georgia'))
+const SouthCarolina = lazy(() => import('./pages/SouthCarolina'))
+const Tennessee = lazy(() => import('./pages/Tennessee'))
+const Iowa = lazy(() => import('./pages/Iowa'))
+const NorthCarolina = lazy(() => import('./pages/NorthCarolina'))
+const NewYork = lazy(() => import('./pages/NewYork'))
+const Virginia = lazy(() => import('./pages/Virginia'))
 const WbgtVsHeatIndex = lazy(() => import('./pages/WbgtVsHeatIndex'))
 const States = lazy(() => import('./pages/States'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
@@ -42,6 +48,12 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'texas', element: <Suspense fallback={<Loading />}><Texas /></Suspense> },
       { path: 'georgia', element: <Suspense fallback={<Loading />}><Georgia /></Suspense> },
+      { path: 'south-carolina', element: <Suspense fallback={<Loading />}><SouthCarolina /></Suspense> },
+      { path: 'tennessee', element: <Suspense fallback={<Loading />}><Tennessee /></Suspense> },
+      { path: 'iowa', element: <Suspense fallback={<Loading />}><Iowa /></Suspense> },
+      { path: 'north-carolina', element: <Suspense fallback={<Loading />}><NorthCarolina /></Suspense> },
+      { path: 'new-york', element: <Suspense fallback={<Loading />}><NewYork /></Suspense> },
+      { path: 'virginia', element: <Suspense fallback={<Loading />}><Virginia /></Suspense> },
       { path: 'wbgt-vs-heat-index', element: <Suspense fallback={<Loading />}><WbgtVsHeatIndex /></Suspense> },
       { path: 'states', element: <Suspense fallback={<Loading />}><States /></Suspense> },
       { path: 'privacy', element: <Suspense fallback={<Loading />}><PrivacyPolicy /></Suspense> },

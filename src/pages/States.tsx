@@ -6,6 +6,18 @@ import { STATE_DIRECTORY, type MeasurementClass } from '../data/stateDirectory'
 import { UIL_EFFECTIVE_DATE } from '../data/policyOracle'
 import { cn } from '../lib/utils'
 
+/** Slug ↔ label for every state that has its own guide page. */
+const STATE_GUIDES = [
+  { slug: 'texas', labelKey: 'states.texasLink' },
+  { slug: 'georgia', labelKey: 'states.georgiaLink' },
+  { slug: 'south-carolina', labelKey: 'states.southCarolinaLink' },
+  { slug: 'tennessee', labelKey: 'states.tennesseeLink' },
+  { slug: 'iowa', labelKey: 'states.iowaLink' },
+  { slug: 'north-carolina', labelKey: 'states.northCarolinaLink' },
+  { slug: 'new-york', labelKey: 'states.newYorkLink' },
+  { slug: 'virginia', labelKey: 'states.virginiaLink' },
+] as const
+
 const MEASUREMENT_STYLE: Record<MeasurementClass, { icon: typeof CircleCheck; cls: string }> = {
   'apps-allowed': { icon: CircleCheck, cls: 'bg-tint-green text-ink' },
   'device-required': { icon: MonitorX, cls: 'bg-tint-red text-ink' },
@@ -85,14 +97,18 @@ export default function States() {
       <p className="max-w-3xl text-sm text-ink-muted">{t('states.caveat')}</p>
       <p className="max-w-3xl text-xs text-ink-muted">{t('common.footer.affiliation')}</p>
 
-      <p className="text-sm">
-        <Link to={`/${lang}/texas`} className="mr-4 font-semibold underline">
-          {t('states.texasLink')}
-        </Link>
-        <Link to={`/${lang}/georgia`} className="font-semibold underline">
-          {t('states.georgiaLink')}
-        </Link>
-      </p>
+      <section>
+        <h2 className="mb-2 font-bold uppercase tracking-wide">{t('states.guidesHeading')}</h2>
+        <ul className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+          {STATE_GUIDES.map(({ slug, labelKey }) => (
+            <li key={slug}>
+              <Link to={`/${lang}/${slug}`} className="font-semibold underline">
+                {t(labelKey)}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
     </article>
   )
 }

@@ -4,6 +4,7 @@ import es from '../locales/es.json'
 import i18n from '../i18n'
 import { guidelineSentences } from '../utils/guidelineText'
 import {
+  POLICIES,
   UIL_CLASS_3,
   GHSA,
   REMOTE_UNDERESTIMATE_MIN_C,
@@ -54,8 +55,53 @@ describe('guideline copy derives from the oracle', () => {
     // (The GHSA FAQ 92≈104-105 comparison enters wbgtVsHi.hiBody via
     // interpolation, so no locale string may contain these literals.)
     const prose = JSON.stringify([en, es])
-    for (const literal of ['79.7', '84.6', '84.7', '87.6', '87.7', '89.7', '89.8', '86.9', '89.9', '90.1', '92.1', '104-105']) {
+    for (const literal of [
+      '79.7',
+      '79.8',
+      '84.6',
+      '84.7',
+      '84.9',
+      '87.6',
+      '87.7',
+      '87.9',
+      '89.7',
+      '89.8',
+      '86.9',
+      '89.9',
+      '90.1',
+      '92.1',
+      '104-105',
+    ]) {
       expect(prose, `threshold literal ${literal} hardcoded in locale JSON`).not.toContain(literal)
+    }
+  })
+
+  it('extraKeys sentences stay number-free (numbers must come from the oracle)', () => {
+    // Bands carry extraKeys for requirements the shared fields cannot express.
+    // Those strings render verbatim with no interpolation, so a digit in one
+    // would be an unsourced number in safety copy.
+    const keys = new Set<string>()
+    for (const policy of Object.values(POLICIES)) {
+      for (const band of policy.bands) {
+        for (const key of band.guideline.extraKeys ?? []) keys.add(key)
+      }
+    }
+    expect(keys.size).toBeGreaterThan(0)
+    for (const locale of [en, es]) {
+      for (const key of keys) {
+        const leaf = key
+          .split('.')
+          .reduce<unknown>((o, k) => (o as Record<string, unknown>)?.[k], locale)
+        expect(typeof leaf, `${key} missing from a locale`).toBe('string')
+        expect(leaf as string, `${key} must not hardcode digits`).not.toMatch(/\d/)
+      }
+    }
+  })
+
+  it('every policy in the picker has a display name in both locales', () => {
+    for (const id of Object.keys(POLICIES)) {
+      expect((en.policies as Record<string, string>)[id], `en policies.${id}`).toBeTruthy()
+      expect((es.policies as Record<string, string>)[id], `es policies.${id}`).toBeTruthy()
     }
   })
 

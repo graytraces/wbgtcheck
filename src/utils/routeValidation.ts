@@ -7,6 +7,12 @@ export const SUPPORTED_LANGS = ['en', 'es'] as const
 export const VALID_TOOLS = new Set([
   'texas',
   'georgia',
+  'south-carolina',
+  'tennessee',
+  'iowa',
+  'north-carolina',
+  'new-york',
+  'virginia',
   'wbgt-vs-heat-index',
   'states',
 ])
