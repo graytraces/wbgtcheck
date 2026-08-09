@@ -12,6 +12,7 @@ import PolicyBandsTable from '../components/PolicyBandsTable'
 import ShareCardButton from '../components/ShareCardButton'
 import AirQualityGate from '../components/AirQualityGate'
 import WbgtLog from '../components/WbgtLog'
+import InstallHint from '../components/InstallHint'
 import { useWbgt, isStale } from '../hooks/useWbgt'
 import { useAirQuality } from '../hooks/useAirQuality'
 import { airPolicyForState } from '../data/airPolicyOracle'
@@ -318,6 +319,8 @@ export default function Home() {
           </Link>
         </p>
       </section>
+
+      <InstallHint />
     </div>
   )
 }

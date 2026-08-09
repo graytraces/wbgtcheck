@@ -93,6 +93,12 @@
       }
     ]
   },
+  "installHint": {
+    "ios": "Agregue este sitio a su pantalla de inicio para revisarlo con un toque: toque Compartir y luego \"Agregar a pantalla de inicio\".",
+    "android": "Agregue este sitio a su pantalla de inicio para revisarlo con un toque.",
+    "cta": "Agregar",
+    "dismiss": "Descartar"
+  },
   "wbgtLog": {
     "heading": "Registro de lecturas",
     "intro": "Un registro con hora de las lecturas de esta sesión — guardado solo en este dispositivo.",

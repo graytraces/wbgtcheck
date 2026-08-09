@@ -93,6 +93,12 @@
       }
     ]
   },
+  "installHint": {
+    "ios": "Add this site to your home screen for one-tap morning checks: tap Share, then \"Add to Home Screen\".",
+    "android": "Add this site to your home screen for one-tap morning checks.",
+    "cta": "Add",
+    "dismiss": "Dismiss"
+  },
   "wbgtLog": {
     "heading": "Reading log",
     "intro": "A timestamped record of readings for this session — saved only on this device.",
