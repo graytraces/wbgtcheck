@@ -9,6 +9,7 @@ import {
   CA_RULE_QUOTE,
   WA_SENSITIVE_GROUP_QUOTE,
   WA_DATA_SOURCE_QUOTE,
+  WA_SMOKE_BLOG,
   NFHS_LANDMARK_MILES,
   NFHS_INDOOR_WORSE_QUOTE,
   NFHS_531_QUOTE,
@@ -170,6 +171,21 @@ describe('WA — DOH 334-332 (May 2026, "Children and Youth Activities Guide")',
   it('sensitive group is every child and youth 18 and under; AirNow is the named source', () => {
     expect(WA_SENSITIVE_GROUP_QUOTE).toContain('18 and under')
     expect(WA_DATA_SOURCE_QUOTE).toContain('AirNow.gov')
+  })
+
+  it('the source pointer keeps the wildfire-smoke half the guide reserves for it', () => {
+    // The quote used to stop at "AirNow.gov", dropping the source the document
+    // names for smoke — on the page whose whole reason to exist is smoke.
+    expect(WA_DATA_SOURCE_QUOTE).toContain('during wildfire smoke')
+    expect(WA_DATA_SOURCE_QUOTE).toContain('wasmoke.blogspot.com')
+    expect(WA_SMOKE_BLOG.url).toMatch(/^https:\/\//)
+    for (const locale of [en, es]) {
+      // Copy may not present one feed where the guide names two: this site
+      // carries only the first.
+      expect(locale.washingtonAir.dataSourceBody).toContain('{{quote}}')
+      expect(locale.washingtonAir.dataSourceBody.toLowerCase()).not.toContain('the same feed')
+      expect(locale.washingtonAir.smokeSourceLink.length).toBeGreaterThan(0)
+    }
   })
 })
 

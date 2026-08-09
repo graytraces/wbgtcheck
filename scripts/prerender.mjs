@@ -103,6 +103,7 @@ import {
   CA_AIR_POLICY,
   WA_SENSITIVE_GROUP_QUOTE,
   WA_DATA_SOURCE_QUOTE,
+  WA_SMOKE_BLOG,
   OR_CONSERVATIVE_METRIC_QUOTE,
   CA_RULE_QUOTE,
   CA_READING_SOURCE_QUOTE,
@@ -777,6 +778,9 @@ function generateBodyContent(lang, page) {
     )
     push(
       `<p>${escapeHtml(t('washingtonAir.dataSourceBody', { quote: WA_DATA_SOURCE_QUOTE }))}</p>`,
+    )
+    push(
+      `<p><a href="${WA_SMOKE_BLOG.url}">${escapeHtml(t('washingtonAir.smokeSourceLink'))}</a></p>`,
     )
     push(
       `<h2>${escapeHtml(t('air.sourceQuoteLabel'))}</h2><blockquote>${escapeHtml(WA_AIR_POLICY.actionQuotes.limitLightOrHourModerate)}</blockquote>`,

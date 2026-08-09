@@ -6,6 +6,7 @@ import {
   WA_AIR_POLICY,
   WA_SENSITIVE_GROUP_QUOTE,
   WA_DATA_SOURCE_QUOTE,
+  WA_SMOKE_BLOG,
   ACTIVITY_IDS,
   airActionFor,
   airActionQuote,
@@ -35,6 +36,16 @@ export default function WashingtonAir() {
         </h2>
         <p>{t('washingtonAir.basisBody')}</p>
         <p className="mt-2">{t('washingtonAir.dataSourceBody', { quote: WA_DATA_SOURCE_QUOTE })}</p>
+        <p className="mt-2 text-sm">
+          <a
+            href={WA_SMOKE_BLOG.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold underline"
+          >
+            {t('washingtonAir.smokeSourceLink')}
+          </a>
+        </p>
       </section>
 
       <section>

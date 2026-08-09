@@ -163,8 +163,20 @@ const WA_SOURCE = {
   verifiedOn: '2026-08-09',
 }
 
-/** Page-1 pointer: "Check current and forecasted air quality at AirNow.gov". */
-export const WA_DATA_SOURCE_QUOTE = 'Check current and forecasted air quality at AirNow.gov'
+/**
+ * The guide's page-1 pointer, complete (PDF re-read 2026-08-10). It names TWO
+ * sources and the quote used to stop at "AirNow.gov", dropping the one the
+ * document reserves for wildfire smoke — the scenario this entire axis exists
+ * for. Copy must not call it a single feed: this site's gate reads AirNow
+ * only, and says so.
+ */
+export const WA_DATA_SOURCE_QUOTE =
+  'Check current and forecasted air quality at AirNow.gov or during wildfire smoke at wasmoke.blogspot.com (See Appendix A)'
+/** The smoke source that pointer names, as a reachable link. */
+export const WA_SMOKE_BLOG = {
+  name: 'Washington Smoke Information',
+  url: 'https://wasmoke.blogspot.com',
+}
 
 /**
  * Current guide merges EPA's top three categories into one ≥151 row and has
