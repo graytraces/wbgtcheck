@@ -50,7 +50,7 @@ export default function Tennessee() {
         <h2 className="display-num mb-2 text-2xl uppercase">{t('tennessee.hiTableHeading')}</h2>
         <p className="mb-3 text-sm">{t('tennessee.hiTableNote')}</p>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[24rem] border-collapse text-sm">
+          <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="border-b-2 border-ink text-left">
                 <th className="py-2 pr-3 font-bold uppercase tracking-wide">
@@ -64,8 +64,8 @@ export default function Tennessee() {
             <tbody>
               {TSSAA_HEAT_INDEX_BANDS.map((band) => (
                 <tr key={band.sourceLabel} className="border-b border-line align-top">
-                  <td className="display-num py-2 pr-3 text-lg">{band.sourceLabel}</td>
-                  <td className="display-num py-2 text-lg">{band.pairsWithWbgt}</td>
+                  <td className="display-num whitespace-nowrap py-2 pr-3 text-base sm:text-lg">{band.sourceLabel}</td>
+                  <td className="display-num whitespace-nowrap py-2 text-base sm:text-lg">{band.pairsWithWbgt}</td>
                 </tr>
               ))}
             </tbody>

@@ -43,8 +43,36 @@ export default function Texas() {
 
       <section>
         <h2 className="display-num mb-2 text-2xl uppercase">{t('texas.tableHeading')}</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[34rem] border-collapse text-sm">
+        {/* Three columns cannot fit a 320px phone, so below sm each band
+            renders as a card: badge, both class ranges, guidelines. Same
+            keys, same oracle data — only the layout differs. */}
+        <div className="space-y-4 sm:hidden">
+          {bands3.map((band3, i) => {
+            const band2 = bands2[i]
+            return (
+              <div key={band3.flag} className={`border-b border-line p-2 pb-3 ${FLAG_TINT[band3.flag]}`}>
+                <FlagBadge flag={band3.flag} />
+                <div className="mt-1.5 flex gap-6">
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-wide">{t('texas.tableClass2')}</div>
+                    <div className="display-num whitespace-nowrap text-lg">{band2.sourceLabel}</div>
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-wide">{t('texas.tableClass3')}</div>
+                    <div className="display-num whitespace-nowrap text-lg">{band3.sourceLabel}</div>
+                  </div>
+                </div>
+                <ul className="mt-2 list-inside list-disc space-y-0.5">
+                  {guidelineSentences(band3.flag, band3.guideline, t).map((s) => (
+                    <li key={s}>{s}</li>
+                  ))}
+                </ul>
+              </div>
+            )
+          })}
+        </div>
+        <div className="hidden overflow-x-auto sm:block">
+          <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="border-b-2 border-ink text-left">
                 <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('texas.tableClass2')}</th>
@@ -59,9 +87,9 @@ export default function Texas() {
                   <tr key={band3.flag} className={`border-b border-line align-top ${FLAG_TINT[band3.flag]}`}>
                     <td className="py-2 pl-2 pr-3">
                       <FlagBadge flag={band3.flag} />
-                      <div className="display-num mt-1 text-lg">{band2.sourceLabel}</div>
+                      <div className="display-num mt-1 whitespace-nowrap text-lg">{band2.sourceLabel}</div>
                     </td>
-                    <td className="display-num py-2 pr-3 pt-8 text-lg">{band3.sourceLabel}</td>
+                    <td className="display-num whitespace-nowrap py-2 pr-3 pt-8 text-lg">{band3.sourceLabel}</td>
                     <td className="py-2 pr-2">
                       <ul className="list-inside list-disc space-y-0.5">
                         {guidelineSentences(band3.flag, band3.guideline, t).map((s) => (

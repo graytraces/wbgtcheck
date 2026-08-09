@@ -19,7 +19,7 @@ export default function PolicyBandsTable({ policy, showSource = true }: PolicyBa
   return (
     <div>
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[28rem] border-collapse text-sm">
+        <table className="w-full border-collapse text-sm">
           <thead>
             <tr className="border-b-2 border-ink text-left">
               <th className="py-2 pr-3 font-bold uppercase tracking-wide">
@@ -36,7 +36,7 @@ export default function PolicyBandsTable({ policy, showSource = true }: PolicyBa
                 <td className="py-2 pl-2 pr-3">
                   <div className="flex flex-col items-start gap-1">
                     <FlagBadge flag={band.flag} />
-                    <span className="display-num text-lg">{band.sourceLabel}</span>
+                    <span className="display-num whitespace-nowrap text-lg">{band.sourceLabel}</span>
                   </div>
                 </td>
                 <td className="py-2 pr-2">

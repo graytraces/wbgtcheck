@@ -47,7 +47,7 @@ export default function NorthCarolina() {
       <section>
         <h2 className="display-num mb-2 text-2xl uppercase">{t('northCarolina.tableHeading')}</h2>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[28rem] border-collapse text-sm">
+          <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="border-b-2 border-ink text-left">
                 <th className="py-2 pr-3 font-bold uppercase tracking-wide">
@@ -61,7 +61,7 @@ export default function NorthCarolina() {
             <tbody>
               {rows.map((row) => (
                 <tr key={row.sourceLabel} className="border-b border-line align-top">
-                  <td className="py-2 pr-3 font-semibold">{row.sourceLabel}</td>
+                  <td className="whitespace-nowrap py-2 pr-3 font-semibold">{row.sourceLabel}</td>
                   <td className="py-2">
                     <ul className="list-inside list-disc space-y-0.5">
                       {row.textKeys.map((key) => (

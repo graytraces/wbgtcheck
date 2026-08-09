@@ -29,7 +29,7 @@ export default function OregonAir() {
       <section>
         <h2 className="display-num mb-2 text-2xl uppercase">{t('oregonAir.tableHeading')}</h2>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[34rem] border-collapse text-sm">
+          <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="border-b-2 border-ink text-left">
                 <th className="py-2 pr-3 font-bold uppercase tracking-wide">

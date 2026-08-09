@@ -81,3 +81,22 @@ body {
   line-height: 0.9;
   font-variant-numeric: tabular-nums;
 }
+
+/*
+ * Horizontal scroll container with scroll-aware edge shadows: the shadow
+ * only shows on a side that has clipped content (bg gradients scroll with
+ * the content, cover gradients sit fixed). Reserved for the one table
+ * allowed to scroll internally on phones (/states comparison table) — the
+ * class doubles as that exception's marker in .omc/no-hscroll-sweep.mjs,
+ * so a scrolling table without it fails the sweep.
+ */
+.scroll-x-fade {
+  overflow-x: auto;
+  background:
+    linear-gradient(to right, var(--color-bg) 35%, transparent) left / 3rem 100% no-repeat local,
+    linear-gradient(to left, var(--color-bg) 35%, transparent) right / 3rem 100% no-repeat local,
+    linear-gradient(to right, color-mix(in srgb, var(--color-ink) 22%, transparent), transparent)
+      left / 0.875rem 100% no-repeat scroll,
+    linear-gradient(to left, color-mix(in srgb, var(--color-ink) 22%, transparent), transparent)
+      right / 0.875rem 100% no-repeat scroll;
+}

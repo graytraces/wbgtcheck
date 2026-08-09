@@ -45,14 +45,13 @@ export default function NewYork() {
       <section>
         <h2 className="display-num mb-2 text-2xl uppercase">{t('newYork.tableHeading')}</h2>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[32rem] border-collapse text-sm">
+          <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="border-b-2 border-ink text-left">
+                {/* Range and tier share a column so the table fits a 320px
+                    phone — both headings kept, layout only. */}
                 <th className="py-2 pr-3 font-bold uppercase tracking-wide">
-                  {t('newYork.colHeatIndex')}
-                </th>
-                <th className="py-2 pr-3 font-bold uppercase tracking-wide">
-                  {t('newYork.colTier')}
+                  {t('newYork.colHeatIndex')} · {t('newYork.colTier')}
                 </th>
                 <th className="py-2 font-bold uppercase tracking-wide">{t('newYork.colAction')}</th>
               </tr>
@@ -60,9 +59,9 @@ export default function NewYork() {
             <tbody>
               {rows.map((row) => (
                 <tr key={row.sourceLabel} className="border-b border-line align-top">
-                  <td className="py-2 pr-3 font-semibold">{row.sourceLabel}</td>
                   <td className="py-2 pr-3">
-                    <div className="font-semibold">{t(`newYork.tiers.${row.tierKey}`)}</div>
+                    <div className="whitespace-nowrap font-semibold">{row.sourceLabel}</div>
+                    <div className="mt-0.5 font-semibold">{t(`newYork.tiers.${row.tierKey}`)}</div>
                     <div className="mt-0.5 text-xs uppercase tracking-wide text-ink-muted">
                       {row.required ? t('newYork.requiredLabel') : t('newYork.recommendedLabel')}
                     </div>

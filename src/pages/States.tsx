@@ -67,7 +67,10 @@ export default function States() {
         </ul>
       </section>
 
-      <section className="overflow-x-auto">
+      {/* The one table allowed to scroll internally on phones: five columns
+          of prose cannot fit 320px legibly. scroll-x-fade paints edge
+          shadows so the clipping is visible (and marks the sweep exception). */}
+      <section className="scroll-x-fade">
         <table className="w-full min-w-[44rem] border-collapse text-sm">
           <thead>
             <tr className="border-b-2 border-ink text-left">

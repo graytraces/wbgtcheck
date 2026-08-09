@@ -40,8 +40,36 @@ export default function WashingtonAir() {
         <h2 className="display-num mb-2 text-2xl uppercase">
           {t('washingtonAir.tableHeading')}
         </h2>
-        <div className="overflow-x-auto">
-          <table className="w-full min-w-[40rem] border-collapse text-sm">
+        {/* Four prose columns cannot fit a 320px phone, so below sm the same
+            band x duration grid renders as stacked cards. Same keys, same
+            oracle data — only the layout differs. */}
+        <div className="space-y-5 sm:hidden">
+          {policy.bands.map((band) => (
+            <div key={band.id} className="border-b border-line pb-4">
+              <span
+                className="inline-block px-2 py-1 text-xs font-bold"
+                style={aqiSwatchFor(classifyAqi(band.minAqi))}
+              >
+                {band.sourceLabel}
+              </span>
+              <dl className="mt-2 space-y-2">
+                {ACTIVITY_IDS.map((id) => (
+                  <div key={id}>
+                    <dt className="text-xs font-bold uppercase tracking-wide">
+                      {t(`air.activity.${id}`)}{' '}
+                      <span className="font-normal normal-case opacity-80">
+                        {t(`air.activityExample.${id}`)}
+                      </span>
+                    </dt>
+                    <dd>{t(`air.actions.${airActionFor(band, id as ActivityId)}`)}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ))}
+        </div>
+        <div className="hidden overflow-x-auto sm:block">
+          <table className="w-full border-collapse text-sm">
             <thead>
               <tr className="border-b-2 border-ink text-left">
                 <th className="py-2 pr-3 font-bold uppercase tracking-wide">

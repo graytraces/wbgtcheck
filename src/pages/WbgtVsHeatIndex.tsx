@@ -47,22 +47,26 @@ export default function WbgtVsHeatIndex() {
       <section>
         <h2 className="display-num mb-2 text-2xl uppercase">{t('wbgtVsHi.tableHeading')}</h2>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[24rem] border-collapse text-sm">
+          <table className="w-full border-collapse text-sm">
             <thead>
+              {/* Header words are this table's width floor on a 320px phone —
+                  smaller type below sm, the regular scale above. */}
               <tr className="border-b-2 border-ink text-left">
-                <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('wbgtVsHi.tableMeasure')}</th>
-                <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('wbgtVsHi.tableSun')}</th>
-                <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('wbgtVsHi.tableWind')}</th>
-                <th className="py-2 font-bold uppercase tracking-wide">{t('wbgtVsHi.tableUse')}</th>
+                <th className="py-2 pr-2 text-xs font-bold uppercase sm:pr-3 sm:text-sm sm:tracking-wide">{t('wbgtVsHi.tableMeasure')}</th>
+                <th className="py-2 pr-2 text-xs font-bold uppercase sm:pr-3 sm:text-sm sm:tracking-wide">{t('wbgtVsHi.tableSun')}</th>
+                <th className="py-2 pr-2 text-xs font-bold uppercase sm:pr-3 sm:text-sm sm:tracking-wide">{t('wbgtVsHi.tableWind')}</th>
+                <th className="py-2 text-xs font-bold uppercase sm:text-sm sm:tracking-wide">{t('wbgtVsHi.tableUse')}</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((r) => (
                 <tr key={r.key} className="border-b border-line">
+                  {/* [overflow-wrap:anywhere] lets long Spanish words break so
+                      the four columns still fit a 320px phone. */}
                   <td className="py-2 pr-3 font-bold">{r.key}</td>
-                  <td className="py-2 pr-3">{r.sun}</td>
-                  <td className="py-2 pr-3">{r.wind}</td>
-                  <td className="py-2">{r.use}</td>
+                  <td className="py-2 pr-3 [overflow-wrap:anywhere]">{r.sun}</td>
+                  <td className="py-2 pr-3 [overflow-wrap:anywhere]">{r.wind}</td>
+                  <td className="py-2 [overflow-wrap:anywhere]">{r.use}</td>
                 </tr>
               ))}
             </tbody>
