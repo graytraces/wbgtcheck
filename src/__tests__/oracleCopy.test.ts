@@ -9,6 +9,9 @@ import {
   UIL_MANDATE_2026_QUOTE,
   GHSA,
   SCHSL,
+  GHSA_FAQ_WBGT_HI_COMPARISON,
+  NCHSAA_REFERENCE,
+  NYSPHSAA_HEAT_INDEX_REFERENCE,
   requiresOnSiteReading,
   REMOTE_UNDERESTIMATE_MIN_C,
   REMOTE_UNDERESTIMATE_MAX_C,
@@ -55,26 +58,35 @@ describe('guideline copy derives from the oracle', () => {
 
   it('no WBGT threshold literals leak into locale JSON prose', () => {
     // Threshold numbers must render from PolicyBand.sourceLabel, not copy.
-    // (The GHSA FAQ 92≈104-105 comparison enters wbgtVsHi.hiBody via
-    // interpolation, so no locale string may contain these literals.)
+    //
+    // The blocklist is DERIVED from the oracle rather than hand-listed: the
+    // hand-written version protected exactly the states that existed when
+    // someone last remembered to extend it, so a new state's thresholds would
+    // have shipped unguarded. Fractional values only — whole numbers like 80
+    // or 90 appear legitimately in prose (ages, minutes, years), while every
+    // WBGT boundary in this oracle carries a tenth.
+    const literals = new Set<string>()
+    const harvest = (label: string) => {
+      for (const match of label.matchAll(/\d+\.\d+/g)) literals.add(match[0])
+    }
+    for (const policy of Object.values(POLICIES)) {
+      for (const band of policy.bands) harvest(band.sourceLabel)
+    }
+    for (const table of [NCHSAA_REFERENCE, NYSPHSAA_HEAT_INDEX_REFERENCE]) {
+      for (const row of table.rows) harvest(row.sourceLabel)
+    }
+    // The GHSA FAQ comparison reaches wbgtVsHi.hiBody by interpolation, so its
+    // rendered form must not be pre-baked into copy either.
+    literals.add(
+      `${GHSA_FAQ_WBGT_HI_COMPARISON.heatIndexMinF}-${GHSA_FAQ_WBGT_HI_COMPARISON.heatIndexMaxF}`,
+    )
+
+    // Guard the guard: an oracle refactor that renamed sourceLabel would make
+    // this pass vacuously.
+    expect(literals.size).toBeGreaterThanOrEqual(15)
+
     const prose = JSON.stringify([en, es])
-    for (const literal of [
-      '79.7',
-      '79.8',
-      '84.6',
-      '84.7',
-      '84.9',
-      '87.6',
-      '87.7',
-      '87.9',
-      '89.7',
-      '89.8',
-      '86.9',
-      '89.9',
-      '90.1',
-      '92.1',
-      '104-105',
-    ]) {
+    for (const literal of literals) {
       expect(prose, `threshold literal ${literal} hardcoded in locale JSON`).not.toContain(literal)
     }
   })
