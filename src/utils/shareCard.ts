@@ -2,6 +2,7 @@ import type { FlagColor } from '../data/policyOracle'
 import type { DaySummary, HourVerdict } from './verdict'
 import { timelineHours } from './verdict'
 import { FLAG_HEX } from './flagStyles'
+import { hourLabel } from './hourLabel'
 
 /**
  * Share card: a 1080×1080 PNG for the team group chat. The day's peak flag
@@ -43,13 +44,6 @@ export interface ShareCardModel {
   siteUrl: string
 }
 
-function hourLabel(h: number): string {
-  if (h === 0) return '12a'
-  if (h < 12) return `${h}a`
-  if (h === 12) return '12p'
-  return `${h - 12}p`
-}
-
 export function buildShareCardModel(
   day: DaySummary,
   opts: {
@@ -68,7 +62,7 @@ export function buildShareCardModel(
   if (!day.peak) return null
   const windowHours: HourVerdict[] = timelineHours(day)
   const hours = (windowHours.length > 0 ? windowHours : day.hours).map((h) => ({
-    label: hourLabel(h.localHour),
+    label: hourLabel(h.localHour, opts.lang),
     wbgtF: h.wbgtF,
     flag: h.flag,
     estimated: h.source === 'estimated',

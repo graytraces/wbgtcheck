@@ -3,21 +3,15 @@ import type { HourVerdict } from '../utils/verdict'
 import { FLAG_ICON, FLAG_SOLID } from '../utils/flagStyles'
 import { cn } from '../lib/utils'
 import { formatWbgtF } from '../utils/units'
+import { hourLabel } from '../utils/hourLabel'
 
 interface TodayTimelineProps {
   hours: HourVerdict[]
   currentTime?: number
 }
 
-function hourLabel(h: number): string {
-  if (h === 0) return '12a'
-  if (h < 12) return `${h}a`
-  if (h === 12) return '12p'
-  return `${h - 12}p`
-}
-
 export default function TodayTimeline({ hours, currentTime }: TodayTimelineProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   if (hours.length === 0) {
     return <p className="text-sm text-ink-muted">{t('verdict.noData')}</p>
   }
@@ -32,7 +26,7 @@ export default function TodayTimeline({ hours, currentTime }: TodayTimelineProps
         return (
           <li key={h.time} className="flex min-w-16 flex-col items-center gap-1">
             <span className={cn('text-xs font-semibold', isNow ? 'text-ink' : 'text-ink-muted')}>
-              {hourLabel(h.localHour)}
+              {hourLabel(h.localHour, i18n.language)}
             </span>
             <span
               className={cn(
