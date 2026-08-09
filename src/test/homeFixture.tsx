@@ -114,6 +114,18 @@ export function stubForecastFetch(options: { aqi?: unknown } = {}) {
   )
 }
 
+/** A clean AirNow reading for an area with no verified state policy. */
+export function aqiFixture() {
+  return {
+    area: { name: 'Austin', state: 'TX', lat: 30.27, lon: -97.74, distanceKm: 6 },
+    observed: { date: '08/10/26', time: '09:00', timeZone: 'CDT', epochMs: Date.now() },
+    overall: { aqi: 42, category: 'Good', parameter: 'PM2.5' },
+    pm25: { aqi: 42, category: 'Good', parameter: 'PM2.5' },
+    agencies: ['Texas Commission on Environmental Quality'],
+    preliminary: true,
+  }
+}
+
 export function renderHome(lang = 'en') {
   return render(
     <MemoryRouter initialEntries={[`/${lang}`]}>

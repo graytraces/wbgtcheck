@@ -216,6 +216,7 @@
       "or-osaa": "Directrices de calidad del aire de OSAA",
       "ca-cif": "Reglamento de calidad del aire de CIF"
     },
+    "noPolicySummary": "Sin política estatal verificada — solo categoría de la EPA. Ábralo para ver los detalles.",
     "noPolicyHeading": "Sin política verificada para este estado",
     "noPolicyBody": "Solo incluimos reglas de práctica por calidad del aire que hayamos leído en el documento propio de la asociación o del departamento de salud — hasta ahora Washington, Oregón y California. En los demás lugares verá la categoría de la EPA y nada más: consulte a su asociación estatal y a su distrito.",
     "noActionStated": "Esta fuente no indica ninguna acción en este nivel. Eso no es permiso — significa que el documento no dice nada al respecto.",

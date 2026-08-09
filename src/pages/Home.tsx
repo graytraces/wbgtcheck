@@ -179,23 +179,38 @@ export default function Home() {
         </div>
       )}
 
-      {/* Sits directly under the heat verdict, as a second gate of equal
-          standing — see air.bothGatesNotice. */}
-      {/* airStatus is checked here too: the negative margin that joins this
-          card to the verdict above would still collapse the section gap if the
-          gate itself rendered nothing. */}
+      {/* "One screen for the morning call": the question is whether practice
+          can run at 4pm, so the hourly and weekly views follow the verdict
+          immediately. They used to sit below the air card, the picker, two
+          paragraphs of prose and the share button — about two and a half
+          screens down on a phone. */}
+      {location && status === 'ready' && today && (
+        <section>
+          <h2 className="display-num mb-2 text-xl uppercase">{t('verdict.todayHeading')}</h2>
+          <TodayTimeline hours={timelineHours(today)} currentTime={now} />
+        </section>
+      )}
+
+      {location && status === 'ready' && days.length > 1 && (
+        <section>
+          <h2 className="display-num mb-2 text-xl uppercase">{t('verdict.weekHeading')}</h2>
+          <WeekStrip days={days} />
+        </section>
+      )}
+
+      {/* A second gate of equal standing — see air.bothGatesNotice. It
+          collapses itself to one line in states with no verified air policy
+          (AirQualityGate), where it has no verdict to give. */}
       {location && airStatus !== 'idle' && (
-        <div className="-mt-8">
-          <AirQualityGate
-            status={airStatus}
-            data={airData}
-            policy={airPolicy}
-            activity={activity}
-            onActivityChange={setActivity}
-            statePageSlug={airPageSlug}
-            now={now}
-          />
-        </div>
+        <AirQualityGate
+          status={airStatus}
+          data={airData}
+          policy={airPolicy}
+          activity={activity}
+          onActivityChange={setActivity}
+          statePageSlug={airPageSlug}
+          now={now}
+        />
       )}
 
       {location && status === 'ready' && (
@@ -226,20 +241,6 @@ export default function Home() {
           )}
           <p className="max-w-2xl text-sm text-ink-muted">{t('policies.districtNote')}</p>
         </div>
-      )}
-
-      {location && status === 'ready' && today && (
-        <section>
-          <h2 className="display-num mb-2 text-xl uppercase">{t('verdict.todayHeading')}</h2>
-          <TodayTimeline hours={timelineHours(today)} currentTime={now} />
-        </section>
-      )}
-
-      {location && status === 'ready' && days.length > 1 && (
-        <section>
-          <h2 className="display-num mb-2 text-xl uppercase">{t('verdict.weekHeading')}</h2>
-          <WeekStrip days={days} />
-        </section>
       )}
 
       {location && status === 'ready' && (

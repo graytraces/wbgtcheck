@@ -216,6 +216,7 @@
       "or-osaa": "OSAA air quality guidelines",
       "ca-cif": "CIF air quality bylaw"
     },
+    "noPolicySummary": "No verified state policy — EPA category only. Open for details.",
     "noPolicyHeading": "No verified policy for this state",
     "noPolicyBody": "We only carry air-quality practice rules we have read in the association's or health department's own document — Washington, Oregon and California so far. Everywhere else you get the EPA category and nothing more: ask your state association and your district what applies.",
     "noActionStated": "This source states no action at this level. That is not permission — it means the document is silent here.",

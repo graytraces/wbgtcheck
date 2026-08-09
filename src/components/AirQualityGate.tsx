@@ -119,8 +119,15 @@ export default function AirQualityGate({
         ]
   const governingAqi = Math.max(...chips.map((c) => c.aqi))
 
-  return (
-    <section className="border-2 border-line bg-surface" aria-live="polite">
+  // Outside WA/OR/CA this card has no verdict to give — it can only show an
+  // EPA category. Spending most of a phone screen to say "no verified policy
+  // for this state", directly between the heat verdict and the hourly view the
+  // user came for, buys nothing. It collapses to a line that still carries the
+  // number, and opens for the rest.
+  const collapsed = policy === null
+
+  const body = (
+    <>
       {/* The co-display line: this is an additional gate, not a replacement
           for the heat flag above it. */}
       <p className="border-b-2 border-line bg-ink px-5 py-2 text-sm font-bold text-bg sm:px-8">
@@ -262,6 +269,41 @@ export default function AirQualityGate({
         <p>{t('air.preliminaryNotice')}</p>
         <p className="opacity-90">{t('air.creditLabel', { agencies })}</p>
       </div>
+    </>
+  )
+
+  if (!collapsed) {
+    return (
+      <section className="border-2 border-line bg-surface" aria-live="polite">
+        {body}
+      </section>
+    )
+  }
+
+  const headline = chips.find((c) => c.aqi === governingAqi) ?? chips[0]
+  return (
+    <section className="border-2 border-line bg-surface" aria-live="polite">
+      <details>
+        <summary className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 px-5 py-3 sm:px-8">
+          <span className="display-num inline-flex items-center gap-2 text-lg uppercase">
+            <Wind className="h-5 w-5" aria-hidden="true" />
+            {t('air.gateHeading')}
+          </span>
+          {/* The number survives the collapse — swatch + value + category
+              name, the same three channels the open card uses. */}
+          <span
+            className="inline-flex items-baseline gap-2 px-2 py-0.5 font-bold"
+            style={aqiSwatchFor(headline.category)}
+          >
+            <span className="display-num text-xl leading-none">{headline.aqi}</span>
+            <span className="text-xs uppercase tracking-wide">
+              {headline.category.sourceLabel}
+            </span>
+          </span>
+          <span className="text-sm text-ink-muted">{t('air.noPolicySummary')}</span>
+        </summary>
+        {body}
+      </details>
     </section>
   )
 }
