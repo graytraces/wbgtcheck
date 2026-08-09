@@ -99,6 +99,9 @@ export default function Home() {
           the verdict (or the location CTA) owns the visual top of the page. */}
       <header>
         <h1 className="sr-only">{t('home.pageTitle')}</h1>
+        <p className="text-xs font-bold uppercase tracking-wide text-ink-muted">
+          {t('home.heroBadge')}
+        </p>
       </header>
 
       {!location && (

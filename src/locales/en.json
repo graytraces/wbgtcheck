@@ -72,6 +72,7 @@
   },
   "home": {
     "pageTitle": "WBGT Forecast with State Heat Policy Flags",
+    "heroBadge": "Free · No account · Nothing to install",
     "intro": "One screen for the morning call: hourly wet bulb globe temperature for your field, translated into your state's activity flags — rest ratios, equipment limits, practice caps — with a card you can drop in the team chat.",
     "sections": [
       {

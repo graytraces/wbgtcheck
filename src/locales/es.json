@@ -72,6 +72,7 @@
   },
   "home": {
     "pageTitle": "Pronóstico WBGT con banderas de política estatal",
+    "heroBadge": "Gratis · Sin cuenta · Nada que instalar",
     "intro": "Una sola pantalla para la decisión de la mañana: WBGT por hora para su campo, traducido a las banderas de actividad de su estado — proporciones de descanso, límites de equipo, topes de práctica — con una tarjeta lista para el chat del equipo.",
     "sections": [
       {

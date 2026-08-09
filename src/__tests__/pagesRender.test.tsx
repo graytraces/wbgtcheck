@@ -83,6 +83,11 @@ describe('post-JS rendered DOM', () => {
     }
   })
 
+  it('Home renders the hero badge (free / no account / no install)', () => {
+    renderAt('/en', <Home />)
+    expect(screen.getByText(en.home.heroBadge)).toBeInTheDocument()
+  })
+
   it('Texas renders every oracle band label for both classes', () => {
     renderAt('/en/texas', <Texas />)
     for (const band of [...UIL_CLASS_2.bands, ...UIL_CLASS_3.bands]) {

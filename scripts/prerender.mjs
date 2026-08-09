@@ -376,6 +376,7 @@ function generateBodyContent(lang, page) {
 
   if (page.path === '') {
     push(`<h1>${escapeHtml(t('home.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('home.heroBadge'))}</p>`)
     push(`<p>${escapeHtml(t('home.intro'))}</p>`)
     const sectionCount = (locales[lang].home?.sections ?? locales.en.home.sections).length
     for (let i = 0; i < sectionCount; i++) {
