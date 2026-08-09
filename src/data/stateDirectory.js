@@ -28,9 +28,10 @@ export const STATE_DIRECTORY = [
   // weather apps are not accurate for their venue, hence device-required.
   { abbr: 'IA', body: 'IHSAA/IGHSAU/IHSMA/IHSSA', mandate: 'conditional', measurement: 'device-required', verified: 'primary', noteKey: 'ia' },
   { abbr: 'FL', body: 'FHSAA (Zachary Martin Act)', mandate: 'wbgt-required', measurement: 'unverified', verified: 'research', noteKey: 'fl' },
-  // NCHSAA is the one association that names an off-site fallback: a weather
-  // station or airport within 5-10 miles when on-site is not accurate.
-  { abbr: 'NC', body: 'NCHSAA', mandate: 'conditional', measurement: 'apps-allowed', verified: 'primary', noteKey: 'nc' },
+  // 2025-26 handbook §2.3.5: "scientifically approved device". The earlier
+  // weather-station/airport fallback clause is GONE from the current edition
+  // — do not restore 'apps-allowed' from old copies of the guidance PDF.
+  { abbr: 'NC', body: 'NCHSAA', mandate: 'conditional', measurement: 'device-required', verified: 'primary', noteKey: 'nc' },
   { abbr: 'VA', body: '§22.1-271.10 (school boards)', mandate: 'wbgt-required', measurement: 'unverified', verified: 'primary', noteKey: 'va' },
   { abbr: 'TN', body: 'TSSAA', mandate: 'conditional', measurement: 'apps-allowed', verified: 'primary', noteKey: 'tn' },
   { abbr: 'MO', body: 'MSHSAA', mandate: 'conditional', measurement: 'unverified', verified: 'research', noteKey: 'mo' },

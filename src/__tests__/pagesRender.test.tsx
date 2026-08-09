@@ -129,13 +129,13 @@ describe('post-JS rendered DOM', () => {
     expect(screen.getByText(en.guideline.notAddressedBelow)).toBeInTheDocument()
   })
 
-  it('North Carolina renders its own colour code, not this site’s flag labels', () => {
+  it('North Carolina renders the current two-column chart and the picker exclusion', () => {
     renderAt('/en/north-carolina', <NorthCarolina />)
     for (const row of NCHSAA_REFERENCE.rows) {
       expect(screen.getAllByText(row.sourceLabel).length).toBeGreaterThan(0)
     }
-    expect(screen.getAllByText(en.northCarolina.colors.amber).length).toBeGreaterThan(0)
-    expect(screen.getAllByText(en.northCarolina.colors.white).length).toBeGreaterThan(0)
+    expect(screen.getByText(en.northCarolina.rows.suspend)).toBeInTheDocument()
+    expect(screen.getByText(en.northCarolina.pickerExclusionBody)).toBeInTheDocument()
   })
 
   it('New York renders heat index rows and the not-WBGT caveat', () => {

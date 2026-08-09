@@ -57,10 +57,9 @@ export {
   IOWA_CATEGORY_NUMBER,
   IOWA_RECOMMENDED_QUOTE,
   IOWA_APP_QUOTE,
-  NCHSAA_REMOTE_QUOTE,
-  NCHSAA_STAFFING_QUOTE,
-  NCHSAA_WEATHER_STATION_RADIUS_MIN_MILES,
-  NCHSAA_WEATHER_STATION_RADIUS_MAX_MILES,
+  NCHSAA_DEVICE_QUOTE,
+  NCHSAA_CADENCE_QUOTE,
+  NCHSAA_MANDATE_QUOTE,
   NYSPHSAA_APPROVED_ON,
   NYSPHSAA_UPDATED_ON,
   NYSPHSAA_CHECK_LEAD_HOURS,
@@ -177,8 +176,6 @@ export interface ReferenceRow {
 }
 
 export interface NcReferenceRow extends ReferenceRow {
-  /** NCHSAA's own colour name for the row — deliberately not this site's flags. */
-  colorKey: 'white' | 'green' | 'amber' | 'red' | 'black'
   breakMinutes: number | null
   breakEveryMinutes: number | null
 }
@@ -206,10 +203,10 @@ export const POLICIES = POLICIES_RAW as Record<PolicyId, HeatPolicy>
 
 /**
  * North Carolina and New York are deliberately NOT HeatPolicy entries.
- * NCHSAA publishes its own five-colour code whose names clash with this site's
- * flag meanings, on a different threshold family; NYSPHSAA's ladder is in HEAT
- * INDEX degrees. Either one, fed to classifyWbgt, would produce a confidently
- * wrong verdict, so both render only as their own reference tables.
+ * NCHSAA's thresholds are a different family from this site's flag bands
+ * (80/85/88/90 vs 82/87/90/92); NYSPHSAA's ladder is in HEAT INDEX degrees.
+ * Either one, fed to classifyWbgt, would produce a confidently wrong verdict,
+ * so both render only as their own reference tables.
  */
 export const NCHSAA_REFERENCE = NCHSAA_REFERENCE_RAW as ReferenceTable<NcReferenceRow>
 export const NYSPHSAA_HEAT_INDEX_REFERENCE =

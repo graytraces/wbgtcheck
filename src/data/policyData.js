@@ -569,34 +569,41 @@ export const TSSAA_HEAT_INDEX_BANDS = [
 ]
 
 // --- NCHSAA (North Carolina) reference table ------------------------------
-// NOT a POLICIES entry, deliberately. NCHSAA publishes its own five-colour code
-// whose names collide with this site's flag palette but NOT with its meanings
-// (NCHSAA "Green" = normal practice; this site's yellow = use discretion), and
-// its thresholds are a different family (80/85/88/90 vs 82/87/90/92). Mapping
-// NCHSAA rows onto this site's flags would print a colour the association's own
-// chart contradicts, so North Carolina renders as its own table only.
+// NOT a POLICIES entry, deliberately. NCHSAA's thresholds are a different
+// family from this site's flag bands (80/85/88/90 vs 82/87/90/92): wiring
+// them into classifyWbgt would print a verdict the association's own chart
+// contradicts, so North Carolina renders as its own two-column table only.
+//
+// Rebuilt 2026-08-09 against the CURRENT 2025-26 handbook (§2.3.5 and
+// §2.3.3(g)). The 2015-era guidance PDF this section previously cited was a
+// superseded document: it carried a five-colour code and a weather-station/
+// airport fallback clause, and the current handbook has NEITHER — do not
+// restore them from old copies.
 
-export const NCHSAA_REMOTE_QUOTE =
-  'Measure WBGT reading if this can be done accurately onsite. If not, determine this from weather station or reliable airport site within 5 to 10 miles of practice site.'
-export const NCHSAA_STAFFING_QUOTE =
-  'A Certified Athletic Trainer or 1st Responder MUST be in attendance at all football practices and games.'
-export const NCHSAA_WEATHER_STATION_RADIUS_MIN_MILES = 5
-export const NCHSAA_WEATHER_STATION_RADIUS_MAX_MILES = 10
+/** §2.3.5(a) — measurement is device-based; no remote-fallback clause exists. */
+export const NCHSAA_DEVICE_QUOTE =
+  'WBGT should be measured (using a scientifically approved device) for all sports when student-athletes may be at risk for exertional heat illness (EHI).'
+/** §2.3.5(a), same paragraph — the reading cadence. */
+export const NCHSAA_CADENCE_QUOTE =
+  'WBGT should be accessed every hour beginning 30 minutes before the beginning of practice.'
+/** §2.3.3(g) — the handbook's own mandate sentence for the containing policy. */
+export const NCHSAA_MANDATE_QUOTE =
+  'All schools should have a heat illness prevention and management policy for all sanctioned activities and this policy must be followed.'
 
 export const NCHSAA_REFERENCE = {
   id: 'nchsaa',
   source: {
-    name: 'NCHSAA heat and humidity guidelines (handbook)',
-    url: 'https://www.nchsaa.org/wp-content/uploads/2015/03/handbook-heat-humidity.pdf',
+    name: 'NCHSAA Handbook 2025-26, §2.3.5 Prevention of Heat Illness — WBGT Index and Athletic Activity Chart',
+    url: 'https://nchsaa.org/wp-content/uploads/2025/08/25-26-NCHSAA-Handbook-Print-Version.pdf',
     verifiedOn: '2026-08-09',
   },
   /** Rows hottest first, matching the reversed-render convention elsewhere. */
   rows: [
-    { sourceLabel: '90 or above', colorKey: 'black', breakMinutes: null, breakEveryMinutes: null, textKeys: ['northCarolina.rows.suspend'] },
-    { sourceLabel: '88-89.9', colorKey: 'red', breakMinutes: 5, breakEveryMinutes: 15, textKeys: ['northCarolina.rows.observation', 'northCarolina.rows.removePads', 'northCarolina.rows.immersion'] },
-    { sourceLabel: '85-87.9', colorKey: 'amber', breakMinutes: 5, breakEveryMinutes: 20, textKeys: ['northCarolina.rows.unconditioned', 'northCarolina.rows.immersion'] },
-    { sourceLabel: '80-84.9', colorKey: 'green', breakMinutes: 5, breakEveryMinutes: 25, textKeys: ['northCarolina.rows.normal'] },
-    { sourceLabel: 'Less than 80', colorKey: 'white', breakMinutes: 5, breakEveryMinutes: 30, textKeys: ['northCarolina.rows.unlimited'] },
+    { sourceLabel: '90 or above', breakMinutes: null, breakEveryMinutes: null, textKeys: ['northCarolina.rows.suspend'] },
+    { sourceLabel: '88 - 89.9', breakMinutes: 5, breakEveryMinutes: 15, textKeys: ['northCarolina.rows.observation', 'northCarolina.rows.removePads', 'northCarolina.rows.immersion'] },
+    { sourceLabel: '85 - 87.9', breakMinutes: 5, breakEveryMinutes: 20, textKeys: ['northCarolina.rows.reducedIntensity', 'northCarolina.rows.immersion'] },
+    { sourceLabel: '80 - 84.9', breakMinutes: 5, breakEveryMinutes: 25, textKeys: ['northCarolina.rows.normal'] },
+    { sourceLabel: 'Less than 80', breakMinutes: 5, breakEveryMinutes: 30, textKeys: ['northCarolina.rows.unlimited'] },
   ],
 }
 

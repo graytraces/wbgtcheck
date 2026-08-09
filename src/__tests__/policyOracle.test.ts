@@ -217,9 +217,9 @@ describe('policy oracle — measurement/compliance stance', () => {
   })
 
   it('NC and NY stay out of the WBGT policy picker (their scales are incompatible)', () => {
-    // NCHSAA uses a different threshold family AND its own colour names;
-    // NYSPHSAA's ladder is in heat index degrees. Either one wired into
-    // classifyWbgt would produce a confidently wrong flag.
+    // NCHSAA uses a different threshold family (80/85/88/90); NYSPHSAA's
+    // ladder is in heat index degrees. Either one wired into classifyWbgt
+    // would produce a confidently wrong flag.
     const ids = Object.keys(POLICIES)
     expect(ids).not.toContain('nchsaa')
     expect(ids).not.toContain('nysphsaa')
@@ -234,13 +234,28 @@ describe('policy oracle — measurement/compliance stance', () => {
     }
   })
 
-  it('NCHSAA rows keep the association’s own colour names, not this site’s flags', () => {
-    expect(NCHSAA_REFERENCE.rows.map((r) => r.colorKey)).toEqual([
-      'black',
-      'red',
-      'amber',
-      'green',
-      'white',
+  it('NCHSAA chart matches the current handbook: two columns, unchanged ladder', () => {
+    // The 2025-26 handbook prints the chart WITHOUT the old five-colour code —
+    // rows must not carry colour keys (restoring them would mean someone
+    // rebuilt from the superseded 2015-era guidance PDF).
+    for (const row of NCHSAA_REFERENCE.rows) {
+      expect(row).not.toHaveProperty('colorKey')
+    }
+    expect(NCHSAA_REFERENCE.rows.map((r) => r.sourceLabel)).toEqual([
+      '90 or above',
+      '88 - 89.9',
+      '85 - 87.9',
+      '80 - 84.9',
+      'Less than 80',
+    ])
+    // Break ladder (5 min per 15/20/25/30 min) verified unchanged in the
+    // current edition.
+    expect(NCHSAA_REFERENCE.rows.map((r) => r.breakEveryMinutes)).toEqual([
+      null,
+      15,
+      20,
+      25,
+      30,
     ])
   })
 

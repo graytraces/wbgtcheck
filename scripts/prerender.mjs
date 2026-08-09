@@ -56,10 +56,9 @@ import {
   IOWA_DEVICE_HEIGHT_FEET,
   IOWA_READING_INTERVAL_MINUTES,
   IOWA_RECOMMENDED_QUOTE,
-  NCHSAA_REMOTE_QUOTE,
-  NCHSAA_STAFFING_QUOTE,
-  NCHSAA_WEATHER_STATION_RADIUS_MAX_MILES,
-  NCHSAA_WEATHER_STATION_RADIUS_MIN_MILES,
+  NCHSAA_DEVICE_QUOTE,
+  NCHSAA_CADENCE_QUOTE,
+  NCHSAA_MANDATE_QUOTE,
   NYSPHSAA_AMBIENT_TRIGGER_F,
   NYSPHSAA_APPROVED_ON,
   NYSPHSAA_APP_QUOTE,
@@ -249,7 +248,7 @@ function policyTableHtml(policy, t) {
   return `<table><thead><tr><th>${escapeHtml(t('verdict.wbgtLabel'))} (°F)</th><th>${escapeHtml(t('texas.tableGuidelines'))}</th></tr></thead><tbody>${rows}</tbody></table>`
 }
 
-/** NCHSAA's chart — its own colour code, coolest row first (mirrors the page). */
+/** NCHSAA's chart — the current handbook's two columns, coolest row first. */
 function referenceTableHtml(table, t) {
   const rows = [...table.rows]
     .reverse()
@@ -265,14 +264,12 @@ function referenceTableHtml(table, t) {
           )}</li>`,
         )
       }
-      return `<tr><td>${escapeHtml(row.sourceLabel)}</td><td>${escapeHtml(
-        t(`northCarolina.colors.${row.colorKey}`),
-      )}</td><td><ul>${items.join('')}</ul></td></tr>`
+      return `<tr><td>${escapeHtml(row.sourceLabel)}</td><td><ul>${items.join('')}</ul></td></tr>`
     })
     .join('')
   return `<table><thead><tr><th>${escapeHtml(t('northCarolina.colWbgt'))}</th><th>${escapeHtml(
-    t('northCarolina.colColor'),
-  )}</th><th>${escapeHtml(t('northCarolina.colGuideline'))}</th></tr></thead><tbody>${rows}</tbody></table>`
+    t('northCarolina.colGuideline'),
+  )}</th></tr></thead><tbody>${rows}</tbody></table>`
 }
 
 /** NYSPHSAA's heat-index ladder — HEAT INDEX degrees, never WBGT. */
@@ -554,24 +551,22 @@ function generateBodyContent(lang, page) {
   } else if (page.key === 'northCarolina') {
     push(`<h1>${escapeHtml(t('northCarolina.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('northCarolina.intro'))}</p>`)
-    push(`<h2>${escapeHtml(t('northCarolina.remoteHeading'))}</h2>`)
+    push(`<h2>${escapeHtml(t('northCarolina.measurementHeading'))}</h2>`)
     push(
       `<p>${escapeHtml(
-        t('northCarolina.remoteBody', {
-          remote: NCHSAA_REMOTE_QUOTE,
-          min: NCHSAA_WEATHER_STATION_RADIUS_MIN_MILES,
-          max: NCHSAA_WEATHER_STATION_RADIUS_MAX_MILES,
+        t('northCarolina.measurementBody', {
+          device: NCHSAA_DEVICE_QUOTE,
+          cadence: NCHSAA_CADENCE_QUOTE,
         }),
       )}</p>`,
     )
-    push(`<p>${escapeHtml(t('northCarolina.remoteCaveat'))}</p>`)
-    push(`<h2>${escapeHtml(t('northCarolina.colorHeading'))}</h2>`)
-    push(`<p>${escapeHtml(t('northCarolina.colorBody'))}</p>`)
+    push(`<h2>${escapeHtml(t('northCarolina.pickerExclusionHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('northCarolina.pickerExclusionBody'))}</p>`)
     push(`<h2>${escapeHtml(t('northCarolina.tableHeading'))}</h2>`)
     push(referenceTableHtml(NCHSAA_REFERENCE, t))
     push(`<h2>${escapeHtml(t('northCarolina.mandateHeading'))}</h2>`)
     push(
-      `<p>${escapeHtml(t('northCarolina.mandateBody', { staffing: NCHSAA_STAFFING_QUOTE }))}</p>`,
+      `<p>${escapeHtml(t('northCarolina.mandateBody', { mandate: NCHSAA_MANDATE_QUOTE }))}</p>`,
     )
     push(
       `<p>${escapeHtml(t('northCarolina.sourceBody', { verifiedOn: NCHSAA_REFERENCE.source.verifiedOn }))} <a href="${NCHSAA_REFERENCE.source.url}">${escapeHtml(NCHSAA_REFERENCE.source.name)}</a></p>`,

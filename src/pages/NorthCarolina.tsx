@@ -3,10 +3,9 @@ import { useTranslation } from 'react-i18next'
 import SEO from '../components/SEO'
 import {
   NCHSAA_REFERENCE,
-  NCHSAA_REMOTE_QUOTE,
-  NCHSAA_STAFFING_QUOTE,
-  NCHSAA_WEATHER_STATION_RADIUS_MAX_MILES,
-  NCHSAA_WEATHER_STATION_RADIUS_MIN_MILES,
+  NCHSAA_DEVICE_QUOTE,
+  NCHSAA_CADENCE_QUOTE,
+  NCHSAA_MANDATE_QUOTE,
 } from '../data/policyOracle'
 
 export default function NorthCarolina() {
@@ -27,33 +26,32 @@ export default function NorthCarolina() {
       </header>
 
       <section>
-        <h2 className="display-num mb-2 text-2xl uppercase">{t('northCarolina.remoteHeading')}</h2>
+        <h2 className="display-num mb-2 text-2xl uppercase">
+          {t('northCarolina.measurementHeading')}
+        </h2>
         <p>
-          {t('northCarolina.remoteBody', {
-            remote: NCHSAA_REMOTE_QUOTE,
-            min: NCHSAA_WEATHER_STATION_RADIUS_MIN_MILES,
-            max: NCHSAA_WEATHER_STATION_RADIUS_MAX_MILES,
+          {t('northCarolina.measurementBody', {
+            device: NCHSAA_DEVICE_QUOTE,
+            cadence: NCHSAA_CADENCE_QUOTE,
           })}
         </p>
-        <p className="mt-2 font-semibold">{t('northCarolina.remoteCaveat')}</p>
       </section>
 
       <section className="border-2 border-line bg-surface p-5">
-        <h2 className="display-num mb-2 text-2xl uppercase">{t('northCarolina.colorHeading')}</h2>
-        <p>{t('northCarolina.colorBody')}</p>
+        <h2 className="display-num mb-2 text-2xl uppercase">
+          {t('northCarolina.pickerExclusionHeading')}
+        </h2>
+        <p>{t('northCarolina.pickerExclusionBody')}</p>
       </section>
 
       <section>
         <h2 className="display-num mb-2 text-2xl uppercase">{t('northCarolina.tableHeading')}</h2>
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[32rem] border-collapse text-sm">
+          <table className="w-full min-w-[28rem] border-collapse text-sm">
             <thead>
               <tr className="border-b-2 border-ink text-left">
                 <th className="py-2 pr-3 font-bold uppercase tracking-wide">
                   {t('northCarolina.colWbgt')}
-                </th>
-                <th className="py-2 pr-3 font-bold uppercase tracking-wide">
-                  {t('northCarolina.colColor')}
                 </th>
                 <th className="py-2 font-bold uppercase tracking-wide">
                   {t('northCarolina.colGuideline')}
@@ -64,9 +62,6 @@ export default function NorthCarolina() {
               {rows.map((row) => (
                 <tr key={row.sourceLabel} className="border-b border-line align-top">
                   <td className="display-num py-2 pr-3 text-lg">{row.sourceLabel}</td>
-                  <td className="py-2 pr-3 font-semibold">
-                    {t(`northCarolina.colors.${row.colorKey}`)}
-                  </td>
                   <td className="py-2">
                     <ul className="list-inside list-disc space-y-0.5">
                       {row.textKeys.map((key) => (
@@ -91,7 +86,7 @@ export default function NorthCarolina() {
 
       <section>
         <h2 className="display-num mb-2 text-2xl uppercase">{t('northCarolina.mandateHeading')}</h2>
-        <p>{t('northCarolina.mandateBody', { staffing: NCHSAA_STAFFING_QUOTE })}</p>
+        <p>{t('northCarolina.mandateBody', { mandate: NCHSAA_MANDATE_QUOTE })}</p>
       </section>
 
       <section className="text-sm text-ink-muted">
