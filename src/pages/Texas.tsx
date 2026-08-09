@@ -14,6 +14,8 @@ import {
   UIL_INSTRUMENT_OR_INTERNET_QUOTE,
   UIL_FAQ_FORECAST_QUOTE,
   UIL_FAQ_SOURCE,
+  UIL_MANDATE_2026_QUOTE,
+  UIL_RECORDKEEPING_QUOTE,
 } from '../data/policyOracle'
 
 const UIL_MAP_URL = 'https://www.uiltexas.org/files/health/WBGTMap.jpg'
@@ -34,6 +36,18 @@ export default function Texas() {
         <h1 className="display-num text-3xl uppercase sm:text-4xl">{t('texas.pageTitle')}</h1>
         <p className="mt-3 text-lg">{t('texas.intro', { effectiveDate: UIL_EFFECTIVE_DATE })}</p>
       </header>
+
+      <section>
+        <h2 className="display-num mb-2 text-2xl uppercase">{t('texas.mandate2026Heading')}</h2>
+        <p>{t('texas.mandate2026Body', { quote: UIL_MANDATE_2026_QUOTE })}</p>
+        <p className="mt-2">
+          {t('texas.recordkeepingNote', {
+            before: UIL_READING_BEFORE_PRACTICE_MAX_MINUTES,
+            interval: UIL_READING_INTERVAL_MINUTES,
+            record: UIL_RECORDKEEPING_QUOTE,
+          })}
+        </p>
+      </section>
 
       <section>
         <h2 className="display-num mb-2 text-2xl uppercase">{t('texas.classesHeading')}</h2>

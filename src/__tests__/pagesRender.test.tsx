@@ -29,6 +29,7 @@ import {
   UIL_CLASS_2,
   UIL_CLASS_3,
   UIL_FAQ_FORECAST_QUOTE,
+  UIL_MANDATE_2026_QUOTE,
   GHSA,
   GHSA_NO_APPS_QUOTE,
   SCHSL,
@@ -93,6 +94,10 @@ describe('post-JS rendered DOM', () => {
       screen.getByText((content) => content.includes(UIL_FAQ_FORECAST_QUOTE)),
     ).toBeInTheDocument()
     expect(screen.getByText(en.texas.legalityNoList)).toBeInTheDocument()
+    // 2026-27 mandate quote reaches the DOM verbatim.
+    expect(
+      screen.getByText((content) => content.includes(UIL_MANDATE_2026_QUOTE)),
+    ).toBeInTheDocument()
   })
 
   it('Georgia renders every GHSA band label and the device-only warning', () => {

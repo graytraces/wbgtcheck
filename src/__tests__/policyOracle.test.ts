@@ -37,6 +37,8 @@ import {
   UIL_INSTRUMENT_OR_INTERNET_QUOTE,
   UIL_FAQ_FORECAST_QUOTE,
   UIL_FAQ_SOURCE,
+  UIL_MANDATE_2026_QUOTE,
+  UIL_RECORDKEEPING_QUOTE,
   GHSA_NO_APPS_QUOTE,
   GHSA_MONITOR_EVERY_PRACTICE_QUOTE,
   GHSA_REMINDER_SOURCE,
@@ -309,6 +311,19 @@ describe('measurement legality quotes (re-verified 2026-08-09)', () => {
     )
     expect(UIL_FAQ_SOURCE.url).toContain('uiltexas.org')
     expect(UIL_FAQ_SOURCE.verifiedOn).toBe('2026-08-09')
+  })
+
+  it('UIL 2026-27 mandate is verbatim and the required/recommended asymmetry holds', () => {
+    expect(UIL_MANDATE_2026_QUOTE).toBe(
+      'Beginning with the 2026-2027 school year, the use of Wet Bulb Globe Temperature (WBGT) to monitor environmental conditions and guide activity modifications is no longer a recommendation, but a required standard for all UIL outdoor athletic and marching band activities.',
+    )
+    // Marching band is in the requirement sentence itself.
+    expect(UIL_MANDATE_2026_QUOTE).toContain('marching band')
+    // Record-keeping is RECOMMENDED, not required — the quote must keep saying so.
+    expect(UIL_RECORDKEEPING_QUOTE).toBe(
+      'It is recommended that schools record and keep on file the WBGT temperatures associated for outside practices.',
+    )
+    expect(UIL_RECORDKEEPING_QUOTE.toLowerCase()).toContain('recommended')
   })
 
   it('GHSA reminder sentences are verbatim, with a dated source block', () => {

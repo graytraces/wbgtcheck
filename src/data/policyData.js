@@ -55,6 +55,14 @@ export const UIL_FAQ_SOURCE = {
   verifiedOn: '2026-08-09',
 }
 
+// Same plan page, same 2026-08-09 verification. The asymmetry is the point:
+// the standard and the cadence are REQUIRED, keeping a written record is
+// only RECOMMENDED — copy must never blur that line in either direction.
+export const UIL_MANDATE_2026_QUOTE =
+  'Beginning with the 2026-2027 school year, the use of Wet Bulb Globe Temperature (WBGT) to monitor environmental conditions and guide activity modifications is no longer a recommendation, but a required standard for all UIL outdoor athletic and marching band activities.'
+export const UIL_RECORDKEEPING_QUOTE =
+  'It is recommended that schools record and keep on file the WBGT temperatures associated for outside practices.'
+
 // --- GHSA (Georgia) administrative constants ------------------------------
 
 export const GHSA_READING_INTERVAL_MINUTES = 30

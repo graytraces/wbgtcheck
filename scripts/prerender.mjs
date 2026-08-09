@@ -32,6 +32,8 @@ import {
   UIL_INSTRUMENT_OR_INTERNET_QUOTE,
   UIL_FAQ_FORECAST_QUOTE,
   UIL_FAQ_SOURCE,
+  UIL_MANDATE_2026_QUOTE,
+  UIL_RECORDKEEPING_QUOTE,
   GHSA_INSTRUMENT_QUOTE,
   GHSA_NO_APPS_QUOTE,
   GHSA_MONITOR_EVERY_PRACTICE_QUOTE,
@@ -395,6 +397,17 @@ function generateBodyContent(lang, page) {
   } else if (page.key === 'texas') {
     push(`<h1>${escapeHtml(t('texas.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('texas.intro', { effectiveDate: UIL_EFFECTIVE_DATE }))}</p>`)
+    push(`<h2>${escapeHtml(t('texas.mandate2026Heading'))}</h2>`)
+    push(`<p>${escapeHtml(t('texas.mandate2026Body', { quote: UIL_MANDATE_2026_QUOTE }))}</p>`)
+    push(
+      `<p>${escapeHtml(
+        t('texas.recordkeepingNote', {
+          before: UIL_READING_BEFORE_PRACTICE_MAX_MINUTES,
+          interval: UIL_READING_INTERVAL_MINUTES,
+          record: UIL_RECORDKEEPING_QUOTE,
+        }),
+      )}</p>`,
+    )
     push(`<h2>${escapeHtml(t('texas.classesHeading'))}</h2><p>${escapeHtml(t('texas.classesBody'))}</p>`)
     push(`<h2>${escapeHtml(t('texas.tableHeading'))}</h2>`)
     push(`<h3>${escapeHtml(t('texas.tableClass2'))}</h3>`)
