@@ -154,12 +154,12 @@ describe('post-JS rendered DOM', () => {
     ).toBeInTheDocument()
   })
 
-  it('WashingtonAir renders every band label and all three activity columns', () => {
+  it('WashingtonAir renders every band label and all three duration columns', () => {
     renderAt('/en/washington-air-quality', <WashingtonAir />)
     for (const band of WA_AIR_POLICY.bands) {
       expect(screen.getAllByText(band.sourceLabel).length).toBeGreaterThan(0)
     }
-    for (const activity of ['recess', 'pe', 'athletics'] as const) {
+    for (const activity of ['short', 'medium', 'long'] as const) {
       expect(screen.getAllByText(en.air.activity[activity]).length).toBeGreaterThan(0)
     }
   })

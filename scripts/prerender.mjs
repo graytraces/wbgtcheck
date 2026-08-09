@@ -82,15 +82,14 @@ import {
   WA_AIR_POLICY,
   OR_AIR_POLICY,
   CA_AIR_POLICY,
-  WA_HEALTH_CONDITIONS_QUOTE,
-  WA_INDOOR_PM25_THRESHOLD_UG_M3,
+  WA_SENSITIVE_GROUP_QUOTE,
+  WA_DATA_SOURCE_QUOTE,
   OR_CONSERVATIVE_METRIC_QUOTE,
   CA_RULE_QUOTE,
   CA_READING_SOURCE_QUOTE,
   CA_REFRAIN_AT_OR_ABOVE_AQI,
   NFHS_LANDMARK_MILES,
   ACTIVITY_IDS,
-  ACTIVITY_DURATIONS,
   AIRNOW_SOURCE,
   EPA_AQI_SOURCE,
   NFHS_AIR_SOURCE,
@@ -296,12 +295,9 @@ function newYorkTableHtml(t) {
   )}</th><th>${escapeHtml(t('newYork.colAction'))}</th></tr></thead><tbody>${rows}</tbody></table>`
 }
 
-/** Activity duration label — mirrors the React table header. */
+/** Duration column head — mirrors the React table header (label + example). */
 function activityDurationLabel(id, t) {
-  const d = ACTIVITY_DURATIONS[id]
-  return d.minutes !== null
-    ? t('air.activityMinutes', { minutes: d.minutes })
-    : t('air.activityHours', { hoursMin: d.hoursMin, hoursMax: d.hoursMax })
+  return `${t(`air.activity.${id}`)} (${t(`air.activityExample.${id}`)})`
 }
 
 function visibilityBody(t) {
@@ -325,19 +321,15 @@ function airDataSourcesHtml(t, withVisibilityQuote) {
   )}</p>${quote}<ul>${links}</ul>`
 }
 
-/** AQI band × activity table (WA) — same cells as pages/WashingtonAir.tsx. */
+/** AQI band × duration table (WA) — same cells as pages/WashingtonAir.tsx. */
 function airActivityTableHtml(policy, t) {
   const head = ACTIVITY_IDS.map(
-    (id) =>
-      `<th>${escapeHtml(t(`air.activity.${id}`))} (${escapeHtml(activityDurationLabel(id, t))})</th>`,
+    (id) => `<th>${escapeHtml(activityDurationLabel(id, t))}</th>`,
   ).join('')
   const rows = policy.bands
     .map((band) => {
       const cells = ACTIVITY_IDS.map(
-        (id) =>
-          `<td>${escapeHtml(
-            t(`air.actions.${band.actions[id]}`, { pm25: WA_INDOOR_PM25_THRESHOLD_UG_M3 }),
-          )}</td>`,
+        (id) => `<td>${escapeHtml(t(`air.actions.${band.actions[id]}`))}</td>`,
       ).join('')
       return `<tr><td>${escapeHtml(band.sourceLabel)}</td>${cells}</tr>`
     })
@@ -677,9 +669,12 @@ function generateBodyContent(lang, page) {
     push(airActivityTableHtml(WA_AIR_POLICY, t))
     push(`<p>${escapeHtml(t('washingtonAir.athleticsNote'))}</p>`)
     push(
-      `<h2>${escapeHtml(t('washingtonAir.healthConditionsHeading'))}</h2><p>${escapeHtml(
-        t('washingtonAir.healthConditionsBody', { quote: WA_HEALTH_CONDITIONS_QUOTE }),
+      `<h2>${escapeHtml(t('washingtonAir.sensitiveGroupHeading'))}</h2><p>${escapeHtml(
+        t('washingtonAir.sensitiveGroupBody', { quote: WA_SENSITIVE_GROUP_QUOTE }),
       )}</p>`,
+    )
+    push(
+      `<p>${escapeHtml(t('washingtonAir.dataSourceBody', { quote: WA_DATA_SOURCE_QUOTE }))}</p>`,
     )
     push(
       `<h2>${escapeHtml(t('washingtonAir.sourceHeading'))}</h2><p>${escapeHtml(t('washingtonAir.sourceBody'))} <a href="${WA_AIR_POLICY.source.url}">${escapeHtml(WA_AIR_POLICY.source.name)}</a></p>`,

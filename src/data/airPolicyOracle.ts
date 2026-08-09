@@ -18,11 +18,12 @@ import {
 
 export {
   ACTIVITY_IDS,
-  ACTIVITY_DURATIONS,
+  ACTIVITY_SOURCE_LABELS,
+  ACTIVITY_EXAMPLE_QUOTES,
   DEFAULT_ACTIVITY_ID,
   EPA_AQI_SOURCE,
-  WA_INDOOR_PM25_THRESHOLD_UG_M3,
-  WA_HEALTH_CONDITIONS_QUOTE,
+  WA_SENSITIVE_GROUP_QUOTE,
+  WA_DATA_SOURCE_QUOTE,
   OR_CONSERVATIVE_METRIC_QUOTE,
   CA_REFRAIN_AT_OR_ABOVE_AQI,
   CA_RULE_QUOTE,
@@ -57,7 +58,8 @@ export type AqiCategoryId =
   | 'veryUnhealthy'
   | 'hazardous'
 
-export type ActivityId = 'recess' | 'pe' | 'athletics'
+/** WA's duration columns: 15 min-1 h / 1-4 h / >4 h. */
+export type ActivityId = 'short' | 'medium' | 'long'
 
 export type AirPolicyId = 'wa-doh' | 'or-osaa' | 'ca-cif'
 

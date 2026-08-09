@@ -12,7 +12,6 @@ import {
   WA_AIR_POLICY,
   OR_AIR_POLICY,
   CA_AIR_POLICY,
-  WA_INDOOR_PM25_THRESHOLD_UG_M3,
   classifyAqi,
 } from '../data/airPolicyOracle'
 import { isObservationStale, readingForPolicy } from '../hooks/useAirQuality'
@@ -43,7 +42,7 @@ function renderGate(props: Partial<Parameters<typeof AirQualityGate>[0]> = {}) {
         status="ready"
         data={payload()}
         policy={WA_AIR_POLICY}
-        activity="athletics"
+        activity="medium"
         onActivityChange={() => {}}
         statePageSlug="washington-air-quality"
         now={Date.now()}
@@ -95,33 +94,30 @@ describe('AirQualityGate — co-display, never a replacement', () => {
 })
 
 describe('AirQualityGate — jurisdiction behaviour', () => {
-  it('WA: shows the activity toggle and the action for the selected activity', () => {
+  it('WA: shows the duration toggle and the action for the selected column', () => {
     const onChange = vi.fn()
     renderGate({ onActivityChange: onChange })
-    // 120 with athletics selected → cancel or move.
-    expect(screen.getByText(en.air.actions.cancelOrMove)).toBeInTheDocument()
-    fireEvent.click(screen.getByRole('button', { name: /Recess/ }))
-    expect(onChange).toHaveBeenCalledWith('recess')
+    // 120 in the 1-4 h column → light intensity / 1-hour moderate cap.
+    expect(screen.getByText(en.air.actions.limitLightOrHourModerate)).toBeInTheDocument()
+    fireEvent.click(screen.getByRole('button', { name: /15 min/ }))
+    expect(onChange).toHaveBeenCalledWith('short')
   })
 
-  it('WA: switching activity changes the prescribed action at the same AQI', () => {
-    const { unmount } = renderGate({ activity: 'recess' })
-    // Recess at 101-150 keeps children with conditions indoors; it does not cancel.
-    expect(
-      screen.getByText(
-        i18n.t('air.actions.sensitiveIndoorsLight', { pm25: WA_INDOOR_PM25_THRESHOLD_UG_M3 }),
-      ),
-    ).toBeInTheDocument()
-    expect(screen.queryByText(en.air.actions.cancelOrMove)).not.toBeInTheDocument()
+  it('WA: switching duration changes the prescribed action at the same AQI', () => {
+    const { unmount } = renderGate({ activity: 'short' })
+    // The under-an-hour column at 101-150 limits to moderate intensity; it
+    // does not reach the light/1-hour cap the practice column gets.
+    expect(screen.getByText(en.air.actions.limitModerate)).toBeInTheDocument()
+    expect(screen.queryByText(en.air.actions.limitLightOrHourModerate)).not.toBeInTheDocument()
     unmount()
   })
 
-  it('OR/CA: no activity toggle, because those sources do not vary by activity', () => {
+  it('OR/CA: no duration toggle, because those sources do not vary by activity', () => {
     const { unmount } = renderGate({ policy: OR_AIR_POLICY, statePageSlug: 'oregon-air-quality' })
-    expect(screen.queryByRole('button', { name: /Recess/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /15 min/ })).not.toBeInTheDocument()
     unmount()
     renderGate({ policy: CA_AIR_POLICY, statePageSlug: 'california-air-quality' })
-    expect(screen.queryByRole('button', { name: /Recess/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /15 min/ })).not.toBeInTheDocument()
   })
 
   it('CA below the threshold says the bylaw is silent, not that it is fine', () => {
@@ -160,10 +156,12 @@ describe('AirQualityGate — reading selection and freshness', () => {
     expect(readingForPolicy(p, null)).toMatchObject({ aqi: 160, basis: 'overall' })
   })
 
-  it('the category wording matches the value shown, not the overall AQI', () => {
-    // Regression: WA reads the PM2.5 sub-index, so showing the overall AQI's
-    // category next to a PM2.5 swatch produced a self-contradicting card
-    // (yellow "51 to 100" swatch labelled "Unhealthy").
+  it('shows BOTH readings with three channels each, and marks the higher one governing', () => {
+    // When ozone drives the overall AQI past the PM2.5 sub-index, hiding the
+    // overall category would under-warn — the earlier assertion that
+    // 'Unhealthy' must be absent had the intent inverted. Both readings now
+    // render as swatch + number + category name, and the higher carries the
+    // governing badge (the WA policy band still reads PM2.5).
     renderGate({
       data: payload({
         overall: { aqi: 160, category: 'Unhealthy', parameter: 'OZONE' },
@@ -171,10 +169,12 @@ describe('AirQualityGate — reading selection and freshness', () => {
       }),
     })
     expect(screen.getByText('90')).toBeInTheDocument()
-    expect(screen.getByText('Moderate')).toBeInTheDocument()
-    expect(screen.queryByText('Unhealthy')).not.toBeInTheDocument()
-    // The overall reading is still disclosed, just not as the headline.
-    expect(screen.getByText(/OZONE.*160/)).toBeInTheDocument()
+    expect(screen.getAllByText(/Moderate/).length).toBeGreaterThan(0)
+    expect(screen.getByText('160')).toBeInTheDocument()
+    expect(screen.getAllByText(/Unhealthy/).length).toBeGreaterThan(0)
+    expect(screen.getAllByText(en.air.governingLabel)).toHaveLength(1)
+    // The policy band/action still follows PM2.5 (90 → Moderate band).
+    expect(screen.getByText(en.air.actions.healthCondsOptOut)).toBeInTheDocument()
   })
 
   it('falls back to the overall AQI when the area reports no PM2.5', () => {
@@ -222,12 +222,14 @@ describe('air copy derives numbers from the oracle', () => {
     }
   })
 
-  it('the WA indoor PM2.5 threshold reaches the rendered sentence', () => {
-    const rendered = i18n.t('air.actions.allIndoorsLight', {
-      pm25: WA_INDOOR_PM25_THRESHOLD_UG_M3,
+  it('warns when the WA table has to fall back from PM2.5 to the overall AQI', () => {
+    renderGate({
+      data: payload({
+        overall: { aqi: 160, category: 'Unhealthy', parameter: 'OZONE' },
+        pm25: null,
+      }),
     })
-    expect(rendered).toContain(String(WA_INDOOR_PM25_THRESHOLD_UG_M3))
-    expect(rendered).not.toContain('{{')
+    expect(screen.getByText(en.air.pm25FallbackNotice)).toBeInTheDocument()
   })
 
   it('air copy never claims the air is safe or clears play', () => {

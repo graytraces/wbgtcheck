@@ -3,10 +3,9 @@ import SEO from '../components/SEO'
 import AirDataSources from '../components/AirDataSources'
 import {
   WA_AIR_POLICY,
-  WA_HEALTH_CONDITIONS_QUOTE,
-  WA_INDOOR_PM25_THRESHOLD_UG_M3,
+  WA_SENSITIVE_GROUP_QUOTE,
+  WA_DATA_SOURCE_QUOTE,
   ACTIVITY_IDS,
-  ACTIVITY_DURATIONS,
   airActionFor,
   airActionQuote,
   classifyAqi,
@@ -34,6 +33,7 @@ export default function WashingtonAir() {
           {t('washingtonAir.basisHeading')}
         </h2>
         <p>{t('washingtonAir.basisBody')}</p>
+        <p className="mt-2">{t('washingtonAir.dataSourceBody', { quote: WA_DATA_SOURCE_QUOTE })}</p>
       </section>
 
       <section>
@@ -47,22 +47,14 @@ export default function WashingtonAir() {
                 <th className="py-2 pr-3 font-bold uppercase tracking-wide">
                   {t('air.tableAqi')}
                 </th>
-                {ACTIVITY_IDS.map((id) => {
-                  const d = ACTIVITY_DURATIONS[id as ActivityId]
-                  return (
-                    <th key={id} className="py-2 pr-3 font-bold uppercase tracking-wide">
-                      {t(`air.activity.${id}`)}
-                      <span className="block text-xs font-normal normal-case opacity-80">
-                        {d.minutes !== null
-                          ? t('air.activityMinutes', { minutes: d.minutes })
-                          : t('air.activityHours', {
-                              hoursMin: d.hoursMin,
-                              hoursMax: d.hoursMax,
-                            })}
-                      </span>
-                    </th>
-                  )
-                })}
+                {ACTIVITY_IDS.map((id) => (
+                  <th key={id} className="py-2 pr-3 font-bold uppercase tracking-wide">
+                    {t(`air.activity.${id}`)}
+                    <span className="block text-xs font-normal normal-case opacity-80">
+                      {t(`air.activityExample.${id}`)}
+                    </span>
+                  </th>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -78,9 +70,7 @@ export default function WashingtonAir() {
                   </td>
                   {ACTIVITY_IDS.map((id) => (
                     <td key={id} className="py-2 pr-3">
-                      {t(`air.actions.${airActionFor(band, id as ActivityId)}`, {
-                        pm25: WA_INDOOR_PM25_THRESHOLD_UG_M3,
-                      })}
+                      {t(`air.actions.${airActionFor(band, id as ActivityId)}`)}
                     </td>
                   ))}
                 </tr>
@@ -93,9 +83,9 @@ export default function WashingtonAir() {
 
       <section>
         <h2 className="display-num mb-2 text-2xl uppercase">
-          {t('washingtonAir.healthConditionsHeading')}
+          {t('washingtonAir.sensitiveGroupHeading')}
         </h2>
-        <p>{t('washingtonAir.healthConditionsBody', { quote: WA_HEALTH_CONDITIONS_QUOTE })}</p>
+        <p>{t('washingtonAir.sensitiveGroupBody', { quote: WA_SENSITIVE_GROUP_QUOTE })}</p>
       </section>
 
       <section>
@@ -103,7 +93,7 @@ export default function WashingtonAir() {
           {t('air.sourceQuoteLabel')}
         </h2>
         <blockquote className="border-l-4 border-ink pl-4 text-sm text-ink-muted">
-          {airActionQuote(policy, 'cancelOrMove')}
+          {airActionQuote(policy, 'limitLightOrHourModerate')}
         </blockquote>
       </section>
 

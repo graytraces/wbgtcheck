@@ -113,9 +113,10 @@ export const EPA_AQI_SOURCE = {
 // category. This includes values above 500" — so the top category is
 // open-ended (maxAqi: null) rather than capped at the 500 scale end.
 
-// --- Activity axis (the WA table's rows) ----------------------------------
-// WA DOH 334-332 is the only one of the three jurisdictions whose guidance
-// varies by activity type/duration, and its row labels carry the durations.
+// --- Activity axis (the WA table's columns) --------------------------------
+// The current WA guide (May 2026) keys its columns to activity DURATION, not
+// activity type — 15 min-1 h / 1-4 h / over 4 h — with the old type labels
+// (recess, PE, athletics) surviving only as examples under each duration.
 
 // ⚠️ BAND ORDER DIFFERS FROM policyData.js. The WBGT policies list bands
 // hottest-first (descending) because classifyWbgt scans top-down. Air bands
@@ -124,121 +125,112 @@ export const EPA_AQI_SOURCE = {
 // airPolicyOracle.test.ts pins the ascending order — do not "fix" one file to
 // match the other without changing its classifier in the same commit.
 
-export const ACTIVITY_IDS = ['recess', 'pe', 'athletics']
+export const ACTIVITY_IDS = ['short', 'medium', 'long']
 
-export const ACTIVITY_DURATIONS = {
-  // "Recess (15 minutes)"
-  recess: { minutes: 15, hoursMin: null, hoursMax: null },
-  // "P.E. (1 hour)"
-  pe: { minutes: 60, hoursMin: null, hoursMax: null },
-  // "Athletic Events and Practices (Vigorous activity 2-3 hours)"
-  athletics: { minutes: null, hoursMin: 2, hoursMax: 3 },
+/** Column heads exactly as the guide prints them. */
+export const ACTIVITY_SOURCE_LABELS = {
+  short: '15 mins to 1 hour',
+  medium: '1-4 hours',
+  long: '> 4 hours',
 }
 
-/** Default activity for this product's audience (coaches, band directors). */
-export const DEFAULT_ACTIVITY_ID = 'athletics'
-
-// --- Washington ------------------------------------------------------------
-// DOH 334-332 (April 2022). NOTE the index basis: the table is headed
-// "Outside Air Quality Index: PM2.5", so it is keyed to the PM2.5 sub-index,
-// not the overall AQI. `indexBasis` drives which number the UI feeds in.
-//
-// The guide's indoor-air escape hatch ("unless indoor PM2.5 levels are below
-// 35.5 µg/m3") is a concentration, not an AQI value.
-
-export const WA_INDOOR_PM25_THRESHOLD_UG_M3 = 35.5
-
-const WA_SOURCE = {
-  name: 'Washington Air Quality Guide for School & Child Care Activities (DOH 334-332, April 2022)',
-  url: 'https://cdnsm5-ss18.sharpschool.com/UserFiles/Servers/Server_520831/File/Public%20Health/School%20guidance%20Smoke.pdf',
-  verifiedOn: '2026-08-09',
+/** The guide's own example lists under each duration column. */
+export const ACTIVITY_EXAMPLE_QUOTES = {
+  short: 'e.g., recess, PE, classes typically held outside',
+  medium: 'e.g., athletic events and practices',
+  long: 'e.g., outdoor school or programming, day camp, overnight camp',
 }
 
 /**
- * Action codes map to locale copy under `air.actions.*`. Each carries the
- * source's own wording in `quote` so the state page can show the primary
- * document verbatim next to our paraphrase.
+ * Default column for this product's audience (coaches, band directors): the
+ * 1-4 hour column is where the guide itself files athletic events and
+ * practices. SAFETY PIN (test-enforced): the default must never move to the
+ * SHORTER-duration column — its actions are more permissive at the same AQI.
+ */
+export const DEFAULT_ACTIVITY_ID = 'medium'
+
+// --- Washington ------------------------------------------------------------
+// "Washington Children and Youth Activities Guide for Air Quality"
+// (DOH 334-332, May 2026 revision). NOTE the index basis: the table is headed
+// "Outside Air Quality Index (AQI): PM2.5", so it is keyed to the PM2.5
+// sub-index, not the overall AQI. `indexBasis` drives which number the UI
+// feeds in. The guide's named data source is AirNow.gov — the same feed this
+// site's air gate reads.
+
+const WA_SOURCE = {
+  name: 'Washington Children and Youth Activities Guide for Air Quality (DOH 334-332, May 2026)',
+  url: 'https://doh.wa.gov/sites/default/files/legacy/Documents/Pubs/334-332.pdf',
+  verifiedOn: '2026-08-09',
+}
+
+/** Page-1 pointer: "Check current and forecasted air quality at AirNow.gov". */
+export const WA_DATA_SOURCE_QUOTE = 'Check current and forecasted air quality at AirNow.gov'
+
+/**
+ * Current guide merges EPA's top three categories into one ≥151 row and has
+ * FOUR bands, not five. Action codes map to locale copy under `air.actions.*`;
+ * quotes below carry each cell's wording verbatim.
  */
 const WA_BANDS = [
   {
     id: 'good',
     minAqi: 0,
-    sourceLabel: 'Good (0-50)',
-    actions: { recess: 'noRestrictions', pe: 'noRestrictions', athletics: 'noRestrictions' },
+    sourceLabel: 'Good (0-50 AQI)',
+    actions: { short: 'noRestrictions', medium: 'noRestrictions', long: 'noRestrictions' },
   },
   {
     id: 'moderate',
     minAqi: 51,
-    sourceLabel: 'Moderate (51-100)',
+    sourceLabel: 'Moderate (51-100 AQI)',
     actions: {
-      recess: 'sensitiveMayStayIndoors',
-      pe: 'sensitiveMayStayIndoorsMonitor',
-      athletics: 'sensitiveMayOptOut',
+      short: 'healthCondsOptOut',
+      medium: 'healthCondsOptOut',
+      long: 'healthCondsMove',
     },
   },
   {
     id: 'unhealthySensitive',
     minAqi: 101,
-    sourceLabel: 'Unhealthy for Sensitive Groups (101-150)',
+    sourceLabel: 'Unhealthy for Sensitive Groups (101-150 AQI)',
     actions: {
-      recess: 'sensitiveIndoorsLight',
-      pe: 'sensitiveIndoorsOthersLightOutdoor',
-      athletics: 'cancelOrMove',
+      short: 'limitModerate',
+      medium: 'limitLightOrHourModerate',
+      long: 'limitLightUnder4h',
     },
   },
   {
-    id: 'unhealthy',
+    // The guide's own top row: "Unhealthy, Very Unhealthy, or Hazardous
+    // (≥151 AQI)" — one row for everything from 151 up.
+    id: 'unhealthy151Plus',
     minAqi: 151,
-    sourceLabel: 'Unhealthy (151-200)',
+    sourceLabel: 'Unhealthy, Very Unhealthy, or Hazardous (≥151 AQI)',
     actions: {
-      recess: 'allIndoorsLight',
-      pe: 'allIndoorsLight',
-      athletics: 'cancelOrMoveConsiderTransit',
-    },
-  },
-  {
-    // The WA table's top column is a single ">200" — it does not split EPA's
-    // Very Unhealthy (201-300) and Hazardous (301+).
-    id: 'veryUnhealthyHazardous',
-    minAqi: 201,
-    sourceLabel: 'Very Unhealthy/Hazardous (>200)',
-    actions: {
-      recess: 'allIndoorsFilteredLight',
-      pe: 'allIndoorsFilteredLight',
-      athletics: 'cancelOrMoveFilteredConsiderTransit',
+      short: 'cancelOrMoveFiltered',
+      medium: 'cancelOrMoveFiltered',
+      long: 'cancelOrMoveFiltered',
     },
   },
 ]
 
 const WA_ACTION_QUOTES = {
   noRestrictions: 'No restrictions.',
-  sensitiveMayStayIndoors: 'Allow children with health conditions (see below*) to stay indoors.',
-  sensitiveMayStayIndoorsMonitor:
-    'Allow children with health conditions to stay indoors and monitor symptoms for those who participate. Increase rest periods for these children as needed.',
-  sensitiveMayOptOut:
-    'Allow children with health conditions to opt out and monitor symptoms for those who join. Increase rest periods for these children.',
-  sensitiveIndoorsLight:
-    'Keep children with health conditions indoors. Keep activity levels light for these children unless indoor PM2.5 levels are below 35.5 µg/m3 (see following page).',
-  sensitiveIndoorsOthersLightOutdoor:
-    'Keep children with health conditions indoors. Keep activities light for these children unless indoor PM2.5 levels are below 35.5 µg/m3. For others, limit to light outdoor activities. Allow any children to stay indoors if they do not want to go outside.',
-  allIndoorsLight:
-    'Keep all children indoors. Keep activity levels light unless indoor PM2.5 levels are below 35.5 µg/m3.',
-  allIndoorsFilteredLight:
-    'Keep all children indoors. Keep activity levels light unless indoor air is filtered, and indoor PM2.5 levels are below 35.5 µg/m3.',
-  cancelOrMove:
-    "Cancel children's outdoor athletic events and practices or move them to an area with safer air quality, either indoors or to a different location.",
-  cancelOrMoveConsiderTransit:
-    "Cancel children's outdoor athletic events and practices or move them to an area with safer air quality, either indoors or to a different location. Consider time spent in poor air quality during transit before relocating.",
-  cancelOrMoveFilteredConsiderTransit:
-    "Cancel children's outdoor athletic events and practices or move them to an area with safer air quality, either indoors with filtered air or to a different location. Consider time spent in poor air quality during transit before relocating.",
+  healthCondsOptOut:
+    'Allow children and youth with health conditions to opt out or stay indoors. Limit intensity of activities for these children and youth if needed.',
+  healthCondsMove:
+    'Move children and youth with health conditions to an area with safer air quality, either indoors or to a different location if needed. Allow children and youth without health conditions to opt out or stay indoors and limit intensity of activities.',
+  limitModerate:
+    'Limit to moderate intensity activities outside. For children and youth with health conditions, further limit intensity or move to an area with safer air quality if needed.',
+  limitLightOrHourModerate:
+    'Limit to light intensity activities or to a 1-hour total duration with moderate intensity activities. If intensity level and time cannot be modified, consider canceling outdoor activity or move to an area with safer air quality, either indoors or to a different location. For children & youth with health conditions, further limit time or intensity if needed.',
+  limitLightUnder4h:
+    'Limit to light intensity activities and under 4-hr total duration. If intensity level and time cannot be modified, cancel outdoor activity, or move it to an area with safer air quality, either indoors or to a different location. For children and youth with health conditions, further limit time or intensity if needed.',
+  cancelOrMoveFiltered:
+    'Cancel outdoor activity or move to an area with safer air quality, either indoors with filtered air or to a different location. Limit to light intensity activities indoors if indoor PM2.5 levels are elevated.',
 }
 
-/**
- * "*Health conditions include asthma and other lung disease, respiratory
- * infection, heart disease, and diabetes."
- */
-export const WA_HEALTH_CONDITIONS_QUOTE =
-  'Health conditions include asthma and other lung disease, respiratory infection, heart disease, and diabetes.'
+/** The guide's sensitive-group definition — every student is in it. */
+export const WA_SENSITIVE_GROUP_QUOTE =
+  'All children and youth (18 and under) are considered a sensitive group.'
 
 export const WA_AIR_POLICY = {
   id: 'wa-doh',

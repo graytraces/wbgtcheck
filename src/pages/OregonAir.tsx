@@ -55,7 +55,7 @@ export default function OregonAir() {
                     </span>
                   </td>
                   <td className="py-2 pr-3 whitespace-nowrap">{band.visibilityLabel}</td>
-                  <td className="py-2">{t(`air.actions.${airActionFor(band, 'athletics')}`)}</td>
+                  <td className="py-2">{t(`air.actions.${airActionFor(band, 'medium')}`)}</td>
                 </tr>
               ))}
             </tbody>

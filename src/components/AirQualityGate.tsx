@@ -5,11 +5,9 @@ import type { AqiPayload } from '../utils/airnow'
 import type { ActivityId, AirPolicy } from '../data/airPolicyOracle'
 import {
   ACTIVITY_IDS,
-  ACTIVITY_DURATIONS,
   AIR_AREA_FAR_KM,
   AIRNOW_PROGRAM_CREDIT,
   NFHS_LANDMARK_MILES,
-  WA_INDOOR_PM25_THRESHOLD_UG_M3,
   airActionFor,
   classifyAirBand,
   classifyAqi,
@@ -72,21 +70,54 @@ export default function AirQualityGate({
   }
 
   const reading = readingForPolicy(data, policy)
-  const category = classifyAqi(reading.aqi)
-  const swatch = aqiSwatchFor(category)
   const band = policy ? classifyAirBand(policy, reading.aqi) : null
   const action = band ? airActionFor(band, activity) : null
   const stale = isObservationStale(data.observed.epochMs, now)
   const miles = Math.round(data.area.distanceKm / KM_PER_MILE)
   const far = data.area.distanceKm > AIR_AREA_FAR_KM
+  // The WA table reads PM2.5 with no PM2.5 reported here: the overall AQI is
+  // standing in, and the card must say so rather than pass it off.
+  const pm25Fallback = policy?.indexBasis === 'pm25' && !data.pm25
 
   const agencies =
     data.agencies.length > 0 ? data.agencies.join(', ') : AIRNOW_PROGRAM_CREDIT
 
-  const basisLabel =
-    reading.basis === 'pm25'
-      ? t('air.aqiBasisPm25')
-      : t('air.aqiBasisOverall', { pollutant: reading.parameter })
+  // Both readings, each with the full three channels (swatch + number +
+  // category name). The EPA headline category derives from the OVERALL AQI;
+  // the policy band still reads the index the jurisdiction keys to (PM2.5 for
+  // WA). The higher of the two is marked as governing.
+  const chips =
+    reading.basis === 'pm25' &&
+    !(data.overall.parameter === 'PM2.5' && data.overall.aqi === reading.aqi)
+      ? [
+          {
+            key: 'pm25',
+            aqi: reading.aqi,
+            category: classifyAqi(reading.aqi),
+            name: reading.category,
+            label: t('air.aqiBasisPm25'),
+          },
+          {
+            key: 'overall',
+            aqi: data.overall.aqi,
+            category: classifyAqi(data.overall.aqi),
+            name: data.overall.category,
+            label: t('air.aqiBasisOverall', { pollutant: data.overall.parameter }),
+          },
+        ]
+      : [
+          {
+            key: 'single',
+            aqi: reading.aqi,
+            category: classifyAqi(reading.aqi),
+            name: reading.category,
+            label:
+              reading.basis === 'pm25'
+                ? t('air.aqiBasisPm25')
+                : t('air.aqiBasisOverall', { pollutant: reading.parameter }),
+          },
+        ]
+  const governingAqi = Math.max(...chips.map((c) => c.aqi))
 
   return (
     <section className="border-2 border-line bg-surface" aria-live="polite">
@@ -102,26 +133,35 @@ export default function AirQualityGate({
             <Wind className="h-5 w-5" aria-hidden="true" />
             {t('air.gateHeading')}
           </h2>
-          {/* Color + number + category name: three channels, never color alone. */}
-          <span
-            className="inline-flex items-baseline gap-2 px-3 py-1 font-bold"
-            style={swatch}
-          >
-            <span className="display-num text-3xl leading-none">{reading.aqi}</span>
-            <span className="text-sm uppercase tracking-wide">{category.sourceLabel}</span>
-          </span>
-          {/* The agency's category wording for the value actually shown —
-              NOT data.overall.category, which would contradict the swatch
-              whenever WA reads PM2.5 while ozone drives the overall AQI. */}
-          <span className="text-sm font-semibold uppercase tracking-wide">
-            {reading.category}
-          </span>
-          <span className="text-sm text-ink-muted">{basisLabel}</span>
+          {/* Each reading: swatch + number + category name — three channels,
+              never color alone. */}
+          {chips.map((chip) => (
+            <span key={chip.key} className="inline-flex flex-col">
+              <span
+                className="inline-flex items-baseline gap-2 px-3 py-1 font-bold"
+                style={aqiSwatchFor(chip.category)}
+              >
+                <span className="display-num text-3xl leading-none">{chip.aqi}</span>
+                <span className="text-sm uppercase tracking-wide">
+                  {chip.category.sourceLabel}
+                </span>
+              </span>
+              <span className="mt-0.5 text-xs font-semibold uppercase tracking-wide">
+                {chip.name}
+                {chips.length > 1 && chip.aqi === governingAqi && (
+                  <span className="ml-1 bg-ink px-1 py-0.5 text-bg">
+                    {t('air.governingLabel')}
+                  </span>
+                )}
+              </span>
+              <span className="text-xs text-ink-muted">{chip.label}</span>
+            </span>
+          ))}
         </div>
 
-        {reading.basis === 'pm25' && data.overall.parameter !== 'PM2.5' && (
-          <p className="mt-1 text-sm text-ink-muted">
-            {t('air.aqiBasisOverall', { pollutant: data.overall.parameter })}: {data.overall.aqi}
+        {pm25Fallback && (
+          <p className="mt-2 border-l-4 border-flag-orange pl-3 text-sm font-semibold">
+            {t('air.pm25FallbackNotice')}
           </p>
         )}
 
@@ -130,11 +170,6 @@ export default function AirQualityGate({
             <legend className="text-sm font-semibold">{t('air.activityLabel')}</legend>
             <div className="mt-1 flex flex-wrap gap-2">
               {ACTIVITY_IDS.map((id) => {
-                const d = ACTIVITY_DURATIONS[id as ActivityId]
-                const duration =
-                  d.minutes !== null
-                    ? t('air.activityMinutes', { minutes: d.minutes })
-                    : t('air.activityHours', { hoursMin: d.hoursMin, hoursMax: d.hoursMax })
                 const selected = activity === id
                 return (
                   <button
@@ -149,7 +184,9 @@ export default function AirQualityGate({
                     }`}
                   >
                     <span className="block font-semibold">{t(`air.activity.${id}`)}</span>
-                    <span className="block text-xs opacity-80">{duration}</span>
+                    <span className="block text-xs opacity-80">
+                      {t(`air.activityExample.${id}`)}
+                    </span>
                   </button>
                 )
               })}
@@ -160,9 +197,7 @@ export default function AirQualityGate({
         {policy ? (
           <div className="mt-3">
             <p className="text-base font-semibold">
-              {action
-                ? t(`air.actions.${action}`, { pm25: WA_INDOOR_PM25_THRESHOLD_UG_M3 })
-                : t('air.noActionStated')}
+              {action ? t(`air.actions.${action}`) : t('air.noActionStated')}
             </p>
             <p className="mt-1 text-sm text-ink-muted">
               {t(`air.policyName.${policy.id}`)}

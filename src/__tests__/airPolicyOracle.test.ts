@@ -7,7 +7,8 @@ import {
   CA_AIR_POLICY,
   CA_REFRAIN_AT_OR_ABOVE_AQI,
   CA_RULE_QUOTE,
-  WA_INDOOR_PM25_THRESHOLD_UG_M3,
+  WA_SENSITIVE_GROUP_QUOTE,
+  WA_DATA_SOURCE_QUOTE,
   NFHS_LANDMARK_MILES,
   NFHS_INDOOR_WORSE_QUOTE,
   NFHS_531_QUOTE,
@@ -26,7 +27,10 @@ import {
   airActionQuote,
   airPolicyForState,
   ACTIVITY_IDS,
+  ACTIVITY_SOURCE_LABELS,
+  DEFAULT_ACTIVITY_ID,
 } from '../data/airPolicyOracle'
+import type { ActivityId } from '../data/airPolicyOracle'
 import { AQI_SWATCH } from '../utils/aqiStyles'
 import en from '../locales/en.json'
 import es from '../locales/es.json'
@@ -102,50 +106,70 @@ describe('EPA AQI categories (TAD Tables 1-2)', () => {
   })
 })
 
-describe('WA — DOH 334-332 (April 2022)', () => {
+describe('WA — DOH 334-332 (May 2026, "Children and Youth Activities Guide")', () => {
   it('is keyed to the PM2.5 sub-index, as the table heading states', () => {
     expect(WA_AIR_POLICY.indexBasis).toBe('pm25')
   })
 
-  it('varies by activity and covers all three printed rows', () => {
+  it('the activity axis is DURATION with the printed column heads', () => {
+    // The current guide keys columns to duration, not activity type.
+    expect(ACTIVITY_IDS).toEqual(['short', 'medium', 'long'])
+    expect(ACTIVITY_SOURCE_LABELS).toEqual({
+      short: '15 mins to 1 hour',
+      medium: '1-4 hours',
+      long: '> 4 hours',
+    })
+  })
+
+  it('SAFETY PIN: the default column is 1-4 h (where the guide files practices), never shorter', () => {
+    // The shorter-duration column is more permissive at the same AQI. A
+    // default of 'short' would under-warn every coach who never touches the
+    // toggle. Changing this to 'short' is a safety regression, not a tweak.
+    expect(DEFAULT_ACTIVITY_ID).toBe('medium')
+  })
+
+  it('has FOUR bands with everything from 151 up in one row', () => {
+    expect(WA_AIR_POLICY.bands).toHaveLength(4)
+    expect(classifyAirBand(WA_AIR_POLICY, 151).id).toBe('unhealthy151Plus')
+    expect(classifyAirBand(WA_AIR_POLICY, 250).id).toBe('unhealthy151Plus')
+    expect(classifyAirBand(WA_AIR_POLICY, 400).id).toBe('unhealthy151Plus')
+    expect(classifyAirBand(WA_AIR_POLICY, 151).sourceLabel).toBe(
+      'Unhealthy, Very Unhealthy, or Hazardous (≥151 AQI)',
+    )
+  })
+
+  it('varies by duration and covers every printed cell', () => {
     expect(WA_AIR_POLICY.variesByActivity).toBe(true)
     for (const band of WA_AIR_POLICY.bands) {
       for (const activity of ACTIVITY_IDS) {
         expect(
-          airActionFor(band, activity as 'recess' | 'pe' | 'athletics'),
+          airActionFor(band, activity as ActivityId),
           `WA ${band.id}/${activity}`,
         ).toBeTruthy()
       }
     }
   })
 
-  it('cancels athletics from the 101-150 band upward', () => {
-    const athletics = (aqi: number) =>
-      airActionFor(classifyAirBand(WA_AIR_POLICY, aqi), 'athletics')
-    expect(athletics(50)).toBe('noRestrictions')
-    expect(athletics(100)).toBe('sensitiveMayOptOut')
-    // "Cancel children's outdoor athletic events and practices or move them…"
-    expect(athletics(101)).toBe('cancelOrMove')
-    expect(athletics(150)).toBe('cancelOrMove')
-    expect(athletics(151)).toBe('cancelOrMoveConsiderTransit')
-    expect(athletics(250)).toBe('cancelOrMoveFilteredConsiderTransit')
+  it('walks the 1-4 h (practice) column through the current actions', () => {
+    const medium = (aqi: number) =>
+      airActionFor(classifyAirBand(WA_AIR_POLICY, aqi), 'medium')
+    expect(medium(50)).toBe('noRestrictions')
+    expect(medium(100)).toBe('healthCondsOptOut')
+    expect(medium(101)).toBe('limitLightOrHourModerate')
+    expect(medium(150)).toBe('limitLightOrHourModerate')
+    expect(medium(151)).toBe('cancelOrMoveFiltered')
+    expect(medium(400)).toBe('cancelOrMoveFiltered')
   })
 
-  it('quotes the source wording for the 101-150 athletics cell', () => {
-    const quote = airActionQuote(WA_AIR_POLICY, 'cancelOrMove')!
-    expect(quote).toContain('Cancel')
-    expect(quote).toContain('outdoor athletic events and practices')
-    expect(quote).toContain('safer air quality')
+  it('quotes the current 101-150 practice cell verbatim', () => {
+    const quote = airActionQuote(WA_AIR_POLICY, 'limitLightOrHourModerate')!
+    expect(quote).toContain('Limit to light intensity activities or to a 1-hour total duration')
+    expect(quote).toContain('consider canceling')
   })
 
-  it("keeps the guide's top band as a single >200 column (not split at 301)", () => {
-    // WA does not separate EPA's Very Unhealthy and Hazardous.
-    expect(classifyAirBand(WA_AIR_POLICY, 250).id).toBe('veryUnhealthyHazardous')
-    expect(classifyAirBand(WA_AIR_POLICY, 400).id).toBe('veryUnhealthyHazardous')
-  })
-
-  it('pins the indoor PM2.5 escape-hatch concentration', () => {
-    expect(WA_INDOOR_PM25_THRESHOLD_UG_M3).toBe(35.5)
+  it('sensitive group is every child and youth 18 and under; AirNow is the named source', () => {
+    expect(WA_SENSITIVE_GROUP_QUOTE).toContain('18 and under')
+    expect(WA_DATA_SOURCE_QUOTE).toContain('AirNow.gov')
   })
 })
 
@@ -155,11 +179,11 @@ describe('OR — OSAA handbook §5 (Revised February 2024)', () => {
     // be fabrication.
     const band = classifyAirBand(OR_AIR_POLICY, 30)
     expect(band.id).toBe('notStated')
-    expect(airActionFor(band, 'athletics')).toBeNull()
+    expect(airActionFor(band, 'medium')).toBeNull()
   })
 
   it('cancels all outdoor activity from 151 upward', () => {
-    const action = (aqi: number) => airActionFor(classifyAirBand(OR_AIR_POLICY, aqi), 'athletics')
+    const action = (aqi: number) => airActionFor(classifyAirBand(OR_AIR_POLICY, aqi), 'medium')
     expect(action(100)).toBe('sensitiveConsiderIndoor')
     expect(action(150)).toBe('addRestBreaksConsiderReschedule')
     expect(action(151)).toBe('cancelOrMoveLowerAqi')
@@ -191,9 +215,9 @@ describe('OR — OSAA handbook §5 (Revised February 2024)', () => {
 describe('CA — CIF Bylaw 503.K(2)(a) (approved January 2019)', () => {
   it('is a single hard threshold at 151', () => {
     expect(CA_REFRAIN_AT_OR_ABOVE_AQI).toBe(151)
-    expect(airActionFor(classifyAirBand(CA_AIR_POLICY, 150), 'athletics')).toBeNull()
-    expect(airActionFor(classifyAirBand(CA_AIR_POLICY, 151), 'athletics')).toBe('refrainOutdoor')
-    expect(airActionFor(classifyAirBand(CA_AIR_POLICY, 500), 'athletics')).toBe('refrainOutdoor')
+    expect(airActionFor(classifyAirBand(CA_AIR_POLICY, 150), 'medium')).toBeNull()
+    expect(airActionFor(classifyAirBand(CA_AIR_POLICY, 151), 'medium')).toBe('refrainOutdoor')
+    expect(airActionFor(classifyAirBand(CA_AIR_POLICY, 500), 'medium')).toBe('refrainOutdoor')
   })
 
   it('quotes the bylaw sentence verbatim and derives the threshold from it', () => {
