@@ -109,3 +109,25 @@ describe('privacy disclosure', () => {
     expect(es.privacy.dataContent).toMatch(/nunca se envían a AirNow/i)
   })
 })
+
+describe('advertising consent matches the stated policy', () => {
+  it('denies all three ad signals in every region', () => {
+    // The policy says the site runs no ads. The second consent default —
+    // everywhere outside the EEA/UK list — used to GRANT ad_storage,
+    // ad_user_data and ad_personalization, collecting advertising-grade data
+    // the product does not use and the policy disclaims.
+    const html = readFileSync(join(process.cwd(), 'index.html'), 'utf8')
+    const script = /<script>([\s\S]*?)<\/script>/.exec(html)![1]
+    const defaults = [...script.matchAll(/gtag\('consent',\s*'default',\s*\{([\s\S]*?)\}\s*\)/g)]
+    expect(defaults.length).toBeGreaterThanOrEqual(2)
+    for (const [, body] of defaults) {
+      for (const signal of ['ad_storage', 'ad_user_data', 'ad_personalization']) {
+        expect(body, `${signal} must be denied in every consent default`).toMatch(
+          new RegExp(`${signal}:\\s*'denied'`),
+        )
+      }
+    }
+    // And the policy still says so.
+    expect(en.privacy.analyticsContent.toLowerCase()).toContain('do not run ads')
+  })
+})

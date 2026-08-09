@@ -1,8 +1,8 @@
 /**
- * GA4 event instrumentation. The measurement ID lives in index.html as
- * G-PLACEHOLDER until the property is created; these events queue into
- * dataLayer regardless, so instrumentation is live the moment the real ID
- * replaces the placeholder.
+ * GA4 event instrumentation. The measurement ID (G-NL5JKVRNS1) is configured
+ * in index.html, which also denies all three advertising consent signals in
+ * every region — this site runs no ads. Events queue into dataLayer whether or
+ * not gtag has loaded, so a blocked or slow tag never throws here.
  */
 
 type GtagFn = (...args: unknown[]) => void
