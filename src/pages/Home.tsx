@@ -74,6 +74,26 @@ export default function Home() {
 
   const stale = isStale(fetchedAt, now)
   const today = days[0] ?? null
+
+  // Which day the hourly strip is showing. The week strip shows one flag per
+  // day — its PEAK — which is the right summary and the wrong place to stop:
+  // "Monday is black" and "Monday is black at 3pm but amber by 6" are
+  // different decisions. Same forecast data, so this is a view change.
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const selectedDay = useMemo(
+    () => days.find((d) => d.date === selectedDate) ?? today,
+    [days, selectedDate, today],
+  )
+  const showingToday = selectedDay !== null && today !== null && selectedDay.date === today.date
+  const hourlyHeading = showingToday
+    ? t('verdict.todayHeading')
+    : t('verdict.dayHeading', {
+        day: selectedDay
+          ? new Intl.DateTimeFormat(i18n.language, { weekday: 'long' }).format(
+              new Date(`${selectedDay.date}T12:00:00`),
+            )
+          : '',
+      })
   const allHours = useMemo(() => days.flatMap((d) => d.hours), [days])
   const current = useMemo(() => currentVerdict(allHours, now), [allHours, now])
 
@@ -184,17 +204,26 @@ export default function Home() {
           immediately. They used to sit below the air card, the picker, two
           paragraphs of prose and the share button — about two and a half
           screens down on a phone. */}
-      {location && status === 'ready' && today && (
-        <section>
-          <h2 className="display-num mb-2 text-xl uppercase">{t('verdict.todayHeading')}</h2>
-          <TodayTimeline hours={timelineHours(today)} currentTime={now} />
+      {location && status === 'ready' && selectedDay && (
+        <section id="hourly-view">
+          <h2 className="display-num mb-2 text-xl uppercase">{hourlyHeading}</h2>
+          <TodayTimeline
+            hours={timelineHours(selectedDay)}
+            currentTime={showingToday ? now : undefined}
+          />
         </section>
       )}
 
       {location && status === 'ready' && days.length > 1 && (
         <section>
           <h2 className="display-num mb-2 text-xl uppercase">{t('verdict.weekHeading')}</h2>
-          <WeekStrip days={days} />
+          <p className="mb-2 text-sm text-ink-muted">{t('verdict.weekDrillHint')}</p>
+          <WeekStrip
+            days={days}
+            selectedDate={selectedDay.date}
+            onSelect={setSelectedDate}
+            controls="hourly-view"
+          />
         </section>
       )}
 

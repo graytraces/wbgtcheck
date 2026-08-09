@@ -1,26 +1,44 @@
 import { useTranslation } from 'react-i18next'
 import type { DaySummary } from '../utils/verdict'
 import FlagBadge from './FlagBadge'
+import { cn } from '../lib/utils'
 
 interface WeekStripProps {
   days: DaySummary[]
+  /** Date currently shown by the hourly strip, so the week can mark it. */
+  selectedDate?: string
+  /** Omit to render the week as a static summary (no drill-down). */
+  onSelect?: (date: string) => void
+  /** id of the hourly view these buttons drive. */
+  controls?: string
 }
 
-export default function WeekStrip({ days }: WeekStripProps) {
+/**
+ * A day cell shows one flag: the day's PEAK. That is the right summary and the
+ * wrong stopping point — a band director scheduling a 5-to-8pm rehearsal sees
+ * Monday's 3pm peak of BLACK and has no way to learn that the evening is
+ * amber. Tapping a day retargets the hourly strip, which is the same forecast
+ * data already loaded, so this is a view change and not a new request.
+ */
+export default function WeekStrip({ days, selectedDate, onSelect, controls }: WeekStripProps) {
   const { t, i18n } = useTranslation()
   if (days.length === 0) {
     return <p className="text-sm text-ink-muted">{t('verdict.noData')}</p>
   }
   return (
-    <ol className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7" aria-label={t('verdict.weekHeading')}>
+    <ol
+      className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7"
+      aria-label={t('verdict.weekHeading')}
+    >
       {days.map((d) => {
         // Noon anchor keeps the weekday label immune to UTC/local drift.
         const weekday = new Intl.DateTimeFormat(i18n.language, { weekday: 'short' }).format(
           new Date(`${d.date}T12:00:00`),
         )
         const dayNum = Number(d.date.slice(8, 10))
-        return (
-          <li key={d.date} className="border border-line bg-surface p-2">
+        const selected = d.date === selectedDate
+        const inner = (
+          <>
             <div className="flex items-baseline justify-between">
               <span className="text-sm font-bold uppercase">{weekday}</span>
               <span className="text-xs text-ink-muted">{dayNum}</span>
@@ -38,6 +56,32 @@ export default function WeekStrip({ days }: WeekStripProps) {
               </div>
             ) : (
               <p className="mt-2 text-xs text-ink-muted">{t('verdict.noData')}</p>
+            )}
+          </>
+        )
+        return (
+          <li
+            key={d.date}
+            className={cn(
+              'border bg-surface',
+              selected && onSelect ? 'border-ink ring-2 ring-ink' : 'border-line',
+            )}
+          >
+            {onSelect ? (
+              <button
+                type="button"
+                onClick={() => onSelect(d.date)}
+                aria-pressed={selected}
+                aria-controls={controls}
+                className="block w-full p-2 text-left hover:opacity-80"
+              >
+                {inner}
+                <span className="sr-only">
+                  {selected ? t('verdict.dayShown') : t('verdict.dayShowHours')}
+                </span>
+              </button>
+            ) : (
+              <div className="p-2">{inner}</div>
             )}
           </li>
         )
