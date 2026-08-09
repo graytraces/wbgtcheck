@@ -40,7 +40,20 @@ export function isStale(fetchedAt: number | null, now: number): boolean {
 export function defaultPolicyFor(stateAbbr: string | null): PolicyId {
   if (stateAbbr === 'TX') return 'uil-class-2'
   if (stateAbbr === 'GA') return 'ghsa'
+  // Both verified safe to auto-select: SCHSL's thresholds equal the generic
+  // NATA bands with warnings added on top; Iowa's are stricter than generic.
+  if (stateAbbr === 'SC') return 'schsl'
+  if (stateAbbr === 'IA') return 'iowa'
   return 'generic'
+}
+
+/** True when `policyId` belongs to `stateAbbr` — explicit choices within a state survive re-location. */
+function policyMatchesState(stateAbbr: string | null, policyId: PolicyId): boolean {
+  if (stateAbbr === 'TX') return policyId.startsWith('uil')
+  if (stateAbbr === 'GA') return policyId === 'ghsa'
+  if (stateAbbr === 'SC') return policyId === 'schsl'
+  if (stateAbbr === 'IA') return policyId === 'iowa'
+  return false
 }
 
 function loadSaved<T>(key: string): T | null {
@@ -171,12 +184,9 @@ export function useWbgt() {
       // Re-derive the policy default only when the state actually changed —
       // an explicit user choice within the same state is preserved.
       setPolicyIdState((cur) => {
-        const next = defaultPolicyFor(loc.stateAbbr)
-        const curPolicy = POLICIES[cur]
-        const sameFamily =
-          (loc.stateAbbr === 'TX' && curPolicy.id.startsWith('uil')) ||
-          (loc.stateAbbr === 'GA' && curPolicy.id === 'ghsa')
-        const resolved = sameFamily ? cur : next
+        const resolved = policyMatchesState(loc.stateAbbr, cur)
+          ? cur
+          : defaultPolicyFor(loc.stateAbbr)
         save(POLICY_KEY, resolved)
         return resolved
       })
@@ -263,11 +273,9 @@ export function useWbgt() {
       setLocation(upgraded)
       save(LOCATION_KEY, upgraded)
       setPolicyIdState((cur) => {
-        const curPolicy = POLICIES[cur]
-        const sameFamily =
-          (upgraded.stateAbbr === 'TX' && curPolicy.id.startsWith('uil')) ||
-          (upgraded.stateAbbr === 'GA' && curPolicy.id === 'ghsa')
-        const resolved = sameFamily ? cur : defaultPolicyFor(upgraded.stateAbbr)
+        const resolved = policyMatchesState(upgraded.stateAbbr, cur)
+          ? cur
+          : defaultPolicyFor(upgraded.stateAbbr)
         save(POLICY_KEY, resolved)
         return resolved
       })

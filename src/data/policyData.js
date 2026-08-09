@@ -469,6 +469,9 @@ export const TSSAA_APP_QUOTE =
   'The use of a weather app on a cell phone is permissible to measure heat index if no other instrument is available to measure heat index at the site of the practice or competition.'
 export const TSSAA_EITHER_QUOTE =
   'Each school is responsible for obtaining either a Wet Bulb Globe Temperature or Heat Index reading at the site of practices and competitions.'
+/** Bolded in the source; a should-recommendation that spans EVERY band. */
+export const TSSAA_COLD_TUB_QUOTE =
+  'A cold water immersion tub or other form of rapid on-site cooling should be available for all warm weather practices. If exertional heat stroke is suspected, use immersion for on-site cooling before transporting to the hospital. Access to water should be available to all athletes at all times.'
 
 const TSSAA_GREEN = {
   maxPracticeMinutes: null,
@@ -543,10 +546,11 @@ export const TSSAA = {
     url: 'https://cms-files.tssaa.org/documents/tssaa/health-safety-information/2025-26TSSAAHeatPolicy.pdf',
     verifiedOn: '2026-08-09',
   },
-  // TSSAA permits a phone weather app only to read HEAT INDEX, and only when no
-  // other instrument is available. It says nothing about remote WBGT estimates,
-  // so remote WBGT is 'unspecified' rather than 'yes'.
-  remoteEstimatesAllowed: 'unspecified',
+  // The policy's first sentence puts the reading "at the site of practices
+  // and competitions"; a phone weather app is permitted only to read HEAT
+  // INDEX and only when no other instrument is available. On-site is the
+  // named method, so the verdict card carries the on-site caveat.
+  remoteEstimatesAllowed: 'device-recommended',
   bands: [
     { flag: 'black', minF: 92.0, minInclusive: false, sourceLabel: 'Above 92.0', guideline: TSSAA_BLACK },
     { flag: 'red', minF: 90.0, minInclusive: true, sourceLabel: '90 to 92', guideline: TSSAA_RED },
@@ -630,7 +634,9 @@ export const NYSPHSAA_HEAT_INDEX_REFERENCE = {
   /** Rows hottest first. `tier` is the source's own banner for the row. */
   rows: [
     { sourceLabel: '96 degrees or greater', tierKey: 'alert', required: true, textKeys: ['newYork.rows.noOutside'] },
-    { sourceLabel: '91 degrees to 95 degrees', tierKey: 'warning', required: true, textKeys: ['newYork.rows.breaks15', 'newYork.rows.clothing', 'newYork.rows.helmetsOnly', 'newYork.rows.recovery'] },
+    // The source's REQUIRED banner covers only the 96+ Alert tier; the 91-95
+    // Warning tier is printed under RECOMMENDED (vertical side label).
+    { sourceLabel: '91 degrees to 95 degrees', tierKey: 'warning', required: false, textKeys: ['newYork.rows.breaks15', 'newYork.rows.clothing', 'newYork.rows.helmetsOnly', 'newYork.rows.recovery'] },
     { sourceLabel: '86 degrees to 90 degrees', tierKey: 'watch', required: false, textKeys: ['newYork.rows.water', 'newYork.rows.considerPostpone', 'newYork.rows.recovery'] },
     { sourceLabel: '80 degrees to 85 degrees', tierKey: 'caution', required: false, textKeys: ['newYork.rows.water', 'newYork.rows.considerShorten'] },
     { sourceLabel: 'under 79 degrees', tierKey: 'full', required: false, textKeys: ['newYork.rows.fullActivity'] },

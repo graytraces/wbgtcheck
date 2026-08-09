@@ -44,6 +44,7 @@ import {
   SCHSL_REQUIRED_QUOTE,
   SCHSL_TOP_BOUNDARY_TEXT_QUOTE,
   TSSAA_APP_QUOTE,
+  TSSAA_COLD_TUB_QUOTE,
   TSSAA_EITHER_QUOTE,
   TSSAA_HEAT_INDEX_BANDS,
   TSSAA_REVISION,
@@ -501,6 +502,8 @@ function generateBodyContent(lang, page) {
     )
     push(`<h2>${escapeHtml(t('tennessee.appsHeading'))}</h2>`)
     push(`<p>${escapeHtml(t('tennessee.appsBody', { apps: TSSAA_APP_QUOTE }))}</p>`)
+    push(`<h2>${escapeHtml(t('tennessee.coldTubHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('tennessee.coldTubBody', { quote: TSSAA_COLD_TUB_QUOTE }))}</p>`)
     push(`<h2>${escapeHtml(t('tennessee.scopeHeading'))}</h2>`)
     push(`<p>${escapeHtml(t('tennessee.scopeBody'))}</p>`)
     push(

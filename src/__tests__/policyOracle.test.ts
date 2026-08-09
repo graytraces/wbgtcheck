@@ -180,22 +180,24 @@ describe('policy oracle — measurement/compliance stance', () => {
     expect(GENERIC_NATA.remoteEstimatesAllowed).toBe('unspecified')
   })
 
-  it('SCHSL requires a device; Iowa recommends one; TSSAA is silent on remote WBGT', () => {
+  it('SCHSL requires a device; Iowa and TSSAA put the reading on site', () => {
     // SCHSL: "Phone apps are not scientifically approved at this time."
     expect(SCHSL.remoteEstimatesAllowed).toBe('device-required')
     // Iowa: WBGT is "recommended", but apps "do NOT provide an accurate
     // temperature" — a weaker mandate that still blocks remote substitution.
     expect(IOWA_CATEGORY_2.remoteEstimatesAllowed).toBe('device-recommended')
-    // TSSAA permits an app for HEAT INDEX only; it says nothing about remote WBGT.
-    expect(TSSAA.remoteEstimatesAllowed).toBe('unspecified')
+    // TSSAA: the reading is obtained 'at the site of practices and
+    // competitions'; a phone app is permitted only for HEAT INDEX and only
+    // as a last resort — on-site is the named method for WBGT.
+    expect(TSSAA.remoteEstimatesAllowed).toBe('device-recommended')
   })
 
   it('both device stances suppress the remote reading as a compliance substitute', () => {
     expect(requiresOnSiteReading(SCHSL)).toBe(true)
     expect(requiresOnSiteReading(IOWA_CATEGORY_2)).toBe(true)
     expect(requiresOnSiteReading(GHSA)).toBe(true)
+    expect(requiresOnSiteReading(TSSAA)).toBe(true)
     expect(requiresOnSiteReading(UIL_CLASS_3)).toBe(false)
-    expect(requiresOnSiteReading(TSSAA)).toBe(false)
   })
 
   it('administrative constants match the sources', () => {

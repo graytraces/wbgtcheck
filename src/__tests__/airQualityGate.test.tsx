@@ -190,7 +190,8 @@ describe('AirQualityGate — reading selection and freshness', () => {
     expect(screen.getByText(/nearest monitor is about/i)).toBeInTheDocument()
   })
 
-  it('flags an observation older than the staleness window', () => {
+  it('flags an observation older than the staleness window (90 min — one missed hourly cycle plus slack)', () => {
+    expect(AIR_OBSERVATION_STALE_MINUTES).toBe(90)
     const now = Date.now()
     expect(isObservationStale(null, now)).toBe(false)
     expect(isObservationStale(now - (AIR_OBSERVATION_STALE_MINUTES - 5) * 60_000, now)).toBe(false)

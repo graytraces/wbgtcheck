@@ -462,5 +462,9 @@ export const AIRNOW_PROGRAM_CREDIT = 'EPA AirNow'
  */
 export const AIR_AREA_FAR_KM = 40
 
-/** Observations older than this are shown as stale rather than current. */
-export const AIR_OBSERVATION_STALE_MINUTES = 120
+/**
+ * Observations older than this are shown as stale rather than current.
+ * 90 min: AirNow reporting areas update hourly, so one missed cycle plus
+ * slack — wildfire smoke can move faster than a two-hour-old number.
+ */
+export const AIR_OBSERVATION_STALE_MINUTES = 90

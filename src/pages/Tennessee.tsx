@@ -5,6 +5,7 @@ import PolicyBandsTable from '../components/PolicyBandsTable'
 import {
   TSSAA,
   TSSAA_APP_QUOTE,
+  TSSAA_COLD_TUB_QUOTE,
   TSSAA_EITHER_QUOTE,
   TSSAA_HEAT_INDEX_BANDS,
   TSSAA_REVISION,
@@ -38,6 +39,11 @@ export default function Tennessee() {
         <h2 className="display-num mb-2 text-2xl uppercase">{t('tennessee.tableHeading')}</h2>
         <PolicyBandsTable policy={TSSAA} showSource={false} />
         <p className="mt-3 text-sm text-ink-muted">{t('tennessee.lowBandNote')}</p>
+      </section>
+
+      <section>
+        <h2 className="display-num mb-2 text-2xl uppercase">{t('tennessee.coldTubHeading')}</h2>
+        <p>{t('tennessee.coldTubBody', { quote: TSSAA_COLD_TUB_QUOTE })}</p>
       </section>
 
       <section>

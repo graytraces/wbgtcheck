@@ -222,6 +222,8 @@ export default function AirQualityGate({
         <p className="mt-3 text-sm">
           <span className="font-semibold">{t('air.areaLabel')}:</span>{' '}
           {t('air.areaBody', { area: `${data.area.name}, ${data.area.state}`, mi: miles })}
+          {' · '}
+          {t('air.observedAt', { time: `${data.observed.time} ${data.observed.timeZone}` })}
         </p>
         {far && (
           <p className="mt-1 border-l-4 border-current pl-3 text-sm font-semibold">
