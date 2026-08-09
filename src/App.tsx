@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import { lazy, Suspense, useEffect } from 'react'
 import Layout from './components/Layout'
+import RouteErrorFallback from './components/RouteErrorFallback'
 import Home from './pages/Home'
 import { SUPPORTED_LANGS, VALID_TOOLS, VALID_PAGES } from './utils/routeValidation'
 
@@ -47,6 +48,9 @@ const router = createBrowserRouter([
   {
     path: '/:lang',
     element: <Layout />,
+    // Without this, a failed lazy chunk (stale deploy) lands on react-router's
+    // raw default error page — near-blank on a phone. See staleRecovery.ts.
+    errorElement: <RouteErrorFallback />,
     children: [
       { index: true, element: <Home /> },
       { path: 'texas', element: <Suspense fallback={<Loading />}><Texas /></Suspense> },

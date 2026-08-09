@@ -25,7 +25,8 @@
     "languageLabel": "Language",
     "loading": "Loading…",
     "error": "Something went wrong",
-    "retry": "Try again"
+    "retry": "Try again",
+    "errorReloadHint": "The app failed to load — this usually clears after an update. Reload to get the current version."
   },
   "flags": {
     "green": { "name": "Green flag", "label": "GREEN" },

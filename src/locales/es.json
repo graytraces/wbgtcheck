@@ -25,7 +25,8 @@
     "languageLabel": "Idioma",
     "loading": "Cargando…",
     "error": "Algo salió mal",
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "errorReloadHint": "La aplicación no se cargó — esto suele resolverse tras una actualización. Recargue para obtener la versión actual."
   },
   "flags": {
     "green": { "name": "Bandera verde", "label": "VERDE" },
