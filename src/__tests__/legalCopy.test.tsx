@@ -95,6 +95,18 @@ describe('legal batch copy (L1-L7)', () => {
     expect(es.disclaimerPage.conditions).toContain('fecha y hora')
   })
 
+  it('L7 supplement: availability carries the NWS-timeliness link and no-uninterrupted/error-free warranty, in our own words', () => {
+    const enA = en.disclaimerPage.availability
+    expect(enA).toContain('National Weather Service')
+    expect(enA).toContain('uninterrupted')
+    expect(enA).toContain('error-free')
+    // Own wording, not the NWS server-notice sentence verbatim
+    expect(enA).not.toContain('Timely delivery of data and products from this server')
+    const esA = es.disclaimerPage.availability
+    expect(esA).toContain('NWS')
+    expect(esA).toContain('ininterrumpido')
+  })
+
   it('Disclaimer page renders the new sections (post-JS DOM)', () => {
     render(
       <MemoryRouter initialEntries={['/en/disclaimer']}>
@@ -105,6 +117,7 @@ describe('legal batch copy (L1-L7)', () => {
     )
     expect(screen.getByText(en.disclaimerPage.governingLaw)).toBeInTheDocument()
     expect(screen.getByText(en.disclaimerPage.legalContact)).toBeInTheDocument()
+    expect(screen.getByText(en.disclaimerPage.availability)).toBeInTheDocument()
   })
 })
 

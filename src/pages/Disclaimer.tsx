@@ -7,6 +7,7 @@ const SECTIONS = [
   'notCompliance',
   'notMedical',
   'conditions',
+  'availability',
   'accuracy',
   'liability',
   'governingLaw',
