@@ -21,6 +21,8 @@ interface VerdictCardProps {
   locationLabel: string
   stateAbbr: string | null
   timeZone: string
+  /** Epoch ms when the forecast payload was fetched — shown as "as of". */
+  fetchedAt?: number | null
 }
 
 export default function VerdictCard({
@@ -29,6 +31,7 @@ export default function VerdictCard({
   locationLabel,
   stateAbbr,
   timeZone,
+  fetchedAt = null,
 }: VerdictCardProps) {
   const { t, i18n } = useTranslation()
   const band = classifyWbgt(policy, hour.wbgtF)
@@ -60,6 +63,17 @@ export default function VerdictCard({
           </span>
           <span>
             {t('verdict.nowHeading')} · {t('verdict.atTime', { time: timeLabel })}
+            {fetchedAt !== null && (
+              <>
+                {' · '}
+                {t('verdict.asOf', {
+                  time: new Intl.DateTimeFormat(i18n.language, {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                  }).format(new Date(fetchedAt)),
+                })}
+              </>
+            )}
           </span>
         </div>
 
@@ -121,6 +135,8 @@ export default function VerdictCard({
           })}
         </p>
         <p>{t('verdict.verifyOnsite')}</p>
+        <p>{t('verdict.surfaceNotice')}</p>
+        {policy.id === 'generic' && <p>{t('verdict.genericRegionNotice')}</p>}
         {policy.remoteEstimatesAllowed === 'device-required' && (
           <p className="font-bold">
             {t('verdict.deviceOnlyNotice', { body: policy.source.name.split(' ')[0] })}

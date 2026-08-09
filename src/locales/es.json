@@ -12,6 +12,7 @@
     },
     "footer": {
       "safetySummary": "WBGT Check muestra estimaciones remotas basadas en pronósticos, solo para planificar. Las estimaciones remotas tienden a marcar MENOS que la medición en el sitio: trate las lecturas limítrofes como la categoría superior y confirme con un medidor WBGT en el campo antes de decidir actividades. La política de su asociación y el criterio de su preparador físico mandan.",
+      "affiliation": "wbgtcheck.com es una herramienta independiente. No está afiliada, avalada ni vinculada a la UIL, la GHSA, la NFHS, la NATA ni a ninguna asociación atlética estatal.",
       "dataCredit": "Datos meteorológicos: NOAA / Servicio Meteorológico Nacional. Modelo WBGT portado de ECMWF thermofeel (Apache-2.0).",
       "privacy": "Privacidad",
       "disclaimer": "Aviso legal",
@@ -50,6 +51,8 @@
     "pickerLabel": "Política",
     "pickerHelp": "Elija su asociación estatal. Texas: Clase 2 o Clase 3 depende de su región — consulte el mapa de la UIL.",
     "uilMapLink": "Mapa de clases regionales de la UIL",
+    "txClassHint": "Texas: la mayor parte del este y centro de Texas — incluidas las áreas de Houston, Dallas–Fort Worth, Austin y San Antonio — es Clase 3; el Panhandle y el extremo oeste de Texas son Clase 2. Ubique su condado en el mapa de la UIL y elija su clase (este sitio usa por defecto la Clase 2, más estricta, hasta que lo haga).",
+    "districtNote": "La política de su distrito escolar puede ser más estricta que la estatal — en Virginia y Maryland, los distritos fijan sus propios umbrales por ley. Rige la regla aplicable más estricta.",
     "sourceLabel": "Fuente",
     "verifiedOn": "verificado el {{date}}"
   },
@@ -94,6 +97,11 @@
     "conservativeNotice": "Las estimaciones remotas marcan MENOS que los medidores en el campo (−{{min}} a −{{max}} °C en estudios). Cerca de un límite, trátela como la bandera superior.",
     "borderlineNotice": "A menos de {{margin}} °F del límite de {{nextFlag}} — planifique para {{nextFlag}}.",
     "verifyOnsite": "Confirme en el sitio antes y durante la actividad — este pronóstico es una ayuda de planificación, no una medición.",
+    "surfaceNotice": "Sobre pistas oscuras, canchas duras y arena, las lecturas en el sitio pueden resultar más altas que cualquier estimación remota.",
+    "genericRegionNotice": "La tabla de ejemplo de la NATA se escribió para regiones de clima caluroso. En los estados del norte, Nueva Inglaterra, la costa del Pacífico y zonas de gran altitud pueden aplicar umbrales más bajos — la guía local tiene prioridad.",
+    "asOf": "pronóstico cargado {{time}}",
+    "staleNotice": "Este pronóstico se cargó a las {{time}} y puede estar desactualizado — actualícelo antes de decidir.",
+    "refresh": "Actualizar pronóstico",
     "deviceOnlyNotice": "{{body}} exige un instrumento WBGT aprobado científicamente en el sitio. Las lecturas de este sitio NO satisfacen el cumplimiento — úselas solo para planificar.",
     "todayHeading": "Hoy por hora",
     "weekHeading": "Esta semana",
@@ -161,7 +169,7 @@
     "pageTitle": "Reglas WBGT de la UIL de Texas",
     "intro": "Desde el {{effectiveDate}}, la modificación de actividades basada en WBGT es un estándar obligatorio para todas las actividades atléticas al aire libre de la UIL — incluida la banda de marcha. Aquí está la política en términos claros, con cada número tomado del cuadro publicado por la UIL.",
     "classesHeading": "Clase 2 vs Clase 3",
-    "classesBody": "La UIL asigna cada región de Texas a una clase WBGT en su mapa regional; las regiones más calurosas reciben umbrales más altos (más permisivos) porque sus atletas están más aclimatados. Consulte el mapa de la UIL y elija su clase — ante la duda, use los umbrales más estrictos de la Clase 2.",
+    "classesBody": "La UIL asigna cada condado a una clase WBGT en su mapa regional; las regiones más calurosas reciben umbrales más altos (más permisivos) porque sus atletas están más aclimatados. La mayor parte del este y centro de Texas — incluidas las áreas de Houston, Dallas–Fort Worth, Austin y San Antonio — corresponde a la Clase 3, mientras que el Panhandle y el extremo oeste de Texas usan la Clase 2. Ubique su condado en el mapa de la UIL y seleccione esa clase; este sitio usa por defecto la Clase 2, más estricta, hasta que usted elija.",
     "tableHeading": "Guía de actividad por WBGT (°F)",
     "tableClass2": "Clase 2",
     "tableClass3": "Clase 3",
@@ -213,7 +221,7 @@
   },
   "states": {
     "pageTitle": "Reglas WBGT por estado",
-    "intro": "No existe un registro público que clasifique cómo cada estado permite MEDIR el WBGT — así que lo construimos. Tres categorías: se aceptan apps y lecturas web, se exige instrumento en el sitio, o la asociación no lo especifica. Solo Texas y Georgia fueron re-verificados contra documentos primarios por este sitio; cada otra fila proviene de nuestra investigación y merece una llamada a su asociación antes de confiar en ella.",
+    "intro": "No existe un registro público que clasifique cómo cada estado permite MEDIR el WBGT — así que lo construimos. Tres categorías: se aceptan apps y lecturas web, se exige instrumento en el sitio, o la asociación no lo especifica. Solo Texas y Georgia fueron re-verificados contra documentos primarios por este sitio; cada otra fila proviene de nuestra investigación y merece una llamada a su asociación antes de confiar en ella. Una capa más: su distrito escolar o sistema escolar del condado puede imponer reglas más estrictas que la asociación estatal — en Virginia y Maryland, los distritos fijan los umbrales por ley.",
     "legendHeading": "Cómo leer esta tabla",
     "legendApps": "Apps permitidas — la asociación acepta explícitamente lecturas por internet o app.",
     "legendDevice": "Solo instrumento — se exige un instrumento aprobado científicamente en el sitio; las lecturas por app o web no satisfacen la política.",
@@ -262,10 +270,12 @@
     "pageTitle": "Aviso legal",
     "notMeasurement": "WBGT Check es una ayuda de planificación basada en pronósticos. No es un instrumento de medición y sus números no son mediciones. El WBGT en su campo puede diferir sustancialmente de cualquier estimación remota — comparaciones publicadas hallaron valores remotos en promedio {{min}} °C bajos, y hasta {{max}} °C bajos en las condiciones más peligrosas, que es la dirección insegura.",
     "notCompliance": "Este sitio no satisface el requisito de medición de ninguna asociación en estados que exigen instrumento en el sitio (p. ej. GHSA de Georgia, KHSAA de Kentucky). Donde se aceptan lecturas por internet (p. ej. UIL de Texas), la lectura que rige sigue siendo la tomada en el momento y lugar requeridos según las reglas de la asociación.",
-    "notMedical": "Nada aquí es consejo médico. Las decisiones sobre enfermedades por calor corresponden a personal médico calificado — preparadores físicos, médicos de equipo, servicios de emergencia. Si alguien muestra signos de golpe de calor por esfuerzo, llame a emergencias y comience el enfriamiento rápido de inmediato; no consulte un sitio web.",
-    "conditions": "Las condiciones cambian durante una sesión. Un pronóstico matutino no puede regir una práctica vespertina; vuelva a verificar y medir en los intervalos que exige su política.",
+    "notMedical": "Nada aquí es consejo médico. Las decisiones sobre enfermedades por calor corresponden a personal médico calificado — preparadores físicos, médicos de equipo, servicios de emergencia. Si alguien muestra signos de golpe de calor por esfuerzo, llame a emergencias y comience el enfriamiento rápido de inmediato; no consulte un sitio web. Este servicio no está destinado a funcionar como sistema primario de alerta de emergencia, ni para decisiones de emergencia o de seguridad de vidas.",
+    "conditions": "Las condiciones cambian durante una sesión. Un pronóstico matutino no puede regir una práctica vespertina; vuelva a verificar y medir en los intervalos que exige su política. Preste atención a la fecha y hora de los datos mostrados — un veredicto solo es tan actual como el pronóstico del que se cargó.",
     "accuracy": "Cotejamos los números de política contra documentos primarios de las asociaciones y fechamos cada verificación, pero las asociaciones revisan sus políticas sin aviso. El documento vigente de la asociación siempre prevalece sobre lo mostrado aquí.",
-    "liability": "El uso de este sitio es bajo su propio riesgo. En la máxima medida permitida por la ley, WBGT Check y su operador declinan toda responsabilidad derivada de confiar en la información provista."
+    "liability": "Este servicio se proporciona \"TAL CUAL\" y \"según disponibilidad\", sin garantías de ningún tipo, expresas o implícitas, incluidas las garantías implícitas de comerciabilidad e idoneidad para un fin determinado. En la máxima medida permitida por la ley, WBGT Check y su operador no serán responsables de lesiones personales, muerte o daños a la propiedad, ni de daños indirectos, incidentales, consecuentes, especiales o punitivos, derivados del uso de este servicio o de la confianza depositada en él. Este servicio no sustituye el juicio independiente, las medidas de seguridad adicionales ni el sentido común.",
+    "governingLaw": "Estos términos y cualquier disputa derivada de este servicio se rigen por las leyes de la República de Corea, sin atender a las normas sobre conflicto de leyes. El Tribunal del Distrito Central de Seúl tendrá jurisdicción exclusiva como tribunal de primera instancia.",
+    "legalContact": "Notificaciones legales: graytraces@gmail.com"
   },
   "privacy": {
     "pageTitle": "Política de privacidad",

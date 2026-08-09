@@ -12,6 +12,7 @@
     },
     "footer": {
       "safetySummary": "WBGT Check shows forecast-based remote estimates for planning. Remote estimates tend to read LOWER than on-site measurement — treat borderline readings as the higher category and confirm with an on-site WBGT meter before activity decisions. Your association's policy and your athletic trainer's judgment control.",
+      "affiliation": "wbgtcheck.com is an independent tool. It is not affiliated with, endorsed by, or connected to the UIL, GHSA, NFHS, NATA, or any state athletic association.",
       "dataCredit": "Weather data: NOAA / National Weather Service. WBGT model ported from ECMWF thermofeel (Apache-2.0).",
       "privacy": "Privacy",
       "disclaimer": "Disclaimer",
@@ -50,6 +51,8 @@
     "pickerLabel": "Policy",
     "pickerHelp": "Pick your state association. Texas: Class 2 vs Class 3 depends on your region — check the UIL map.",
     "uilMapLink": "UIL regional class map",
+    "txClassHint": "Texas: most of eastern and central Texas — including the Houston, Dallas–Fort Worth, Austin and San Antonio areas — is Class 3; the Panhandle and far West Texas are Class 2. Find your county on the UIL map and pick your class (this site defaults to the stricter Class 2 until you do).",
+    "districtNote": "Your school district's policy may be stricter than the state policy — in Virginia and Maryland, districts set their own thresholds by law. The strictest applicable rule wins.",
     "sourceLabel": "Source",
     "verifiedOn": "verified {{date}}"
   },
@@ -94,6 +97,11 @@
     "conservativeNotice": "Remote estimates read LOW vs on-site meters (−{{min}} to −{{max}} °C in studies). Near a boundary, treat it as the higher flag.",
     "borderlineNotice": "Within {{margin}} °F of the {{nextFlag}} boundary — plan for {{nextFlag}}.",
     "verifyOnsite": "Confirm on site before and during activity — this forecast is a planning aid, not a measurement.",
+    "surfaceNotice": "Over dark tracks, hard courts, and sand, on-site readings can run higher than any remote estimate.",
+    "genericRegionNotice": "The NATA example table was written for hot-climate regions. In northern states, New England, the Pacific coast, and high-altitude areas, lower thresholds may apply — local guidance takes precedence.",
+    "asOf": "forecast loaded {{time}}",
+    "staleNotice": "This forecast was loaded at {{time}} and may be out of date — refresh before making decisions.",
+    "refresh": "Refresh forecast",
     "deviceOnlyNotice": "{{body}} requires an on-site, scientifically-approved WBGT instrument. This site's readings do NOT satisfy compliance — use them for planning only.",
     "todayHeading": "Today by hour",
     "weekHeading": "This week",
@@ -161,7 +169,7 @@
     "pageTitle": "Texas UIL WBGT Rules",
     "intro": "Starting {{effectiveDate}}, WBGT-based activity modification is a required standard for all UIL outdoor athletic activities — and marching band. Here is the policy in plain terms, with every number taken from UIL's published chart.",
     "classesHeading": "Class 2 vs Class 3",
-    "classesBody": "UIL assigns each region of Texas to a WBGT class on its regional map; hotter regions get higher (more permissive) thresholds because athletes there are more heat-acclimatized. Check the UIL map and select your class — when in doubt, use the stricter Class 2 thresholds.",
+    "classesBody": "UIL assigns each county to a WBGT class on its regional map; hotter regions get higher (more permissive) thresholds because athletes there are more heat-acclimatized. Most of eastern and central Texas — including the Houston, Dallas–Fort Worth, Austin and San Antonio areas — falls under Class 3, while the Panhandle and far West Texas use Class 2. Find your county on the UIL map and select that class; this site defaults to the stricter Class 2 until you choose.",
     "tableHeading": "Activity guidelines by WBGT (°F)",
     "tableClass2": "Class 2",
     "tableClass3": "Class 3",
@@ -213,7 +221,7 @@
   },
   "states": {
     "pageTitle": "WBGT Rules by State",
-    "intro": "No public roster classifies how each state lets you MEASURE WBGT — so we built one. Three buckets: apps and web readings accepted, on-site device required, or not specified by the association. Only Texas and Georgia have been re-verified against primary documents by this site; every other row comes from our research pass and deserves a call to your association before you rely on it.",
+    "intro": "No public roster classifies how each state lets you MEASURE WBGT — so we built one. Three buckets: apps and web readings accepted, on-site device required, or not specified by the association. Only Texas and Georgia have been re-verified against primary documents by this site; every other row comes from our research pass and deserves a call to your association before you rely on it. One more layer: your school district or county school system may impose stricter rules than the state association — in Virginia and Maryland, districts set thresholds by law.",
     "legendHeading": "How to read this table",
     "legendApps": "Apps allowed — the association explicitly accepts internet/app-based readings.",
     "legendDevice": "Device only — an on-site scientifically-approved instrument is mandated; app/web readings do not satisfy the policy.",
@@ -262,10 +270,12 @@
     "pageTitle": "Disclaimer",
     "notMeasurement": "WBGT Check is a forecast-based planning aid. It is not a measuring instrument, and its numbers are not measurements. On-site WBGT at your field can differ substantially from any remote estimate — published comparisons found remote values roughly {{min}} °C low on average, and up to {{max}} °C low in the most dangerous conditions, which is the unsafe direction.",
     "notCompliance": "This site does not satisfy any association's measurement requirement in states that mandate an on-site instrument (e.g. Georgia GHSA, Kentucky KHSAA). Where internet-based readings are accepted (e.g. Texas UIL), the governing reading is still the one taken at the required time and place under the association's rules.",
-    "notMedical": "Nothing here is medical advice. Heat illness decisions belong to qualified medical personnel — athletic trainers, team physicians, EMS. If someone shows signs of exertional heat stroke, call emergency services and begin rapid cooling immediately; do not consult a website.",
-    "conditions": "Conditions change during a session. A morning forecast cannot govern an afternoon practice; re-check and re-measure at the intervals your policy requires.",
+    "notMedical": "Nothing here is medical advice. Heat illness decisions belong to qualified medical personnel — athletic trainers, team physicians, EMS. If someone shows signs of exertional heat stroke, call emergency services and begin rapid cooling immediately; do not consult a website. This service is not intended to serve as a primary emergency warning system, nor for emergency or life-safety decisions.",
+    "conditions": "Conditions change during a session. A morning forecast cannot govern an afternoon practice; re-check and re-measure at the intervals your policy requires. Pay attention to the date and time of the data displayed — a verdict is only as current as the forecast it was loaded from.",
     "accuracy": "We cross-check policy numbers against association primary documents and date-stamp each verification, but associations revise policies without notice. The association's current published document always controls over anything shown here.",
-    "liability": "Use of this site is at your own risk. To the maximum extent permitted by law, WBGT Check and its operator disclaim all liability arising from reliance on the information provided."
+    "liability": "This service is provided \"AS IS\" and \"as available\", without warranties of any kind, express or implied, including the implied warranties of merchantability and fitness for a particular purpose. To the maximum extent permitted by law, WBGT Check and its operator shall not be liable for personal injury, death, or property damage, nor for any indirect, incidental, consequential, special, or punitive damages, arising from use of or reliance on this service. This service is not a substitute for independent judgment, additional safety measures, or common sense.",
+    "governingLaw": "These terms and any dispute arising from this service are governed by the laws of the Republic of Korea, without regard to conflict-of-law rules. The Seoul Central District Court shall have exclusive jurisdiction as the court of first instance.",
+    "legalContact": "Legal notices: graytraces@gmail.com"
   },
   "privacy": {
     "pageTitle": "Privacy Policy",

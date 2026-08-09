@@ -83,6 +83,7 @@ export default function States() {
       </section>
 
       <p className="max-w-3xl text-sm text-ink-muted">{t('states.caveat')}</p>
+      <p className="max-w-3xl text-xs text-ink-muted">{t('common.footer.affiliation')}</p>
 
       <p className="text-sm">
         <Link to={`/${lang}/texas`} className="mr-4 font-semibold underline">

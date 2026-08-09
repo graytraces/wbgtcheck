@@ -201,6 +201,7 @@ function generateBodyContent(lang, page) {
     }
     push('</ul></nav>')
     push(`<p>${escapeHtml(t('common.footer.safetySummary'))}</p>`)
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
   } else if (page.key === 'texas') {
     push(`<h1>${escapeHtml(t('texas.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('texas.intro', { effectiveDate: UIL_EFFECTIVE_DATE }))}</p>`)
@@ -225,6 +226,7 @@ function generateBodyContent(lang, page) {
     push(
       `<p>${escapeHtml(t('texas.sourceBody', { verifiedOn: UIL_CLASS_3.source.verifiedOn }))} <a href="${UIL_CLASS_3.source.url}">${escapeHtml(UIL_CLASS_3.source.name)}</a></p>`,
     )
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
   } else if (page.key === 'georgia') {
     push(`<h1>${escapeHtml(t('georgia.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('georgia.intro'))}</p>`)
@@ -246,6 +248,7 @@ function generateBodyContent(lang, page) {
     push(
       `<p>${escapeHtml(t('georgia.sourceBody', { verifiedOn: GHSA.source.verifiedOn }))} <a href="${GHSA.source.url}">${escapeHtml(GHSA.source.name)}</a></p>`,
     )
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
   } else if (page.key === 'wbgtVsHeatIndex') {
     const cmp = GHSA_FAQ_WBGT_HI_COMPARISON
     push(`<h1>${escapeHtml(t('wbgtVsHi.pageTitle'))}</h1>`)
@@ -280,6 +283,7 @@ function generateBodyContent(lang, page) {
       `<table><thead><tr><th>${escapeHtml(t('states.colState'))}</th><th>${escapeHtml(t('states.colBody'))}</th><th>${escapeHtml(t('states.colMandate'))}</th><th>${escapeHtml(t('states.colMeasurement'))}</th><th>${escapeHtml(t('states.colNote'))}</th></tr></thead><tbody>${rows}</tbody></table>`,
     )
     push(`<p>${escapeHtml(t('states.caveat'))}</p>`)
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
   } else if (page.key === 'privacy') {
     push(`<h1>${escapeHtml(t('privacy.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('privacy.intro'))}</p>`)
@@ -288,7 +292,7 @@ function generateBodyContent(lang, page) {
     }
   } else if (page.key === 'disclaimer') {
     push(`<h1>${escapeHtml(t('disclaimerPage.pageTitle'))}</h1>`)
-    for (const key of ['notMeasurement', 'notCompliance', 'notMedical', 'conditions', 'accuracy', 'liability']) {
+    for (const key of ['notMeasurement', 'notCompliance', 'notMedical', 'conditions', 'accuracy', 'liability', 'governingLaw', 'legalContact']) {
       push(`<p>${escapeHtml(t(`disclaimerPage.${key}`, BIAS_PARAMS))}</p>`)
     }
   }

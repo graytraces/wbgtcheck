@@ -58,6 +58,7 @@ export default function Georgia() {
             {GHSA.source.name}
           </a>
         </p>
+        <p className="mt-2 text-xs">{t('common.footer.affiliation')}</p>
       </section>
 
       <Link

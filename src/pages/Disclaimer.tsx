@@ -9,6 +9,8 @@ const SECTIONS = [
   'conditions',
   'accuracy',
   'liability',
+  'governingLaw',
+  'legalContact',
 ] as const
 
 export default function Disclaimer() {

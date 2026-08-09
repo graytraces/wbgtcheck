@@ -1,6 +1,7 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { RefreshCw } from 'lucide-react'
 import SEO from '../components/SEO'
 import LocationSetup from '../components/LocationSetup'
 import PolicyPicker from '../components/PolicyPicker'
@@ -9,7 +10,7 @@ import TodayTimeline from '../components/TodayTimeline'
 import WeekStrip from '../components/WeekStrip'
 import PolicyBandsTable from '../components/PolicyBandsTable'
 import ShareCardButton from '../components/ShareCardButton'
-import { useWbgt } from '../hooks/useWbgt'
+import { useWbgt, isStale } from '../hooks/useWbgt'
 import { buildHourlySeries } from '../utils/nws'
 import { annotateHours, groupByDay, currentVerdict, timelineHours } from '../utils/verdict'
 import {
@@ -30,8 +31,20 @@ interface HomeSection {
 
 export default function Home() {
   const { t, i18n } = useTranslation()
-  const { location, policy, policyId, status, data, errorKey, setZip, useMyLocation, setPolicyId, clearLocation } =
-    useWbgt()
+  const {
+    location,
+    policy,
+    policyId,
+    status,
+    data,
+    fetchedAt,
+    errorKey,
+    setZip,
+    useMyLocation,
+    setPolicyId,
+    clearLocation,
+    refetch,
+  } = useWbgt()
 
   const timeZone =
     data?.location.timeZone ?? Intl.DateTimeFormat().resolvedOptions().timeZone ?? 'America/Chicago'
@@ -42,7 +55,16 @@ export default function Home() {
     return groupByDay(annotateHours(points, policy, timeZone))
   }, [data, policy, timeZone])
 
-  const now = Date.now()
+  // Minute tick: without it a tab left open keeps showing the verdict for the
+  // hour it was rendered in — the current-hour selection and the staleness
+  // check below must track real time.
+  const [now, setNow] = useState(() => Date.now())
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 60_000)
+    return () => clearInterval(id)
+  }, [])
+
+  const stale = isStale(fetchedAt, now)
   const today = days[0] ?? null
   const allHours = useMemo(() => days.flatMap((d) => d.hours), [days])
   const current = useMemo(() => currentVerdict(allHours, now), [allHours, now])
@@ -85,6 +107,27 @@ export default function Home() {
         </div>
       )}
 
+      {location && status === 'ready' && stale && (
+        <div className="flex flex-wrap items-center justify-between gap-3 border-2 border-flag-red bg-surface p-4">
+          <p className="font-semibold">
+            {t('verdict.staleNotice', {
+              time: new Intl.DateTimeFormat(i18n.language, {
+                hour: 'numeric',
+                minute: '2-digit',
+              }).format(new Date(fetchedAt ?? now)),
+            })}
+          </p>
+          <button
+            type="button"
+            onClick={refetch}
+            className="inline-flex min-h-11 items-center gap-2 bg-ink px-4 font-bold uppercase tracking-wide text-bg hover:opacity-90"
+          >
+            <RefreshCw className="h-4 w-4" aria-hidden="true" />
+            {t('verdict.refresh')}
+          </button>
+        </div>
+      )}
+
       {location && status === 'ready' && current && (
         <VerdictCard
           hour={current}
@@ -92,6 +135,7 @@ export default function Home() {
           locationLabel={location.label}
           stateAbbr={location.stateAbbr}
           timeZone={timeZone}
+          fetchedAt={fetchedAt}
         />
       )}
 
@@ -102,22 +146,30 @@ export default function Home() {
       )}
 
       {location && status === 'ready' && (
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div className="flex flex-wrap items-end gap-3">
-            <div className="max-w-xs">
-              <PolicyPicker value={policyId} onChange={setPolicyId} />
+        <div className="space-y-2">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div className="flex flex-wrap items-end gap-3">
+              <div className="max-w-xs">
+                <PolicyPicker value={policyId} onChange={setPolicyId} />
+              </div>
+              <button
+                type="button"
+                onClick={clearLocation}
+                className="inline-flex min-h-11 items-center border-2 border-line px-4 text-sm font-semibold text-ink-muted hover:text-ink"
+              >
+                {t('location.change')}
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={clearLocation}
-              className="inline-flex min-h-11 items-center border-2 border-line px-4 text-sm font-semibold text-ink-muted hover:text-ink"
-            >
-              {t('location.change')}
-            </button>
+            {today && (
+              <ShareCardButton day={today} policy={policy} locationLabel={location.label} />
+            )}
           </div>
-          {today && (
-            <ShareCardButton day={today} policy={policy} locationLabel={location.label} />
+          {location.stateAbbr === 'TX' && policyId.startsWith('uil') && (
+            <p className="max-w-2xl border-l-4 border-flag-orange pl-3 text-sm font-semibold">
+              {t('policies.txClassHint')}
+            </p>
           )}
+          <p className="max-w-2xl text-sm text-ink-muted">{t('policies.districtNote')}</p>
         </div>
       )}
 

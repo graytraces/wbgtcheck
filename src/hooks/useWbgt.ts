@@ -19,9 +19,23 @@ export interface SavedLocation {
 export type WbgtStatus = 'idle' | 'locating' | 'loading' | 'ready' | 'error'
 
 /**
- * Default policy per state. Texas defaults to the STRICTER Class 2 thresholds
- * — the user confirms their class against the UIL regional map; when unsure,
- * the lower boundaries are the safe assumption.
+ * A forecast older than this is stale for practice decisions — the UI must
+ * warn and offer a refresh rather than keep showing old numbers silently
+ * (the one fatal failure mode named by the legal review).
+ */
+export const STALE_AFTER_MS = 60 * 60_000
+
+export function isStale(fetchedAt: number | null, now: number): boolean {
+  return fetchedAt !== null && now - fetchedAt > STALE_AFTER_MS
+}
+
+/**
+ * Default policy per state. UIL classes are assigned by county (most of
+ * eastern/central Texas is Class 3; the Panhandle and far West Texas are
+ * Class 2), but no authoritative county list is available to auto-assign —
+ * so Texas defaults to the STRICTER Class 2 and the UI steers the user to
+ * pick their class from the UIL map. Never flip this default to the more
+ * permissive Class 3.
  */
 export function defaultPolicyFor(stateAbbr: string | null): PolicyId {
   if (stateAbbr === 'TX') return 'uil-class-2'
@@ -112,7 +126,9 @@ export function useWbgt() {
   })
   const [status, setStatus] = useState<WbgtStatus>(location ? 'loading' : 'idle')
   const [data, setData] = useState<WbgtApiResponse | null>(null)
+  const [fetchedAt, setFetchedAt] = useState<number | null>(null)
   const [errorKey, setErrorKey] = useState<string | null>(null)
+  const [fetchTick, setFetchTick] = useState(0)
 
   // location_set('saved'): a restored localStorage location counts as a
   // returning session — fire once on mount, not on later changes.
@@ -130,6 +146,7 @@ export function useWbgt() {
       .then((res) => {
         if (cancelled) return
         setData(res)
+        setFetchedAt(Date.now())
         setStatus('ready')
       })
       .catch(() => {
@@ -140,7 +157,11 @@ export function useWbgt() {
     return () => {
       cancelled = true
     }
-  }, [location])
+  }, [location, fetchTick])
+
+  const refetch = useCallback(() => {
+    setFetchTick((t) => t + 1)
+  }, [])
 
   const applyLocation = useCallback(
     (loc: SavedLocation, method: 'zip' | 'geolocation') => {
@@ -261,10 +282,12 @@ export function useWbgt() {
     policyId,
     status,
     data,
+    fetchedAt,
     errorKey,
     setZip,
     useMyLocation,
     setPolicyId,
     clearLocation,
+    refetch,
   }
 }

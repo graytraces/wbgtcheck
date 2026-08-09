@@ -89,6 +89,7 @@ export default function Layout() {
       <footer className="border-t border-line bg-surface text-sm text-ink-muted">
         <div className="mx-auto max-w-5xl space-y-3 px-4 py-6">
           <p className="max-w-3xl">{t('common.footer.safetySummary')}</p>
+          <p className="max-w-3xl">{t('common.footer.affiliation')}</p>
           <p>{t('common.footer.dataCredit')}</p>
           <div className="flex flex-wrap gap-x-4 gap-y-1">
             <Link to={`/${currentLang}/disclaimer`} className="underline hover:text-ink">
