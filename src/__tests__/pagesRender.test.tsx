@@ -23,6 +23,7 @@ import {
   OR_AIR_POLICY,
   CA_REFRAIN_AT_OR_ABOVE_AQI,
   CA_RULE_QUOTE,
+  airActionQuote,
 } from '../data/airPolicyOracle'
 import {
   UIL_CLASS_2,
@@ -162,6 +163,11 @@ describe('post-JS rendered DOM', () => {
     for (const activity of ['short', 'medium', 'long'] as const) {
       expect(screen.getAllByText(en.air.activity[activity]).length).toBeGreaterThan(0)
     }
+    // At least one of the guide's action rules must reach the UI verbatim,
+    // not only as paraphrased table cells.
+    const verbatim = airActionQuote(WA_AIR_POLICY, 'limitLightOrHourModerate')
+    expect(verbatim).not.toBeNull()
+    expect(screen.getByText(verbatim!)).toBeInTheDocument()
   })
 
   it('OregonAir renders each stated band with its published visibility range', () => {

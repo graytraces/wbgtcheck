@@ -47,4 +47,34 @@ describe('SEO chain registration', () => {
     expect(serialized).not.toContain('ratingValue')
     expect(serialized).not.toContain('reviewCount')
   })
+
+  it('NC and WA seo strings never regain the superseded-edition claims', () => {
+    // These phrases described documents the 2026-08 rebuilds replaced: NC's
+    // weather-station clause and colour code died with the 2015 chart; WA's
+    // activity-type axis ("recess, P.E. …") and the 5-3-1 visibility check
+    // belong to other documents. Body copy may still name them historically
+    // ("earlier editions allowed…") — the seo blocks may not assert them.
+    // Scoped to seo: air.activityExample.short legitimately says "recess".
+    const banned = [
+      /weather station/i,
+      /colou?r code/i,
+      /recess/i,
+      /5-3-1/,
+      /estaci[oó]n meteorol[oó]gica/i,
+      /c[oó]digo de color/i,
+      /recreo/i,
+    ]
+    const blocks: Array<[string, unknown]> = [
+      ['en seo.northCarolina', en.seo.northCarolina],
+      ['en seo.washingtonAir', en.seo.washingtonAir],
+      ['es seo.northCarolina', es.seo.northCarolina],
+      ['es seo.washingtonAir', es.seo.washingtonAir],
+    ]
+    for (const [label, block] of blocks) {
+      const text = JSON.stringify(block)
+      for (const re of banned) {
+        expect(re.test(text), `${label} matches ${re}`).toBe(false)
+      }
+    }
+  })
 })
