@@ -28,26 +28,11 @@
     "retry": "Try again"
   },
   "flags": {
-    "green": {
-      "name": "Green flag",
-      "label": "GREEN"
-    },
-    "yellow": {
-      "name": "Yellow flag",
-      "label": "YELLOW"
-    },
-    "orange": {
-      "name": "Orange flag",
-      "label": "ORANGE"
-    },
-    "red": {
-      "name": "Red flag",
-      "label": "RED"
-    },
-    "black": {
-      "name": "Black flag",
-      "label": "BLACK"
-    }
+    "green": { "name": "Green flag", "label": "GREEN" },
+    "yellow": { "name": "Yellow flag", "label": "YELLOW" },
+    "orange": { "name": "Orange flag", "label": "ORANGE" },
+    "red": { "name": "Red flag", "label": "RED" },
+    "black": { "name": "Black flag", "label": "BLACK" }
   },
   "guideline": {
     "normal": "Normal activities.",

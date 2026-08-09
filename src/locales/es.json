@@ -28,26 +28,11 @@
     "retry": "Reintentar"
   },
   "flags": {
-    "green": {
-      "name": "Bandera verde",
-      "label": "VERDE"
-    },
-    "yellow": {
-      "name": "Bandera amarilla",
-      "label": "AMARILLA"
-    },
-    "orange": {
-      "name": "Bandera naranja",
-      "label": "NARANJA"
-    },
-    "red": {
-      "name": "Bandera roja",
-      "label": "ROJA"
-    },
-    "black": {
-      "name": "Bandera negra",
-      "label": "NEGRA"
-    }
+    "green": { "name": "Bandera verde", "label": "VERDE" },
+    "yellow": { "name": "Bandera amarilla", "label": "AMARILLA" },
+    "orange": { "name": "Bandera naranja", "label": "NARANJA" },
+    "red": { "name": "Bandera roja", "label": "ROJA" },
+    "black": { "name": "Bandera negra", "label": "NEGRA" }
   },
   "guideline": {
     "normal": "Actividades normales.",
