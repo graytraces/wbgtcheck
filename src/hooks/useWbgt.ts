@@ -44,7 +44,7 @@ export function isStale(fetchedAt: number | null, now: number): boolean {
  * pick their class from the UIL map. Never flip this default to the more
  * permissive Class 3.
  */
-function defaultPolicyFor(stateAbbr: string | null): PolicyId {
+export function defaultPolicyFor(stateAbbr: string | null): PolicyId {
   if (stateAbbr === 'TX') return 'uil-class-2'
   if (stateAbbr === 'GA') return 'ghsa'
   // Both verified safe to auto-select: SCHSL's thresholds equal the generic
@@ -55,7 +55,7 @@ function defaultPolicyFor(stateAbbr: string | null): PolicyId {
 }
 
 /** True when `policyId` belongs to `stateAbbr` — explicit choices within a state survive re-location. */
-function policyMatchesState(stateAbbr: string | null, policyId: PolicyId): boolean {
+export function policyMatchesState(stateAbbr: string | null, policyId: PolicyId): boolean {
   if (stateAbbr === 'TX') return policyId.startsWith('uil')
   if (stateAbbr === 'GA') return policyId === 'ghsa'
   if (stateAbbr === 'SC') return policyId === 'schsl'
