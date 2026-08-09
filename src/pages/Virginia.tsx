@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Info } from 'lucide-react'
 import SEO from '../components/SEO'
+import CorrectionNote from '../components/CorrectionNote'
 import {
   VA_CANCEL_QUOTE,
   VA_CODE_CITATION,
@@ -75,6 +76,7 @@ export default function Virginia() {
           </a>
         </p>
         <p className="mt-2 text-xs">{t('common.footer.affiliation')}</p>
+        <CorrectionNote topic="virginia" />
       </section>
 
       <Link

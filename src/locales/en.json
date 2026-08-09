@@ -19,6 +19,7 @@
       "dataCredit": "Weather data: NOAA / National Weather Service. WBGT model ported from ECMWF thermofeel (Apache-2.0).",
       "privacy": "Privacy",
       "disclaimer": "Disclaimer",
+      "feedback": "Feedback & corrections",
       "rights": "© {{year}} WBGT Check"
     },
     "themeToggle": "Toggle dark mode",
@@ -26,7 +27,9 @@
     "loading": "Loading…",
     "error": "Something went wrong",
     "retry": "Try again",
-    "errorReloadHint": "The app failed to load — this usually clears after an update. Reload to get the current version."
+    "errorReloadHint": "The app failed to load — this usually clears after an update. Reload to get the current version.",
+    "correctionNote": "Associations revise these rules — if this page cites an edition that has been superseded, we want to know.",
+    "correctionCta": "Report a correction"
   },
   "flags": {
     "green": { "name": "Green flag", "label": "GREEN" },
@@ -583,7 +586,7 @@
     "accuracy": "We cross-check policy numbers against association primary documents and date-stamp each verification, but associations revise policies without notice. The association's current published document always controls over anything shown here.",
     "liability": "This service is provided \"AS IS\" and \"as available\", without warranties of any kind, express or implied, including the implied warranties of merchantability and fitness for a particular purpose. To the maximum extent permitted by law, WBGT Check and its operator shall not be liable for personal injury, death, or property damage, nor for any indirect, incidental, consequential, special, or punitive damages, arising from use of or reliance on this service. This service is not a substitute for independent judgment, additional safety measures, or common sense.",
     "governingLaw": "These terms and any dispute arising from this service are governed by the laws of the Republic of Korea, without regard to conflict-of-law rules. The Seoul Central District Court shall have exclusive jurisdiction as the court of first instance.",
-    "legalContact": "Legal notices: graytraces@gmail.com"
+    "legalContact": "Legal notices: cardi.workshop@gmail.com"
   },
   "privacy": {
     "pageTitle": "Privacy Policy",
@@ -595,7 +598,7 @@
     "dataTitle": "Weather data",
     "dataContent": "Forecast data comes from NOAA's National Weather Service API. Requests are proxied through our server with only the coordinates being requested.",
     "contactTitle": "Contact",
-    "contactContent": "Questions: graytraces@gmail.com"
+    "contactContent": "Questions: cardi.workshop@gmail.com"
   },
   "notFound": {
     "title": "Page not found",

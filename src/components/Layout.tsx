@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { Moon, Sun, Flag } from 'lucide-react'
 import { useTheme } from '../hooks/useTheme'
 import { supportedLanguages, type SupportedLanguage } from '../i18n'
+import { feedbackMailto } from '../utils/feedback'
 
 export default function Layout() {
   const { lang } = useParams()
@@ -95,6 +96,9 @@ export default function Layout() {
           <p className="max-w-3xl">{t('common.footer.affiliation')}</p>
           <p>{t('common.footer.dataCredit')}</p>
           <div className="flex flex-wrap gap-x-4 gap-y-1">
+            <a href={feedbackMailto('wbgtcheck feedback')} className="underline hover:text-ink">
+              {t('common.footer.feedback')}
+            </a>
             <Link to={`/${currentLang}/disclaimer`} className="underline hover:text-ink">
               {t('common.footer.disclaimer')}
             </Link>

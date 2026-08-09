@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import SEO from '../components/SEO'
+import CorrectionNote from '../components/CorrectionNote'
 import FlagBadge from '../components/FlagBadge'
 import { guidelineSentences } from '../utils/guidelineText'
 import { FLAG_TINT } from '../utils/flagStyles'
@@ -127,6 +128,7 @@ export default function Texas() {
           </a>
         </p>
         <p className="mt-2 text-xs">{t('common.footer.affiliation')}</p>
+        <CorrectionNote topic="texas" />
       </section>
 
       <Link

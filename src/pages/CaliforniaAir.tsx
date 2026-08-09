@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import SEO from '../components/SEO'
+import CorrectionNote from '../components/CorrectionNote'
 import AirDataSources from '../components/AirDataSources'
 import {
   CA_AIR_POLICY,
@@ -86,6 +87,7 @@ export default function CaliforniaAir() {
           {t('air.verifiedOn', { date: policy.source.verifiedOn })}
         </p>
         <p className="mt-2 text-ink-muted">{t('common.footer.affiliation')}</p>
+        <CorrectionNote topic="california-air-quality" />
       </section>
       <AirDataSources withVisibilityQuote />
     </article>

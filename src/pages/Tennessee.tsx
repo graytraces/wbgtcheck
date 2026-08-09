@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import SEO from '../components/SEO'
+import CorrectionNote from '../components/CorrectionNote'
 import PolicyBandsTable from '../components/PolicyBandsTable'
 import {
   TSSAA,
@@ -95,6 +96,7 @@ export default function Tennessee() {
           </a>
         </p>
         <p className="mt-2 text-xs">{t('common.footer.affiliation')}</p>
+        <CorrectionNote topic="tennessee" />
       </section>
 
       <Link

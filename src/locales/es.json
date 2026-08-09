@@ -19,6 +19,7 @@
       "dataCredit": "Datos meteorológicos: NOAA / Servicio Meteorológico Nacional. Modelo WBGT portado de ECMWF thermofeel (Apache-2.0).",
       "privacy": "Privacidad",
       "disclaimer": "Aviso legal",
+      "feedback": "Comentarios y correcciones",
       "rights": "© {{year}} WBGT Check"
     },
     "themeToggle": "Cambiar modo oscuro",
@@ -26,7 +27,9 @@
     "loading": "Cargando…",
     "error": "Algo salió mal",
     "retry": "Reintentar",
-    "errorReloadHint": "La aplicación no se cargó — esto suele resolverse tras una actualización. Recargue para obtener la versión actual."
+    "errorReloadHint": "La aplicación no se cargó — esto suele resolverse tras una actualización. Recargue para obtener la versión actual.",
+    "correctionNote": "Las asociaciones revisan estas reglas — si esta página cita una edición reemplazada, queremos saberlo.",
+    "correctionCta": "Informar una corrección"
   },
   "flags": {
     "green": { "name": "Bandera verde", "label": "VERDE" },
@@ -583,7 +586,7 @@
     "accuracy": "Cotejamos los números de política contra documentos primarios de las asociaciones y fechamos cada verificación, pero las asociaciones revisan sus políticas sin aviso. El documento vigente de la asociación siempre prevalece sobre lo mostrado aquí.",
     "liability": "Este servicio se proporciona \"TAL CUAL\" y \"según disponibilidad\", sin garantías de ningún tipo, expresas o implícitas, incluidas las garantías implícitas de comerciabilidad e idoneidad para un fin determinado. En la máxima medida permitida por la ley, WBGT Check y su operador no serán responsables de lesiones personales, muerte o daños a la propiedad, ni de daños indirectos, incidentales, consecuentes, especiales o punitivos, derivados del uso de este servicio o de la confianza depositada en él. Este servicio no sustituye el juicio independiente, las medidas de seguridad adicionales ni el sentido común.",
     "governingLaw": "Estos términos y cualquier disputa derivada de este servicio se rigen por las leyes de la República de Corea, sin atender a las normas sobre conflicto de leyes. El Tribunal del Distrito Central de Seúl tendrá jurisdicción exclusiva como tribunal de primera instancia.",
-    "legalContact": "Notificaciones legales: graytraces@gmail.com"
+    "legalContact": "Notificaciones legales: cardi.workshop@gmail.com"
   },
   "privacy": {
     "pageTitle": "Política de privacidad",
@@ -595,7 +598,7 @@
     "dataTitle": "Datos meteorológicos",
     "dataContent": "Los datos de pronóstico provienen de la API del Servicio Meteorológico Nacional de la NOAA. Las solicitudes pasan por nuestro servidor solo con las coordenadas solicitadas.",
     "contactTitle": "Contacto",
-    "contactContent": "Preguntas: graytraces@gmail.com"
+    "contactContent": "Preguntas: cardi.workshop@gmail.com"
   },
   "notFound": {
     "title": "Página no encontrada",

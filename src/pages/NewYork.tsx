@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import SEO from '../components/SEO'
+import CorrectionNote from '../components/CorrectionNote'
 import {
   NYSPHSAA_AMBIENT_TRIGGER_F,
   NYSPHSAA_APPROVED_ON,
@@ -101,6 +102,7 @@ export default function NewYork() {
           </a>
         </p>
         <p className="mt-2 text-xs">{t('common.footer.affiliation')}</p>
+        <CorrectionNote topic="new-york" />
       </section>
 
       <Link

@@ -85,9 +85,9 @@ describe('legal batch copy (L1-L7)', () => {
     expect(es.disclaimerPage.governingLaw).toContain('República de Corea')
   })
 
-  it('L5: legal contact email present in both locales', () => {
-    expect(en.disclaimerPage.legalContact).toContain('graytraces@gmail.com')
-    expect(es.disclaimerPage.legalContact).toContain('graytraces@gmail.com')
+  it('L5: legal contact email present in both locales (workshop address only)', () => {
+    expect(en.disclaimerPage.legalContact).toContain('cardi.workshop@gmail.com')
+    expect(es.disclaimerPage.legalContact).toContain('cardi.workshop@gmail.com')
   })
 
   it('L7: conditions points at the date/time of displayed data', () => {

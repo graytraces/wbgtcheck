@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Music, TriangleAlert } from 'lucide-react'
 import SEO from '../components/SEO'
+import CorrectionNote from '../components/CorrectionNote'
 import PolicyBandsTable from '../components/PolicyBandsTable'
 import {
   IOWA_ACCLIMATIZE_DEVICE_MAX_MINUTES,
@@ -90,6 +91,7 @@ export default function Iowa() {
           </a>
         </p>
         <p className="mt-2 text-xs">{t('common.footer.affiliation')}</p>
+        <CorrectionNote topic="iowa" />
       </section>
 
       <Link

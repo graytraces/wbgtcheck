@@ -6,7 +6,7 @@ const HSTS = 'max-age=31536000; includeSubDomains; preload'
 
 // NWS api.weather.gov requires an identifying User-Agent (see
 // weather.gov/documentation/services-web-api "Authentication").
-const NWS_USER_AGENT = 'wbgtcheck.com (graytraces@gmail.com)'
+const NWS_USER_AGENT = 'wbgtcheck.com (cardi.workshop@gmail.com)'
 // AirNow states no User-Agent requirement, but the Data Exchange Guidelines
 // ask that data users stay contactable about schema changes — so identify
 // ourselves on that fetch too.

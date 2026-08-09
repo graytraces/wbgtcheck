@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import SEO from '../components/SEO'
+import CorrectionNote from '../components/CorrectionNote'
 import {
   NCHSAA_REFERENCE,
   NCHSAA_DEVICE_QUOTE,
@@ -103,6 +104,7 @@ export default function NorthCarolina() {
           </a>
         </p>
         <p className="mt-2 text-xs">{t('common.footer.affiliation')}</p>
+        <CorrectionNote topic="north-carolina" />
       </section>
 
       <Link

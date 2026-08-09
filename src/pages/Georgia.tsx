@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { TriangleAlert } from 'lucide-react'
 import SEO from '../components/SEO'
+import CorrectionNote from '../components/CorrectionNote'
 import PolicyBandsTable from '../components/PolicyBandsTable'
 import {
   GHSA,
@@ -59,6 +60,7 @@ export default function Georgia() {
           </a>
         </p>
         <p className="mt-2 text-xs">{t('common.footer.affiliation')}</p>
+        <CorrectionNote topic="georgia" />
       </section>
 
       <Link
