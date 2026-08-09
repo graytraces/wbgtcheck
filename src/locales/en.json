@@ -234,6 +234,7 @@
     "preliminaryNotice": "Preliminary hourly reading. AirNow observations are not fully verified or validated and can change.",
     "creditLabel": "Data: {{agencies}} — via EPA AirNow.",
     "staleNotice": "This reading is from {{time}} and may no longer describe the air outside.",
+    "unknownAgeNotice": "AirNow did not give a readable observation time for this area, so how old this reading is cannot be determined — treat it as possibly hours old and check AirNow directly before relying on it.",
     "notClearance": "Planning input, not clearance to play. The person your school designates to monitor air quality decides, on site.",
     "visibilityHeading": "No monitor nearby? Use the 5-3-1 visibility check",
     "visibilityBody": "On a clear day, pick landmarks about {{near}}, {{mid}} and {{far}} miles from the field. Stand with the sun behind you: when a landmark's outline can no longer be seen, visibility is shorter than that distance.",

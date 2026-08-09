@@ -13,7 +13,7 @@ import {
   classifyAqi,
 } from '../data/airPolicyOracle'
 import { aqiSwatchFor } from '../utils/aqiStyles'
-import { readingForPolicy, isObservationStale, type AirStatus } from '../hooks/useAirQuality'
+import { readingForPolicy, observationAge, type AirStatus } from '../hooks/useAirQuality'
 
 const KM_PER_MILE = 1.609344
 
@@ -72,7 +72,7 @@ export default function AirQualityGate({
   const reading = readingForPolicy(data, policy)
   const band = policy ? classifyAirBand(policy, reading.aqi) : null
   const action = band ? airActionFor(band, activity) : null
-  const stale = isObservationStale(data.observed.epochMs, now)
+  const age = observationAge(data.observed.epochMs, now)
   const miles = Math.round(data.area.distanceKm / KM_PER_MILE)
   const far = data.area.distanceKm > AIR_AREA_FAR_KM
   // The WA table reads PM2.5 with no PM2.5 reported here: the overall AQI is
@@ -237,11 +237,18 @@ export default function AirQualityGate({
             {t('air.areaFarNotice', { mi: miles })}
           </p>
         )}
-        {stale && (
+        {age === 'stale' && (
           <p className="mt-1 border-l-4 border-flag-red pl-3 text-sm font-semibold">
             {t('air.staleNotice', {
               time: `${data.observed.time} ${data.observed.timeZone}`,
             })}
+          </p>
+        )}
+        {/* Distinct from stale: AirNow gave a stamp we could not place in
+            time, so the reading's age is unknown rather than known-old. */}
+        {age === 'unknown' && (
+          <p className="mt-1 border-l-4 border-flag-red pl-3 text-sm font-semibold">
+            {t('air.unknownAgeNotice')}
           </p>
         )}
 

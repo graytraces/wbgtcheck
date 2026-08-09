@@ -234,6 +234,7 @@
     "preliminaryNotice": "Lectura horaria preliminar. Las observaciones de AirNow no están totalmente verificadas ni validadas y pueden cambiar.",
     "creditLabel": "Datos: {{agencies}} — vía EPA AirNow.",
     "staleNotice": "Esta lectura es de las {{time}} y puede que ya no describa el aire de afuera.",
+    "unknownAgeNotice": "AirNow no dio una hora de observación legible para esta zona, así que no se puede determinar la antigüedad de esta lectura — trátela como si tuviera varias horas y consulte AirNow directamente antes de basarse en ella.",
     "notClearance": "Información de planificación, no autorización para jugar. Decide, en el sitio, la persona que su escuela designe para vigilar la calidad del aire.",
     "visibilityHeading": "¿Sin monitor cerca? Use la verificación de visibilidad 5-3-1",
     "visibilityBody": "En un día despejado, elija puntos de referencia a unas {{near}}, {{mid}} y {{far}} millas del campo. Párese con el sol a su espalda: cuando ya no se distingue el contorno de un punto de referencia, la visibilidad es menor que esa distancia.",

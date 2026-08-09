@@ -14,7 +14,7 @@ import {
   CA_AIR_POLICY,
   classifyAqi,
 } from '../data/airPolicyOracle'
-import { isObservationStale, readingForPolicy } from '../hooks/useAirQuality'
+import { isObservationStale, observationAge, readingForPolicy } from '../hooks/useAirQuality'
 import { AIR_OBSERVATION_STALE_MINUTES } from '../data/airPolicyOracle'
 
 const SRC = join(__dirname, '..')
@@ -193,9 +193,37 @@ describe('AirQualityGate — reading selection and freshness', () => {
   it('flags an observation older than the staleness window (90 min — one missed hourly cycle plus slack)', () => {
     expect(AIR_OBSERVATION_STALE_MINUTES).toBe(90)
     const now = Date.now()
-    expect(isObservationStale(null, now)).toBe(false)
+    expect(observationAge(now - (AIR_OBSERVATION_STALE_MINUTES - 5) * 60_000, now)).toBe('fresh')
+    expect(observationAge(now - (AIR_OBSERVATION_STALE_MINUTES + 5) * 60_000, now)).toBe('stale')
     expect(isObservationStale(now - (AIR_OBSERVATION_STALE_MINUTES - 5) * 60_000, now)).toBe(false)
     expect(isObservationStale(now - (AIR_OBSERVATION_STALE_MINUTES + 5) * 60_000, now)).toBe(true)
+  })
+
+  it('an unreadable observation time is unknown age, not fresh', () => {
+    // DELIBERATE REVERSAL of the previous assertion (isObservationStale(null)
+    // === false). observationEpochMs returns null for any time-zone
+    // abbreviation outside TZ_OFFSET_HOURS and for any stamp its regexes miss,
+    // so null is a real AirNow response rather than a theoretical one — and
+    // what it holds is the last value published for that area, which can be
+    // hours old. It was being shown as current with no warning. Not knowing
+    // the age of a safety reading is not the same as knowing it is fresh.
+    const now = Date.now()
+    expect(observationAge(null, now)).toBe('unknown')
+    expect(isObservationStale(null, now)).toBe(true)
+  })
+
+  it('says the age is unknown rather than reusing the stale wording', () => {
+    renderGate({
+      data: payload({
+        observed: { date: '08/09/26', time: '14:00', timeZone: 'XYZ', epochMs: null },
+      }),
+    })
+    expect(screen.getByText(en.air.unknownAgeNotice)).toBeInTheDocument()
+    // The known-age message must not appear: it would name a time we could not
+    // actually place on a clock.
+    expect(
+      screen.queryByText(en.air.staleNotice.replace('{{time}}', '14:00 XYZ')),
+    ).not.toBeInTheDocument()
   })
 
   it('surfaces a usable message when AirNow is unavailable', () => {

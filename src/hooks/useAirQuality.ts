@@ -33,10 +33,26 @@ function loadActivity(): ActivityId {
   return DEFAULT_ACTIVITY_ID as ActivityId
 }
 
-/** True when the reported observation is old enough to stop calling current. */
+export type ObservationAge = 'fresh' | 'stale' | 'unknown'
+
+/**
+ * How old the reported observation is — or that we cannot tell.
+ *
+ * `observationEpochMs` returns null whenever AirNow hands us a time-zone
+ * abbreviation outside TZ_OFFSET_HOURS, or a stamp its regexes do not match.
+ * That used to read as "not stale", so a reading of unknown age — in practice
+ * the last one AirNow published for that area, possibly hours old — was shown
+ * as current with no warning at all. Not knowing the age of a safety reading
+ * is not the same as knowing it is fresh, and the safe direction is to say so.
+ */
+export function observationAge(epochMs: number | null, now: number): ObservationAge {
+  if (epochMs === null) return 'unknown'
+  return now - epochMs > AIR_OBSERVATION_STALE_MINUTES * 60_000 ? 'stale' : 'fresh'
+}
+
+/** True when the reading must not be presented as current — unknown counts. */
 export function isObservationStale(epochMs: number | null, now: number): boolean {
-  if (epochMs === null) return false
-  return now - epochMs > AIR_OBSERVATION_STALE_MINUTES * 60_000
+  return observationAge(epochMs, now) !== 'fresh'
 }
 
 export interface AirReading {
