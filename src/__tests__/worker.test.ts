@@ -419,3 +419,51 @@ describe('worker — upstream deadlines', () => {
     expect(init.signal).toBeInstanceOf(AbortSignal)
   })
 })
+
+describe('worker — security headers on every response', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  // HSTS was set on the 301, the 302 and the 404s only — never on a normal 200
+  // from ASSETS and never on /api/*, which is nearly all real traffic. The
+  // directive also claims `preload`, and a domain that does not serve HSTS on
+  // every response is exactly what the preload list rejects.
+  const cases: Array<[string, () => Promise<Response>]> = [
+    ['301 normalize', () => worker.fetch(req('http://wbgtcheck.com/en'), makeEnv())],
+    ['302 bare path', () => worker.fetch(req('https://wbgtcheck.com/'), makeEnv())],
+    ['200 page', () => worker.fetch(req('https://wbgtcheck.com/en/texas'), makeEnv())],
+    ['200 static file', () => worker.fetch(req('https://wbgtcheck.com/sitemap.xml'), makeEnv())],
+    ['404 unknown page', () => worker.fetch(req('https://wbgtcheck.com/en/nope'), makeEnv())],
+  ]
+
+  for (const [name, run] of cases) {
+    it(`sets HSTS, nosniff and a referrer policy on ${name}`, async () => {
+      const res = await run()
+      expect(res.headers.get('Strict-Transport-Security')).toBe(
+        'max-age=31536000; includeSubDomains; preload',
+      )
+      expect(res.headers.get('X-Content-Type-Options')).toBe('nosniff')
+      expect(res.headers.get('Referrer-Policy')).toBe('strict-origin-when-cross-origin')
+    })
+  }
+
+  it('sets them on /api responses too, including errors', async () => {
+    const res = await worker.fetch(req('https://wbgtcheck.com/api/wbgt'), makeEnv())
+    expect(res.status).toBe(400)
+    expect(res.headers.get('Strict-Transport-Security')).toContain('max-age=')
+    expect(res.headers.get('X-Content-Type-Options')).toBe('nosniff')
+  })
+
+  it('keeps the response body and status intact through the wrapper', async () => {
+    const res = await worker.fetch(req('https://wbgtcheck.com/en/texas'), makeEnv())
+    expect(res.status).toBe(200)
+    expect(await res.text()).toBe('OK')
+  })
+
+  it('does not clobber headers the route already set', async () => {
+    const res = await worker.fetch(req('https://wbgtcheck.com/en/nope'), makeEnv())
+    expect(res.status).toBe(404)
+    expect(res.headers.get('X-Robots-Tag')).toBe('noindex')
+  })
+})

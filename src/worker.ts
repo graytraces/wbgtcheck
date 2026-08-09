@@ -49,6 +49,29 @@ function jsonError(message: string, status: number): Response {
 }
 
 /**
+ * Applied to EVERY response on the way out.
+ *
+ * HSTS used to be set only on the 301, the 302 and the two 404 paths — i.e.
+ * never on a normal 200 from ASSETS and never on /api/*, which is most of the
+ * traffic. The header also carries `preload`, a directive that asks browsers
+ * to hard-code the domain as HTTPS-only, and submitting a domain that does not
+ * serve HSTS on every response is exactly what the preload list rejects.
+ * nosniff and a referrer policy ride along for the same reason: one exit point
+ * is the only way they stay true of every route.
+ */
+const SECURITY_HEADERS: Record<string, string> = {
+  'Strict-Transport-Security': HSTS,
+  'X-Content-Type-Options': 'nosniff',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+}
+
+function withSecurityHeaders(res: Response): Response {
+  const headers = new Headers(res.headers)
+  for (const [name, value] of Object.entries(SECURITY_HEADERS)) headers.set(name, value)
+  return new Response(res.body, { status: res.status, statusText: res.statusText, headers })
+}
+
+/**
  * Upstream failure → a status the client can act on, never an unhandled
  * rejection. A timed-out upstream returns 504 so it stays distinguishable in
  * logs from one that answered badly (502).
@@ -252,8 +275,8 @@ async function handleAqiApi(url: URL, ctx?: ExecutionContext): Promise<Response>
   return res
 }
 
-export default {
-  async fetch(request: Request, env: Env, ctx?: ExecutionContext): Promise<Response> {
+async function route(request: Request, env: Env, ctx?: ExecutionContext): Promise<Response> {
+  {
     const url = new URL(request.url)
 
     // Normalize: http→https, www→non-www, trailing slash — combined into single 301
@@ -268,7 +291,7 @@ export default {
         url.pathname = url.pathname.slice(0, -1)
       return new Response(null, {
         status: 301,
-        headers: { Location: url.toString(), 'Strict-Transport-Security': HSTS },
+        headers: { Location: url.toString() },
       })
     }
 
@@ -301,7 +324,6 @@ export default {
       const fallback = await env.ASSETS.fetch(new Request(new URL('/en.html', request.url).toString()))
       const headers = new Headers(fallback.headers)
       headers.set('X-Robots-Tag', 'noindex')
-      headers.set('Strict-Transport-Security', HSTS)
       return new Response(fallback.body, { status: 404, headers })
     }
 
@@ -312,7 +334,6 @@ export default {
       const fallback = await env.ASSETS.fetch(new Request(new URL('/en.html', request.url).toString()))
       const headers = new Headers(fallback.headers)
       headers.set('X-Robots-Tag', 'noindex')
-      headers.set('Strict-Transport-Security', HSTS)
       return new Response(fallback.body, { status: 404, headers })
     }
 
@@ -321,7 +342,13 @@ export default {
     redirectUrl.pathname = validationPath
     return new Response(null, {
       status: 302,
-      headers: { Location: redirectUrl.toString(), 'Strict-Transport-Security': HSTS },
+      headers: { Location: redirectUrl.toString() },
     })
+  }
+}
+
+export default {
+  async fetch(request: Request, env: Env, ctx?: ExecutionContext): Promise<Response> {
+    return withSecurityHeaders(await route(request, env, ctx))
   },
 }
