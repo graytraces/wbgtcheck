@@ -43,6 +43,17 @@ export default defineConfig({
               expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 * 365 },
             },
           },
+          {
+            // Cache CSS with the same policy as JS. Caching only JS created a
+            // mixed stale state after a redeploy: cached entry JS boots while
+            // the old hashed stylesheet 404s, rendering the app unstyled.
+            urlPattern: /\/assets\/.+\.css$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'css-chunks',
+              expiration: { maxEntries: 50, maxAgeSeconds: 60 * 60 * 24 * 365 },
+            },
+          },
         ],
       },
     }),
