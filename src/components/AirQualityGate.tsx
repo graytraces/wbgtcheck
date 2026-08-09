@@ -6,6 +6,7 @@ import type { ActivityId, AirPolicy } from '../data/airPolicyOracle'
 import {
   ACTIVITY_IDS,
   AIR_AREA_FAR_KM,
+  AIR_AREA_MAX_REPRESENTATIVE_KM,
   AIRNOW_PROGRAM_CREDIT,
   NFHS_LANDMARK_MILES,
   airActionFor,
@@ -74,7 +75,13 @@ export default function AirQualityGate({
   const action = band ? airActionFor(band, activity) : null
   const age = observationAge(data.observed.epochMs, now)
   const miles = Math.round(data.area.distanceKm / KM_PER_MILE)
-  const far = data.area.distanceKm > AIR_AREA_FAR_KM
+  // Two bands of distance, both product judgements (see data/airDistance.js):
+  // "far" adds a caveat, "too far" withdraws the activity verdict entirely.
+  // The number stays on screen either way — the failure being prevented is a
+  // distant GOOD reading being taken as clearance to practise, so what gets
+  // removed is the sentence that looks like an instruction.
+  const tooFar = data.area.distanceKm > AIR_AREA_MAX_REPRESENTATIVE_KM
+  const far = !tooFar && data.area.distanceKm > AIR_AREA_FAR_KM
   // The WA table reads PM2.5 with no PM2.5 reported here: the overall AQI is
   // standing in, and the card must say so rather than pass it off.
   const pm25Fallback = policy?.indexBasis === 'pm25' && !data.pm25
@@ -201,7 +208,12 @@ export default function AirQualityGate({
           </fieldset>
         )}
 
-        {policy ? (
+        {tooFar ? (
+          <div className="mt-3 border-l-4 border-flag-red pl-3">
+            <p className="text-base font-semibold">{t('air.notRepresentativeHeading')}</p>
+            <p className="mt-1 text-sm">{t('air.notRepresentativeBody', { mi: miles })}</p>
+          </div>
+        ) : policy ? (
           <div className="mt-3">
             <p className="text-base font-semibold">
               {action ? t(`air.actions.${action}`) : t('air.noActionStated')}

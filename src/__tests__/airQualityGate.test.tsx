@@ -15,7 +15,11 @@ import {
   classifyAqi,
 } from '../data/airPolicyOracle'
 import { isObservationStale, observationAge, readingForPolicy } from '../hooks/useAirQuality'
-import { AIR_OBSERVATION_STALE_MINUTES } from '../data/airPolicyOracle'
+import {
+  AIR_OBSERVATION_STALE_MINUTES,
+  AIR_AREA_FAR_KM,
+  AIR_AREA_MAX_REPRESENTATIVE_KM,
+} from '../data/airPolicyOracle'
 
 const SRC = join(__dirname, '..')
 
@@ -186,8 +190,13 @@ describe('AirQualityGate — reading selection and freshness', () => {
   })
 
   it('warns when the nearest monitor is far from the field', () => {
-    renderGate({ data: payload({ area: { name: 'Far', state: 'WA', lat: 47, lon: -117, distanceKm: 120 } }) })
+    // Middle band: past "far" but still inside the representative range, so
+    // the caveat appears and the activity verdict survives. (This case used
+    // 120 km, which now lands in the stronger too-far branch below.)
+    const distanceKm = (AIR_AREA_FAR_KM + AIR_AREA_MAX_REPRESENTATIVE_KM) / 2
+    renderGate({ data: payload({ area: { name: 'Far', state: 'WA', lat: 47, lon: -117, distanceKm } }) })
     expect(screen.getByText(/nearest monitor is about/i)).toBeInTheDocument()
+    expect(screen.getByText(en.air.actions.limitLightOrHourModerate)).toBeInTheDocument()
   })
 
   it('flags an observation older than the staleness window (90 min — one missed hourly cycle plus slack)', () => {
@@ -197,6 +206,45 @@ describe('AirQualityGate — reading selection and freshness', () => {
     expect(observationAge(now - (AIR_OBSERVATION_STALE_MINUTES + 5) * 60_000, now)).toBe('stale')
     expect(isObservationStale(now - (AIR_OBSERVATION_STALE_MINUTES - 5) * 60_000, now)).toBe(false)
     expect(isObservationStale(now - (AIR_OBSERVATION_STALE_MINUTES + 5) * 60_000, now)).toBe(true)
+  })
+
+  it('withdraws the activity verdict when the monitor is too far to speak for the field', () => {
+    // The distance thresholds are product choices, not agency numbers — they
+    // live in data/airDistance.js for exactly that reason.
+    expect(AIR_AREA_MAX_REPRESENTATIVE_KM).toBeGreaterThan(AIR_AREA_FAR_KM)
+    renderGate({
+      data: payload({
+        area: {
+          name: 'Burns',
+          state: 'OR',
+          lat: 43.59,
+          lon: -119.05,
+          distanceKm: AIR_AREA_MAX_REPRESENTATIVE_KM + 20,
+        },
+        overall: { aqi: 30, category: 'Good', parameter: 'PM2.5' },
+        pm25: { aqi: 30, category: 'Good', parameter: 'PM2.5' },
+      }),
+    })
+    expect(screen.getByText(en.air.notRepresentativeHeading)).toBeInTheDocument()
+    // No jurisdiction's action sentence may appear — a distant GOOD reading
+    // presented with an activity instruction is false clearance.
+    for (const action of Object.values(en.air.actions)) {
+      expect(screen.queryByText(action)).not.toBeInTheDocument()
+    }
+    // The number itself stays visible, with its caveat.
+    expect(screen.getByText('30')).toBeInTheDocument()
+    // And the milder "far" note does not double up with the stronger one.
+    expect(screen.queryByText(/nearest monitor is about/i)).not.toBeInTheDocument()
+  })
+
+  it('keeps the verdict for a monitor inside the representative range', () => {
+    renderGate({
+      data: payload({
+        area: { name: 'Spokane', state: 'WA', lat: 47.66, lon: -117.43, distanceKm: 8 },
+      }),
+    })
+    expect(screen.queryByText(en.air.notRepresentativeHeading)).not.toBeInTheDocument()
+    expect(screen.getByText(en.air.actions.limitLightOrHourModerate)).toBeInTheDocument()
   })
 
   it('an unreadable observation time is unknown age, not fresh', () => {

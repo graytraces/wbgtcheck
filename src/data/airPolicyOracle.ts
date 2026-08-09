@@ -40,9 +40,13 @@ export {
   AIRNOW_NOT_FOR_DECISIONS_QUOTE,
   AIRNOW_CREDIT_QUOTE,
   AIRNOW_PROGRAM_CREDIT,
-  AIR_AREA_FAR_KM,
   AIR_OBSERVATION_STALE_MINUTES,
 } from './airPolicyData.js'
+
+// Product-chosen distance limits, deliberately not part of the source-checked
+// oracle — see ./airDistance.js. Re-exported here so components have one
+// import site for the air layer.
+export { AIR_AREA_FAR_KM, AIR_AREA_MAX_REPRESENTATIVE_KM } from './airDistance.js'
 
 /**
  * AQI category colors. Separate from the WBGT FlagColor union on purpose —

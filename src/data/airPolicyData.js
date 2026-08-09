@@ -467,12 +467,10 @@ export const AIRNOW_CREDIT_QUOTE =
 /** Fallback credit when a row carries no agency name. */
 export const AIRNOW_PROGRAM_CREDIT = 'EPA AirNow'
 
-/**
- * Reporting areas are area-wide values from the nearest agency monitor, which
- * can sit many miles from a field. Beyond this distance the UI stops implying
- * the number represents the field and says so.
- */
-export const AIR_AREA_FAR_KM = 40
+// The distance thresholds that used to live here moved to ./airDistance.js.
+// They are product choices with no primary source behind them, and keeping
+// them among cross-checked regulatory numbers invited a future reader to
+// "re-verify" them against a document that does not exist.
 
 /**
  * Observations older than this are shown as stale rather than current.
