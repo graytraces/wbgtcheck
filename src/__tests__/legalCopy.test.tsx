@@ -107,6 +107,37 @@ describe('legal batch copy (L1-L7)', () => {
     expect(esA).toContain('ininterrumpido')
   })
 
+  it('AQI clause is one step stronger than the WBGT clauses', () => {
+    // Named in the air-quality phase: the AQI reading is preliminary, hourly,
+    // and area-wide, and EPA disclaims decision-making use. All four ideas
+    // must survive copy edits, in both locales.
+    const enA = en.disclaimerPage.airQuality
+    expect(enA).toContain('preliminary')
+    expect(enA).toContain('reporting area')
+    expect(enA).toContain('not fully verified or validated')
+    expect(enA).toContain('decision-making')
+    // And it must restate that air never relaxes the heat verdict.
+    expect(enA.toLowerCase()).toContain('never lowers a heat flag')
+    expect(enA.toLowerCase()).toContain('stricter')
+
+    const esA = es.disclaimerPage.airQuality
+    expect(esA).toContain('preliminar')
+    expect(esA).toContain('zona de reporte')
+    expect(esA).toContain('AirNow')
+    expect(esA.toLowerCase()).toContain('más estricta')
+  })
+
+  it('Disclaimer page renders the AQI clause (post-JS DOM)', () => {
+    render(
+      <MemoryRouter initialEntries={['/en/disclaimer']}>
+        <Routes>
+          <Route path="/:lang/*" element={<Disclaimer />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+    expect(screen.getByText(en.disclaimerPage.airQuality)).toBeInTheDocument()
+  })
+
   it('Disclaimer page renders the new sections (post-JS DOM)', () => {
     render(
       <MemoryRouter initialEntries={['/en/disclaimer']}>

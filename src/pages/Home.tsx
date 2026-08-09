@@ -164,7 +164,10 @@ export default function Home() {
 
       {/* Sits directly under the heat verdict, as a second gate of equal
           standing — see air.bothGatesNotice. */}
-      {location && (
+      {/* airStatus is checked here too: the negative margin that joins this
+          card to the verdict above would still collapse the section gap if the
+          gate itself rendered nothing. */}
+      {location && airStatus !== 'idle' && (
         <div className="-mt-8">
           <AirQualityGate
             status={airStatus}
@@ -283,8 +286,17 @@ export default function Home() {
           <Link to={`/${lang}/georgia`} className="mr-4 font-semibold underline">
             {t('common.nav.georgia')}
           </Link>
-          <Link to={`/${lang}/wbgt-vs-heat-index`} className="font-semibold underline">
+          <Link to={`/${lang}/wbgt-vs-heat-index`} className="mr-4 font-semibold underline">
             {t('common.nav.wbgtVsHeatIndex')}
+          </Link>
+          <Link to={`/${lang}/washington-air-quality`} className="mr-4 font-semibold underline">
+            {t('common.nav.washingtonAir')}
+          </Link>
+          <Link to={`/${lang}/oregon-air-quality`} className="mr-4 font-semibold underline">
+            {t('common.nav.oregonAir')}
+          </Link>
+          <Link to={`/${lang}/california-air-quality`} className="font-semibold underline">
+            {t('common.nav.californiaAir')}
           </Link>
         </p>
       </section>

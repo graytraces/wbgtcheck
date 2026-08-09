@@ -160,6 +160,23 @@ describe('AirQualityGate — reading selection and freshness', () => {
     expect(readingForPolicy(p, null)).toMatchObject({ aqi: 160, basis: 'overall' })
   })
 
+  it('the category wording matches the value shown, not the overall AQI', () => {
+    // Regression: WA reads the PM2.5 sub-index, so showing the overall AQI's
+    // category next to a PM2.5 swatch produced a self-contradicting card
+    // (yellow "51 to 100" swatch labelled "Unhealthy").
+    renderGate({
+      data: payload({
+        overall: { aqi: 160, category: 'Unhealthy', parameter: 'OZONE' },
+        pm25: { aqi: 90, category: 'Moderate', parameter: 'PM2.5' },
+      }),
+    })
+    expect(screen.getByText('90')).toBeInTheDocument()
+    expect(screen.getByText('Moderate')).toBeInTheDocument()
+    expect(screen.queryByText('Unhealthy')).not.toBeInTheDocument()
+    // The overall reading is still disclosed, just not as the headline.
+    expect(screen.getByText(/OZONE.*160/)).toBeInTheDocument()
+  })
+
   it('falls back to the overall AQI when the area reports no PM2.5', () => {
     const p = payload({
       overall: { aqi: 160, category: 'Unhealthy', parameter: 'OZONE' },

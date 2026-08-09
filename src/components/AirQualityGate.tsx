@@ -110,8 +110,11 @@ export default function AirQualityGate({
             <span className="display-num text-3xl leading-none">{reading.aqi}</span>
             <span className="text-sm uppercase tracking-wide">{category.sourceLabel}</span>
           </span>
+          {/* The agency's category wording for the value actually shown —
+              NOT data.overall.category, which would contradict the swatch
+              whenever WA reads PM2.5 while ozone drives the overall AQI. */}
           <span className="text-sm font-semibold uppercase tracking-wide">
-            {data.overall.category}
+            {reading.category}
           </span>
           <span className="text-sm text-ink-muted">{basisLabel}</span>
         </div>

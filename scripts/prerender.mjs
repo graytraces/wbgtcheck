@@ -423,7 +423,7 @@ function generateBodyContent(lang, page) {
     }
   } else if (page.key === 'disclaimer') {
     push(`<h1>${escapeHtml(t('disclaimerPage.pageTitle'))}</h1>`)
-    for (const key of ['notMeasurement', 'notCompliance', 'notMedical', 'conditions', 'availability', 'accuracy', 'liability', 'governingLaw', 'legalContact']) {
+    for (const key of ['notMeasurement', 'notCompliance', 'notMedical', 'conditions', 'airQuality', 'availability', 'accuracy', 'liability', 'governingLaw', 'legalContact']) {
       push(`<p>${escapeHtml(t(`disclaimerPage.${key}`, BIAS_PARAMS))}</p>`)
     }
   }

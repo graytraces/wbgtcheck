@@ -7,6 +7,10 @@ const HSTS = 'max-age=31536000; includeSubDomains; preload'
 // NWS api.weather.gov requires an identifying User-Agent (see
 // weather.gov/documentation/services-web-api "Authentication").
 const NWS_USER_AGENT = 'wbgtcheck.com (graytraces@gmail.com)'
+// AirNow states no User-Agent requirement, but the Data Exchange Guidelines
+// ask that data users stay contactable about schema changes — so identify
+// ourselves on that fetch too.
+const AIRNOW_USER_AGENT = NWS_USER_AGENT
 const NWS_API = 'https://api.weather.gov'
 // Edge cache TTL for /api/wbgt responses. NWS gridpoint forecasts update
 // roughly hourly; 10 minutes keeps readings fresh while absorbing team-wide
@@ -186,7 +190,7 @@ async function handleAqiApi(url: URL, ctx?: ExecutionContext): Promise<Response>
   }
   if (text === null) {
     const upstream = await fetch(AIRNOW_REPORTING_AREA_URL, {
-      headers: { 'User-Agent': NWS_USER_AGENT },
+      headers: { 'User-Agent': AIRNOW_USER_AGENT },
     })
     if (!upstream.ok) {
       return jsonError(`AirNow reporting area fetch failed (${upstream.status})`, 502)
