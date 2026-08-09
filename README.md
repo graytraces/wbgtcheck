@@ -27,8 +27,14 @@ npm run build   # tsc + vite + prerender (32 locale HTML files + sitemap)
 Recorded during the 2026-08-09 three-axis review; do not pick these up
 without weighing the noted risk:
 
-- **Locale lazy-loading** (−7 KB entry): i18next async init risks a
-  first-paint flash of keys — needs a WRS-safe loading strategy first.
+- **Locale lazy-loading** (−21 KB gzip from the entry, measured 2026-08-10):
+  both locale files ship in the entry chunk (verified by string probe), so
+  every visitor downloads the language they are not reading — en.json is
+  21.8 KB gzip and es.json 23.5 KB, 44.3 KB for the pair. Dropping the unused
+  one is the saving. Still deferred for the original reason: i18next async
+  init risks a first-paint flash of keys, and this needs a WRS-safe loading
+  strategy first. (The old "−7 KB" figure was an estimate and understated it
+  by roughly a factor of three.)
 - **PWA manifest i18n**: manifest.webmanifest is EN-only; vite-plugin-pwa has
   no per-locale manifest story — revisit if ES installs matter.
 - **Icon silhouette duplication**: orange (OctagonAlert) and black (OctagonX)

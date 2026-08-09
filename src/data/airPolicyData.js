@@ -134,7 +134,16 @@ export const ACTIVITY_SOURCE_LABELS = {
   long: '> 4 hours',
 }
 
-/** The guide's own example lists under each duration column. */
+/**
+ * The guide's own parenthetical examples for each duration column, verbatim.
+ *
+ * The UI shows a shortened, translated version of these (air.activityExample.*)
+ * because the full strings do not fit three buttons on a phone. This constant
+ * is the record they are checked against: the shorthand for the >4 hour column
+ * had quietly dropped "overnight camp", which is the longest exposure the
+ * guide names and the case where picking the right column matters most.
+ * airPolicyOracle.test.ts fails if a shorthand loses one of these categories.
+ */
 export const ACTIVITY_EXAMPLE_QUOTES = {
   short: 'e.g., recess, PE, classes typically held outside',
   medium: 'e.g., athletic events and practices',

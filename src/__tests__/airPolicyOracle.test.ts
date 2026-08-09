@@ -29,6 +29,7 @@ import {
   airPolicyForState,
   ACTIVITY_IDS,
   ACTIVITY_SOURCE_LABELS,
+  ACTIVITY_EXAMPLE_QUOTES,
   DEFAULT_ACTIVITY_ID,
   AQI_CATEGORY_NAME_ES,
   AQI_CATEGORY_NAME_ES_SOURCE,
@@ -395,6 +396,32 @@ describe('AQI category names in Spanish', () => {
     // caption says the ranges are shown as the source prints them.
     for (const category of AQI_CATEGORIES) {
       expect(category.sourceLabel).toMatch(/\d/)
+    }
+  })
+})
+
+describe('duration-column examples', () => {
+  it('the shorthand shown in the UI keeps every category the guide lists', () => {
+    // ACTIVITY_EXAMPLE_QUOTES is the record; air.activityExample.* is the
+    // phone-sized version. The >4 hour shorthand had dropped "overnight camp"
+    // — the longest exposure the guide names, and the case where choosing the
+    // right column matters most.
+    expect(ACTIVITY_EXAMPLE_QUOTES.long).toContain('overnight camp')
+    expect(en.air.activityExample.long).toContain('overnight camp')
+    // Spanish keeps the distinction between the two camp lengths.
+    expect(es.air.activityExample.long).toContain('campamento de día')
+    expect(es.air.activityExample.long).toContain('campamento de varios días')
+  })
+
+  it('every duration column has a source example and a shorthand', () => {
+    for (const id of ACTIVITY_IDS) {
+      expect(ACTIVITY_EXAMPLE_QUOTES[id as ActivityId], `quote for ${id}`).toBeTruthy()
+      for (const locale of [en, es]) {
+        expect(
+          (locale.air.activityExample as Record<string, string>)[id],
+          `shorthand for ${id}`,
+        ).toBeTruthy()
+      }
     }
   })
 })
