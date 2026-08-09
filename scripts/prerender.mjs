@@ -329,8 +329,12 @@ function visibilityBody(t) {
 }
 
 /** Correction invitation — mirrors components/CorrectionNote.tsx. */
-function correctionNoteHtml(t, topic) {
-  return `<p>${escapeHtml(t('common.correctionNote'))} <a href="${feedbackMailto(`wbgtcheck correction: ${topic}`)}">${escapeHtml(t('common.correctionCta'))}</a></p>`
+function correctionNoteHtml(t, topic, lang) {
+  // Mirrors components/CorrectionNote.tsx, including the non-English note that
+  // quotations are left in the association's own words.
+  const quotes =
+    lang && lang !== 'en' ? `<p>${escapeHtml(t('common.quotesInEnglish'))}</p>` : ''
+  return `${quotes}<p>${escapeHtml(t('common.correctionNote'))} <a href="${feedbackMailto(`wbgtcheck correction: ${topic}`)}">${escapeHtml(t('common.correctionCta'))}</a></p>`
 }
 
 /** Attribution block — mirrors components/AirDataSources.tsx. */
@@ -459,7 +463,7 @@ function generateBodyContent(lang, page) {
       `<p>${escapeHtml(t('texas.sourceBody', { verifiedOn: UIL_CLASS_3.source.verifiedOn }))} <a href="${UIL_CLASS_3.source.url}">${escapeHtml(UIL_CLASS_3.source.name)}</a></p>`,
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
-    push(correctionNoteHtml(t, 'texas'))
+    push(correctionNoteHtml(t, 'texas', lang))
   } else if (page.key === 'georgia') {
     push(`<h1>${escapeHtml(t('georgia.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('georgia.intro', { yearRound: GHSA_POLICY_YEAR_ROUND_QUOTE }))}</p>`)
@@ -506,7 +510,7 @@ function generateBodyContent(lang, page) {
       `<p>${escapeHtml(t('georgia.sourceBody', { verifiedOn: GHSA.source.verifiedOn }))} <a href="${GHSA.source.url}">${escapeHtml(GHSA.source.name)}</a></p>`,
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
-    push(correctionNoteHtml(t, 'georgia'))
+    push(correctionNoteHtml(t, 'georgia', lang))
   } else if (page.key === 'southCarolina') {
     push(`<h1>${escapeHtml(t('southCarolina.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('southCarolina.intro'))}</p>`)
@@ -562,7 +566,7 @@ function generateBodyContent(lang, page) {
       `<p>${escapeHtml(t('southCarolina.sourceBody', { verifiedOn: SCHSL.source.verifiedOn }))} <a href="${SCHSL.source.url}">${escapeHtml(SCHSL.source.name)}</a></p>`,
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
-    push(correctionNoteHtml(t, 'south-carolina'))
+    push(correctionNoteHtml(t, 'south-carolina', lang))
   } else if (page.key === 'tennessee') {
     push(`<h1>${escapeHtml(t('tennessee.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('tennessee.intro'))}</p>`)
@@ -603,7 +607,7 @@ function generateBodyContent(lang, page) {
       )} <a href="${TSSAA.source.url}">${escapeHtml(TSSAA.source.name)}</a></p>`,
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
-    push(correctionNoteHtml(t, 'tennessee'))
+    push(correctionNoteHtml(t, 'tennessee', lang))
   } else if (page.key === 'iowa') {
     push(`<h1>${escapeHtml(t('iowa.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('iowa.intro'))}</p>`)
@@ -641,7 +645,7 @@ function generateBodyContent(lang, page) {
       `<p>${escapeHtml(t('iowa.sourceBody', { verifiedOn: IOWA_CATEGORY_2.source.verifiedOn }))} <a href="${IOWA_CATEGORY_2.source.url}">${escapeHtml(IOWA_CATEGORY_2.source.name)}</a></p>`,
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
-    push(correctionNoteHtml(t, 'iowa'))
+    push(correctionNoteHtml(t, 'iowa', lang))
   } else if (page.key === 'northCarolina') {
     push(`<h1>${escapeHtml(t('northCarolina.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('northCarolina.intro'))}</p>`)
@@ -666,7 +670,7 @@ function generateBodyContent(lang, page) {
       `<p>${escapeHtml(t('northCarolina.sourceBody', { verifiedOn: NCHSAA_REFERENCE.source.verifiedOn }))} <a href="${NCHSAA_REFERENCE.source.url}">${escapeHtml(NCHSAA_REFERENCE.source.name)}</a></p>`,
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
-    push(correctionNoteHtml(t, 'north-carolina'))
+    push(correctionNoteHtml(t, 'north-carolina', lang))
   } else if (page.key === 'newYork') {
     push(`<h1>${escapeHtml(t('newYork.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('newYork.intro'))}</p>`)
@@ -697,7 +701,7 @@ function generateBodyContent(lang, page) {
       )} <a href="${NYSPHSAA_HEAT_INDEX_REFERENCE.source.url}">${escapeHtml(NYSPHSAA_HEAT_INDEX_REFERENCE.source.name)}</a></p>`,
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
-    push(correctionNoteHtml(t, 'new-york'))
+    push(correctionNoteHtml(t, 'new-york', lang))
   } else if (page.key === 'virginia') {
     push(`<h1>${escapeHtml(t('virginia.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('virginia.intro'))}</p>`)
@@ -728,7 +732,7 @@ function generateBodyContent(lang, page) {
       )} <a href="${VA_STATUTE_SOURCE.url}">${escapeHtml(VA_STATUTE_SOURCE.name)}</a></p>`,
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
-    push(correctionNoteHtml(t, 'virginia'))
+    push(correctionNoteHtml(t, 'virginia', lang))
   } else if (page.key === 'wbgtVsHeatIndex') {
     const cmp = GHSA_FAQ_WBGT_HI_COMPARISON
     push(`<h1>${escapeHtml(t('wbgtVsHi.pageTitle'))}</h1>`)
@@ -794,7 +798,7 @@ function generateBodyContent(lang, page) {
     )
     push(`<p>${escapeHtml(t('air.verifiedOn', { date: WA_AIR_POLICY.source.verifiedOn }))}</p>`)
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
-    push(correctionNoteHtml(t, 'washington-air-quality'))
+    push(correctionNoteHtml(t, 'washington-air-quality', lang))
     push(airDataSourcesHtml(t, false))
   } else if (page.key === 'oregonAir') {
     push(`<h1>${escapeHtml(t('oregonAir.pageTitle'))}</h1>`)
@@ -816,7 +820,7 @@ function generateBodyContent(lang, page) {
     )
     push(`<p>${escapeHtml(t('air.verifiedOn', { date: OR_AIR_POLICY.source.verifiedOn }))}</p>`)
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
-    push(correctionNoteHtml(t, 'oregon-air-quality'))
+    push(correctionNoteHtml(t, 'oregon-air-quality', lang))
     push(airDataSourcesHtml(t, true))
   } else if (page.key === 'californiaAir') {
     push(`<h1>${escapeHtml(t('californiaAir.pageTitle'))}</h1>`)
@@ -841,7 +845,7 @@ function generateBodyContent(lang, page) {
     )
     push(`<p>${escapeHtml(t('air.verifiedOn', { date: CA_AIR_POLICY.source.verifiedOn }))}</p>`)
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
-    push(correctionNoteHtml(t, 'california-air-quality'))
+    push(correctionNoteHtml(t, 'california-air-quality', lang))
     push(airDataSourcesHtml(t, true))
   } else if (page.key === 'privacy') {
     push(`<h1>${escapeHtml(t('privacy.pageTitle'))}</h1>`)

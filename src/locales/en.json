@@ -28,6 +28,7 @@
     "error": "Something went wrong",
     "retry": "Try again",
     "errorReloadHint": "The app failed to load — this usually clears after an update. Reload to get the current version.",
+    "quotesInEnglish": "Quotations on this page appear in the association's original English.",
     "correctionNote": "Associations revise these rules — if this page cites an edition that has been superseded, we want to know.",
     "correctionCta": "Report a correction"
   },

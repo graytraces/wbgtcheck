@@ -54,3 +54,33 @@ describe('EN/ES locale parity', () => {
     )
   })
 })
+
+describe('Spanish quotation handling', () => {
+  // Two ES strings had the association's words TRANSLATED inside quotation
+  // marks — quoting sentences UIL and SCHSL never wrote — while iowa and
+  // tennessee kept the originals. Quotations now stay in the source language
+  // everywhere, with a parenthetical gloss, and each guide page says so once.
+  it('keeps association quotations in their original English', () => {
+    const cases: Array<[string, string]> = [
+      [es.texas.measurementApps, 'other scientifically proven method'],
+      [es.states.notes.sc, 'phone apps are not scientifically approved'],
+      [es.iowa.appsBody, '{{apps}}'],
+      [es.tennessee.appsBody, '{{apps}}'],
+    ]
+    for (const [text, original] of cases) {
+      expect(text, `quotation should carry the source wording: ${original}`).toContain(original)
+    }
+  })
+
+  it('tells Spanish readers the quotations are deliberately untranslated', () => {
+    expect(es.common.quotesInEnglish.length).toBeGreaterThan(0)
+    expect(en.common.quotesInEnglish.length).toBeGreaterThan(0)
+  })
+
+  it('has no leftover machine-translated quotation of the UIL plan', () => {
+    // The specific fabricated rendering that shipped.
+    expect(es.texas.measurementApps).not.toContain(
+      '"u otro método científicamente probado',
+    )
+  })
+})

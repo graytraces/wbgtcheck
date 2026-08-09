@@ -28,6 +28,7 @@
     "error": "Algo salió mal",
     "retry": "Reintentar",
     "errorReloadHint": "La aplicación no se cargó — esto suele resolverse tras una actualización. Recargue para obtener la versión actual.",
+    "quotesInEnglish": "Las citas de esta página aparecen en el inglés original de la asociación; entre paréntesis va la traducción.",
     "correctionNote": "Las asociaciones revisan estas reglas — si esta página cita una edición reemplazada, queremos saberlo.",
     "correctionCta": "Informar una corrección"
   },
@@ -351,7 +352,7 @@
     "tableClass3": "Clase 3",
     "tableGuidelines": "Modificaciones requeridas",
     "measurementHeading": "Reglas de medición",
-    "measurementApps": "La UIL acepta lecturas por internet: el plan permite un instrumento WBGT aprobado científicamente \"u otro método científicamente probado, como un software o aplicación de estación meteorológica por internet\". Eso legitima las herramientas de pronóstico como ayudas de planificación en Texas — pero la lectura que rige es la tomada a la hora de la práctica.",
+    "measurementApps": "La UIL acepta lecturas por internet: el plan permite un instrumento WBGT aprobado científicamente «or other scientifically proven method, such as an internet-based weather station software or application» (u otro método científicamente probado, como un software o aplicación de estación meteorológica por internet). Eso legitima las herramientas de pronóstico como ayudas de planificación en Texas — pero la lectura que rige es la tomada a la hora de la práctica.",
     "legalityHeading": "¿Puede este sitio ser su lectura oficial?",
     "legalityBody": "La frase de requisito del plan nombra ambas vías: «{{req}}» El FAQ lo dice aún más directo: «{{faq}}»",
     "legalityNoList": "Lo que ningún documento aporta: una definición de \"aprobado\" ni una lista publicada de recursos de internet aprobados. Que una herramienta de pronóstico satisfaga el estándar es, por tanto, decisión de su distrito — confírmelo con su distrito o preparador físico antes de usar cualquier recurso de internet, incluido este, como lectura oficial.",
@@ -438,7 +439,7 @@
       "tx": "Vigente desde el {{effectiveDate}}; cubre atletismo y banda de marcha. Umbrales regionales Clase 2/3 — vea la guía de Texas. Los recursos WBGT por internet están permitidos explícitamente; no se publica una lista de aprobación.",
       "ga": "Instrumento calibrado en el sitio requerido en cada práctica — vea la guía de Georgia.",
       "ky": "La KHSAA pasó al WBGT y se reporta que descarta sitios web y apps como sustitutos — no pudimos acceder a los documentos de la KHSAA para confirmar la redacción ni cuál formulario de registro rige. Confirme directamente.",
-      "sc": "Se exige que las escuelas tengan y usen un termómetro WBGT en el sitio; \"las apps del teléfono no están aprobadas científicamente\". La regla de permanencia fija las restricciones — vea la guía de Carolina del Sur.",
+      "sc": "Se exige que las escuelas tengan y usen un termómetro WBGT en el sitio; «phone apps are not scientifically approved» (las apps del teléfono no están aprobadas científicamente). La regla de permanencia fija las restricciones — vea la guía de Carolina del Sur.",
       "ia": "El WBGT es recomendado (no obligatorio) todo el año sobre 80 °F, con lecturas cada 30 minutos; la banda de marcha y las porristas tienen filas propias — vea la guía de Iowa.",
       "fl": "La ley Zachary Martin legisla requisitos de seguridad basados en WBGT; la FHSAA opera con WBGT.",
       "nc": "El manual vigente exige un dispositivo aprobado científicamente, leído cada hora desde 30 minutos antes de la práctica; el §2.3.3(g) hace obligatoria la política que lo contiene. Familia de umbrales más estricta que la mayoría — vea la guía de Carolina del Norte.",
@@ -583,7 +584,7 @@
       "helmetsOnly": "En prácticas, solo casco de fútbol americano — ningún otro equipo de protección.",
       "noOutside": "No debe realizarse actividad, práctica ni encuentro al aire libre. Actividad bajo techo solo si hay aire acondicionado."
     },
-    "wbgtChartNote": "Nueva York sí publica un cuadro WBGT alternativo, pero sus umbrales dependen de una categoría regional que se consulta en un mapa externo, y el cuadro no era legible por máquina en el documento fuente. Este sitio no reproduce números WBGT de Nueva York en vez de arriesgarse a imprimir los de la región equivocada.",
+    "wbgtChartNote": "Nueva York sí publica un cuadro WBGT alternativo, pero sus umbrales dependen de una categoría regional que se consulta en un mapa externo, y el cuadro no era legible por máquina en el documento fuente. Este sitio prefiere no reproducir los números WBGT de Nueva York antes que arriesgarse a imprimir los de la región equivocada.",
     "sourceHeading": "Fuente",
     "sourceBody": "Los umbrales y las citas anteriores provienen de los NYSPHSAA Heat Index Procedures (aprobados el {{approved}}, actualizados el {{updated}}), cotejados el {{verifiedOn}}.",
     "ctaButton": "Aprenda WBGT vs índice de calor"
