@@ -365,3 +365,57 @@ describe('worker — /api/aqi AirNow proxy', () => {
     expect(assets.mock.calls.length).toBe(0)
   })
 })
+
+describe('worker — upstream deadlines', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('a timed-out NWS upstream becomes 504, not an unhandled rejection', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.reject(Object.assign(new Error('aborted'), { name: 'AbortError' }))),
+    )
+    const res = await worker.fetch(
+      req('https://wbgtcheck.com/api/wbgt?lat=30.27&lon=-97.74'),
+      makeEnv(),
+    )
+    expect(res.status).toBe(504)
+    expect((await res.json()) as { error: string }).toMatchObject({ error: 'upstream timed out' })
+  })
+
+  it('a timed-out AirNow upstream becomes 504 too', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.reject(Object.assign(new Error('aborted'), { name: 'AbortError' }))),
+    )
+    const res = await worker.fetch(
+      req('https://wbgtcheck.com/api/aqi?lat=47.61&lon=-122.33'),
+      makeEnv(),
+    )
+    expect(res.status).toBe(504)
+  })
+
+  it('a non-timeout upstream failure stays 502', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(() => Promise.reject(new TypeError('network down'))),
+    )
+    const res = await worker.fetch(
+      req('https://wbgtcheck.com/api/wbgt?lat=30.27&lon=-97.74'),
+      makeEnv(),
+    )
+    expect(res.status).toBe(502)
+  })
+
+  it('passes an abort signal to every upstream call', async () => {
+    const fetchMock = vi.fn((_input: string, _init?: RequestInit) =>
+      Promise.resolve(new Response('{}', { status: 500 })),
+    )
+    vi.stubGlobal('fetch', fetchMock)
+    await worker.fetch(req('https://wbgtcheck.com/api/wbgt?lat=30.27&lon=-97.74'), makeEnv())
+    expect(fetchMock).toHaveBeenCalled()
+    const init = fetchMock.mock.calls[0][1]!
+    expect(init.signal).toBeInstanceOf(AbortSignal)
+  })
+})

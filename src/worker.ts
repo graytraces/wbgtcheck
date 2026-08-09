@@ -1,5 +1,6 @@
 import { SUPPORTED_LANGS, isValidPath } from './utils/routeValidation'
 import { AIRNOW_REPORTING_AREA_URL, buildAqiPayload, parseReportingArea } from './utils/airnow'
+import { fetchWithTimeout, UPSTREAM_FETCH_TIMEOUT_MS } from './utils/fetchWithTimeout'
 
 const SUPPORTED_LANGS_SET = new Set<string>(SUPPORTED_LANGS)
 const HSTS = 'max-age=31536000; includeSubDomains; preload'
@@ -45,6 +46,24 @@ function jsonError(message: string, status: number): Response {
     status,
     headers: { 'content-type': 'application/json', 'cache-control': 'no-store' },
   })
+}
+
+/**
+ * Upstream failure → a status the client can act on, never an unhandled
+ * rejection. A timed-out upstream returns 504 so it stays distinguishable in
+ * logs from one that answered badly (502).
+ */
+async function withUpstreamErrors(run: () => Promise<Response>): Promise<Response> {
+  try {
+    return await run()
+  } catch (error) {
+    const name = error instanceof Error ? error.name : ''
+    const timedOut = name === 'AbortError' || name === 'TimeoutError'
+    return jsonError(
+      timedOut ? 'upstream timed out' : 'upstream request failed',
+      timedOut ? 504 : 502,
+    )
+  }
 }
 
 interface NwsLayer {
@@ -111,7 +130,11 @@ async function handleWbgtApi(url: URL, ctx?: ExecutionContext): Promise<Response
 
   const nwsHeaders = { 'User-Agent': NWS_USER_AGENT, Accept: 'application/geo+json' }
 
-  const pointsRes = await fetch(`${NWS_API}/points/${lat},${lon}`, { headers: nwsHeaders })
+  const pointsRes = await fetchWithTimeout(
+    `${NWS_API}/points/${lat},${lon}`,
+    { headers: nwsHeaders },
+    UPSTREAM_FETCH_TIMEOUT_MS,
+  )
   if (!pointsRes.ok) {
     return jsonError(`NWS points lookup failed (${pointsRes.status})`, 502)
   }
@@ -127,7 +150,7 @@ async function handleWbgtApi(url: URL, ctx?: ExecutionContext): Promise<Response
     return jsonError('NWS points response missing grid data URL', 502)
   }
 
-  const gridRes = await fetch(gridUrl, { headers: nwsHeaders })
+  const gridRes = await fetchWithTimeout(gridUrl, { headers: nwsHeaders }, UPSTREAM_FETCH_TIMEOUT_MS)
   if (!gridRes.ok) {
     return jsonError(`NWS gridpoint fetch failed (${gridRes.status})`, 502)
   }
@@ -189,9 +212,11 @@ async function handleAqiApi(url: URL, ctx?: ExecutionContext): Promise<Response>
     if (rawHit) text = await rawHit.text()
   }
   if (text === null) {
-    const upstream = await fetch(AIRNOW_REPORTING_AREA_URL, {
-      headers: { 'User-Agent': AIRNOW_USER_AGENT },
-    })
+    const upstream = await fetchWithTimeout(
+      AIRNOW_REPORTING_AREA_URL,
+      { headers: { 'User-Agent': AIRNOW_USER_AGENT } },
+      UPSTREAM_FETCH_TIMEOUT_MS,
+    )
     if (!upstream.ok) {
       return jsonError(`AirNow reporting area fetch failed (${upstream.status})`, 502)
     }
@@ -251,13 +276,13 @@ export default {
     // page routes. Keeps the NWS User-Agent requirement server-side and adds
     // ~10 min edge caching.
     if (url.pathname === '/api/wbgt') {
-      return handleWbgtApi(url, ctx)
+      return withUpstreamErrors(() => handleWbgtApi(url, ctx))
     }
 
     // AirNow AQI proxy — same reasoning as /api/wbgt: keeps the hourly
     // upstream file on the edge instead of shipping 2 MB to every client.
     if (url.pathname === '/api/aqi') {
-      return handleAqiApi(url, ctx)
+      return withUpstreamErrors(() => handleAqiApi(url, ctx))
     }
 
     const path = url.pathname

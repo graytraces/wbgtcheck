@@ -10,6 +10,8 @@
  * grid cell needs.
  */
 
+import { fetchWithTimeout } from './fetchWithTimeout'
+
 export interface GeocodeResult {
   lat: number
   lon: number
@@ -22,7 +24,7 @@ export async function zipToLocation(zip: string): Promise<GeocodeResult> {
   if (!/^\d{5}$/.test(cleaned)) {
     throw new Error('invalid-zip')
   }
-  const res = await fetch(`https://api.zippopotam.us/us/${cleaned}`)
+  const res = await fetchWithTimeout(`https://api.zippopotam.us/us/${cleaned}`)
   if (res.status === 404) throw new Error('zip-not-found')
   if (!res.ok) throw new Error('zip-lookup-failed')
   const data = (await res.json()) as {

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import type { WbgtApiResponse } from '../utils/nws'
 import { zipToLocation } from '../utils/geocode'
+import { fetchWithTimeout } from '../utils/fetchWithTimeout'
 import { trackLocationSet } from '../utils/analytics'
 import type { PolicyId } from '../data/policyOracle'
 import { POLICIES } from '../data/policyOracle'
@@ -88,7 +89,7 @@ const NWS_HEADERS = { Accept: 'application/geo+json' }
  * Production always goes through /api/wbgt (User-Agent + edge cache).
  */
 async function fetchWbgtDev(lat: number, lon: number): Promise<WbgtApiResponse> {
-  const points = await fetch(
+  const points = await fetchWithTimeout(
     `https://api.weather.gov/points/${lat.toFixed(2)},${lon.toFixed(2)}`,
     { headers: NWS_HEADERS },
   ).then((r) => {
@@ -101,7 +102,7 @@ async function fetchWbgtDev(lat: number, lon: number): Promise<WbgtApiResponse> 
       }
     }>
   })
-  const grid = await fetch(points.properties.forecastGridData, { headers: NWS_HEADERS }).then(
+  const grid = await fetchWithTimeout(points.properties.forecastGridData, { headers: NWS_HEADERS }).then(
     (r) => {
       if (!r.ok) throw new Error(`grid ${r.status}`)
       return r.json() as Promise<{ properties: Record<string, unknown> }>
@@ -131,7 +132,7 @@ async function fetchWbgtDev(lat: number, lon: number): Promise<WbgtApiResponse> 
 
 async function fetchWbgt(lat: number, lon: number): Promise<WbgtApiResponse> {
   if (import.meta.env.DEV) return fetchWbgtDev(lat, lon)
-  const res = await fetch(`/api/wbgt?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}`)
+  const res = await fetchWithTimeout(`/api/wbgt?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}`)
   if (!res.ok) throw new Error(`api ${res.status}`)
   return res.json() as Promise<WbgtApiResponse>
 }

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import type { AqiPayload } from '../utils/airnow'
+import { fetchWithTimeout } from '../utils/fetchWithTimeout'
 import type { ActivityId, AirPolicy } from '../data/airPolicyOracle'
 import {
   ACTIVITY_IDS,
@@ -18,7 +19,7 @@ export type AirStatus = 'idle' | 'loading' | 'ready' | 'error'
  * state — that is expected, not a bug.
  */
 async function fetchAqi(lat: number, lon: number): Promise<AqiPayload> {
-  const res = await fetch(`/api/aqi?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}`)
+  const res = await fetchWithTimeout(`/api/aqi?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}`)
   if (!res.ok) throw new Error(`api ${res.status}`)
   return res.json() as Promise<AqiPayload>
 }
