@@ -83,6 +83,10 @@
         "body": "Field studies show remote WBGT estimates read about {{min}} °C low on average versus an on-site meter, and up to {{max}} °C low in the hottest conditions — the dangerous direction. WBGT Check flags borderline hours and tells you to plan for the higher category. A forecast plans the schedule; only an on-site reading runs the practice."
       },
       {
+        "heading": "Use it the way trainers do",
+        "body": "Plan tomorrow's practice with the forecast the night before. Share the verdict card so every coach sees the same number and the same flag. Then run practice off your on-site reading, exactly as your policy writes it — this site plans and communicates; your instrument decides."
+      },
+      {
         "heading": "Know your state's rules",
         "body": "Texas UIL explicitly accepts internet-based readings; Georgia GHSA requires a calibrated on-site instrument; other states fall everywhere in between. See the state-by-state table, the Texas UIL guide, and the Georgia GHSA guide for what your association actually requires."
       }
