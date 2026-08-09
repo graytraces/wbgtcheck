@@ -173,6 +173,27 @@ export const GHSA_FAQ_WBGT_HI_COMPARISON = { wbgtF: 92, heatIndexMinF: 104, heat
  */
 export const GHSA_NO_APPS_QUOTE =
   'Phone applications are not approved for WBGT measurements at this time.'
+/**
+ * GHSA's range-hold rule, from the same reminder page under "Important Policy
+ * Clarifications" (quotes re-fetched verbatim 2026-08-10).
+ *
+ * This is the ratchet: restrictions lock in after the hold and only ever move
+ * up. The site shipped the equivalent SCHSL rule but not this one, and the
+ * omission runs the dangerous way — a coach watching the WBGT drop back below
+ * a boundary could reasonably assume the restriction lifts, which is the one
+ * thing GHSA says twice that it does not.
+ *
+ * Derived from GHSA's own sentences, NOT from the SCHSL copy: the two
+ * associations happen to share a 15-minute hold, and paraphrasing one state's
+ * rule into another state's page is how a wrong number travels.
+ */
+export const GHSA_RANGE_HOLD_MINUTES = 15
+export const GHSA_RANGE_HOLD_QUOTE =
+  'Once a WBGT reading reaches a specific range and remains there for 15 consecutive minutes, the practice restrictions for that range must be followed for the remainder of that practice.'
+export const GHSA_NO_REVERT_QUOTE =
+  'Schools may not revert to a lower restriction level, even if the WBGT reading later decreases.'
+export const GHSA_ESCALATE_QUOTE =
+  'If, during the same practice, the WBGT increases into a higher range and remains there for 15 consecutive minutes, the restrictions for the higher range must immediately be implemented.'
 // Full sentence: it does not stop at "practice". Truncating it there and
 // closing with an invented period reads as a flat equipment rule; the tail is
 // what ties the instrument to GHSA compliance, which is the whole point on a

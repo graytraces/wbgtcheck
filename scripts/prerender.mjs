@@ -38,6 +38,10 @@ import {
   UIL_LINKED_TOOL,
   GHSA_INSTRUMENT_QUOTE,
   GHSA_POLICY_YEAR_ROUND_QUOTE,
+  GHSA_RANGE_HOLD_MINUTES,
+  GHSA_RANGE_HOLD_QUOTE,
+  GHSA_NO_REVERT_QUOTE,
+  GHSA_ESCALATE_QUOTE,
   GHSA_NO_APPS_QUOTE,
   GHSA_MONITOR_EVERY_PRACTICE_QUOTE,
   GHSA_REMINDER_SOURCE,
@@ -483,6 +487,18 @@ function generateBodyContent(lang, page) {
     )
     push(`<h2>${escapeHtml(t('georgia.tableHeading'))}</h2>`)
     push(policyTableHtml(GHSA, t))
+    push(`<h2>${escapeHtml(t('georgia.holdHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('georgia.holdBody', {
+          hold: GHSA_RANGE_HOLD_MINUTES,
+          hold1: GHSA_RANGE_HOLD_QUOTE,
+          hold2: GHSA_NO_REVERT_QUOTE,
+          escalate: GHSA_ESCALATE_QUOTE,
+        }),
+      )}</p>`,
+    )
+    push(`<p>${escapeHtml(t('georgia.holdPlanning'))}</p>`)
     push(`<h2>${escapeHtml(t('georgia.practiceDefHeading'))}</h2><p>${escapeHtml(t('georgia.practiceDefBody'))}</p>`)
     push(
       `<p>${escapeHtml(t('georgia.sourceBody', { verifiedOn: GHSA.source.verifiedOn }))} <a href="${GHSA.source.url}">${escapeHtml(GHSA.source.name)}</a></p>`,

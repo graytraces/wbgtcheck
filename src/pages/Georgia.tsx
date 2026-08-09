@@ -14,6 +14,10 @@ import {
   GHSA_NO_APPS_QUOTE,
   GHSA_MONITOR_EVERY_PRACTICE_QUOTE,
   GHSA_REMINDER_SOURCE,
+  GHSA_RANGE_HOLD_MINUTES,
+  GHSA_RANGE_HOLD_QUOTE,
+  GHSA_NO_REVERT_QUOTE,
+  GHSA_ESCALATE_QUOTE,
 } from '../data/policyOracle'
 
 export default function Georgia() {
@@ -68,6 +72,21 @@ export default function Georgia() {
       <section>
         <h2 className="display-num mb-2 text-2xl uppercase">{t('georgia.tableHeading')}</h2>
         <PolicyBandsTable policy={GHSA} showSource={false} />
+      </section>
+
+      {/* The ratchet. Omitting it reads permissive: a coach watching the WBGT
+          fall back below a boundary would assume the restriction lifts. */}
+      <section>
+        <h2 className="display-num mb-2 text-2xl uppercase">{t('georgia.holdHeading')}</h2>
+        <p>
+          {t('georgia.holdBody', {
+            hold: GHSA_RANGE_HOLD_MINUTES,
+            hold1: GHSA_RANGE_HOLD_QUOTE,
+            hold2: GHSA_NO_REVERT_QUOTE,
+            escalate: GHSA_ESCALATE_QUOTE,
+          })}
+        </p>
+        <p className="mt-3">{t('georgia.holdPlanning')}</p>
       </section>
 
       <section>

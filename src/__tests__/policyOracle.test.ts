@@ -47,6 +47,11 @@ import {
   GHSA_REMINDER_SOURCE,
   GHSA_INSTRUMENT_QUOTE,
   GHSA_POLICY_YEAR_ROUND_QUOTE,
+  GHSA_RANGE_HOLD_MINUTES,
+  GHSA_RANGE_HOLD_QUOTE,
+  GHSA_NO_REVERT_QUOTE,
+  GHSA_ESCALATE_QUOTE,
+  SCHSL_CONTINUOUS_QUOTE,
 } from '../data/policyOracle'
 import type { FlagColor, HeatPolicy } from '../data/policyOracle'
 import en from '../locales/en.json'
@@ -228,6 +233,29 @@ describe('policy oracle — measurement/compliance stance', () => {
     expect(GHSA_INSTRUMENT_QUOTE).not.toContain('year-round')
     // ...and the year-round quote must not drag the instrument in with it.
     expect(GHSA_POLICY_YEAR_ROUND_QUOTE.toLowerCase()).not.toContain('instrument')
+  })
+
+  it('GHSA carries its own range-hold ratchet, not a copy of the SCHSL one', () => {
+    // Both associations happen to use a 15-minute hold. The site shipped the
+    // SCHSL rule and omitted GHSA's, and the omission runs permissive: a coach
+    // watching the WBGT fall back would assume the restriction lifts.
+    expect(GHSA_RANGE_HOLD_MINUTES).toBe(15)
+    expect(GHSA_RANGE_HOLD_QUOTE).toContain('15 consecutive minutes')
+    expect(GHSA_RANGE_HOLD_QUOTE).toContain('remainder of that practice')
+    // The no-revert leg is the half that carries the safety meaning.
+    expect(GHSA_NO_REVERT_QUOTE).toContain('may not revert')
+    expect(GHSA_ESCALATE_QUOTE).toContain('must immediately be implemented')
+    // Derived from GHSA's own page: none of these may be SCHSL's wording.
+    for (const quote of [GHSA_RANGE_HOLD_QUOTE, GHSA_NO_REVERT_QUOTE, GHSA_ESCALATE_QUOTE]) {
+      expect(quote).not.toBe(SCHSL_CONTINUOUS_QUOTE)
+      expect(quote.toLowerCase()).not.toContain('schsl')
+    }
+    for (const locale of [en, es]) {
+      expect(locale.georgia.holdBody).toContain('{{hold}}')
+      expect(locale.georgia.holdBody).toContain('{{escalate}}')
+      // Numbers reach this copy only through the oracle.
+      expect(locale.georgia.holdBody.replace(/\{\{\w+\}\}/g, '')).not.toMatch(/\d/)
+    }
   })
 
   it('the Georgia page states the two documents disagree on the date limit', () => {
