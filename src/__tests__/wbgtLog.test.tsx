@@ -94,3 +94,35 @@ describe('WbgtLog', () => {
     ).toBeInTheDocument()
   })
 })
+
+describe('WbgtLog when the write fails', () => {
+  it('warns on screen instead of showing the success toast', () => {
+    // Storage that accepts reads but refuses writes — quota exceeded, or a
+    // profile that blocks persistence. The row appears in the list either way,
+    // which is exactly why the failure has to be said out loud.
+    const store = new Map<string, string>()
+    Object.defineProperty(window, 'localStorage', {
+      configurable: true,
+      value: {
+        getItem: (k: string) => store.get(k) ?? null,
+        setItem: () => {
+          throw new DOMException('quota', 'QuotaExceededError')
+        },
+        removeItem: (k: string) => void store.delete(k),
+        clear: () => store.clear(),
+      },
+    })
+    renderLog(88.4)
+    fireEvent.click(screen.getByRole('button', { name: /log current estimate/i }))
+
+    expect(screen.getByRole('alert')).toHaveTextContent(en.wbgtLog.saveFailedNote)
+    expect(screen.queryByRole('button', { name: en.wbgtLog.savedToast })).not.toBeInTheDocument()
+  })
+
+  it('shows the toast and no warning when the write lands', () => {
+    installMemoryStorage()
+    renderLog(88.4)
+    fireEvent.click(screen.getByRole('button', { name: /log current estimate/i }))
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+})

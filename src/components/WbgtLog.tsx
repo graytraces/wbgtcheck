@@ -83,6 +83,10 @@ export default function WbgtLog({ currentWbgtF, policy, policyId, locationLabel 
   const { entries, addEntry, removeEntry, clearAll } = useWbgtLog()
   const [onsiteRaw, setOnsiteRaw] = useState('')
   const [savedTick, setSavedTick] = useState(0)
+  // Sticky, unlike the toast: a reading that did not reach storage is gone
+  // when the tab closes, and the user needs to know that after the toast
+  // would have faded.
+  const [saveFailed, setSaveFailed] = useState(false)
   const [confirmingClear, setConfirmingClear] = useState(false)
 
   const onsiteValue = Number(onsiteRaw)
@@ -93,7 +97,7 @@ export default function WbgtLog({ currentWbgtF, policy, policyId, locationLabel 
     onsiteValue <= ONSITE_MAX_F
 
   const save = (wbgtF: number, source: 'forecast' | 'onsite') => {
-    addEntry({
+    const { persisted } = addEntry({
       wbgtF: Math.round(wbgtF * 10) / 10,
       source,
       flagKey: `flags.${classifyWbgt(policy, wbgtF).flag}.label`,
@@ -101,8 +105,11 @@ export default function WbgtLog({ currentWbgtF, policy, policyId, locationLabel 
       locationLabel,
     })
     trackWbgtLogSave(source)
-    setSavedTick((n) => n + 1)
-    setTimeout(() => setSavedTick(0), 2000)
+    setSaveFailed(!persisted)
+    if (persisted) {
+      setSavedTick((n) => n + 1)
+      setTimeout(() => setSavedTick(0), 2000)
+    }
   }
 
   const printLog = () => {
@@ -128,6 +135,17 @@ export default function WbgtLog({ currentWbgtF, policy, policyId, locationLabel 
           interval: UIL_READING_INTERVAL_MINUTES,
         })}
       </p>
+
+      {/* Sticky, unlike the toast: the reading is on screen but not in
+          storage, and that stops being true only when the tab closes. */}
+      {saveFailed && (
+        <p
+          role="alert"
+          className="print:hidden mt-2 border-l-4 border-flag-red pl-3 text-sm font-semibold"
+        >
+          {t('wbgtLog.saveFailedNote')}
+        </p>
+      )}
 
       <div className="print:hidden mt-3 flex flex-wrap items-end gap-3">
         {currentWbgtF !== null && (

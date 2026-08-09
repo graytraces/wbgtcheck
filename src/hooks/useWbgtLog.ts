@@ -78,18 +78,33 @@ export function readWbgtLog(): WbgtLogEntry[] {
 // updates the history further down the same page.
 const listeners = new Set<(entries: WbgtLogEntry[]) => void>()
 
-function writeWbgtLog(entries: WbgtLogEntry[]): WbgtLogEntry[] {
+export interface WbgtLogWrite {
+  entries: WbgtLogEntry[]
+  /**
+   * False when the rows exist in memory only. Callers MUST surface this: a log
+   * whose whole purpose is to be a record, kept silently only until the tab
+   * closes, is worse than one that visibly failed — the user walks away
+   * believing they have a file.
+   */
+  persisted: boolean
+}
+
+function writeWbgtLog(entries: WbgtLogEntry[]): WbgtLogWrite {
   // Newest first; the cap drops the oldest rows.
   const capped = entries.slice(0, MAX_LOG_ENTRIES)
+  let persisted = false
   if (canUseStorage()) {
     try {
       window.localStorage.setItem(WBGT_LOG_KEY, JSON.stringify(capped))
+      persisted = true
     } catch {
-      // Quota exceeded or storage blocked — keep the in-memory list usable.
+      // Quota exceeded or storage blocked. The in-memory list stays usable,
+      // but the caller is told so it can say so.
+      persisted = false
     }
   }
   for (const listener of listeners) listener(capped)
-  return capped
+  return { entries: capped, persisted }
 }
 
 function makeId(): string {
@@ -114,8 +129,8 @@ export function useWbgtLog() {
 
   const addEntry = useCallback((entry: NewWbgtLogEntry) => {
     const saved: WbgtLogEntry = { ...entry, id: makeId(), timestamp: Date.now() }
-    writeWbgtLog([saved, ...readWbgtLog()])
-    return saved
+    const { persisted } = writeWbgtLog([saved, ...readWbgtLog()])
+    return { entry: saved, persisted }
   }, [])
 
   const removeEntry = useCallback((id: string) => {

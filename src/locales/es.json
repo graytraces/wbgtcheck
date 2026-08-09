@@ -114,6 +114,7 @@
     "cadenceHint": "El ritmo de la UIL: una lectura dentro de los {{before}} minutos previos a la práctica y luego cada {{interval}} minutos. Otras asociaciones fijan su propia cadencia.",
     "saveForecast": "Registrar estimación actual ({{value}} °F)",
     "savedToast": "Registrado",
+    "saveFailedNote": "Esa lectura aparece abajo pero no pudo escribirse en el almacenamiento de su navegador, así que se perderá al cerrar esta pestaña. El almacenamiento está lleno o bloqueado. Imprima el registro ahora si necesita conservarlo.",
     "onsiteLabel": "Lectura del medidor en el sitio (°F)",
     "onsiteButton": "Registrar lectura",
     "sourceForecast": "Estimación de pronóstico",
