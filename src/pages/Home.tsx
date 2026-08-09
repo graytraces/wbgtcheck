@@ -270,8 +270,13 @@ export default function Home() {
                 {t('location.change')}
               </button>
             </div>
-            {today && (
-              <ShareCardButton day={today} policy={policy} locationLabel={location.label} />
+            {selectedDay && (
+              <ShareCardButton
+                day={selectedDay}
+                policy={policy}
+                locationLabel={location.label}
+                isToday={showingToday}
+              />
             )}
           </div>
           {/* Once the class is chosen the prompt above is gone, so this is the

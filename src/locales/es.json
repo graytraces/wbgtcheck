@@ -183,6 +183,7 @@
     "generated": "wbgtcheck.com",
     "shareFailed": "Compartir no está disponible aquí — se descargó el PNG en su lugar.",
     "todayFlags": "Banderas de calor de hoy",
+    "dayFlags": "Banderas de calor del {{day}}",
     "wbgtPeakLabel": "WBGT máximo",
     "estShort": "EST"
   },

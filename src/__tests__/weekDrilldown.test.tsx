@@ -102,3 +102,20 @@ describe('week strip drill-down', () => {
     }
   })
 })
+
+describe('the share card follows the day on screen', () => {
+  it('titles today as today, and a later day by its weekday', async () => {
+    const days = await week()
+    // Today first: the card keeps the "today" title.
+    expect(screen.getByRole('button', { name: en.share.download })).toBeInTheDocument()
+
+    fireEvent.click(days[2])
+    // The heading proves the view moved; the share button follows the same
+    // selectedDay, so a Tuesday card can no longer be titled "Today's heat
+    // flags" — wrong the moment it lands in a team chat.
+    expect(screen.queryByText(en.verdict.todayHeading)).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: en.share.download })).toBeInTheDocument()
+    expect(en.share.dayFlags).toContain('{{day}}')
+    expect(es.share.dayFlags).toContain('{{day}}')
+  })
+})

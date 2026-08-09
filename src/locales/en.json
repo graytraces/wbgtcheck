@@ -183,6 +183,7 @@
     "generated": "wbgtcheck.com",
     "shareFailed": "Sharing is not available here — the PNG was downloaded instead.",
     "todayFlags": "Today's heat flags",
+    "dayFlags": "{{day}}'s heat flags",
     "wbgtPeakLabel": "WBGT peak",
     "estShort": "EST"
   },

@@ -15,6 +15,8 @@ interface ShareCardButtonProps {
   day: DaySummary
   policy: HeatPolicy
   locationLabel: string
+  /** True when `day` is today, which decides the card's title. */
+  isToday?: boolean
 }
 
 async function renderBlob(model: NonNullable<ReturnType<typeof buildShareCardModel>>): Promise<Blob | null> {
@@ -27,7 +29,12 @@ async function renderBlob(model: NonNullable<ReturnType<typeof buildShareCardMod
   return new Promise((resolve) => canvas.toBlob(resolve, 'image/png'))
 }
 
-export default function ShareCardButton({ day, policy, locationLabel }: ShareCardButtonProps) {
+export default function ShareCardButton({
+  day,
+  policy,
+  locationLabel,
+  isToday = true,
+}: ShareCardButtonProps) {
   const { t, i18n } = useTranslation()
   const [busy, setBusy] = useState(false)
   const [note, setNote] = useState<string | null>(null)
@@ -54,7 +61,16 @@ export default function ShareCardButton({ day, policy, locationLabel }: ShareCar
             { body: policy.source.name.split(' ')[0] },
           )
         : null,
-      title: t('share.todayFlags'),
+      // The card follows the day being viewed. Titling Tuesday's card
+      // "Today's heat flags" would put a wrong claim in a team chat, where it
+      // outlives the screen it came from.
+      title: isToday
+        ? t('share.todayFlags')
+        : t('share.dayFlags', {
+            day: new Intl.DateTimeFormat(i18n.language, { weekday: 'long' }).format(
+              new Date(`${day.date}T12:00:00`),
+            ),
+          }),
       estimatedNote: t('verdict.estimatedBadge'),
       lang: i18n.language,
     })
