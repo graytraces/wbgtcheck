@@ -1,4 +1,5 @@
 import { SUPPORTED_LANGS, isValidPath } from './utils/routeValidation'
+import { AIRNOW_REPORTING_AREA_URL, buildAqiPayload, parseReportingArea } from './utils/airnow'
 
 const SUPPORTED_LANGS_SET = new Set<string>(SUPPORTED_LANGS)
 const HSTS = 'max-age=31536000; includeSubDomains; preload'
@@ -11,6 +12,10 @@ const NWS_API = 'https://api.weather.gov'
 // roughly hourly; 10 minutes keeps readings fresh while absorbing team-wide
 // traffic bursts (whole team opening the same link after a share).
 const WBGT_CACHE_SECONDS = 600
+// AirNow refreshes reportingarea.dat hourly (:25 and :55 in practice), so an
+// hour of edge cache is the natural granularity — nothing fresher exists
+// upstream. Applied to both the raw file and the per-coordinate response.
+const AQI_CACHE_SECONDS = 3600
 
 function detectLanguage(acceptLanguage: string | null): string {
   if (!acceptLanguage) return 'en'
@@ -64,26 +69,34 @@ function slimGridpoint(props: Record<string, unknown>) {
   }
 }
 
-async function handleWbgtApi(url: URL, ctx?: ExecutionContext): Promise<Response> {
+/**
+ * Shared lat/lon validation for the data routes. Coordinates are rounded to
+ * 2 decimals (~1 km) so nearby requests collapse onto one cache entry — NWS
+ * grid cells are 2.5 km and AirNow reporting areas are far coarser still.
+ */
+function parseCoords(url: URL): { lat: string; lon: string } | { error: Response } {
   const latParam = url.searchParams.get('lat')
   const lonParam = url.searchParams.get('lon')
   if (latParam === null || latParam === '' || lonParam === null || lonParam === '') {
-    return jsonError('lat and lon query parameters are required numbers', 400)
+    return { error: jsonError('lat and lon query parameters are required numbers', 400) }
   }
   const latRaw = Number(latParam)
   const lonRaw = Number(lonParam)
-  // NWS covers US states + territories; this box (incl. AK/HI/PR/GU) rejects
-  // junk input before it reaches the upstream API.
+  // NWS and AirNow both cover US states + territories; this box (incl.
+  // AK/HI/PR/GU) rejects junk input before it reaches an upstream API.
   if (!Number.isFinite(latRaw) || !Number.isFinite(lonRaw)) {
-    return jsonError('lat and lon query parameters are required numbers', 400)
+    return { error: jsonError('lat and lon query parameters are required numbers', 400) }
   }
   if (latRaw < -15 || latRaw > 72 || lonRaw < -180 || lonRaw > 180) {
-    return jsonError('coordinates out of range', 400)
+    return { error: jsonError('coordinates out of range', 400) }
   }
-  // Round to 2 decimals (~1 km): NWS grid cells are 2.5 km, and rounding
-  // collapses nearby requests onto one cache entry.
-  const lat = latRaw.toFixed(2)
-  const lon = lonRaw.toFixed(2)
+  return { lat: latRaw.toFixed(2), lon: lonRaw.toFixed(2) }
+}
+
+async function handleWbgtApi(url: URL, ctx?: ExecutionContext): Promise<Response> {
+  const coords = parseCoords(url)
+  if ('error' in coords) return coords.error
+  const { lat, lon } = coords
 
   const cacheKey = new Request(`https://wbgtcheck.com/api/wbgt?lat=${lat}&lon=${lon}`)
   const cache = typeof caches !== 'undefined' ? (caches as unknown as { default: Cache }).default : undefined
@@ -143,6 +156,73 @@ async function handleWbgtApi(url: URL, ctx?: ExecutionContext): Promise<Response
   return res
 }
 
+/**
+ * Current AQI for the reporting area nearest the caller's field.
+ *
+ * Two cache layers: the 2 MB upstream file is cached once per hour under a
+ * fixed key (so a whole team opening the same link costs one upstream fetch
+ * per colo, not one per coordinate), and each coordinate's JSON is cached for
+ * the same hour.
+ */
+async function handleAqiApi(url: URL, ctx?: ExecutionContext): Promise<Response> {
+  const coords = parseCoords(url)
+  if ('error' in coords) return coords.error
+  const { lat, lon } = coords
+
+  const cache =
+    typeof caches !== 'undefined' ? (caches as unknown as { default: Cache }).default : undefined
+
+  const cacheKey = new Request(`https://wbgtcheck.com/api/aqi?lat=${lat}&lon=${lon}`)
+  if (cache) {
+    const hit = await cache.match(cacheKey)
+    if (hit) return hit
+  }
+
+  const rawKey = new Request('https://wbgtcheck.com/__airnow/reportingarea.dat')
+  let text: string | null = null
+  if (cache) {
+    const rawHit = await cache.match(rawKey)
+    if (rawHit) text = await rawHit.text()
+  }
+  if (text === null) {
+    const upstream = await fetch(AIRNOW_REPORTING_AREA_URL, {
+      headers: { 'User-Agent': NWS_USER_AGENT },
+    })
+    if (!upstream.ok) {
+      return jsonError(`AirNow reporting area fetch failed (${upstream.status})`, 502)
+    }
+    text = await upstream.text()
+    if (cache) {
+      const stored = new Response(text, {
+        headers: {
+          'content-type': 'text/plain; charset=utf-8',
+          'cache-control': `public, max-age=${AQI_CACHE_SECONDS}`,
+        },
+      })
+      const put = cache.put(rawKey, stored).catch(() => {})
+      if (ctx) ctx.waitUntil(put)
+    }
+  }
+
+  const payload = buildAqiPayload(parseReportingArea(text), Number(lat), Number(lon))
+  if (payload === null) {
+    return jsonError('no AirNow reporting area with current observations', 503)
+  }
+
+  const res = new Response(JSON.stringify(payload), {
+    headers: {
+      'content-type': 'application/json',
+      'cache-control': `public, max-age=${AQI_CACHE_SECONDS}`,
+      'access-control-allow-origin': '*',
+    },
+  })
+  if (cache) {
+    const put = cache.put(cacheKey, res.clone()).catch(() => {})
+    if (ctx) ctx.waitUntil(put)
+  }
+  return res
+}
+
 export default {
   async fetch(request: Request, env: Env, ctx?: ExecutionContext): Promise<Response> {
     const url = new URL(request.url)
@@ -168,6 +248,12 @@ export default {
     // ~10 min edge caching.
     if (url.pathname === '/api/wbgt') {
       return handleWbgtApi(url, ctx)
+    }
+
+    // AirNow AQI proxy — same reasoning as /api/wbgt: keeps the hourly
+    // upstream file on the edge instead of shipping 2 MB to every client.
+    if (url.pathname === '/api/aqi') {
+      return handleAqiApi(url, ctx)
     }
 
     const path = url.pathname
