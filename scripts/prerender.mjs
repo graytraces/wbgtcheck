@@ -34,6 +34,8 @@ import {
   UIL_FAQ_SOURCE,
   UIL_MANDATE_2026_QUOTE,
   UIL_RECORDKEEPING_QUOTE,
+  UIL_INTERNET_CADENCE_QUOTE,
+  UIL_LINKED_TOOL,
   GHSA_INSTRUMENT_QUOTE,
   GHSA_NO_APPS_QUOTE,
   GHSA_MONITOR_EVERY_PRACTICE_QUOTE,
@@ -425,6 +427,9 @@ function generateBodyContent(lang, page) {
       )}</p>`,
     )
     push(`<p>${escapeHtml(t('texas.measurementApps'))}</p>`)
+    push(
+      `<p>${escapeHtml(t('texas.internetCadenceNote', { quote: UIL_INTERNET_CADENCE_QUOTE }))}</p>`,
+    )
     push(`<p>${escapeHtml(t('texas.competitionNote'))}</p>`)
     push(`<p>${escapeHtml(t('texas.bandNote'))}</p>`)
     push(`<h2>${escapeHtml(t('texas.legalityHeading'))}</h2>`)
@@ -437,6 +442,9 @@ function generateBodyContent(lang, page) {
       )}</p>`,
     )
     push(`<p>${escapeHtml(t('texas.legalityNoList'))}</p>`)
+    push(
+      `<p>${escapeHtml(t('texas.linkedToolNote', { name: UIL_LINKED_TOOL.name }))} <a href="${UIL_LINKED_TOOL.url}">${escapeHtml(UIL_LINKED_TOOL.url)}</a></p>`,
+    )
     push(
       `<p><a href="${UIL_FAQ_SOURCE.url}">${escapeHtml(UIL_FAQ_SOURCE.name)}</a> (${escapeHtml(t('policies.verifiedOn', { date: UIL_FAQ_SOURCE.verifiedOn }))})</p>`,
     )

@@ -121,6 +121,29 @@ describe('guideline copy derives from the oracle', () => {
     expect(prose).not.toContain('seguro practicar')
   })
 
+  it("Texas cadence copy keeps the plan's must/should split (both locales)", () => {
+    // The plan requires the pre-practice reading but only recommends the ones
+    // during practice. Copy that flattens both into "required" claims more
+    // obligation than the source carries — the unsafe direction on a page a
+    // coach may cite to an administrator.
+    expect(en.texas.recordkeepingNote).toContain('must be taken')
+    expect(en.texas.recordkeepingNote).toContain('should be taken')
+    expect(en.texas.recordkeepingNote.toLowerCase()).not.toContain('cadence is required')
+    expect(es.texas.recordkeepingNote).toContain('debe tomarse')
+    expect(es.texas.recordkeepingNote).toContain('deberían tomarse')
+    expect(es.texas.recordkeepingNote.toLowerCase()).not.toContain('cadencia es obligatoria')
+  })
+
+  it('the UIL-linked tool is presented as a link, never as an approval', () => {
+    // Naming the one tool UIL links is honest; letting it read as an
+    // endorsement would manufacture the approval the documents never give.
+    expect(en.texas.linkedToolNote.toLowerCase()).toContain('not an approval')
+    expect(es.texas.linkedToolNote.toLowerCase()).toContain('no una aprobación')
+    // The no-approval-list caveat has to survive alongside it.
+    expect(en.texas.legalityNoList).toContain('approved')
+    expect(es.texas.legalityNoList).toContain('aprobado')
+  })
+
   it('Grundstein bias copy interpolates from the oracle (no digit literals in the 6 strings)', () => {
     for (const locale of [en, es]) {
       const strings = [

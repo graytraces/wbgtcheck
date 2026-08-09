@@ -46,7 +46,7 @@ export const UIL_APP_MEASUREMENT_QUOTE =
  * copy leans on. Do not paraphrase these quotes.
  */
 export const UIL_INSTRUMENT_OR_INTERNET_QUOTE =
-  'It is required that schools utilize a scientifically approved instrument that measures Wet Bulb Globe Temperature (WBGT) or other scientifically proven method, such as an internet-based weather station software or application, to monitor the wet bulb globe temperature'
+  'It is required that schools utilize a scientifically approved instrument that measures Wet Bulb Globe Temperature (WBGT) or other scientifically proven method, such as an internet-based weather station software or application, to monitor the wet bulb globe temperature.'
 export const UIL_FAQ_FORECAST_QUOTE =
   'Schools may utilize a scientifically approved on-site instrument or an approved internet-based WBGT forecasting resource.'
 export const UIL_FAQ_SOURCE = {
@@ -55,13 +55,40 @@ export const UIL_FAQ_SOURCE = {
   verifiedOn: '2026-08-09',
 }
 
-// Same plan page, same 2026-08-09 verification. The asymmetry is the point:
-// the standard and the cadence are REQUIRED, keeping a written record is
-// only RECOMMENDED — copy must never blur that line in either direction.
+// Same plan page, same 2026-08-09 verification.
+//
+// The asymmetry is the point, and it runs in TWO directions that copy must not
+// blur. Between activities: the standard is required, keeping a written record
+// is only recommended. WITHIN the cadence: the pre-practice reading "must be
+// taken", while the during-practice readings "should be taken" — the plan
+// switches modal verbs mid-paragraph and the FAQ uses "should" for both. Do not
+// describe the whole cadence as required.
 export const UIL_MANDATE_2026_QUOTE =
   'Beginning with the 2026-2027 school year, the use of Wet Bulb Globe Temperature (WBGT) to monitor environmental conditions and guide activity modifications is no longer a recommendation, but a required standard for all UIL outdoor athletic and marching band activities.'
 export const UIL_RECORDKEEPING_QUOTE =
   'It is recommended that schools record and keep on file the WBGT temperatures associated for outside practices.'
+/** The "must" leg of the cadence — pre-practice only. */
+export const UIL_READING_MUST_QUOTE =
+  'WBGT readings must be taken within 15 minutes prior to the start of practice to ensure accuracy.'
+/**
+ * The plan's own instructions for the internet lane, which it treats as a
+ * first-class method rather than a fallback: the same 15-minute pre-practice
+ * check and the same 30-minute in-practice interval as a physical meter. This
+ * is the sentence that makes a forecast tool coherent with UIL's cadence.
+ */
+export const UIL_INTERNET_CADENCE_QUOTE =
+  'If utilizing an internet-based application, the WBGT should also be checked within 15 minutes prior to practice. In both cases, WBGT readings should be taken every 30 minutes during practice.'
+/**
+ * The only internet-based WBGT tool the plan page links by name. A link is not
+ * an approval — UIL publishes no approval list (see above) — but it is the one
+ * concrete example the plan itself points at, so naming it is more honest than
+ * leaving readers to guess what "approved" might mean.
+ */
+export const UIL_LINKED_TOOL = {
+  name: 'UNC Convergence WBGT tool',
+  url: 'https://convergence.unc.edu/tools/wbgt/',
+  verifiedOn: '2026-08-09',
+}
 
 // --- GHSA (Georgia) administrative constants ------------------------------
 
@@ -87,8 +114,12 @@ export const GHSA_FAQ_WBGT_HI_COMPARISON = { wbgtF: 92, heatIndexMinF: 104, heat
  */
 export const GHSA_NO_APPS_QUOTE =
   'Phone applications are not approved for WBGT measurements at this time.'
+// Full sentence: it does not stop at "practice". Truncating it there and
+// closing with an invented period reads as a flat equipment rule; the tail is
+// what ties the instrument to GHSA compliance, which is the whole point on a
+// device-required page.
 export const GHSA_MONITOR_EVERY_PRACTICE_QUOTE =
-  'A scientifically approved Wet Bulb Globe Temperature (WBGT) monitor must be used at every outdoor practice.'
+  'A scientifically approved Wet Bulb Globe Temperature (WBGT) monitor must be used at every outdoor practice to ensure compliance with GHSA policy.'
 export const GHSA_REMINDER_SOURCE = {
   name: 'GHSA — Reminder: Practice Policy for Heat and Humidity',
   url: 'https://www.ghsa.net/reminder-practice-policy-heat-and-humidity',

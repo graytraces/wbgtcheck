@@ -39,6 +39,9 @@ import {
   UIL_FAQ_SOURCE,
   UIL_MANDATE_2026_QUOTE,
   UIL_RECORDKEEPING_QUOTE,
+  UIL_READING_MUST_QUOTE,
+  UIL_INTERNET_CADENCE_QUOTE,
+  UIL_LINKED_TOOL,
   GHSA_NO_APPS_QUOTE,
   GHSA_MONITOR_EVERY_PRACTICE_QUOTE,
   GHSA_REMINDER_SOURCE,
@@ -304,7 +307,7 @@ describe('measurement legality quotes (re-verified 2026-08-09)', () => {
   // confirm-with-your-district caveat as long as no list is published.
   it('UIL plan and FAQ sentences are verbatim, with a dated FAQ source block', () => {
     expect(UIL_INSTRUMENT_OR_INTERNET_QUOTE).toBe(
-      'It is required that schools utilize a scientifically approved instrument that measures Wet Bulb Globe Temperature (WBGT) or other scientifically proven method, such as an internet-based weather station software or application, to monitor the wet bulb globe temperature',
+      'It is required that schools utilize a scientifically approved instrument that measures Wet Bulb Globe Temperature (WBGT) or other scientifically proven method, such as an internet-based weather station software or application, to monitor the wet bulb globe temperature.',
     )
     expect(UIL_FAQ_FORECAST_QUOTE).toBe(
       'Schools may utilize a scientifically approved on-site instrument or an approved internet-based WBGT forecasting resource.',
@@ -326,13 +329,48 @@ describe('measurement legality quotes (re-verified 2026-08-09)', () => {
     expect(UIL_RECORDKEEPING_QUOTE.toLowerCase()).toContain('recommended')
   })
 
+  it('the cadence asymmetry is preserved: pre-practice "must", during-practice "should"', () => {
+    // The plan switches modal verbs mid-paragraph. Copy that calls the whole
+    // cadence "required" overstates the during-practice leg, which is the
+    // same must/should blur this repo already corrected for Iowa.
+    expect(UIL_READING_MUST_QUOTE).toBe(
+      'WBGT readings must be taken within 15 minutes prior to the start of practice to ensure accuracy.',
+    )
+    expect(UIL_READING_MUST_QUOTE).toContain('must be taken')
+    expect(UIL_INTERNET_CADENCE_QUOTE).toContain('should be taken every 30 minutes')
+    expect(UIL_INTERNET_CADENCE_QUOTE).not.toContain('must be taken')
+
+    // Both legs quote the same intervals the numeric constants carry, so a
+    // change to one without the other would be caught here.
+    expect(UIL_READING_MUST_QUOTE).toContain(String(UIL_READING_BEFORE_PRACTICE_MAX_MINUTES))
+    expect(UIL_INTERNET_CADENCE_QUOTE).toContain(String(UIL_READING_INTERVAL_MINUTES))
+  })
+
+  it('UIL treats the internet lane as first-class, and the one tool it links is named', () => {
+    expect(UIL_INTERNET_CADENCE_QUOTE).toBe(
+      'If utilizing an internet-based application, the WBGT should also be checked within 15 minutes prior to practice. In both cases, WBGT readings should be taken every 30 minutes during practice.',
+    )
+    // "In both cases" is the load-bearing phrase: the plan puts the internet
+    // lane under the same cadence as a meter rather than treating it as a
+    // fallback. Do not trim to the first sentence.
+    expect(UIL_INTERNET_CADENCE_QUOTE).toContain('In both cases')
+
+    // A link is not an approval; the copy must never upgrade it into one.
+    expect(UIL_LINKED_TOOL.url).toBe('https://convergence.unc.edu/tools/wbgt/')
+    expect(UIL_LINKED_TOOL.verifiedOn).toBe('2026-08-09')
+  })
+
   it('GHSA reminder sentences are verbatim, with a dated source block', () => {
     expect(GHSA_NO_APPS_QUOTE).toBe(
       'Phone applications are not approved for WBGT measurements at this time.',
     )
     expect(GHSA_MONITOR_EVERY_PRACTICE_QUOTE).toBe(
-      'A scientifically approved Wet Bulb Globe Temperature (WBGT) monitor must be used at every outdoor practice.',
+      'A scientifically approved Wet Bulb Globe Temperature (WBGT) monitor must be used at every outdoor practice to ensure compliance with GHSA policy.',
     )
+    // Regression pin: the sentence was once truncated at "practice" and closed
+    // with an invented period. The compliance tail is the load-bearing half on
+    // a device-required page — it must survive.
+    expect(GHSA_MONITOR_EVERY_PRACTICE_QUOTE).toContain('to ensure compliance with GHSA policy')
     expect(GHSA_REMINDER_SOURCE.url).toContain('ghsa.net')
     expect(GHSA_REMINDER_SOURCE.verifiedOn).toBe('2026-08-09')
   })

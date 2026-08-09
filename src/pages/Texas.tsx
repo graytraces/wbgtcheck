@@ -16,6 +16,8 @@ import {
   UIL_FAQ_SOURCE,
   UIL_MANDATE_2026_QUOTE,
   UIL_RECORDKEEPING_QUOTE,
+  UIL_INTERNET_CADENCE_QUOTE,
+  UIL_LINKED_TOOL,
 } from '../data/policyOracle'
 
 const UIL_MAP_URL = 'https://www.uiltexas.org/files/health/WBGTMap.jpg'
@@ -132,6 +134,7 @@ export default function Texas() {
           })}
         </p>
         <p className="mt-2">{t('texas.measurementApps')}</p>
+        <p className="mt-2">{t('texas.internetCadenceNote', { quote: UIL_INTERNET_CADENCE_QUOTE })}</p>
         <p className="mt-2">{t('texas.competitionNote')}</p>
         <p className="mt-2 font-semibold">{t('texas.bandNote')}</p>
       </section>
@@ -145,6 +148,17 @@ export default function Texas() {
           })}
         </p>
         <p className="mt-3 font-semibold">{t('texas.legalityNoList')}</p>
+        <p className="mt-3">
+          {t('texas.linkedToolNote', { name: UIL_LINKED_TOOL.name })}{' '}
+          <a
+            href={UIL_LINKED_TOOL.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-semibold underline [overflow-wrap:anywhere]"
+          >
+            {UIL_LINKED_TOOL.url}
+          </a>
+        </p>
         <p className="mt-2 text-sm text-ink-muted">
           <a
             href={UIL_FAQ_SOURCE.url}
