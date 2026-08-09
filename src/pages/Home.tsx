@@ -10,7 +10,11 @@ import TodayTimeline from '../components/TodayTimeline'
 import WeekStrip from '../components/WeekStrip'
 import PolicyBandsTable from '../components/PolicyBandsTable'
 import ShareCardButton from '../components/ShareCardButton'
+import AirQualityGate from '../components/AirQualityGate'
 import { useWbgt, isStale } from '../hooks/useWbgt'
+import { useAirQuality } from '../hooks/useAirQuality'
+import { airPolicyForState } from '../data/airPolicyOracle'
+import { airPageKeyByPolicy, pageSEO } from '../seo'
 import { buildHourlySeries } from '../utils/nws'
 import { annotateHours, groupByDay, currentVerdict, timelineHours } from '../utils/verdict'
 import {
@@ -72,6 +76,19 @@ export default function Home() {
   const busy = status === 'locating' || status === 'loading'
   const lang = i18n.language
   const sections = t('home.sections', { returnObjects: true }) as HomeSection[]
+
+  // Air axis. Deliberately a separate hook and a separate card: the AQI never
+  // feeds into `policy`, `days`, or `current` above, so it cannot move a heat
+  // flag in either direction.
+  const {
+    status: airStatus,
+    data: airData,
+    activity,
+    setActivity,
+  } = useAirQuality(location?.lat ?? null, location?.lon ?? null)
+  const airPolicy = airPolicyForState(location?.stateAbbr ?? null)
+  const airPageKey = airPolicy ? airPageKeyByPolicy[airPolicy.id] : undefined
+  const airPageSlug = airPageKey ? pageSEO[airPageKey].path : null
 
   return (
     <div className="space-y-8">
@@ -142,6 +159,22 @@ export default function Home() {
       {location && status === 'ready' && !current && (
         <div className="border-2 border-line bg-surface p-5">
           <p>{t('verdict.noData')}</p>
+        </div>
+      )}
+
+      {/* Sits directly under the heat verdict, as a second gate of equal
+          standing — see air.bothGatesNotice. */}
+      {location && (
+        <div className="-mt-8">
+          <AirQualityGate
+            status={airStatus}
+            data={airData}
+            policy={airPolicy}
+            activity={activity}
+            onActivityChange={setActivity}
+            statePageSlug={airPageSlug}
+            now={now}
+          />
         </div>
       )}
 

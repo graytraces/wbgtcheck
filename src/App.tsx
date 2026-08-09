@@ -17,6 +17,9 @@ const Texas = lazy(() => import('./pages/Texas'))
 const Georgia = lazy(() => import('./pages/Georgia'))
 const WbgtVsHeatIndex = lazy(() => import('./pages/WbgtVsHeatIndex'))
 const States = lazy(() => import('./pages/States'))
+const WashingtonAir = lazy(() => import('./pages/WashingtonAir'))
+const OregonAir = lazy(() => import('./pages/OregonAir'))
+const CaliforniaAir = lazy(() => import('./pages/CaliforniaAir'))
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy'))
 const Disclaimer = lazy(() => import('./pages/Disclaimer'))
 const NotFound = lazy(() => import('./pages/NotFound'))
@@ -44,6 +47,9 @@ const router = createBrowserRouter([
       { path: 'georgia', element: <Suspense fallback={<Loading />}><Georgia /></Suspense> },
       { path: 'wbgt-vs-heat-index', element: <Suspense fallback={<Loading />}><WbgtVsHeatIndex /></Suspense> },
       { path: 'states', element: <Suspense fallback={<Loading />}><States /></Suspense> },
+      { path: 'washington-air-quality', element: <Suspense fallback={<Loading />}><WashingtonAir /></Suspense> },
+      { path: 'oregon-air-quality', element: <Suspense fallback={<Loading />}><OregonAir /></Suspense> },
+      { path: 'california-air-quality', element: <Suspense fallback={<Loading />}><CaliforniaAir /></Suspense> },
       { path: 'privacy', element: <Suspense fallback={<Loading />}><PrivacyPolicy /></Suspense> },
       { path: 'disclaimer', element: <Suspense fallback={<Loading />}><Disclaimer /></Suspense> },
       { path: '*', element: <Suspense fallback={<Loading />}><NotFound /></Suspense> },

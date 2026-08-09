@@ -34,6 +34,20 @@ import {
 } from '../src/data/policyData.js'
 import { guidelineSentences } from '../src/lib/guidelineSentences.js'
 import { STATE_DIRECTORY } from '../src/data/stateDirectory.js'
+import {
+  WA_AIR_POLICY,
+  OR_AIR_POLICY,
+  CA_AIR_POLICY,
+  WA_HEALTH_CONDITIONS_QUOTE,
+  WA_INDOOR_PM25_THRESHOLD_UG_M3,
+  OR_CONSERVATIVE_METRIC_QUOTE,
+  CA_RULE_QUOTE,
+  CA_READING_SOURCE_QUOTE,
+  CA_REFRAIN_AT_OR_ABOVE_AQI,
+  NFHS_LANDMARK_MILES,
+  ACTIVITY_IDS,
+  ACTIVITY_DURATIONS,
+} from '../src/data/airPolicyData.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const distDir = join(__dirname, '..', 'dist')
@@ -56,6 +70,9 @@ const pages = [
   { key: 'georgia', path: 'georgia', dateModified: today },
   { key: 'wbgtVsHeatIndex', path: 'wbgt-vs-heat-index', dateModified: today },
   { key: 'states', path: 'states', dateModified: today },
+  { key: 'washingtonAir', path: 'washington-air-quality', dateModified: today },
+  { key: 'oregonAir', path: 'oregon-air-quality', dateModified: today },
+  { key: 'californiaAir', path: 'california-air-quality', dateModified: today },
   { key: 'privacy', path: 'privacy', dateModified: today },
   { key: 'disclaimer', path: 'disclaimer', dateModified: today },
 ]
@@ -177,6 +194,58 @@ function policyTableHtml(policy, t) {
   return `<table><thead><tr><th>${escapeHtml(t('verdict.wbgtLabel'))} (°F)</th><th>${escapeHtml(t('texas.tableGuidelines'))}</th></tr></thead><tbody>${rows}</tbody></table>`
 }
 
+/** Activity duration label — mirrors the React table header. */
+function activityDurationLabel(id, t) {
+  const d = ACTIVITY_DURATIONS[id]
+  return d.minutes !== null
+    ? t('air.activityMinutes', { minutes: d.minutes })
+    : t('air.activityHours', { hoursMin: d.hoursMin, hoursMax: d.hoursMax })
+}
+
+function visibilityBody(t) {
+  return t('air.visibilityBody', {
+    near: NFHS_LANDMARK_MILES[0],
+    mid: NFHS_LANDMARK_MILES[1],
+    far: NFHS_LANDMARK_MILES[2],
+  })
+}
+
+/** AQI band × activity table (WA) — same cells as pages/WashingtonAir.tsx. */
+function airActivityTableHtml(policy, t) {
+  const head = ACTIVITY_IDS.map(
+    (id) =>
+      `<th>${escapeHtml(t(`air.activity.${id}`))} (${escapeHtml(activityDurationLabel(id, t))})</th>`,
+  ).join('')
+  const rows = policy.bands
+    .map((band) => {
+      const cells = ACTIVITY_IDS.map(
+        (id) =>
+          `<td>${escapeHtml(
+            t(`air.actions.${band.actions[id]}`, { pm25: WA_INDOOR_PM25_THRESHOLD_UG_M3 }),
+          )}</td>`,
+      ).join('')
+      return `<tr><td>${escapeHtml(band.sourceLabel)}</td>${cells}</tr>`
+    })
+    .join('')
+  return `<table><thead><tr><th>${escapeHtml(t('air.tableAqi'))}</th>${head}</tr></thead><tbody>${rows}</tbody></table>`
+}
+
+/** AQI band table with the visibility column (OR) — mirrors pages/OregonAir.tsx. */
+function airBandTableHtml(policy, t) {
+  const rows = policy.bands
+    .filter((band) => band.action !== null)
+    .map(
+      (band) =>
+        `<tr><td>${escapeHtml(band.sourceLabel)}</td><td>${escapeHtml(
+          band.visibilityLabel ?? '',
+        )}</td><td>${escapeHtml(t(`air.actions.${band.action}`))}</td></tr>`,
+    )
+    .join('')
+  return `<table><thead><tr><th>${escapeHtml(t('air.tableAqi'))}</th><th>${escapeHtml(
+    t('air.tableVisibility'),
+  )}</th><th>${escapeHtml(t('air.tableAction'))}</th></tr></thead><tbody>${rows}</tbody></table>`
+}
+
 function generateBodyContent(lang, page) {
   const t = makeT(lang)
   const parts = []
@@ -283,6 +352,68 @@ function generateBodyContent(lang, page) {
       `<table><thead><tr><th>${escapeHtml(t('states.colState'))}</th><th>${escapeHtml(t('states.colBody'))}</th><th>${escapeHtml(t('states.colMandate'))}</th><th>${escapeHtml(t('states.colMeasurement'))}</th><th>${escapeHtml(t('states.colNote'))}</th></tr></thead><tbody>${rows}</tbody></table>`,
     )
     push(`<p>${escapeHtml(t('states.caveat'))}</p>`)
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+  } else if (page.key === 'washingtonAir') {
+    push(`<h1>${escapeHtml(t('washingtonAir.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('washingtonAir.intro'))}</p>`)
+    push(
+      `<h2>${escapeHtml(t('washingtonAir.basisHeading'))}</h2><p>${escapeHtml(t('washingtonAir.basisBody'))}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('washingtonAir.tableHeading'))}</h2>`)
+    push(airActivityTableHtml(WA_AIR_POLICY, t))
+    push(`<p>${escapeHtml(t('washingtonAir.athleticsNote'))}</p>`)
+    push(
+      `<h2>${escapeHtml(t('washingtonAir.healthConditionsHeading'))}</h2><p>${escapeHtml(
+        t('washingtonAir.healthConditionsBody', { quote: WA_HEALTH_CONDITIONS_QUOTE }),
+      )}</p>`,
+    )
+    push(
+      `<h2>${escapeHtml(t('washingtonAir.sourceHeading'))}</h2><p>${escapeHtml(t('washingtonAir.sourceBody'))} <a href="${WA_AIR_POLICY.source.url}">${escapeHtml(WA_AIR_POLICY.source.name)}</a></p>`,
+    )
+    push(`<p>${escapeHtml(t('air.verifiedOn', { date: WA_AIR_POLICY.source.verifiedOn }))}</p>`)
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+  } else if (page.key === 'oregonAir') {
+    push(`<h1>${escapeHtml(t('oregonAir.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('oregonAir.intro'))}</p>`)
+    push(`<h2>${escapeHtml(t('oregonAir.tableHeading'))}</h2>`)
+    push(airBandTableHtml(OR_AIR_POLICY, t))
+    push(
+      `<h2>${escapeHtml(t('oregonAir.belowRangeHeading'))}</h2><p>${escapeHtml(t('oregonAir.belowRangeBody'))}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('air.visibilityHeading'))}</h2><p>${escapeHtml(visibilityBody(t))}</p>`)
+    push(`<p>${escapeHtml(t('air.visibilityRecheck'))}</p>`)
+    push(
+      `<h2>${escapeHtml(t('oregonAir.conservativeHeading'))}</h2><p>${escapeHtml(
+        t('oregonAir.conservativeBody', { quote: OR_CONSERVATIVE_METRIC_QUOTE }),
+      )}</p>`,
+    )
+    push(
+      `<h2>${escapeHtml(t('oregonAir.sourceHeading'))}</h2><p>${escapeHtml(t('oregonAir.sourceBody'))} <a href="${OR_AIR_POLICY.source.url}">${escapeHtml(OR_AIR_POLICY.source.name)}</a></p>`,
+    )
+    push(`<p>${escapeHtml(t('air.verifiedOn', { date: OR_AIR_POLICY.source.verifiedOn }))}</p>`)
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+  } else if (page.key === 'californiaAir') {
+    push(`<h1>${escapeHtml(t('californiaAir.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('californiaAir.intro'))}</p>`)
+    push(`<h2>${escapeHtml(t('californiaAir.ruleHeading'))}</h2>`)
+    push(`<p>${escapeHtml(`${t('air.tableAqi')} ${CA_REFRAIN_AT_OR_ABOVE_AQI}+`)}</p>`)
+    push(
+      `<blockquote>${escapeHtml(t('californiaAir.ruleBody', { quote: CA_RULE_QUOTE }))}</blockquote>`,
+    )
+    push(`<h2>${escapeHtml(t('californiaAir.readingsHeading'))}</h2>`)
+    push(
+      `<blockquote>${escapeHtml(t('californiaAir.readingsBody', { quote: CA_READING_SOURCE_QUOTE }))}</blockquote>`,
+    )
+    push(`<p>${escapeHtml(t('californiaAir.readingsNote'))}</p>`)
+    push(
+      `<h2>${escapeHtml(t('californiaAir.belowHeading'))}</h2><p>${escapeHtml(t('californiaAir.belowBody'))}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('air.visibilityHeading'))}</h2><p>${escapeHtml(visibilityBody(t))}</p>`)
+    push(`<p>${escapeHtml(t('air.visibilityRecheck'))}</p>`)
+    push(
+      `<h2>${escapeHtml(t('californiaAir.sourceHeading'))}</h2><p>${escapeHtml(t('californiaAir.sourceBody'))} <a href="${CA_AIR_POLICY.source.url}">${escapeHtml(CA_AIR_POLICY.source.name)}</a></p>`,
+    )
+    push(`<p>${escapeHtml(t('air.verifiedOn', { date: CA_AIR_POLICY.source.verifiedOn }))}</p>`)
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
   } else if (page.key === 'privacy') {
     push(`<h1>${escapeHtml(t('privacy.pageTitle'))}</h1>`)
