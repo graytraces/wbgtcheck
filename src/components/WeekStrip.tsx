@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { DaySummary } from '../utils/verdict'
 import FlagBadge from './FlagBadge'
 import { cn } from '../lib/utils'
+import { formatWbgtF } from '../utils/units'
 
 interface WeekStripProps {
   days: DaySummary[]
@@ -46,7 +47,7 @@ export default function WeekStrip({ days, selectedDate, onSelect, controls }: We
             {d.peak ? (
               <div className="mt-2 space-y-1">
                 <div className="flex items-baseline gap-1">
-                  <span className="display-num text-3xl">{Math.round(d.peak.wbgtF)}</span>
+                  <span className="display-num text-3xl">{formatWbgtF(d.peak.wbgtF)}</span>
                   <span className="text-xs font-semibold text-ink-muted">
                     °F {t('verdict.peakLabel').toLowerCase()}
                     {d.peak.source === 'estimated' ? ' · EST' : ''}

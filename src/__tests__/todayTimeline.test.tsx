@@ -61,10 +61,13 @@ describe('TodayTimeline hour chips are readable without colour', () => {
     const items = screen.getAllByRole('listitem')
     expect(items).toHaveLength(3)
 
+    // One decimal everywhere a reading is shown — the bands are specified to
+    // a tenth, so "88" for 88.0 and 86.6 in the log beside it was the same
+    // value in two forms (see formatWbgtF).
     const expected = [
-      { flag: 'orange', value: '88' },
-      { flag: 'red', value: '91' },
-      { flag: 'black', value: '94' },
+      { flag: 'orange', value: '88.0' },
+      { flag: 'red', value: '91.0' },
+      { flag: 'black', value: '94.0' },
     ] as const
     expected.forEach(({ flag, value }, i) => {
       const chip = within(items[i])

@@ -8,6 +8,7 @@ import {
   UIL_READING_BEFORE_PRACTICE_MAX_MINUTES,
   UIL_READING_INTERVAL_MINUTES,
 } from '../data/policyOracle'
+import { formatWbgtF } from '../utils/units'
 
 interface WbgtLogProps {
   /** Currently displayed forecast estimate, or null when none. */
@@ -47,7 +48,7 @@ function LogRow({ entry, onRemove }: { entry: WbgtLogEntry; onRemove: (id: strin
     <li className="flex items-start justify-between gap-3 border-t border-line py-2 first:border-t-0">
       <div className="min-w-0">
         <p className="text-sm">
-          <span className="display-num text-lg">{entry.wbgtF.toFixed(1)}</span> °F
+          <span className="display-num text-lg">{formatWbgtF(entry.wbgtF)}</span> °F
           {flagLabel && <span className="ml-2 font-bold uppercase">{flagLabel}</span>}
           <span className="ml-2 text-xs font-bold uppercase tracking-wide text-ink-muted">
             {t(entry.source === 'onsite' ? 'wbgtLog.sourceOnsite' : 'wbgtLog.sourceForecast')}
@@ -165,7 +166,7 @@ export default function WbgtLog({ currentWbgtF, policy, policyId, locationLabel 
           >
             {savedTick > 0
               ? t('wbgtLog.savedToast')
-              : t('wbgtLog.saveForecast', { value: currentWbgtF.toFixed(1) })}
+              : t('wbgtLog.saveForecast', { value: formatWbgtF(currentWbgtF) })}
           </button>
         )}
         <div>

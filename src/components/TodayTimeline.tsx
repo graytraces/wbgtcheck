@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next'
 import type { HourVerdict } from '../utils/verdict'
 import { FLAG_ICON, FLAG_SOLID } from '../utils/flagStyles'
 import { cn } from '../lib/utils'
+import { formatWbgtF } from '../utils/units'
 
 interface TodayTimelineProps {
   hours: HourVerdict[]
@@ -44,7 +45,7 @@ export default function TodayTimeline({ hours, currentTime }: TodayTimelineProps
                 FLAG_SOLID[h.flag],
                 isNow && 'ring-2 ring-ink ring-offset-2 ring-offset-bg',
               )}
-              title={`${Math.round(h.wbgtF)} °F — ${t(`flags.${h.flag}.name`)}${h.source === 'estimated' ? ` (${t('verdict.estimatedBadge')})` : ''}`}
+              title={`${formatWbgtF(h.wbgtF)} °F — ${t(`flags.${h.flag}.name`)}${h.source === 'estimated' ? ` (${t('verdict.estimatedBadge')})` : ''}`}
             >
               <Icon className="h-3.5 w-3.5" aria-hidden="true" />
               {/* The chip is too narrow for a visible flag word, but the icon
@@ -53,7 +54,7 @@ export default function TodayTimeline({ hours, currentTime }: TodayTimelineProps
                   a bare number. Every other flag surface (FlagBadge,
                   WeekStrip, share canvas) carries the label outright. */}
               <span className="sr-only">{t(`flags.${h.flag}.name`)}</span>
-              <span className="display-num text-lg">{Math.round(h.wbgtF)}</span>
+              <span className="display-num text-lg">{formatWbgtF(h.wbgtF)}</span>
               {h.source === 'estimated' && (
                 <span className="text-[9px] font-bold leading-none" aria-label={t('verdict.estimatedBadge')}>
                   EST

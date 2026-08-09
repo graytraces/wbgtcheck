@@ -15,6 +15,7 @@ import { guidelineSentences } from '../utils/guidelineText'
 import { FLAG_ICON, FLAG_SOLID } from '../utils/flagStyles'
 import { trackVerdictView } from '../utils/analytics'
 import { cn } from '../lib/utils'
+import { formatWbgtF } from '../utils/units'
 
 interface VerdictCardProps {
   hour: HourVerdict
@@ -88,7 +89,7 @@ export default function VerdictCard({
           <div>
             <div className="flex items-baseline gap-2">
               <span className="display-num text-[6.5rem] leading-none sm:text-[8.5rem]">
-                {Math.round(hour.wbgtF)}
+                {formatWbgtF(hour.wbgtF)}
               </span>
               <span className="display-num text-3xl sm:text-4xl">°F</span>
             </div>

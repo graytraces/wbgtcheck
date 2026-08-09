@@ -31,7 +31,7 @@ beforeAll(async () => {
 })
 
 describe('VerdictCard', () => {
-  it('shows the rounded WBGT, the oracle-derived flag label, and the permanent safety notices', () => {
+  it('shows the WBGT to a tenth, the oracle-derived flag label, and the permanent safety notices', () => {
     render(
       <VerdictCard
         hour={hourAt(88.4)}
@@ -41,7 +41,7 @@ describe('VerdictCard', () => {
         timeZone="America/Chicago"
       />,
     )
-    expect(screen.getByText('88')).toBeInTheDocument()
+    expect(screen.getByText('88.4')).toBeInTheDocument()
     const expectedFlag = classifyWbgt(UIL_CLASS_3, 88.4).flag
     expect(screen.getAllByText(en.flags[expectedFlag].label).length).toBeGreaterThan(0)
     // Non-negotiable permanent notices (bias numbers interpolate from the oracle)
@@ -123,7 +123,7 @@ describe('verdict card live region', () => {
     const region = live[0]
     expect(region.tagName).not.toBe('SECTION')
     // What changes: the number and the flag label.
-    expect(region.textContent).toContain('88')
+    expect(region.textContent).toContain('88.4')
     const flag = classifyWbgt(UIL_CLASS_3, 88.4).flag
     expect(region.textContent).toContain(en.flags[flag].label)
     // What does not: the permanent notices that ride along on every render.

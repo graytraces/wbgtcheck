@@ -64,6 +64,24 @@ export function policyMatchesState(stateAbbr: string | null, policyId: PolicyId)
   return false
 }
 
+/**
+ * GeolocationPositionError → the message that tells the user what to DO.
+ *
+ * The codes are fixed by spec (1 denied, 2 unavailable, 3 timeout) and are
+ * compared as literals on purpose. The previous test read `err.code ===
+ * err.PERMISSION_DENIED`, a constant that lives on the error object itself —
+ * any polyfilled or non-standard error lacking it turned a denial into
+ * "Location is unavailable on this device", which sends someone to check their
+ * hardware when the fix is a permission prompt they dismissed. A timeout got
+ * the same wrong message; it now has its own, since retrying is worth
+ * suggesting there and pointless for the other two.
+ */
+export function geolocationErrorKey(code: number): string {
+  if (code === 1) return 'location.geoDenied'
+  if (code === 3) return 'location.geoTimeout'
+  return 'location.geoUnavailable'
+}
+
 function loadSaved<T>(key: string): T | null {
   try {
     const raw = window.localStorage.getItem(key)
@@ -251,7 +269,7 @@ export function useWbgt() {
       },
       (err) => {
         setStatus(location ? 'ready' : 'idle')
-        setErrorKey(err.code === err.PERMISSION_DENIED ? 'location.geoDenied' : 'location.geoUnavailable')
+        setErrorKey(geolocationErrorKey(err.code))
       },
       { maximumAge: 300_000, timeout: 15_000 },
     )
