@@ -557,6 +557,8 @@
       "water": "Proporcione abundante agua y múltiples descansos de agua; vigile a los atletas ante enfermedad por calor.",
       "considerShorten": "Considere reducir la duración de la sesión de práctica.",
       "considerPostpone": "Considere posponer la práctica a una hora en que la temperatura \"Feels Like\" sea menor.",
+      "considerPostponeMuch": "Considere posponer la práctica a una hora en que la temperatura \"Feels Like\" sea mucho menor.",
+      "monitor": "Vigile a los atletas ante enfermedad por calor.",
       "recovery": "Una hora de recuperación por cada hora de práctica.",
       "breaks15": "Proporcione abundante agua y descansos de agua cada {{minutes}} minutos.",
       "clothing": "Debe usarse ropa ligera y holgada.",

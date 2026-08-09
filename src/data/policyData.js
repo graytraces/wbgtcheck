@@ -795,8 +795,15 @@ export const NYSPHSAA_HEAT_INDEX_REFERENCE = {
     { sourceLabel: '96 degrees or greater', tierKey: 'alert', required: true, textKeys: ['newYork.rows.noOutside'] },
     // The source's REQUIRED banner covers only the 96+ Alert tier; the 91-95
     // Warning tier is printed under RECOMMENDED (vertical side label).
-    { sourceLabel: '91 degrees to 95 degrees', tierKey: 'warning', required: false, textKeys: ['newYork.rows.breaks15', 'newYork.rows.clothing', 'newYork.rows.helmetsOnly', 'newYork.rows.recovery'] },
-    { sourceLabel: '86 degrees to 90 degrees', tierKey: 'watch', required: false, textKeys: ['newYork.rows.water', 'newYork.rows.considerPostpone', 'newYork.rows.recovery'] },
+    // Rows list their actions in the source's own order. The Warning row's
+    // monitor/postpone/shorten lines were missing entirely (re-read from the
+    // PDF 2026-08-10), which made the table say the 91-95 tier called for
+    // FEWER actions than the cooler 86-90 tier — a table that reads "the
+    // hotter it gets, the less you do". Note the source escalates its own
+    // wording between the two tiers: Watch says "lower", Warning "much lower",
+    // so they are separate strings and must not be collapsed.
+    { sourceLabel: '91 degrees to 95 degrees', tierKey: 'warning', required: false, textKeys: ['newYork.rows.breaks15', 'newYork.rows.monitor', 'newYork.rows.considerPostponeMuch', 'newYork.rows.considerShorten', 'newYork.rows.recovery', 'newYork.rows.clothing', 'newYork.rows.helmetsOnly'] },
+    { sourceLabel: '86 degrees to 90 degrees', tierKey: 'watch', required: false, textKeys: ['newYork.rows.water', 'newYork.rows.considerPostpone', 'newYork.rows.considerShorten', 'newYork.rows.recovery'] },
     { sourceLabel: '80 degrees to 85 degrees', tierKey: 'caution', required: false, textKeys: ['newYork.rows.water', 'newYork.rows.considerShorten'] },
     { sourceLabel: 'under 79 degrees', tierKey: 'full', required: false, textKeys: ['newYork.rows.fullActivity'] },
   ],

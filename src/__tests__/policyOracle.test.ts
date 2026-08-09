@@ -297,6 +297,40 @@ describe('policy oracle — measurement/compliance stance', () => {
     expect(NYSPHSAA_HEAT_INDEX_REFERENCE.rows.length).toBeGreaterThan(0)
   })
 
+  it('NYSPHSAA rows never prescribe less as the tier gets hotter', () => {
+    // The Warning (91-95) row shipped with only four of its seven actions —
+    // monitor, consider-postpone and consider-shorten were dropped — so the
+    // table showed the hotter tier calling for FEWER actions than the cooler
+    // Watch (86-90) tier. Rows are hottest-first, so action counts must be
+    // non-increasing down the list (Alert is the exception: "no outside
+    // activity" replaces the ladder rather than extending it).
+    const rows = NYSPHSAA_HEAT_INDEX_REFERENCE.rows.filter((r) => r.tierKey !== 'alert')
+    for (let i = 1; i < rows.length; i++) {
+      expect(
+        rows[i - 1].textKeys.length,
+        `${rows[i - 1].tierKey} must not prescribe less than ${rows[i].tierKey}`,
+      ).toBeGreaterThanOrEqual(rows[i].textKeys.length)
+    }
+    const warning = NYSPHSAA_HEAT_INDEX_REFERENCE.rows.find((r) => r.tierKey === 'warning')!
+    for (const key of [
+      'newYork.rows.monitor',
+      'newYork.rows.considerPostponeMuch',
+      'newYork.rows.considerShorten',
+    ]) {
+      expect(warning.textKeys).toContain(key)
+    }
+    // The source escalates its own wording between the tiers; the site keeps
+    // both rather than reusing one string for two ranges.
+    const watch = NYSPHSAA_HEAT_INDEX_REFERENCE.rows.find((r) => r.tierKey === 'watch')!
+    expect(watch.textKeys).toContain('newYork.rows.considerPostpone')
+    expect(watch.textKeys).toContain('newYork.rows.considerShorten')
+    for (const locale of [en, es]) {
+      expect(locale.newYork.rows.considerPostpone).not.toBe(
+        locale.newYork.rows.considerPostponeMuch,
+      )
+    }
+  })
+
   it('reference tables carry a primary-source URL and verification date', () => {
     for (const table of [NCHSAA_REFERENCE, NYSPHSAA_HEAT_INDEX_REFERENCE]) {
       expect(table.source.url).toMatch(/^https:\/\//)

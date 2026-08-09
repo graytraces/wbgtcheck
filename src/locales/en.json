@@ -557,6 +557,8 @@
       "water": "Provide ample water and multiple water breaks; monitor athletes for heat illness.",
       "considerShorten": "Consider reducing the length of the practice session.",
       "considerPostpone": "Consider postponing practice to a time when the Feels Like temperature is lower.",
+      "considerPostponeMuch": "Consider postponing practice to a time when the Feels Like temperature is much lower.",
+      "monitor": "Monitor athletes for heat illness.",
       "recovery": "One hour of recovery time for every hour of practice.",
       "breaks15": "Provide ample water and water breaks every {{minutes}} minutes.",
       "clothing": "Light weight, loose fitting clothes should be worn.",
