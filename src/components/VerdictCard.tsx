@@ -55,7 +55,11 @@ export default function VerdictCard({
   // ring-line keeps the card's edge visible when the flag surface nearly
   // matches the page background (black flag on dark mode: CR ~1.1).
   return (
-    <section className={cn('overflow-hidden ring-1 ring-line', FLAG_SOLID[band.flag])} aria-live="polite">
+    // No aria-live on the section. It wraps a dozen sentences including the
+    // permanent safety strip, so changing the policy re-announced all of it.
+    // The live region is narrowed below to what actually changes: the reading
+    // and its flag.
+    <section className={cn('overflow-hidden ring-1 ring-line', FLAG_SOLID[band.flag])}>
       <div className="px-5 pb-6 pt-5 sm:px-8">
         <div className="flex flex-wrap items-center justify-between gap-2 text-sm font-semibold uppercase tracking-wider opacity-90">
           <span className="inline-flex items-center gap-1.5">
@@ -78,7 +82,9 @@ export default function VerdictCard({
           </span>
         </div>
 
-        <div className="mt-3 flex items-end justify-between gap-4">
+        {/* The live region: reading + flag, the two things a policy or hour
+            change actually alters. */}
+        <div className="mt-3 flex items-end justify-between gap-4" aria-live="polite">
           <div>
             <div className="flex items-baseline gap-2">
               <span className="display-num text-[6.5rem] leading-none sm:text-[8.5rem]">

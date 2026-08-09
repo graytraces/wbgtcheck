@@ -755,7 +755,9 @@ function generateBodyContent(lang, page) {
       const note = t(`states.notes.${row.noteKey}`, { effectiveDate: UIL_EFFECTIVE_DATE })
       const badge =
         row.verified === 'primary' ? t('states.verifiedBadge') : t('states.researchBadge')
-      return `<tr><td>${row.abbr}</td><td>${escapeHtml(row.body)}</td><td>${escapeHtml(
+      // th scope=row, mirroring States.tsx — the state name is the row's
+      // header, not one of its values.
+      return `<tr><th scope="row">${row.abbr}</th><td>${escapeHtml(row.body)}</td><td>${escapeHtml(
         t(`states.mandate.${row.mandate}`),
       )}</td><td>${escapeHtml(t(`states.measurement.${row.measurement}`))}</td><td>${escapeHtml(note)} ${GUIDE_SLUGS[row.abbr] ? `<a href="/${lang}/${GUIDE_SLUGS[row.abbr]}">${escapeHtml(t('states.rowGuideLink'))}</a> ` : ''}${escapeHtml(badge)}</td></tr>`
     }).join('')

@@ -349,3 +349,22 @@ describe('structural guard: the air axis never touches the heat verdict', () => 
     expect(src).not.toMatch(/classifyWbgt|HourVerdict|FlagColor/)
   })
 })
+
+describe('live regions stay narrow', () => {
+  it('announces the reading, not the whole card', () => {
+    // aria-live sat on the <section>, so changing policy or activity
+    // re-announced the co-display banner, every action sentence and the entire
+    // notice strip — a dozen sentences for a two-value change.
+    const { container } = renderGate()
+    const live = container.querySelectorAll('[aria-live]')
+    expect(live).toHaveLength(1)
+    const region = live[0]
+    expect(region.tagName).not.toBe('SECTION')
+    // The reading is inside it…
+    expect(region.textContent).toContain('120')
+    // …and the permanent notices are not.
+    expect(region.textContent).not.toContain(en.air.notClearance)
+    expect(region.textContent).not.toContain(en.air.bothGatesNotice)
+    expect(region.textContent).not.toContain(en.air.actions.limitLightOrHourModerate)
+  })
+})

@@ -87,7 +87,12 @@ export default function States() {
               const Icon = style.icon
               return (
                 <tr key={row.abbr} className="border-b border-line align-top">
-                  <td className="display-num py-2 pr-3 text-xl">{row.abbr}</td>
+                  {/* Row header, not a plain cell: in a five-column prose
+                      table a screen reader otherwise reads the mandate and the
+                      note without ever saying which state they belong to. */}
+                  <th scope="row" className="display-num py-2 pr-3 text-left text-xl font-normal">
+                    {row.abbr}
+                  </th>
                   <td className="py-2 pr-3">{row.body}</td>
                   <td className="py-2 pr-3">{t(`states.mandate.${row.mandate}`)}</td>
                   <td className="py-2 pr-3">

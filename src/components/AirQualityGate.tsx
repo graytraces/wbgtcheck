@@ -142,7 +142,11 @@ export default function AirQualityGate({
       </p>
 
       <div className="px-5 py-4 sm:px-8">
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+        {/* Live region narrowed to the reading itself. The section wrapper
+            carried it before, so a policy or activity change re-announced the
+            co-display banner, every action sentence and the whole notice strip
+            at the bottom. */}
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2" aria-live="polite">
           <h2 className="display-num inline-flex items-center gap-2 text-lg uppercase">
             <Wind className="h-5 w-5" aria-hidden="true" />
             {t('air.gateHeading')}
@@ -293,15 +297,13 @@ export default function AirQualityGate({
 
   if (!collapsed) {
     return (
-      <section className="border-2 border-line bg-surface" aria-live="polite">
-        {body}
-      </section>
+      <section className="border-2 border-line bg-surface">{body}</section>
     )
   }
 
   const headline = chips.find((c) => c.aqi === governingAqi) ?? chips[0]
   return (
-    <section className="border-2 border-line bg-surface" aria-live="polite">
+    <section className="border-2 border-line bg-surface">
       <details>
         <summary className="flex cursor-pointer flex-wrap items-center gap-x-3 gap-y-1 px-5 py-3 sm:px-8">
           <span className="display-num inline-flex items-center gap-2 text-lg uppercase">

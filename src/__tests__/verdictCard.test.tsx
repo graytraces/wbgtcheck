@@ -106,3 +106,27 @@ describe('VerdictCard', () => {
     ).toBeInTheDocument()
   })
 })
+
+describe('verdict card live region', () => {
+  it('announces the reading and flag, not the safety strip', () => {
+    const { container } = render(
+      <VerdictCard
+        hour={hourAt(88.4)}
+        policy={UIL_CLASS_3}
+        locationLabel="Austin, TX"
+        stateAbbr="TX"
+        timeZone="America/Chicago"
+      />,
+    )
+    const live = container.querySelectorAll('[aria-live]')
+    expect(live).toHaveLength(1)
+    const region = live[0]
+    expect(region.tagName).not.toBe('SECTION')
+    // What changes: the number and the flag label.
+    expect(region.textContent).toContain('88')
+    const flag = classifyWbgt(UIL_CLASS_3, 88.4).flag
+    expect(region.textContent).toContain(en.flags[flag].label)
+    // What does not: the permanent notices that ride along on every render.
+    expect(region.textContent).not.toContain(en.verdict.verifyOnsite)
+  })
+})
