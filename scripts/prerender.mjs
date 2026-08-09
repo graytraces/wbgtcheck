@@ -37,6 +37,7 @@ import {
   UIL_INTERNET_CADENCE_QUOTE,
   UIL_LINKED_TOOL,
   GHSA_INSTRUMENT_QUOTE,
+  GHSA_POLICY_YEAR_ROUND_QUOTE,
   GHSA_NO_APPS_QUOTE,
   GHSA_MONITOR_EVERY_PRACTICE_QUOTE,
   GHSA_REMINDER_SOURCE,
@@ -455,7 +456,7 @@ function generateBodyContent(lang, page) {
     push(correctionNoteHtml(t, 'texas'))
   } else if (page.key === 'georgia') {
     push(`<h1>${escapeHtml(t('georgia.pageTitle'))}</h1>`)
-    push(`<p>${escapeHtml(t('georgia.intro'))}</p>`)
+    push(`<p>${escapeHtml(t('georgia.intro', { yearRound: GHSA_POLICY_YEAR_ROUND_QUOTE }))}</p>`)
     push(`<h2>${escapeHtml(t('georgia.deviceHeading'))}</h2>`)
     push(
       `<p>${escapeHtml(
@@ -467,6 +468,7 @@ function generateBodyContent(lang, page) {
         }),
       )}</p>`,
     )
+    push(`<p>${escapeHtml(t('georgia.seasonNote'))}</p>`)
     push(
       `<p>${escapeHtml(
         t('georgia.noAppsBody', {

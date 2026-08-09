@@ -45,8 +45,12 @@ import {
   GHSA_NO_APPS_QUOTE,
   GHSA_MONITOR_EVERY_PRACTICE_QUOTE,
   GHSA_REMINDER_SOURCE,
+  GHSA_INSTRUMENT_QUOTE,
+  GHSA_POLICY_YEAR_ROUND_QUOTE,
 } from '../data/policyOracle'
 import type { FlagColor, HeatPolicy } from '../data/policyOracle'
+import en from '../locales/en.json'
+import es from '../locales/es.json'
 
 function flagAt(policy: HeatPolicy, f: number): FlagColor {
   return classifyWbgt(policy, f).flag
@@ -209,6 +213,31 @@ describe('policy oracle — measurement/compliance stance', () => {
     expect(requiresOnSiteReading(GHSA)).toBe(true)
     expect(requiresOnSiteReading(TSSAA)).toBe(true)
     expect(requiresOnSiteReading(UIL_CLASS_3)).toBe(false)
+  })
+
+  it('GHSA quotes keep the scope words the source attaches to them', () => {
+    // The instrument sentence used to be cut at "at each practice", which is
+    // exactly where the by-law's seasonal limit begins — a season-limited duty
+    // was being shown as an open-ended one. Pin the parenthetical and the
+    // sentence's real ending.
+    expect(GHSA_INSTRUMENT_QUOTE).toContain('(prior to October 1)')
+    expect(GHSA_INSTRUMENT_QUOTE).toMatch(/being followed properly\.$/)
+    // "year-round" belongs to the POLICY sentence 2.67(a), not to the
+    // instrument sentence. Copy that merges them overstates the device rule.
+    expect(GHSA_POLICY_YEAR_ROUND_QUOTE).toContain('year-round')
+    expect(GHSA_INSTRUMENT_QUOTE).not.toContain('year-round')
+    // ...and the year-round quote must not drag the instrument in with it.
+    expect(GHSA_POLICY_YEAR_ROUND_QUOTE.toLowerCase()).not.toContain('instrument')
+  })
+
+  it('the Georgia page states the two documents disagree on the date limit', () => {
+    // Conservative resolution (device-required all year) is only defensible if
+    // the site says out loud that it chose between conflicting GHSA documents.
+    for (const locale of [en, es]) {
+      expect(locale.georgia.seasonNote).toContain('October 1')
+      expect(locale.georgia.seasonNote.length).toBeGreaterThan(0)
+    }
+    expect(GHSA.remoteEstimatesAllowed).toBe('device-required')
   })
 
   it('administrative constants match the sources', () => {

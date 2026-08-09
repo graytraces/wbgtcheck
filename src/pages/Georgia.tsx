@@ -7,6 +7,7 @@ import PolicyBandsTable from '../components/PolicyBandsTable'
 import {
   GHSA,
   GHSA_INSTRUMENT_QUOTE,
+  GHSA_POLICY_YEAR_ROUND_QUOTE,
   GHSA_READING_INTERVAL_MINUTES,
   GHSA_READING_LEAD_MINUTES,
   GHSA_CALIBRATION_INTERVAL_YEARS,
@@ -25,7 +26,9 @@ export default function Georgia() {
 
       <header>
         <h1 className="display-num text-3xl uppercase sm:text-4xl">{t('georgia.pageTitle')}</h1>
-        <p className="mt-3 text-lg">{t('georgia.intro')}</p>
+        <p className="mt-3 text-lg">
+          {t('georgia.intro', { yearRound: GHSA_POLICY_YEAR_ROUND_QUOTE })}
+        </p>
       </header>
 
       <section className="border-2 border-flag-red bg-surface p-5">
@@ -41,6 +44,7 @@ export default function Georgia() {
             years: GHSA_CALIBRATION_INTERVAL_YEARS,
           })}
         </p>
+        <p className="mt-3">{t('georgia.seasonNote')}</p>
         <p className="mt-3">
           {t('georgia.noAppsBody', {
             noApps: GHSA_NO_APPS_QUOTE,

@@ -105,8 +105,57 @@ export const UIL_REGION_MAP_URL = 'https://www.uiltexas.org/files/health/WBGTMap
 export const GHSA_READING_INTERVAL_MINUTES = 30
 export const GHSA_READING_LEAD_MINUTES = 30
 export const GHSA_CALIBRATION_INTERVAL_YEARS = 2
+/**
+ * By-law 2.67, p.31, verbatim and complete (verified 2026-08-09, re-read
+ * 2026-08-10):
+ *
+ *   "A scientifically-approved instrument that measures the Wet Bulb Globe
+ *   Temperature must be utilized at each practice (prior to October 1) to
+ *   ensure that the written policy is being followed properly. WBGT readings
+ *   should be taken at a minimum of every 30 minutes, beginning 30 minutes
+ *   prior to the start of practice. All WBGT monitors shall be calibrated, at
+ *   a minimum, every two (2) years or earlier if recommended by the
+ *   manufacturer."
+ *
+ * The quote below is that first sentence in full. It previously stopped at
+ * "at each practice" — cutting exactly at the parenthesis, which turned a
+ * season-limited instrument duty into an open-ended one. The following two
+ * sentences are not repeated here because their numbers already live in the
+ * GHSA_READING and GHSA_CALIBRATION constants that render beside the quote.
+ *
+ * DOCUMENT CONFLICT, resolved conservatively (same treatment as the SCHSL top
+ * boundary and the Iowa 79.7 gap): the by-law attaches "(prior to October 1)"
+ * to the instrument sentence, while GHSA's own practice-policy reminder page
+ * states "A scientifically approved Wet Bulb Globe Temperature (WBGT) monitor
+ * must be used at every outdoor practice to ensure compliance with GHSA
+ * policy" with NO date limit. Two GHSA documents, two scopes. This site keeps
+ * GHSA at `device-required` year-round — the stricter reading — and says so on
+ * the Georgia page rather than picking the permissive document silently.
+ * Note also that the by-law's "year-round" language attaches to the POLICY,
+ * not to the instrument sentence; copy must not merge the two.
+ */
 export const GHSA_INSTRUMENT_QUOTE =
-  'A scientifically-approved instrument that measures the Wet Bulb Globe Temperature must be utilized at each practice'
+  'A scientifically-approved instrument that measures the Wet Bulb Globe Temperature must be utilized at each practice (prior to October 1) to ensure that the written policy is being followed properly.'
+/**
+ * Where "year-round" actually comes from — by-law 2.67(a), whose full sentence
+ * reads (p.31, re-read from the PDF 2026-08-10):
+ *
+ *   "Schools must follow the statewide policy for conducting practices and
+ *   voluntary conditioning workouts (this policy is year-round, including
+ *   during the summer) in all sports during times of extremely high heat
+ *   and/or humidity that will be signed by each head coach at the beginning of
+ *   each season and distributed to all players and their parents or
+ *   guardians."
+ *
+ * The parenthetical below is quoted on its own because it is the part copy
+ * needs and it stands alone without distortion. It qualifies THE POLICY. The
+ * by-law's date limits live elsewhere: on the instrument sentence 2.67(c), and
+ * on the football-only acclimatization heading 2.67(b) ("Football Only:
+ * Acclimatization and Re-Acclimatization (prior to October 1st)"). Three
+ * different scopes; never merge them into one sentence.
+ */
+export const GHSA_POLICY_YEAR_ROUND_QUOTE =
+  'this policy is year-round, including during the summer'
 
 /**
  * GHSA Heat Policy FAQ: "A WBGT reading of 92 is somewhat comparable to a

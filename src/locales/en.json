@@ -352,9 +352,10 @@
   },
   "georgia": {
     "pageTitle": "Georgia GHSA WBGT Policy",
-    "intro": "GHSA By-law 2.67 makes WBGT-based practice modification mandatory year-round, in all sports, during periods of high heat — with a hard rule that catches many programs off guard: the reading must come from an on-site instrument.",
+    "intro": "GHSA By-law 2.67 requires WBGT-based practice modification in all sports during times of extremely high heat and humidity, and the by-law says the policy itself runs \"{{yearRound}}\" — this is not a football-season rule. Where Georgia is unusual is how it expects the reading to be taken.",
     "deviceHeading": "Georgia is a device-only state",
-    "deviceBody": "The by-law's wording: \"{{quote}}\". Readings must be taken at least every {{interval}} minutes beginning {{lead}} minutes before practice, and monitors must be calibrated at least every {{years}} years.",
+    "deviceBody": "The by-law's wording: \"{{quote}}\" Readings should be taken at least every {{interval}} minutes beginning {{lead}} minutes before practice, and monitors must be calibrated at least every {{years}} years.",
+    "seasonNote": "Read that date limit carefully, because GHSA's two documents do not agree on it. The by-law attaches \"(prior to October 1)\" to its instrument sentence, while GHSA's own practice-policy reminder states the monitor requirement with no date limit at all. This site takes the stricter reading and treats Georgia as a device state all year. If you are planning after October 1, ask your athletic director which one your school is held to.",
     "noAppsBody": "GHSA has said it in as many words: \"{{noApps}}\" And the same reminder leaves no room for a practice without a device: \"{{monitor}}\"",
     "deviceWarning": "App and web estimates — including this site — are NOT accepted for GHSA compliance. Use WBGT Check to plan tomorrow's schedule; use your calibrated on-site meter to run practice.",
     "tableHeading": "Activity guidelines by WBGT (°F)",
