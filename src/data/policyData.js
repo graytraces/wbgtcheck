@@ -37,6 +37,24 @@ export const UIL_READING_INTERVAL_MINUTES = 30
 export const UIL_APP_MEASUREMENT_QUOTE =
   'an internet-based weather station software or application'
 
+/**
+ * 2026-27 heat-stress plan + FAQ, re-fetched and quote-verified 2026-08-09:
+ *  - Plan: https://www.uiltexas.org/health/info/heat-stress-and-athletic-participation
+ *  - FAQ:  https://www.uiltexas.org/health/info/2026-2027-heat-stress-athletic-participation-required-plan
+ * Neither document defines "approved" or publishes a list of approved
+ * internet resources — that ABSENCE is itself the verified fact the legality
+ * copy leans on. Do not paraphrase these quotes.
+ */
+export const UIL_INSTRUMENT_OR_INTERNET_QUOTE =
+  'It is required that schools utilize a scientifically approved instrument that measures Wet Bulb Globe Temperature (WBGT) or other scientifically proven method, such as an internet-based weather station software or application, to monitor the wet bulb globe temperature'
+export const UIL_FAQ_FORECAST_QUOTE =
+  'Schools may utilize a scientifically approved on-site instrument or an approved internet-based WBGT forecasting resource.'
+export const UIL_FAQ_SOURCE = {
+  name: 'UIL 2026-2027 Heat Stress FAQ',
+  url: 'https://www.uiltexas.org/health/info/2026-2027-heat-stress-athletic-participation-required-plan',
+  verifiedOn: '2026-08-09',
+}
+
 // --- GHSA (Georgia) administrative constants ------------------------------
 
 export const GHSA_READING_INTERVAL_MINUTES = 30
@@ -52,6 +70,22 @@ export const GHSA_INSTRUMENT_QUOTE =
  * (verified 2026-08-09)
  */
 export const GHSA_FAQ_WBGT_HI_COMPARISON = { wbgtF: 92, heatIndexMinF: 104, heatIndexMaxF: 105 }
+
+/**
+ * GHSA practice-policy reminder, re-fetched and quote-verified 2026-08-09:
+ * https://www.ghsa.net/reminder-practice-policy-heat-and-humidity
+ * These are GHSA's own flat sentences on apps and per-practice monitors —
+ * quote them verbatim, never paraphrase toward the permissive side.
+ */
+export const GHSA_NO_APPS_QUOTE =
+  'Phone applications are not approved for WBGT measurements at this time.'
+export const GHSA_MONITOR_EVERY_PRACTICE_QUOTE =
+  'A scientifically approved Wet Bulb Globe Temperature (WBGT) monitor must be used at every outdoor practice.'
+export const GHSA_REMINDER_SOURCE = {
+  name: 'GHSA — Reminder: Practice Policy for Heat and Humidity',
+  url: 'https://www.ghsa.net/reminder-practice-policy-heat-and-humidity',
+  verifiedOn: '2026-08-09',
+}
 
 // --- Grundstein remote-estimate bias + borderline nudge -------------------
 // Published range: remote estimates −1 to −3 °C vs on-site measurement

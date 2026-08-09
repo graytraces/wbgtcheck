@@ -28,7 +28,9 @@ import {
 import {
   UIL_CLASS_2,
   UIL_CLASS_3,
+  UIL_FAQ_FORECAST_QUOTE,
   GHSA,
+  GHSA_NO_APPS_QUOTE,
   SCHSL,
   TSSAA,
   TSSAA_HEAT_INDEX_BANDS,
@@ -85,6 +87,12 @@ describe('post-JS rendered DOM', () => {
     for (const band of [...UIL_CLASS_2.bands, ...UIL_CLASS_3.bands]) {
       expect(screen.getAllByText(band.sourceLabel).length).toBeGreaterThan(0)
     }
+    // Legality section: the FAQ quote reaches the DOM verbatim, and the
+    // no-approval-list caveat stays as long as UIL publishes no list.
+    expect(
+      screen.getByText((content) => content.includes(UIL_FAQ_FORECAST_QUOTE)),
+    ).toBeInTheDocument()
+    expect(screen.getByText(en.texas.legalityNoList)).toBeInTheDocument()
   })
 
   it('Georgia renders every GHSA band label and the device-only warning', () => {
@@ -93,6 +101,9 @@ describe('post-JS rendered DOM', () => {
       expect(screen.getAllByText(band.sourceLabel).length).toBeGreaterThan(0)
     }
     expect(screen.getByText(en.georgia.deviceWarning)).toBeInTheDocument()
+    expect(
+      screen.getByText((content) => content.includes(GHSA_NO_APPS_QUOTE)),
+    ).toBeInTheDocument()
   })
 
   it('States renders one row per directory entry', () => {

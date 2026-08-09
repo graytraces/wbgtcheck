@@ -34,6 +34,12 @@ import {
   NYSPHSAA_AMBIENT_TRIGGER_F,
   VA_ICE_WBGT_F,
   VA_MIN_TIERS,
+  UIL_INSTRUMENT_OR_INTERNET_QUOTE,
+  UIL_FAQ_FORECAST_QUOTE,
+  UIL_FAQ_SOURCE,
+  GHSA_NO_APPS_QUOTE,
+  GHSA_MONITOR_EVERY_PRACTICE_QUOTE,
+  GHSA_REMINDER_SOURCE,
 } from '../data/policyOracle'
 import type { FlagColor, HeatPolicy } from '../data/policyOracle'
 
@@ -286,5 +292,33 @@ describe('borderline advisory (conservative bias)', () => {
     expect(REMOTE_UNDERESTIMATE_MAX_C).toBe(3)
     expect(REMOTE_UNDERESTIMATE_MIN_F).toBeCloseTo(REMOTE_UNDERESTIMATE_MIN_C * 1.8, 5)
     expect(REMOTE_UNDERESTIMATE_MAX_F).toBeCloseTo(REMOTE_UNDERESTIMATE_MAX_C * 1.8, 5)
+  })
+})
+
+describe('measurement legality quotes (re-verified 2026-08-09)', () => {
+  // Pinned verbatim against the fetched pages in /tmp/oraudit; any edit here
+  // must re-fetch the source first. The FAQ's silence on WHAT counts as
+  // "approved" is part of the claim — legality copy must keep the
+  // confirm-with-your-district caveat as long as no list is published.
+  it('UIL plan and FAQ sentences are verbatim, with a dated FAQ source block', () => {
+    expect(UIL_INSTRUMENT_OR_INTERNET_QUOTE).toBe(
+      'It is required that schools utilize a scientifically approved instrument that measures Wet Bulb Globe Temperature (WBGT) or other scientifically proven method, such as an internet-based weather station software or application, to monitor the wet bulb globe temperature',
+    )
+    expect(UIL_FAQ_FORECAST_QUOTE).toBe(
+      'Schools may utilize a scientifically approved on-site instrument or an approved internet-based WBGT forecasting resource.',
+    )
+    expect(UIL_FAQ_SOURCE.url).toContain('uiltexas.org')
+    expect(UIL_FAQ_SOURCE.verifiedOn).toBe('2026-08-09')
+  })
+
+  it('GHSA reminder sentences are verbatim, with a dated source block', () => {
+    expect(GHSA_NO_APPS_QUOTE).toBe(
+      'Phone applications are not approved for WBGT measurements at this time.',
+    )
+    expect(GHSA_MONITOR_EVERY_PRACTICE_QUOTE).toBe(
+      'A scientifically approved Wet Bulb Globe Temperature (WBGT) monitor must be used at every outdoor practice.',
+    )
+    expect(GHSA_REMINDER_SOURCE.url).toContain('ghsa.net')
+    expect(GHSA_REMINDER_SOURCE.verifiedOn).toBe('2026-08-09')
   })
 })

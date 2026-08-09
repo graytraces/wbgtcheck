@@ -10,6 +10,9 @@ import {
   GHSA_READING_INTERVAL_MINUTES,
   GHSA_READING_LEAD_MINUTES,
   GHSA_CALIBRATION_INTERVAL_YEARS,
+  GHSA_NO_APPS_QUOTE,
+  GHSA_MONITOR_EVERY_PRACTICE_QUOTE,
+  GHSA_REMINDER_SOURCE,
 } from '../data/policyOracle'
 
 export default function Georgia() {
@@ -38,7 +41,24 @@ export default function Georgia() {
             years: GHSA_CALIBRATION_INTERVAL_YEARS,
           })}
         </p>
+        <p className="mt-3">
+          {t('georgia.noAppsBody', {
+            noApps: GHSA_NO_APPS_QUOTE,
+            monitor: GHSA_MONITOR_EVERY_PRACTICE_QUOTE,
+          })}
+        </p>
         <p className="mt-3 font-bold">{t('georgia.deviceWarning')}</p>
+        <p className="mt-2 text-sm text-ink-muted">
+          <a
+            href={GHSA_REMINDER_SOURCE.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            {GHSA_REMINDER_SOURCE.name}
+          </a>{' '}
+          ({t('policies.verifiedOn', { date: GHSA_REMINDER_SOURCE.verifiedOn })})
+        </p>
       </section>
 
       <section>

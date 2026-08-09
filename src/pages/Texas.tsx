@@ -11,6 +11,9 @@ import {
   UIL_EFFECTIVE_DATE,
   UIL_READING_BEFORE_PRACTICE_MAX_MINUTES,
   UIL_READING_INTERVAL_MINUTES,
+  UIL_INSTRUMENT_OR_INTERNET_QUOTE,
+  UIL_FAQ_FORECAST_QUOTE,
+  UIL_FAQ_SOURCE,
 } from '../data/policyOracle'
 
 const UIL_MAP_URL = 'https://www.uiltexas.org/files/health/WBGTMap.jpg'
@@ -117,6 +120,28 @@ export default function Texas() {
         <p className="mt-2">{t('texas.measurementApps')}</p>
         <p className="mt-2">{t('texas.competitionNote')}</p>
         <p className="mt-2 font-semibold">{t('texas.bandNote')}</p>
+      </section>
+
+      <section className="border-2 border-line bg-surface p-5">
+        <h2 className="display-num mb-2 text-2xl uppercase">{t('texas.legalityHeading')}</h2>
+        <p>
+          {t('texas.legalityBody', {
+            req: UIL_INSTRUMENT_OR_INTERNET_QUOTE,
+            faq: UIL_FAQ_FORECAST_QUOTE,
+          })}
+        </p>
+        <p className="mt-3 font-semibold">{t('texas.legalityNoList')}</p>
+        <p className="mt-2 text-sm text-ink-muted">
+          <a
+            href={UIL_FAQ_SOURCE.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            {UIL_FAQ_SOURCE.name}
+          </a>{' '}
+          ({t('policies.verifiedOn', { date: UIL_FAQ_SOURCE.verifiedOn })})
+        </p>
       </section>
 
       <section className="text-sm text-ink-muted">

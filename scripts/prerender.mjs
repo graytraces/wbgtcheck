@@ -29,7 +29,13 @@ import {
   UIL_EFFECTIVE_DATE,
   UIL_READING_BEFORE_PRACTICE_MAX_MINUTES,
   UIL_READING_INTERVAL_MINUTES,
+  UIL_INSTRUMENT_OR_INTERNET_QUOTE,
+  UIL_FAQ_FORECAST_QUOTE,
+  UIL_FAQ_SOURCE,
   GHSA_INSTRUMENT_QUOTE,
+  GHSA_NO_APPS_QUOTE,
+  GHSA_MONITOR_EVERY_PRACTICE_QUOTE,
+  GHSA_REMINDER_SOURCE,
   GHSA_READING_INTERVAL_MINUTES,
   GHSA_READING_LEAD_MINUTES,
   GHSA_CALIBRATION_INTERVAL_YEARS,
@@ -407,6 +413,19 @@ function generateBodyContent(lang, page) {
     push(`<p>${escapeHtml(t('texas.measurementApps'))}</p>`)
     push(`<p>${escapeHtml(t('texas.competitionNote'))}</p>`)
     push(`<p>${escapeHtml(t('texas.bandNote'))}</p>`)
+    push(`<h2>${escapeHtml(t('texas.legalityHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('texas.legalityBody', {
+          req: UIL_INSTRUMENT_OR_INTERNET_QUOTE,
+          faq: UIL_FAQ_FORECAST_QUOTE,
+        }),
+      )}</p>`,
+    )
+    push(`<p>${escapeHtml(t('texas.legalityNoList'))}</p>`)
+    push(
+      `<p><a href="${UIL_FAQ_SOURCE.url}">${escapeHtml(UIL_FAQ_SOURCE.name)}</a> (${escapeHtml(t('policies.verifiedOn', { date: UIL_FAQ_SOURCE.verifiedOn }))})</p>`,
+    )
     push(
       `<p>${escapeHtml(t('texas.sourceBody', { verifiedOn: UIL_CLASS_3.source.verifiedOn }))} <a href="${UIL_CLASS_3.source.url}">${escapeHtml(UIL_CLASS_3.source.name)}</a></p>`,
     )
@@ -426,7 +445,18 @@ function generateBodyContent(lang, page) {
         }),
       )}</p>`,
     )
+    push(
+      `<p>${escapeHtml(
+        t('georgia.noAppsBody', {
+          noApps: GHSA_NO_APPS_QUOTE,
+          monitor: GHSA_MONITOR_EVERY_PRACTICE_QUOTE,
+        }),
+      )}</p>`,
+    )
     push(`<p>${escapeHtml(t('georgia.deviceWarning'))}</p>`)
+    push(
+      `<p><a href="${GHSA_REMINDER_SOURCE.url}">${escapeHtml(GHSA_REMINDER_SOURCE.name)}</a> (${escapeHtml(t('policies.verifiedOn', { date: GHSA_REMINDER_SOURCE.verifiedOn }))})</p>`,
+    )
     push(`<h2>${escapeHtml(t('georgia.tableHeading'))}</h2>`)
     push(policyTableHtml(GHSA, t))
     push(`<h2>${escapeHtml(t('georgia.practiceDefHeading'))}</h2><p>${escapeHtml(t('georgia.practiceDefBody'))}</p>`)
