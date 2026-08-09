@@ -179,6 +179,30 @@ describe('guideline copy derives from the oracle', () => {
     expect(es.texas.legalityNoList).toContain('aprobado')
   })
 
+  it('bias copy claims a range and nothing about its shape', () => {
+    // The oracle documents "Published range: −1 to −3 °C" and nothing more —
+    // the paper sits behind Wiley's Cloudflare block and has never been read
+    // from here. Two strings had drifted into "about {{min}} °C low ON AVERAGE"
+    // and "up to {{max}} °C low IN THE HOTTEST CONDITIONS": distribution
+    // claims the site cannot support. verdict.conservativeNotice is frozen
+    // copy and already phrases it honestly; these two now follow it.
+    const banned = [
+      /on average/i,
+      /hottest conditions/i,
+      /most dangerous conditions/i,
+      /en promedio/i,
+      /condiciones más calurosas/i,
+      /condiciones más peligrosas/i,
+    ]
+    for (const locale of [en, es]) {
+      for (const s of [locale.home.sections[1].body, locale.disclaimerPage.notMeasurement]) {
+        for (const pattern of banned) {
+          expect(s, `unsupported distribution claim: ${s.slice(0, 70)}…`).not.toMatch(pattern)
+        }
+      }
+    }
+  })
+
   it('Grundstein bias copy interpolates from the oracle (no digit literals in the 6 strings)', () => {
     for (const locale of [en, es]) {
       const strings = [

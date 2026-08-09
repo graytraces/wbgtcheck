@@ -210,6 +210,14 @@ export const GHSA_REMINDER_SOURCE = {
 // Published range: remote estimates −1 to −3 °C vs on-site measurement
 // (Grundstein 2025 GeoHealth, doi:10.1029/2025GH001347). All UI copy showing
 // these numbers interpolates from the °C constants; the °F pair is derived.
+//
+// A RANGE is the entire verified claim. The paper itself is behind Wiley's
+// Cloudflare block and has never been read from here, so nothing about the
+// SHAPE of that range is attestable — not "−1 on average", not "−3 in the
+// hottest conditions". Two strings had drifted into exactly those readings and
+// were pulled back to the range (2026-08-10); oracleCopy.test.ts now fails on
+// the wording. If the paper ever becomes readable, distribution claims can be
+// re-derived from it — until then, the range is the claim.
 
 export const REMOTE_UNDERESTIMATE_MIN_C = 1
 export const REMOTE_UNDERESTIMATE_MAX_C = 3
