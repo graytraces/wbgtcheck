@@ -49,7 +49,27 @@ monetization) — all pending an explicit go decision:
   auto-pick Class 2/3 once an authoritative county→class list is verified.
   Until then the stricter Class 2 default + user selection stands.
 - **Meter ProductBox port**: on-site WBGT meter affiliate/product box from the
-  pooldose pattern — awaiting user decision.
-- **State policy pages ×15**: expand /texas//georgia-style guides to the other
-  verdict-table states, each gated on fetching that association's primary
-  document first (oracle rule).
+  pooldose pattern — **user decision 2026-08-09: on hold.** Commercial elements
+  are too heavy for a site this new. Do not port it without a fresh decision.
+- **State policy pages**: six shipped on 2026-08-09 (SC · TN · IA · NC · NY ·
+  VA), each gated on reading that association's or legislature's own document.
+  Remaining verdict-table states and their blockers:
+  - **KY** — blocked, not deferred. khsaa.org served nothing to every fetch
+    attempt (root, /sports-medicine/, /forms/ge20.pdf, /forms/ge110.pdf, the
+    08-23-24 WBGT notice). Two record forms appear to exist — GE20 ("Heat Index
+    / Wet Bulb Globe Measurement and Record") and GE110 ("WET BULB GLOBE
+    TEMPERATURE (WBGT) MEASUREMENT AND RECORD") — so the old "Form GE20" claim
+    was dropped from /states rather than restated unverified. Retry from a
+    network that KHSAA answers.
+  - **FL · MO · MD · NJ · LA · CA · MA** — not attempted in the 2026-08-09 pass;
+    still research-tier. Same gate applies: read the primary document first.
+  - **NY WBGT chart** — NY's heat-index ladder is published and now on the site,
+    but its WBGT alternative chart is an image keyed to an external regional map
+    (castlewilliams.com/wbgt-regions.html). Not reproduced — printing the wrong
+    region's numbers is the failure mode this rule exists to prevent.
+- **NC/NY tool integration**: both are deliberately absent from the policy
+  picker, not merely unimplemented. NCHSAA uses a different threshold family
+  (80/85/88/90) plus its own colour code whose names contradict this site's flag
+  meanings; NYSPHSAA's ladder is in heat index degrees. Wiring either into
+  `classifyWbgt` would emit a confidently wrong flag — `policyOracle.test.ts`
+  pins the exclusion.

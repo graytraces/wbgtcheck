@@ -24,7 +24,7 @@
 
 ```
 wbgtcheck/
-├── scripts/prerender.mjs     # 14개 로케일 HTML + sitemap 생성 (policyData.js 직접 import)
+├── scripts/prerender.mjs     # 26개 로케일 HTML + sitemap 생성 (policyData.js 직접 import)
 └── src/
     ├── App.tsx               # 라우터 (bare path → /:lang 리다이렉트)
     ├── i18n.ts               # EN + ES
@@ -51,8 +51,8 @@ wbgtcheck/
 
 ```bash
 npm run dev      # 개발 서버 — 워커 없이 NWS 직접 호출 (dev 전용 폴백)
-npm run build    # tsc + vite build + prerender (14 HTML + sitemap)
-npm test         # tsc --noEmit + vitest (12파일 91테스트)
+npm run build    # tsc + vite build + prerender (26 HTML + sitemap)
+npm test         # tsc --noEmit + vitest (13파일 124테스트)
 npm run preview  # 빌드 결과 미리보기
 ```
 
@@ -67,8 +67,14 @@ npm run preview  # 빌드 결과 미리보기
 | `/:lang` | Home — 판정 카드 + 타임라인 + 주간 뷰 + 공유 카드 |
 | `/:lang/texas` | UIL 가이드 (Class 2/3 임계값 표 · 측정 규칙 · 앱 허용 인용) |
 | `/:lang/georgia` | GHSA 가이드 (기기 전용 경고 · By-law 2.67 표) |
+| `/:lang/south-carolina` | SCHSL 가이드 (기기 의무 · 15분 range-hold · 임계값 표) |
+| `/:lang/tennessee` | TSSAA 가이드 (WBGT/열지수 택일 · 앱은 열지수 한정 · 양쪽 표) |
+| `/:lang/iowa` | Iowa 가이드 (Category 2 표 · **권고**이지 의무 아님 · 마칭밴드 분기) |
+| `/:lang/north-carolina` | NCHSAA 가이드 (자체 색코드 표 · 5-10마일 기상관측소 허용) |
+| `/:lang/new-york` | NYSPHSAA 가이드 (**열지수** 사다리 — WBGT 아님 · 앱+ZIP 명시) |
+| `/:lang/virginia` | Virginia 주법 가이드 (임계값 없음 — 교육구가 정함 · 얼음 80°F) |
 | `/:lang/wbgt-vs-heat-index` | WBGT/습구/열지수 구분 교육 페이지 |
-| `/:lang/states` | 주별 3분류 표 (앱 허용/기기 전용/미확인) |
+| `/:lang/states` | 주별 3분류 표 (앱 허용/기기 전용/미확인) + 주별 가이드 링크 허브 |
 | `/:lang/privacy` · `/:lang/disclaimer` | 법적 페이지 (sitemap 제외) |
 
 lang은 `en`·`es` 2종. 라우트 추가 시 아래 "새 페이지 추가 체크리스트"를 따를 것.
@@ -76,10 +82,13 @@ lang은 `en`·`es` 2종. 라우트 추가 시 아래 "새 페이지 추가 체�
 ## 이 레포 고유 규칙 (가장 중요 — 위반 시 안전·법적 리스크)
 
 ### ① 정책 수치 오라클 — `src/data/policyData.js` 단일 소스
-- 모든 임계값·활동 수정 지침 수치는 **`policyData.js`에만** 존재한다. 각 블록에 1차 출처 URL + 확인일 주석 필수 (UIL 차트 · GHSA By-law 2.67 PDF · NATA 2015 Table 5, 전부 2026-08-09 검증).
-- **로케일 JSON에 임계값 숫자 리터럴 금지** — 카피는 `{{보간}}`으로만 수치를 받는다. `oracleCopy.test.ts`가 숫자 리터럴 존재 자체를 실패시킨다.
+- 모든 임계값·활동 수정 지침 수치는 **`policyData.js`에만** 존재한다. 각 블록에 1차 출처 URL + 확인일 주석 필수 (UIL 차트 · GHSA By-law 2.67 · NATA 2015 Table 5 · SCHSL 2024-04 · TSSAA 2024-10 · Iowa 합동 가이드 · NCHSAA 핸드북 · NYSPHSAA 2023-05 · Va. Code §22.1-271.10, 전부 2026-08-09 검증).
+- **로케일 JSON에 임계값 숫자 리터럴 금지** — 카피는 `{{보간}}`으로만 수치를 받는다. `oracleCopy.test.ts`가 숫자 리터럴 존재 자체를 실패시킨다. 원문 인용에 수치가 있으면 인용문 자체를 상수화할 것 (`SCHSL_TOP_BOUNDARY_TEXT_QUOTE`가 그 예).
 - plain JS인 이유: `scripts/prerender.mjs`와 React가 **동일 객체**를 import해 prerender↔post-JS DOM 드리프트를 구조적으로 차단 (위키 prerender-wrs-prosewipe 패턴).
-- 새 주(州) 임계값은 협회 1차 문서를 fetch해 검증하기 전에는 **절대 추가 금지**. `/states`의 TX·GA 외 행은 research 분류이며 "협회 확인 필요" 뱃지가 강제된다.
+- 새 주(州) 임계값은 협회 1차 문서를 fetch해 검증하기 전에는 **절대 추가 금지**. `verified: 'primary'` 행(TX·GA·SC·TN·IA·NC·NY·VA)만 수치를 실을 수 있고, 나머지는 research 분류 + "협회 확인 필요" 뱃지가 강제된다.
+- **모든 주가 이 사이트의 5색 깃발 모델에 맞지는 않는다.** NC는 임계값 계열(80/85/88/90)도 다르고 자체 색코드 이름이 이 사이트 깃발과 의미가 충돌하며, NY는 애초에 열지수 척도다. 둘은 `POLICIES`에서 **의도적으로 제외**되어 자체 표로만 렌더된다 — `policyOracle.test.ts`가 이 제외를 핀으로 고정한다. 맞지 않는 주를 억지로 `classifyWbgt`에 넣지 말 것.
+- 출처가 아무 말도 하지 않는 구간에 "정상 활동"을 지어내지 말 것. TSSAA green 밴드처럼 `extraKeys: ['guideline.notAddressedBelow']`로 침묵을 명시한다.
+- PDF가 Type3 subset 폰트를 쓰면 텍스트 추출이 조용히 틀린 글자를 낸다(TSSAA가 그렇다). 그 경우 pymupdf로 페이지를 PNG 렌더해 **눈으로 읽고** 수치를 옮길 것.
 
 ### ② 안전 카피 불변식
 - **"safe to practice" 류 단정 표현 금지** — 항상 "플래그 + 지침 + 현장 확인" 구조. 테스트가 문구 존재를 가드한다.
