@@ -9,6 +9,8 @@ import {
   UIL_MANDATE_2026_QUOTE,
   GHSA,
   SCHSL,
+  TSSAA,
+  IOWA_CATEGORY_2,
   GHSA_FAQ_WBGT_HI_COMPARISON,
   NCHSAA_REFERENCE,
   NYSPHSAA_HEAT_INDEX_REFERENCE,
@@ -191,6 +193,27 @@ describe('guideline copy derives from the oracle', () => {
     // The no-approval-list caveat has to survive alongside it.
     expect(en.texas.legalityNoList).toContain('approved')
     expect(es.texas.legalityNoList).toContain('aprobado')
+  })
+
+  it('every device-stance state carries a warning matched to its own mandate', () => {
+    // GA and SC had a dedicated warning paragraph; TN and IA had only a
+    // sentence inside their apps prose. Structure is what gets levelled here —
+    // the CLAIMS must stay different, because TSSAA and Iowa recommend where
+    // GHSA and SCHSL require, and borrowing the compliance wording would
+    // manufacture a mandate neither association wrote.
+    for (const locale of [en, es]) {
+      for (const page of ['georgia', 'southCarolina', 'tennessee', 'iowa'] as const) {
+        expect(locale[page].deviceWarning?.length, `${page}.deviceWarning`).toBeGreaterThan(0)
+      }
+      // The strict pair may say "not accepted for compliance"; the weaker pair
+      // must not.
+      expect(locale.tennessee.deviceWarning.toLowerCase()).not.toMatch(
+        /not accepted|no se aceptan/,
+      )
+      expect(locale.iowa.deviceWarning.toLowerCase()).not.toMatch(/not accepted|no se aceptan/)
+    }
+    expect(TSSAA.remoteEstimatesAllowed).toBe('device-recommended')
+    expect(IOWA_CATEGORY_2.remoteEstimatesAllowed).toBe('device-recommended')
   })
 
   it('the disclaimer only names device-required states the oracle actually verified', () => {

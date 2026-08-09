@@ -77,6 +77,10 @@ export default function Tennessee() {
       <section>
         <h2 className="display-num mb-2 text-2xl uppercase">{t('tennessee.appsHeading')}</h2>
         <p>{t('tennessee.appsBody', { apps: TSSAA_APP_QUOTE })}</p>
+        {/* Same prominence as the GA and SC warnings. TSSAA's mandate is
+            weaker than theirs, so the sentence is weaker too — structure is
+            what gets made consistent here, not the strength of the claim. */}
+        <p className="mt-3 font-bold">{t('tennessee.deviceWarning')}</p>
       </section>
 
       <section>

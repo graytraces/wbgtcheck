@@ -55,6 +55,9 @@ export default function Iowa() {
           {t('iowa.appsHeading')}
         </h2>
         <p>{t('iowa.appsBody', { apps: IOWA_APP_QUOTE })}</p>
+        {/* Iowa recommends rather than mandates, so this says so plainly
+            instead of borrowing GHSA's compliance language. */}
+        <p className="mt-3 font-bold">{t('iowa.deviceWarning')}</p>
       </section>
 
       <section>

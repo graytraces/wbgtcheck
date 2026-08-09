@@ -589,6 +589,7 @@ function generateBodyContent(lang, page) {
     )
     push(`<h2>${escapeHtml(t('tennessee.appsHeading'))}</h2>`)
     push(`<p>${escapeHtml(t('tennessee.appsBody', { apps: TSSAA_APP_QUOTE }))}</p>`)
+    push(`<p>${escapeHtml(t('tennessee.deviceWarning'))}</p>`)
     push(`<h2>${escapeHtml(t('tennessee.coldTubHeading'))}</h2>`)
     push(`<p>${escapeHtml(t('tennessee.coldTubBody', { quote: TSSAA_COLD_TUB_QUOTE }))}</p>`)
     push(`<h2>${escapeHtml(t('tennessee.scopeHeading'))}</h2>`)
@@ -622,6 +623,7 @@ function generateBodyContent(lang, page) {
     )
     push(`<h2>${escapeHtml(t('iowa.appsHeading'))}</h2>`)
     push(`<p>${escapeHtml(t('iowa.appsBody', { apps: IOWA_APP_QUOTE }))}</p>`)
+    push(`<p>${escapeHtml(t('iowa.deviceWarning'))}</p>`)
     push(`<h2>${escapeHtml(t('iowa.measurementHeading'))}</h2>`)
     push(
       `<p>${escapeHtml(
