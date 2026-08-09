@@ -81,7 +81,7 @@
   "home": {
     "pageTitle": "Pronóstico WBGT con banderas de política estatal",
     "heroBadge": "Gratis · Sin cuenta · Nada que instalar",
-    "intro": "Una sola pantalla para la decisión de la mañana: WBGT por hora para su campo, traducido a las banderas de actividad de su estado — proporciones de descanso, límites de equipo, topes de práctica — con una tarjeta lista para el chat del equipo.",
+    "intro": "Una sola pantalla para la decisión de la mañana: WBGT por hora para su campo, traducido a las banderas de actividad de su estado — proporciones de descanso, límites de equipo, topes de práctica — con una tarjeta lista para el chat del equipo. Hecho para entrenadores, preparadores físicos y directores de banda de marcha.",
     "sections": [
       {
         "heading": "Cómo funciona",
@@ -93,7 +93,7 @@
       },
       {
         "heading": "Úselo como los preparadores físicos",
-        "body": "Planifique la práctica de mañana con el pronóstico la noche anterior. Comparta la tarjeta del veredicto para que cada entrenador vea el mismo número y la misma bandera. Luego dirija la práctica con su lectura en el campo, exactamente como lo escribe su política — este sitio planifica y comunica; su instrumento decide."
+        "body": "Planifique la práctica de mañana con el pronóstico la noche anterior. Comparta la tarjeta del veredicto para que cada entrenador vea el mismo número y la misma bandera. Luego dirija la práctica con su lectura en el campo, exactamente como lo escribe su política — este sitio planifica y comunica; su instrumento decide. Los directores de banda de marcha trabajan igual: el estándar 2026-27 de la UIL nombra a la banda de marcha junto al atletismo, y la vista hora por hora es la que dice si un bloque de ensayo después de clases se sostiene."
       },
       {
         "heading": "Conozca las reglas de su estado",
@@ -253,7 +253,7 @@
   "seo": {
     "home": {
       "title": "Pronóstico WBGT con banderas de política estatal | WBGT Check",
-      "description": "Pronóstico gratuito de temperatura de globo y bulbo húmedo con banderas de actividad UIL y GHSA. WBGT por hora, guía de modificación de prácticas y tarjeta compartible.",
+      "description": "Pronóstico gratuito de WBGT con banderas de actividad UIL y GHSA — WBGT por hora y tarjeta compartible para entrenadores y directores de banda de marcha.",
       "keywords": "pronóstico WBGT, temperatura de globo y bulbo húmedo, seguridad ante el calor, UIL WBGT, política de calor GHSA, banda de marcha calor"
     },
     "texas": {

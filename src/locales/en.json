@@ -81,7 +81,7 @@
   "home": {
     "pageTitle": "WBGT Forecast with State Heat Policy Flags",
     "heroBadge": "Free · No account · Nothing to install",
-    "intro": "One screen for the morning call: hourly wet bulb globe temperature for your field, translated into your state's activity flags — rest ratios, equipment limits, practice caps — with a card you can drop in the team chat.",
+    "intro": "One screen for the morning call: hourly wet bulb globe temperature for your field, translated into your state's activity flags — rest ratios, equipment limits, practice caps — with a card you can drop in the team chat. Built for coaches, athletic trainers and marching band directors.",
     "sections": [
       {
         "heading": "How it works",
@@ -93,7 +93,7 @@
       },
       {
         "heading": "Use it the way trainers do",
-        "body": "Plan tomorrow's practice with the forecast the night before. Share the verdict card so every coach sees the same number and the same flag. Then run practice off your on-site reading, exactly as your policy writes it — this site plans and communicates; your instrument decides."
+        "body": "Plan tomorrow's practice with the forecast the night before. Share the verdict card so every coach sees the same number and the same flag. Then run practice off your on-site reading, exactly as your policy writes it — this site plans and communicates; your instrument decides. Marching band directors work the same way: UIL's 2026-27 standard names marching band alongside athletics, and the hour-by-hour view is what tells you whether an after-school rehearsal block holds."
       },
       {
         "heading": "Know your state's rules",
@@ -253,7 +253,7 @@
   "seo": {
     "home": {
       "title": "WBGT Forecast with State Heat Policy Flags | WBGT Check",
-      "description": "Free wet bulb globe temperature forecast with UIL and GHSA activity flags. Hourly WBGT, practice modification guidance, and a shareable heat flag card for coaches.",
+      "description": "Free wet bulb globe temperature forecast with UIL and GHSA activity flags — hourly WBGT and a shareable heat flag card for coaches and marching band directors.",
       "keywords": "WBGT forecast, wet bulb globe temperature, heat safety, UIL WBGT, GHSA heat policy, practice heat guidelines, marching band heat"
     },
     "texas": {

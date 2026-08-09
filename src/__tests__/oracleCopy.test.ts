@@ -6,6 +6,7 @@ import { guidelineSentences } from '../utils/guidelineText'
 import {
   POLICIES,
   UIL_CLASS_3,
+  UIL_MANDATE_2026_QUOTE,
   GHSA,
   REMOTE_UNDERESTIMATE_MIN_C,
   REMOTE_UNDERESTIMATE_MAX_C,
@@ -134,6 +135,20 @@ describe('guideline copy derives from the oracle', () => {
     expect(es.texas.recordkeepingNote).toContain('debe tomarse')
     expect(es.texas.recordkeepingNote).toContain('deberían tomarse')
     expect(es.texas.recordkeepingNote.toLowerCase()).not.toContain('cadencia es obligatoria')
+  })
+
+  it('the home page addresses marching band, the segment with no competitor', () => {
+    // The guides named band directors; the home page's rendered DOM did not
+    // contain "band" once — H1, meta description and all four sections spoke
+    // only to coaches and trainers. UIL's 2026-27 standard names marching band
+    // explicitly, so the claim is the oracle's, not ours.
+    expect(UIL_MANDATE_2026_QUOTE).toContain('marching band')
+    expect(en.home.intro.toLowerCase()).toContain('marching band')
+    expect(en.home.sections[2].body.toLowerCase()).toContain('marching band')
+    expect(en.seo.home.description.toLowerCase()).toContain('marching band')
+    expect(es.home.intro.toLowerCase()).toContain('banda de marcha')
+    expect(es.home.sections[2].body.toLowerCase()).toContain('banda de marcha')
+    expect(es.seo.home.description.toLowerCase()).toContain('banda de marcha')
   })
 
   it('the home measurement note carries the no-approval-list caveat', () => {
