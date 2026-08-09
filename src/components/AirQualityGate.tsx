@@ -10,6 +10,7 @@ import {
   AIRNOW_PROGRAM_CREDIT,
   NFHS_LANDMARK_MILES,
   airActionFor,
+  aqiCategoryName,
   classifyAirBand,
   classifyAqi,
 } from '../data/airPolicyOracle'
@@ -101,14 +102,14 @@ export default function AirQualityGate({
             key: 'pm25',
             aqi: reading.aqi,
             category: classifyAqi(reading.aqi),
-            name: reading.category,
+            name: aqiCategoryName(classifyAqi(reading.aqi).id, reading.category, lang),
             label: t('air.aqiBasisPm25'),
           },
           {
             key: 'overall',
             aqi: data.overall.aqi,
             category: classifyAqi(data.overall.aqi),
-            name: data.overall.category,
+            name: aqiCategoryName(classifyAqi(data.overall.aqi).id, data.overall.category, lang),
             label: t('air.aqiBasisOverall', { pollutant: data.overall.parameter }),
           },
         ]
@@ -117,7 +118,7 @@ export default function AirQualityGate({
             key: 'single',
             aqi: reading.aqi,
             category: classifyAqi(reading.aqi),
-            name: reading.category,
+            name: aqiCategoryName(classifyAqi(reading.aqi).id, reading.category, lang),
             label:
               reading.basis === 'pm25'
                 ? t('air.aqiBasisPm25')

@@ -14,6 +14,9 @@ import {
   OR_AIR_POLICY as OR_RAW,
   CA_AIR_POLICY as CA_RAW,
   AIR_POLICY_BY_STATE as AIR_POLICY_BY_STATE_RAW,
+  // Imported as well as re-exported: `export … from` creates no local binding,
+  // and aqiCategoryName below reads this map.
+  AQI_CATEGORY_NAME_ES as AQI_CATEGORY_NAME_ES_RAW,
 } from './airPolicyData.js'
 
 export {
@@ -41,6 +44,8 @@ export {
   AIRNOW_CREDIT_QUOTE,
   AIRNOW_PROGRAM_CREDIT,
   AIR_OBSERVATION_STALE_MINUTES,
+  AQI_CATEGORY_NAME_ES,
+  AQI_CATEGORY_NAME_ES_SOURCE,
 } from './airPolicyData.js'
 
 // Product-chosen distance limits, deliberately not part of the source-checked
@@ -156,4 +161,23 @@ export function airPolicyForState(stateAbbr: string | null): AirPolicy | null {
   if (!stateAbbr) return null
   const id = AIR_POLICY_BY_STATE[stateAbbr.toUpperCase()]
   return id ? AIR_POLICIES[id] : null
+}
+
+/**
+ * The category name to show a reader, in their language.
+ *
+ * `feedName` is whatever AirNow sent (always English). It is returned
+ * unchanged unless the locale is Spanish AND the feed's text matches the
+ * category we classified the value into — so an unfamiliar or reworded feed
+ * string is passed through rather than relabelled with a name EPA might not
+ * have meant.
+ */
+export function aqiCategoryName(
+  categoryId: string,
+  feedName: string,
+  lang: string,
+): string {
+  if (!lang.startsWith('es')) return feedName
+  const spanish = (AQI_CATEGORY_NAME_ES_RAW as Record<string, string>)[categoryId]
+  return spanish ?? feedName
 }

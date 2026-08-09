@@ -30,6 +30,9 @@ import {
   ACTIVITY_IDS,
   ACTIVITY_SOURCE_LABELS,
   DEFAULT_ACTIVITY_ID,
+  AQI_CATEGORY_NAME_ES,
+  AQI_CATEGORY_NAME_ES_SOURCE,
+  aqiCategoryName,
 } from '../data/airPolicyOracle'
 import type { ActivityId } from '../data/airPolicyOracle'
 import { AQI_SWATCH } from '../utils/aqiStyles'
@@ -358,5 +361,40 @@ describe('AirNow data conditions bind the displayed copy', () => {
     expect(EPA_AQI_SOURCE.name).toContain('Air Quality Index')
     expect(EPA_AQI_SOURCE.url).toMatch(/^https:\/\//)
     expect(EPA_AQI_SOURCE.verifiedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+  })
+})
+
+describe('AQI category names in Spanish', () => {
+  it('uses EPA’s own published Spanish names, one per category', () => {
+    // Read from espanol.airnow.gov's "Leyenda del AQI" on 2026-08-10, against
+    // the same breakpoints this oracle already carries. Not a translation:
+    // the feed sends English, and inventing Spanish wording would attribute a
+    // category name to EPA that EPA never published.
+    for (const category of AQI_CATEGORIES) {
+      expect(
+        AQI_CATEGORY_NAME_ES[category.id],
+        `no EPA Spanish name for ${category.id}`,
+      ).toBeTruthy()
+    }
+    expect(AQI_CATEGORY_NAME_ES.good).toBe('Bueno')
+    expect(AQI_CATEGORY_NAME_ES.unhealthySensitive).toBe('Insalubre para grupos sensibles (USG)')
+    expect(AQI_CATEGORY_NAME_ES.hazardous).toBe('Peligroso')
+    expect(AQI_CATEGORY_NAME_ES_SOURCE.url).toContain('espanol.airnow.gov')
+  })
+
+  it('leaves English alone and passes unknown categories straight through', () => {
+    expect(aqiCategoryName('good', 'Good', 'en')).toBe('Good')
+    expect(aqiCategoryName('good', 'Good', 'es')).toBe('Bueno')
+    // A category id this oracle does not know keeps whatever AirNow sent,
+    // rather than being relabelled with a guess.
+    expect(aqiCategoryName('somethingNew', 'Something New', 'es')).toBe('Something New')
+  })
+
+  it('leaves the numeric band labels in the source’s own form', () => {
+    // "0 to 50" and the policy band labels stay as published — the site's
+    // caption says the ranges are shown as the source prints them.
+    for (const category of AQI_CATEGORIES) {
+      expect(category.sourceLabel).toMatch(/\d/)
+    }
   })
 })

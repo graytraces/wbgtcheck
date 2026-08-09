@@ -455,6 +455,34 @@ export const AIRNOW_SOURCE = {
   verifiedOn: '2026-08-09',
 }
 
+/**
+ * EPA's OWN Spanish category names, read off espanol.airnow.gov's "Leyenda del
+ * AQI / Escala del índice de calidad del aire" on 2026-08-10 with the same
+ * 0-50 / 51-100 / 101-150 / 151-200 / 201-300 / 301+ breakpoints this file
+ * already carries.
+ *
+ * This is not a translation. The AirNow feed hands us English category text
+ * and a Spanish reader was being shown it verbatim; substituting our own
+ * wording would attribute a category name to EPA that EPA never published,
+ * which is the same rule that keeps association quotations untranslated. EPA
+ * publishes these, so they can be used — keyed to the category id rather than
+ * to the feed's string, and only where the feed's text matches the category we
+ * classified it into. Anything unrecognised stays exactly as AirNow sent it.
+ */
+export const AQI_CATEGORY_NAME_ES = {
+  good: 'Bueno',
+  moderate: 'Moderado',
+  unhealthySensitive: 'Insalubre para grupos sensibles (USG)',
+  unhealthy: 'Insalubre',
+  veryUnhealthy: 'Muy insalubre',
+  hazardous: 'Peligroso',
+}
+export const AQI_CATEGORY_NAME_ES_SOURCE = {
+  name: 'EPA AirNow en español — Leyenda del AQI',
+  url: 'https://espanol.airnow.gov/',
+  verifiedOn: '2026-08-10',
+}
+
 export const AIRNOW_PRELIMINARY_QUOTE =
   'AirNow observational data are not fully verified or validated; these data are subject to change and should be considered preliminary.'
 
