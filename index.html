@@ -10,8 +10,26 @@
     <title>WBGT Check — Heat Safety Planner for Coaches</title>
     <meta name="description" content="Free WBGT forecast with state heat-policy activity flags. Plan practice around wet bulb globe temperature for UIL, GHSA, and more." />
 
-    <style>[data-prerender]{display:none}</style>
+    <style>[data-prerender]{display:none}
+      html.boot-failed [data-prerender]{display:block}
+      html.boot-failed [data-prerender] table{display:block;overflow-x:auto}</style>
     <noscript><style>[data-prerender]{display:block}[data-prerender] table{display:block;overflow-x:auto}</style></noscript>
+    <script>
+      // Blank-page failsafe. The prerendered body is hidden above so it cannot
+      // flash before React mounts, and <noscript> only covers JS being
+      // DISABLED. If JS is enabled but the entry bundle never arrives — a
+      // stale-cache 404 after a deploy, a dead connection at the side of a
+      // field, an extension blocking it — nothing removes that rule and the
+      // page renders zero characters, header and nav included.
+      //
+      // App's mount effect clears this timer, so on every normal load the
+      // class is never added and nothing changes. Only a boot that never
+      // happens reaches it, and then the prerendered copy is shown rather than
+      // a blank page.
+      window.__wbgtBoot = setTimeout(function () {
+        document.documentElement.classList.add('boot-failed')
+      }, 10000)
+    </script>
     <link rel="preconnect" href="https://www.googletagmanager.com" />
     <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-NL5JKVRNS1"></script>

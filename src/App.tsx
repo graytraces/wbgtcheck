@@ -76,6 +76,17 @@ const router = createBrowserRouter([
 
 export default function App() {
   useEffect(() => {
+    // Reaching here means React committed, so the bundle loaded: cancel the
+    // blank-page failsafe armed in index.html before it can reveal the
+    // prerendered copy, then drop that copy as before.
+    const w = window as Window & { __wbgtBoot?: ReturnType<typeof setTimeout> }
+    if (w.__wbgtBoot !== undefined) {
+      clearTimeout(w.__wbgtBoot)
+      delete w.__wbgtBoot
+    }
+    // Only set if a very slow boot already tripped the timer; harmless
+    // otherwise, and it keeps the two states from disagreeing.
+    document.documentElement.classList.remove('boot-failed')
     document.querySelectorAll('[data-prerender]').forEach((el) => el.remove())
   }, [])
   return <RouterProvider router={router} />

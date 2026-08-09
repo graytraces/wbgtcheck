@@ -116,9 +116,10 @@ describe('advertising consent matches the stated policy', () => {
     // everywhere outside the EEA/UK list — used to GRANT ad_storage,
     // ad_user_data and ad_personalization, collecting advertising-grade data
     // the product does not use and the policy disclaims.
+    // Scan the whole document, not just the first inline <script> — index.html
+    // has more than one, and which comes first is not this test's business.
     const html = readFileSync(join(process.cwd(), 'index.html'), 'utf8')
-    const script = /<script>([\s\S]*?)<\/script>/.exec(html)![1]
-    const defaults = [...script.matchAll(/gtag\('consent',\s*'default',\s*\{([\s\S]*?)\}\s*\)/g)]
+    const defaults = [...html.matchAll(/gtag\('consent',\s*'default',\s*\{([\s\S]*?)\}\s*\)/g)]
     expect(defaults.length).toBeGreaterThanOrEqual(2)
     for (const [, body] of defaults) {
       for (const signal of ['ad_storage', 'ad_user_data', 'ad_personalization']) {
