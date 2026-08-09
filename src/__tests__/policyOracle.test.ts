@@ -4,10 +4,16 @@ import {
   UIL_CLASS_2,
   UIL_CLASS_3,
   GHSA,
+  SCHSL,
+  TSSAA,
+  IOWA_CATEGORY_2,
   GENERIC_NATA,
+  NCHSAA_REFERENCE,
+  NYSPHSAA_HEAT_INDEX_REFERENCE,
   classifyWbgt,
   isBorderline,
   nextBandBoundary,
+  requiresOnSiteReading,
   BORDERLINE_MARGIN_F,
   REMOTE_UNDERESTIMATE_MIN_C,
   REMOTE_UNDERESTIMATE_MAX_C,
@@ -18,6 +24,16 @@ import {
   UIL_READING_INTERVAL_MINUTES,
   GHSA_READING_INTERVAL_MINUTES,
   GHSA_CALIBRATION_INTERVAL_YEARS,
+  SCHSL_READING_INTERVAL_MINUTES,
+  SCHSL_CALIBRATION_INTERVAL_YEARS,
+  SCHSL_RANGE_HOLD_MINUTES,
+  SCHSL_COLD_IMMERSION_WBGT_F,
+  IOWA_READING_INTERVAL_MINUTES,
+  IOWA_AMBIENT_TRIGGER_F,
+  IOWA_CATEGORY_NUMBER,
+  NYSPHSAA_AMBIENT_TRIGGER_F,
+  VA_ICE_WBGT_F,
+  VA_MIN_TIERS,
 } from '../data/policyOracle'
 import type { FlagColor, HeatPolicy } from '../data/policyOracle'
 
@@ -62,6 +78,54 @@ describe('policy oracle — band boundaries vs primary sources', () => {
   it('generic NATA fallback resolves the 92.0-92.1 source gap upward (conservative)', () => {
     expect(flagAt(GENERIC_NATA, 92.0)).toBe('red')
     expect(flagAt(GENERIC_NATA, 92.05)).toBe('black')
+  })
+
+  it('SCHSL boundaries match the April 2024 heat guidelines table', () => {
+    expect(flagAt(SCHSL, 81.9)).toBe('green')
+    expect(flagAt(SCHSL, 82.0)).toBe('yellow')
+    expect(flagAt(SCHSL, 86.9)).toBe('yellow')
+    expect(flagAt(SCHSL, 87.0)).toBe('orange')
+    expect(flagAt(SCHSL, 89.9)).toBe('orange')
+    expect(flagAt(SCHSL, 90.0)).toBe('red')
+    expect(flagAt(SCHSL, 92.0)).toBe('red')
+    // Source disagrees with itself above 92 ("Over 92.1" vs "at 92.1 or
+    // above"); resolved upward like GENERIC_NATA.
+    expect(flagAt(SCHSL, 92.05)).toBe('black')
+  })
+
+  it('TSSAA boundaries match the October 2024 heat policy', () => {
+    expect(flagAt(TSSAA, 81.9)).toBe('green')
+    expect(flagAt(TSSAA, 82.0)).toBe('yellow')
+    expect(flagAt(TSSAA, 86.9)).toBe('yellow')
+    expect(flagAt(TSSAA, 87.0)).toBe('orange')
+    expect(flagAt(TSSAA, 89.9)).toBe('orange')
+    expect(flagAt(TSSAA, 90.0)).toBe('red')
+    expect(flagAt(TSSAA, 92.0)).toBe('red')
+    expect(flagAt(TSSAA, 92.01)).toBe('black')
+  })
+
+  it('Iowa Category 2 boundaries match the joint WBGT guidance table', () => {
+    expect(flagAt(IOWA_CATEGORY_2, 79.6)).toBe('green')
+    // Source prints "< 79.7" then "79.8 – 84.6"; 79.7 resolves upward.
+    expect(flagAt(IOWA_CATEGORY_2, 79.7)).toBe('yellow')
+    expect(flagAt(IOWA_CATEGORY_2, 84.6)).toBe('yellow')
+    expect(flagAt(IOWA_CATEGORY_2, 84.7)).toBe('orange')
+    expect(flagAt(IOWA_CATEGORY_2, 87.6)).toBe('orange')
+    expect(flagAt(IOWA_CATEGORY_2, 87.7)).toBe('red')
+    expect(flagAt(IOWA_CATEGORY_2, 89.7)).toBe('red')
+    expect(flagAt(IOWA_CATEGORY_2, 89.8)).toBe('black')
+  })
+
+  it('Iowa classifies identically to UIL Class 2 (both derive from Category 2)', () => {
+    // Two independent documents, same national region set — a cross-check that
+    // catches either file drifting from its source. Compared by classification
+    // at reporting precision (0.1 °F) rather than by raw minF, because the two
+    // sources encode the top boundary differently: UIL prints "≥89.8" where
+    // Iowa prints "> 89.7". Identical at every tenth, different as numbers.
+    for (let tenths = 750; tenths <= 950; tenths++) {
+      const f = tenths / 10
+      expect(flagAt(IOWA_CATEGORY_2, f), `mismatch at ${f} °F`).toBe(flagAt(UIL_CLASS_2, f))
+    }
   })
 })
 
@@ -116,12 +180,68 @@ describe('policy oracle — measurement/compliance stance', () => {
     expect(GENERIC_NATA.remoteEstimatesAllowed).toBe('unspecified')
   })
 
+  it('SCHSL requires a device; Iowa recommends one; TSSAA is silent on remote WBGT', () => {
+    // SCHSL: "Phone apps are not scientifically approved at this time."
+    expect(SCHSL.remoteEstimatesAllowed).toBe('device-required')
+    // Iowa: WBGT is "recommended", but apps "do NOT provide an accurate
+    // temperature" — a weaker mandate that still blocks remote substitution.
+    expect(IOWA_CATEGORY_2.remoteEstimatesAllowed).toBe('device-recommended')
+    // TSSAA permits an app for HEAT INDEX only; it says nothing about remote WBGT.
+    expect(TSSAA.remoteEstimatesAllowed).toBe('unspecified')
+  })
+
+  it('both device stances suppress the remote reading as a compliance substitute', () => {
+    expect(requiresOnSiteReading(SCHSL)).toBe(true)
+    expect(requiresOnSiteReading(IOWA_CATEGORY_2)).toBe(true)
+    expect(requiresOnSiteReading(GHSA)).toBe(true)
+    expect(requiresOnSiteReading(UIL_CLASS_3)).toBe(false)
+    expect(requiresOnSiteReading(TSSAA)).toBe(false)
+  })
+
   it('administrative constants match the sources', () => {
     expect(UIL_EFFECTIVE_DATE).toBe('2026-08-01')
     expect(UIL_READING_BEFORE_PRACTICE_MAX_MINUTES).toBe(15)
     expect(UIL_READING_INTERVAL_MINUTES).toBe(30)
     expect(GHSA_READING_INTERVAL_MINUTES).toBe(30)
     expect(GHSA_CALIBRATION_INTERVAL_YEARS).toBe(2)
+    expect(SCHSL_READING_INTERVAL_MINUTES).toBe(30)
+    expect(SCHSL_CALIBRATION_INTERVAL_YEARS).toBe(2)
+    expect(SCHSL_RANGE_HOLD_MINUTES).toBe(15)
+    expect(SCHSL_COLD_IMMERSION_WBGT_F).toBe(82)
+    expect(IOWA_READING_INTERVAL_MINUTES).toBe(30)
+    expect(IOWA_AMBIENT_TRIGGER_F).toBe(80)
+    expect(IOWA_CATEGORY_NUMBER).toBe(2)
+    expect(NYSPHSAA_AMBIENT_TRIGGER_F).toBe(80)
+    expect(VA_ICE_WBGT_F).toBe(80)
+    expect(VA_MIN_TIERS).toBe(5)
+  })
+
+  it('NC and NY stay out of the WBGT policy picker (their scales are incompatible)', () => {
+    // NCHSAA uses a different threshold family AND its own colour names;
+    // NYSPHSAA's ladder is in heat index degrees. Either one wired into
+    // classifyWbgt would produce a confidently wrong flag.
+    const ids = Object.keys(POLICIES)
+    expect(ids).not.toContain('nchsaa')
+    expect(ids).not.toContain('nysphsaa')
+    expect(NCHSAA_REFERENCE.rows.length).toBeGreaterThan(0)
+    expect(NYSPHSAA_HEAT_INDEX_REFERENCE.rows.length).toBeGreaterThan(0)
+  })
+
+  it('reference tables carry a primary-source URL and verification date', () => {
+    for (const table of [NCHSAA_REFERENCE, NYSPHSAA_HEAT_INDEX_REFERENCE]) {
+      expect(table.source.url).toMatch(/^https:\/\//)
+      expect(table.source.verifiedOn).toMatch(/^\d{4}-\d{2}-\d{2}$/)
+    }
+  })
+
+  it('NCHSAA rows keep the association’s own colour names, not this site’s flags', () => {
+    expect(NCHSAA_REFERENCE.rows.map((r) => r.colorKey)).toEqual([
+      'black',
+      'red',
+      'amber',
+      'green',
+      'white',
+    ])
   })
 
   it('every policy carries a primary-source URL and verification date', () => {

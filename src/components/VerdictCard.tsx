@@ -5,6 +5,7 @@ import type { HeatPolicy } from '../data/policyOracle'
 import {
   classifyWbgt,
   nextBandBoundary,
+  requiresOnSiteReading,
   BORDERLINE_MARGIN_F,
   REMOTE_UNDERESTIMATE_MIN_C,
   REMOTE_UNDERESTIMATE_MAX_C,
@@ -137,9 +138,14 @@ export default function VerdictCard({
         <p>{t('verdict.verifyOnsite')}</p>
         <p>{t('verdict.surfaceNotice')}</p>
         {policy.id === 'generic' && <p>{t('verdict.genericRegionNotice')}</p>}
-        {policy.remoteEstimatesAllowed === 'device-required' && (
+        {requiresOnSiteReading(policy) && (
           <p className="font-bold">
-            {t('verdict.deviceOnlyNotice', { body: policy.source.name.split(' ')[0] })}
+            {t(
+              policy.remoteEstimatesAllowed === 'device-required'
+                ? 'verdict.deviceOnlyNotice'
+                : 'verdict.deviceRecommendedNotice',
+              { body: policy.source.name.split(' ')[0] },
+            )}
           </p>
         )}
       </div>

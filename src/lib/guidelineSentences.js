@@ -14,15 +14,27 @@ export function guidelineSentences(flag, g, t) {
   if (g.noOutdoorWorkouts) return [t('guideline.noOutdoor')]
 
   const out = []
-  if (flag === 'green') out.push(t('guideline.normal'))
+  // A band whose source states nothing gets the silence spelled out instead of
+  // an invented "normal activities" claim (see TSSAA's green band).
+  const sourceSilent = (g.extraKeys ?? []).includes('guideline.notAddressedBelow')
+  if (flag === 'green' && !sourceSilent) out.push(t('guideline.normal'))
   if (flag === 'yellow') out.push(t('guideline.discretion'))
-  if (g.maxPracticeMinutes !== null && g.maxPracticeMinutes > 0) {
+  if (g.maxPracticeMinutes != null && g.maxPracticeMinutes > 0) {
     out.push(t('guideline.maxPracticeMinutes', { minutes: g.maxPracticeMinutes }))
   }
-  if (g.restBreaksPerHour !== null && g.restBreakMinMinutes !== null) {
-    out.push(t('guideline.restBreaks', { n: g.restBreaksPerHour, minutes: g.restBreakMinMinutes }))
+  if (g.restBreaksPerHour != null && g.restBreakMinMinutes != null) {
+    // Sources printing a range ("3-5 minutes each") carry restBreakMaxMinutes.
+    out.push(
+      g.restBreakMaxMinutes != null
+        ? t('guideline.restBreaksRange', {
+            n: g.restBreaksPerHour,
+            min: g.restBreakMinMinutes,
+            max: g.restBreakMaxMinutes,
+          })
+        : t('guideline.restBreaks', { n: g.restBreaksPerHour, minutes: g.restBreakMinMinutes }),
+    )
   }
-  if (g.restMinutesPerHour !== null) {
+  if (g.restMinutesPerHour != null) {
     out.push(t('guideline.restMinutes', { minutes: g.restMinutesPerHour }))
   }
   if (g.footballEquipment === 'helmet-shoulder-pads-shorts') {
@@ -33,5 +45,8 @@ export function guidelineSentences(flag, g, t) {
   }
   if (g.noConditioning) out.push(t('guideline.noConditioning'))
   if (g.coolingZoneRequired) out.push(t('guideline.coolingZone'))
+  // Source requirements the shared fields cannot express. These locale strings
+  // are number-free by contract (oracleCopy.test guards the digit rule).
+  for (const key of g.extraKeys ?? []) out.push(t(key))
   return out
 }

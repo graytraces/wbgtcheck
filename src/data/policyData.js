@@ -15,6 +15,18 @@
  *         https://www.ghsa.net/sites/default/files/documents/sports-medicine/HeatHumidity.pdf
  *  - NATA position statement Table 5:
  *         https://www.nata.org/sites/default/files/exertional_heat_illnesses.pdf
+ *  - SCHSL Heat and Acclimatization Guidelines (Updated April 2024):
+ *         https://schsl.org/wp-content/uploads/2024/07/Heat-Guidelines-Updated_-April-2024-3.pdf
+ *  - Iowa IHSAA/IGHSAU/IHSMA/IHSSA WBGT Heat Modification Guidance (8.5.24):
+ *         https://ihsma.org/wp-content/uploads/2025/07/WBGT-Guidance8.5.24.pdf
+ *  - TSSAA Heat Policy (Revised October 2024):
+ *         https://cms-files.tssaa.org/documents/tssaa/health-safety-information/2025-26TSSAAHeatPolicy.pdf
+ *  - NCHSAA heat and humidity guidelines (handbook pp. 114-117):
+ *         https://www.nchsaa.org/wp-content/uploads/2015/03/handbook-heat-humidity.pdf
+ *  - NYSPHSAA Heat Index Procedures (Approved 2010-05-01, Updated 2023-05-03):
+ *         https://s3.amazonaws.com/nysphsaa.org/documents/2023/5/5/Heat_Index_Procedure_5_23.pdf
+ *  - Code of Virginia § 22.1-271.10 (2025, cc. 478, 493):
+ *         https://law.lis.virginia.gov/vacode/title22.1/chapter14/section22.1-271.10/
  */
 
 // --- UIL (Texas) administrative constants ---------------------------------
@@ -236,9 +248,414 @@ export const GENERIC_NATA = {
   ],
 }
 
+// --- SCHSL (South Carolina) administrative constants ----------------------
+// Source: SCHSL Heat and Acclimatization Guidelines (Updated April 2024).
+
+export const SCHSL_READING_INTERVAL_MINUTES = 30
+export const SCHSL_READING_LEAD_MINUTES = 30
+export const SCHSL_CALIBRATION_INTERVAL_YEARS = 2
+/** A reading must hold a range this long before the range's restrictions lock in. */
+export const SCHSL_RANGE_HOLD_MINUTES = 15
+/** Cold immersion must be immediately available at or above this WBGT. */
+export const SCHSL_COLD_IMMERSION_WBGT_F = 82
+export const SCHSL_DEVICE_QUOTE =
+  'A scientifically approved WBGT thermometer should be on site and utilized. Do not rely on local weather updates or weather apps as they do not provide an accurate reading for your specific venue.'
+export const SCHSL_APP_QUOTE = 'Phone apps are not scientifically approved at this time.'
+export const SCHSL_REQUIRED_QUOTE =
+  'All schools are required to use a 1) scientifically approved on-site Wet Bulb Globe Thermometer (WBGT), 2) cold immersion tub or other effective cooling devices, and 3) have a venue-specific Emergency Action Plan in place'
+/**
+ * The source's prose wording for its top boundary, which disagrees with the
+ * table label (see the SCHSL black band comment). Lives here rather than in
+ * locale copy so the threshold-literal guard stays satisfiable.
+ */
+export const SCHSL_TOP_BOUNDARY_TEXT_QUOTE = 'at 92.1 or above'
+
+// --- Iowa administrative constants ---------------------------------------
+// Source: IHSAA/IGHSAU/IHSMA/IHSSA WBGT Heat Modification Guidance (8.5.24).
+
+export const IOWA_READING_INTERVAL_MINUTES = 30
+export const IOWA_ACCLIMATIZE_DEVICE_MIN_MINUTES = 15
+export const IOWA_ACCLIMATIZE_DEVICE_MAX_MINUTES = 20
+export const IOWA_DEVICE_HEIGHT_FEET = 3
+/** WBGT use is recommended year-round above this ambient air temperature. */
+export const IOWA_AMBIENT_TRIGGER_F = 80
+/** Iowa states it derives its numbers from the national Category 2 region set. */
+export const IOWA_CATEGORY_NUMBER = 2
+export const IOWA_RECOMMENDED_QUOTE =
+  'The use of WBGT is recommended throughout the calendar year when the ambient temperature is above 80 degrees (indoors or outdoors).'
+export const IOWA_APP_QUOTE =
+  'Using local news weather forecasts, weather apps on your phone or smart device do NOT provide an accurate temperature for where your conducting your outdoor or non climate controlled activity.'
+
+// --- SCHSL band guidelines ------------------------------------------------
+// SCHSL's table is structurally the same as GHSA's, with one addition: cold
+// immersion must be available at or above SCHSL_COLD_IMMERSION_WBGT_F (82), so
+// every band from yellow up carries coolingZoneRequired.
+
+const SCHSL_GREEN = {
+  maxPracticeMinutes: null,
+  restBreaksPerHour: 3,
+  restBreakMinMinutes: 3,
+  restBreakMaxMinutes: null,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: false,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: false,
+}
+
+const SCHSL_YELLOW = {
+  maxPracticeMinutes: null,
+  restBreaksPerHour: 3,
+  restBreakMinMinutes: 4,
+  restBreakMaxMinutes: null,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: false,
+  coolingZoneRequired: true,
+  noOutdoorWorkouts: false,
+}
+
+const SCHSL_ORANGE = {
+  maxPracticeMinutes: 120,
+  restBreaksPerHour: 4,
+  restBreakMinMinutes: 4,
+  restBreakMaxMinutes: null,
+  restMinutesPerHour: null,
+  footballEquipment: 'helmet-shoulder-pads-shorts',
+  noConditioning: false,
+  coolingZoneRequired: true,
+  noOutdoorWorkouts: false,
+}
+
+const SCHSL_RED = {
+  maxPracticeMinutes: 60,
+  restBreaksPerHour: null,
+  restBreakMinMinutes: null,
+  restBreakMaxMinutes: null,
+  restMinutesPerHour: 20,
+  footballEquipment: 'none',
+  noConditioning: true,
+  coolingZoneRequired: true,
+  noOutdoorWorkouts: false,
+}
+
+const SCHSL_BLACK = {
+  maxPracticeMinutes: 0,
+  restBreaksPerHour: null,
+  restBreakMinMinutes: null,
+  restBreakMaxMinutes: null,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: true,
+  coolingZoneRequired: true,
+  noOutdoorWorkouts: true,
+}
+
+// --- Iowa band guidelines -------------------------------------------------
+// Iowa prints rest breaks as a RANGE ("3-5 minutes each"), so these bands use
+// restBreakMaxMinutes. Equipment language per Appendix C's football mapping.
+
+const IOWA_GREEN = {
+  maxPracticeMinutes: null,
+  restBreaksPerHour: 3,
+  restBreakMinMinutes: 3,
+  restBreakMaxMinutes: 5,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: false,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: false,
+}
+
+const IOWA_YELLOW = {
+  maxPracticeMinutes: null,
+  restBreaksPerHour: 3,
+  restBreakMinMinutes: 4,
+  restBreakMaxMinutes: 6,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: false,
+  coolingZoneRequired: true,
+  noOutdoorWorkouts: false,
+}
+
+const IOWA_ORANGE = {
+  maxPracticeMinutes: 120,
+  restBreaksPerHour: 4,
+  restBreakMinMinutes: 4,
+  restBreakMaxMinutes: 6,
+  restMinutesPerHour: null,
+  footballEquipment: 'helmet-shoulder-pads-shorts',
+  noConditioning: false,
+  coolingZoneRequired: true,
+  noOutdoorWorkouts: false,
+}
+
+const IOWA_RED = {
+  maxPracticeMinutes: 60,
+  restBreaksPerHour: null,
+  restBreakMinMinutes: null,
+  restBreakMaxMinutes: null,
+  restMinutesPerHour: 20,
+  footballEquipment: 'none',
+  noConditioning: true,
+  coolingZoneRequired: true,
+  noOutdoorWorkouts: false,
+}
+
+const IOWA_BLACK = {
+  maxPracticeMinutes: 0,
+  restBreaksPerHour: null,
+  restBreakMinMinutes: null,
+  restBreakMaxMinutes: null,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: true,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: true,
+}
+
+export const SCHSL = {
+  id: 'schsl',
+  source: {
+    name: 'SCHSL Heat and Acclimatization Guidelines (Updated April 2024)',
+    url: 'https://schsl.org/wp-content/uploads/2024/07/Heat-Guidelines-Updated_-April-2024-3.pdf',
+    verifiedOn: '2026-08-09',
+  },
+  remoteEstimatesAllowed: 'device-required',
+  bands: [
+    // The source is internally inconsistent at the top boundary: the table
+    // prints "Over 92.1", §3.d says "at 92.1 or above", §3.e.iv says ">92.1".
+    // Resolved conservatively (>92.0 → black), matching GENERIC_NATA above.
+    { flag: 'black', minF: 92.0, minInclusive: false, sourceLabel: 'Over 92.1', guideline: SCHSL_BLACK },
+    { flag: 'red', minF: 90.0, minInclusive: true, sourceLabel: '90.0-92.0', guideline: SCHSL_RED },
+    { flag: 'orange', minF: 87.0, minInclusive: true, sourceLabel: '87.0-89.9', guideline: SCHSL_ORANGE },
+    { flag: 'yellow', minF: 82.0, minInclusive: true, sourceLabel: '82.0-86.9', guideline: SCHSL_YELLOW },
+    { flag: 'green', minF: null, minInclusive: true, sourceLabel: 'Under 82.0', guideline: SCHSL_GREEN },
+  ],
+}
+
+export const IOWA_CATEGORY_2 = {
+  id: 'iowa',
+  source: {
+    name: 'Iowa IHSAA/IGHSAU/IHSMA/IHSSA WBGT Heat Modification Guidance (8.5.24)',
+    url: 'https://ihsma.org/wp-content/uploads/2025/07/WBGT-Guidance8.5.24.pdf',
+    verifiedOn: '2026-08-09',
+  },
+  // WBGT is "recommended", not mandated — but the same document states that
+  // phone weather apps "do NOT provide an accurate temperature" for the venue,
+  // so remote estimates cannot stand in for the on-site reading Iowa describes.
+  remoteEstimatesAllowed: 'device-recommended',
+  bands: [
+    // Appendix C labels this band "89.8 or greater (BLACK)"; the main table
+    // prints "> 89.7". Same boundary, both as printed.
+    { flag: 'black', minF: 89.7, minInclusive: false, sourceLabel: '> 89.7', guideline: IOWA_BLACK },
+    { flag: 'red', minF: 87.7, minInclusive: true, sourceLabel: '87.7 – 89.7', guideline: IOWA_RED },
+    { flag: 'orange', minF: 84.7, minInclusive: true, sourceLabel: '84.7 – 87.6', guideline: IOWA_ORANGE },
+    // Source prints "< 79.7" then "79.8 – 84.6", leaving 79.7 itself
+    // unassigned. Resolved upward (≥79.7 → yellow), the safe direction.
+    { flag: 'yellow', minF: 79.7, minInclusive: true, sourceLabel: '79.8 – 84.6', guideline: IOWA_YELLOW },
+    { flag: 'green', minF: null, minInclusive: true, sourceLabel: '< 79.7', guideline: IOWA_GREEN },
+  ],
+}
+
+// --- TSSAA (Tennessee) administrative constants ---------------------------
+// Source: TSSAA Heat Policy (Revised October 2024).
+
+export const TSSAA_REVISION = 'October 2024'
+export const TSSAA_WBGT_FIRST_CHOICE_QUOTE =
+  "Wet Bulb Globe Temperature (WBGT) takes into account more environmental factors than heat index and should be a school's first choice when evaluating conditions and planning activities."
+export const TSSAA_APP_QUOTE =
+  'The use of a weather app on a cell phone is permissible to measure heat index if no other instrument is available to measure heat index at the site of the practice or competition.'
+export const TSSAA_EITHER_QUOTE =
+  'Each school is responsible for obtaining either a Wet Bulb Globe Temperature or Heat Index reading at the site of practices and competitions.'
+
+const TSSAA_GREEN = {
+  maxPracticeMinutes: null,
+  restBreaksPerHour: null,
+  restBreakMinMinutes: null,
+  restBreakMaxMinutes: null,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: false,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: false,
+  // TSSAA's table starts at 82.0 — it states nothing below that.
+  extraKeys: ['guideline.notAddressedBelow'],
+}
+
+const TSSAA_YELLOW = {
+  maxPracticeMinutes: null,
+  restBreaksPerHour: 3,
+  restBreakMinMinutes: 3,
+  restBreakMaxMinutes: null,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: false,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: false,
+}
+
+const TSSAA_ORANGE = {
+  maxPracticeMinutes: 120,
+  restBreaksPerHour: 4,
+  restBreakMinMinutes: 4,
+  restBreakMaxMinutes: null,
+  restMinutesPerHour: null,
+  // TSSAA differs from UIL/GHSA here: full pads ARE allowed during contact at
+  // this band; the restriction applies to non-contact and conditioning work.
+  footballEquipment: null,
+  noConditioning: false,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: false,
+  extraKeys: ['guideline.tssaaFootballContactAllowed'],
+}
+
+const TSSAA_RED = {
+  maxPracticeMinutes: 60,
+  restBreaksPerHour: null,
+  restBreakMinMinutes: null,
+  restBreakMaxMinutes: null,
+  restMinutesPerHour: 20,
+  footballEquipment: null,
+  noConditioning: true,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: false,
+  extraKeys: ['guideline.tssaaFootballNonContactNoEquipment'],
+}
+
+const TSSAA_BLACK = {
+  maxPracticeMinutes: 0,
+  restBreaksPerHour: null,
+  restBreakMinMinutes: null,
+  restBreakMaxMinutes: null,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: true,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: true,
+}
+
+export const TSSAA = {
+  id: 'tssaa',
+  source: {
+    name: 'TSSAA Heat Policy (Revised October 2024)',
+    url: 'https://cms-files.tssaa.org/documents/tssaa/health-safety-information/2025-26TSSAAHeatPolicy.pdf',
+    verifiedOn: '2026-08-09',
+  },
+  // TSSAA permits a phone weather app only to read HEAT INDEX, and only when no
+  // other instrument is available. It says nothing about remote WBGT estimates,
+  // so remote WBGT is 'unspecified' rather than 'yes'.
+  remoteEstimatesAllowed: 'unspecified',
+  bands: [
+    { flag: 'black', minF: 92.0, minInclusive: false, sourceLabel: 'Above 92.0', guideline: TSSAA_BLACK },
+    { flag: 'red', minF: 90.0, minInclusive: true, sourceLabel: '90 to 92', guideline: TSSAA_RED },
+    { flag: 'orange', minF: 87.0, minInclusive: true, sourceLabel: '87 to 89.9', guideline: TSSAA_ORANGE },
+    { flag: 'yellow', minF: 82.0, minInclusive: true, sourceLabel: '82.0 – 86.9', guideline: TSSAA_YELLOW },
+    { flag: 'green', minF: null, minInclusive: true, sourceLabel: '< 82.0', guideline: TSSAA_GREEN },
+  ],
+}
+
+/**
+ * TSSAA's alternative Heat Index ladder, printed alongside the WBGT bands. Kept
+ * separate from the WBGT bands so a heat-index number can never be classified
+ * against a WBGT threshold. Labels are exactly as the source prints them.
+ */
+export const TSSAA_HEAT_INDEX_BANDS = [
+  { sourceLabel: 'Under 95', pairsWithWbgt: '82.0 – 86.9' },
+  { sourceLabel: '95 Degrees to 99 Degrees', pairsWithWbgt: '87 to 89.9' },
+  { sourceLabel: '100 Degrees to 104 Degrees', pairsWithWbgt: '90 to 92' },
+  { sourceLabel: 'Above 104 Degrees', pairsWithWbgt: 'Above 92.0' },
+]
+
+// --- NCHSAA (North Carolina) reference table ------------------------------
+// NOT a POLICIES entry, deliberately. NCHSAA publishes its own five-colour code
+// whose names collide with this site's flag palette but NOT with its meanings
+// (NCHSAA "Green" = normal practice; this site's yellow = use discretion), and
+// its thresholds are a different family (80/85/88/90 vs 82/87/90/92). Mapping
+// NCHSAA rows onto this site's flags would print a colour the association's own
+// chart contradicts, so North Carolina renders as its own table only.
+
+export const NCHSAA_REMOTE_QUOTE =
+  'Measure WBGT reading if this can be done accurately onsite. If not, determine this from weather station or reliable airport site within 5 to 10 miles of practice site.'
+export const NCHSAA_STAFFING_QUOTE =
+  'A Certified Athletic Trainer or 1st Responder MUST be in attendance at all football practices and games.'
+export const NCHSAA_WEATHER_STATION_RADIUS_MIN_MILES = 5
+export const NCHSAA_WEATHER_STATION_RADIUS_MAX_MILES = 10
+
+export const NCHSAA_REFERENCE = {
+  id: 'nchsaa',
+  source: {
+    name: 'NCHSAA heat and humidity guidelines (handbook)',
+    url: 'https://www.nchsaa.org/wp-content/uploads/2015/03/handbook-heat-humidity.pdf',
+    verifiedOn: '2026-08-09',
+  },
+  /** Rows hottest first, matching the reversed-render convention elsewhere. */
+  rows: [
+    { sourceLabel: '90 or above', colorKey: 'black', breakMinutes: null, breakEveryMinutes: null, textKeys: ['northCarolina.rows.suspend'] },
+    { sourceLabel: '88-89.9', colorKey: 'red', breakMinutes: 5, breakEveryMinutes: 15, textKeys: ['northCarolina.rows.observation', 'northCarolina.rows.removePads', 'northCarolina.rows.immersion'] },
+    { sourceLabel: '85-87.9', colorKey: 'amber', breakMinutes: 5, breakEveryMinutes: 20, textKeys: ['northCarolina.rows.unconditioned', 'northCarolina.rows.immersion'] },
+    { sourceLabel: '80-84.9', colorKey: 'green', breakMinutes: 5, breakEveryMinutes: 25, textKeys: ['northCarolina.rows.normal'] },
+    { sourceLabel: 'Less than 80', colorKey: 'white', breakMinutes: 5, breakEveryMinutes: 30, textKeys: ['northCarolina.rows.unlimited'] },
+  ],
+}
+
+// --- NYSPHSAA (New York) reference table ----------------------------------
+// HEAT INDEX degrees, not WBGT. Never feed these numbers to classifyWbgt.
+
+export const NYSPHSAA_APPROVED_ON = '2010-05-01'
+export const NYSPHSAA_UPDATED_ON = '2023-05-03'
+export const NYSPHSAA_CHECK_LEAD_HOURS = 1
+export const NYSPHSAA_AMBIENT_TRIGGER_F = 80
+export const NYSPHSAA_WARNING_BREAK_INTERVAL_MINUTES = 15
+export const NYSPHSAA_APP_QUOTE =
+  'Download WeatherBug app to your phone or log into www.weatherbug.com.'
+export const NYSPHSAA_ZIP_QUOTE =
+  'Enter zip code or city and state in the location section of the app or on-line or determine the THI by using a Wet Bulb Globe Temperature Indicator.'
+
+export const NYSPHSAA_HEAT_INDEX_REFERENCE = {
+  id: 'nysphsaa',
+  source: {
+    name: 'NYSPHSAA Heat Index Procedures (updated May 3, 2023)',
+    url: 'https://s3.amazonaws.com/nysphsaa.org/documents/2023/5/5/Heat_Index_Procedure_5_23.pdf',
+    verifiedOn: '2026-08-09',
+  },
+  /** Rows hottest first. `tier` is the source's own banner for the row. */
+  rows: [
+    { sourceLabel: '96 degrees or greater', tierKey: 'alert', required: true, textKeys: ['newYork.rows.noOutside'] },
+    { sourceLabel: '91 degrees to 95 degrees', tierKey: 'warning', required: true, textKeys: ['newYork.rows.breaks15', 'newYork.rows.clothing', 'newYork.rows.helmetsOnly', 'newYork.rows.recovery'] },
+    { sourceLabel: '86 degrees to 90 degrees', tierKey: 'watch', required: false, textKeys: ['newYork.rows.water', 'newYork.rows.considerPostpone', 'newYork.rows.recovery'] },
+    { sourceLabel: '80 degrees to 85 degrees', tierKey: 'caution', required: false, textKeys: ['newYork.rows.water', 'newYork.rows.considerShorten'] },
+    { sourceLabel: 'under 79 degrees', tierKey: 'full', required: false, textKeys: ['newYork.rows.fullActivity'] },
+  ],
+}
+
+// --- Virginia statute constants ------------------------------------------
+// Code of Virginia § 22.1-271.10 (2025, cc. 478, 493). The statute sets NO
+// activity thresholds — school boards do. The only number it fixes is the
+// WBGT level at which ice must be provided.
+
+export const VA_CODE_SECTION = '§ 22.1-271.10'
+export const VA_CODE_CITATION = '2025, cc. 478, 493'
+export const VA_ICE_WBGT_F = 80
+export const VA_MIN_TIERS = 5
+export const VA_CONSISTENCY_QUOTE =
+  'Be consistent with any heat guidelines based on Wet Bulb Globe Temperature (WBGT) levels developed by an organization or entity whose purpose it is to regulate or govern interscholastic athletics programs in the Commonwealth'
+export const VA_CANCEL_QUOTE =
+  'Include parameters relating to the scheduling of outdoor athletics practices or games during different WBGT levels and establishing the WBGT levels at which outdoor athletics practices or games shall be cancelled'
+
+export const VA_STATUTE_SOURCE = {
+  name: 'Code of Virginia § 22.1-271.10 — Guidelines and policies on student-athlete extreme heat safety and protection',
+  url: 'https://law.lis.virginia.gov/vacode/title22.1/chapter14/section22.1-271.10/',
+  verifiedOn: '2026-08-09',
+}
+
 export const POLICIES = {
   'uil-class-2': UIL_CLASS_2,
   'uil-class-3': UIL_CLASS_3,
   ghsa: GHSA,
+  schsl: SCHSL,
+  tssaa: TSSAA,
+  iowa: IOWA_CATEGORY_2,
   generic: GENERIC_NATA,
 }

@@ -5,7 +5,11 @@ import type { DaySummary } from '../utils/verdict'
 import type { HeatPolicy } from '../data/policyOracle'
 import { buildShareCardModel, drawShareCard, SHARE_CARD_SIZE } from '../utils/shareCard'
 import { trackShareCard } from '../utils/analytics'
-import { REMOTE_UNDERESTIMATE_MIN_C, REMOTE_UNDERESTIMATE_MAX_C } from '../data/policyOracle'
+import {
+  requiresOnSiteReading,
+  REMOTE_UNDERESTIMATE_MIN_C,
+  REMOTE_UNDERESTIMATE_MAX_C,
+} from '../data/policyOracle'
 
 interface ShareCardButtonProps {
   day: DaySummary
@@ -42,10 +46,14 @@ export default function ShareCardButton({ day, policy, locationLabel }: ShareCar
         min: REMOTE_UNDERESTIMATE_MIN_C,
         max: REMOTE_UNDERESTIMATE_MAX_C,
       })} ${t('verdict.verifyOnsite')}`,
-      complianceNote:
-        policy.remoteEstimatesAllowed === 'device-required'
-          ? t('verdict.deviceOnlyNotice', { body: policy.source.name.split(' ')[0] })
-          : null,
+      complianceNote: requiresOnSiteReading(policy)
+        ? t(
+            policy.remoteEstimatesAllowed === 'device-required'
+              ? 'verdict.deviceOnlyNotice'
+              : 'verdict.deviceRecommendedNotice',
+            { body: policy.source.name.split(' ')[0] },
+          )
+        : null,
       title: t('share.todayFlags'),
       estimatedNote: t('verdict.estimatedBadge'),
       lang: i18n.language,
