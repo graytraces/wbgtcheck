@@ -93,6 +93,24 @@
       }
     ]
   },
+  "wbgtLog": {
+    "heading": "Registro de lecturas",
+    "intro": "Un registro con hora de las lecturas de esta sesión — guardado solo en este dispositivo.",
+    "cadenceHint": "El ritmo de la UIL: una lectura dentro de los {{before}} minutos previos a la práctica y luego cada {{interval}} minutos. Otras asociaciones fijan su propia cadencia.",
+    "saveForecast": "Registrar estimación actual ({{value}} °F)",
+    "savedToast": "Registrado",
+    "onsiteLabel": "Lectura del medidor en el sitio (°F)",
+    "onsiteButton": "Registrar lectura",
+    "sourceForecast": "Estimación de pronóstico",
+    "sourceOnsite": "Lectura en el sitio",
+    "historyTitle": "Lecturas guardadas",
+    "printButton": "Imprimir registro",
+    "storageNote": "Se guarda solo en este navegador — borrar los datos del sitio elimina el registro.",
+    "clearAll": "Borrar todo",
+    "clearConfirm": "¿Eliminar todas las lecturas guardadas?",
+    "cancel": "Cancelar",
+    "delete": "Eliminar entrada"
+  },
   "location": {
     "heading": "¿Dónde es la práctica?",
     "zipPlaceholder": "Código ZIP",

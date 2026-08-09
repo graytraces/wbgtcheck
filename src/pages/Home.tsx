@@ -11,6 +11,7 @@ import WeekStrip from '../components/WeekStrip'
 import PolicyBandsTable from '../components/PolicyBandsTable'
 import ShareCardButton from '../components/ShareCardButton'
 import AirQualityGate from '../components/AirQualityGate'
+import WbgtLog from '../components/WbgtLog'
 import { useWbgt, isStale } from '../hooks/useWbgt'
 import { useAirQuality } from '../hooks/useAirQuality'
 import { airPolicyForState } from '../data/airPolicyOracle'
@@ -228,6 +229,15 @@ export default function Home() {
           <h2 className="display-num mb-2 text-xl uppercase">{t('verdict.weekHeading')}</h2>
           <WeekStrip days={days} />
         </section>
+      )}
+
+      {location && status === 'ready' && (
+        <WbgtLog
+          currentWbgtF={current ? current.wbgtF : null}
+          policy={policy}
+          policyId={policyId}
+          locationLabel={location.label}
+        />
       )}
 
       <section>

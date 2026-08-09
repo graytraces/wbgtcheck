@@ -83,6 +83,27 @@ body {
 }
 
 /*
+ * Print isolation for the reading log: WbgtLog adds this body class before
+ * window.print() and removes it after, so a browser print of the page
+ * yields a submission-ready log sheet instead of the whole app.
+ */
+@media print {
+  body.print-wbgt-log * {
+    visibility: hidden;
+  }
+  body.print-wbgt-log #wbgt-log,
+  body.print-wbgt-log #wbgt-log * {
+    visibility: visible;
+  }
+  body.print-wbgt-log #wbgt-log {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
+
+/*
  * Horizontal scroll container with scroll-aware edge shadows: the shadow
  * only shows on a side that has clipped content (bg gradients scroll with
  * the content, cover gradients sit fixed). Reserved for the one table

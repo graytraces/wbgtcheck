@@ -33,3 +33,8 @@ export function trackShareCard(format: 'download' | 'share') {
 export function trackLocationSet(method: 'zip' | 'geolocation' | 'saved') {
   track('location_set', { method })
 }
+
+/** A reading was saved to the session log. */
+export function trackWbgtLogSave(source: 'forecast' | 'onsite') {
+  track('wbgt_log_save', { source })
+}

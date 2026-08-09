@@ -93,6 +93,24 @@
       }
     ]
   },
+  "wbgtLog": {
+    "heading": "Reading log",
+    "intro": "A timestamped record of readings for this session — saved only on this device.",
+    "cadenceHint": "UIL's rhythm: a reading within {{before}} minutes before practice, then every {{interval}} minutes during. Other associations set their own cadence.",
+    "saveForecast": "Log current estimate ({{value}} °F)",
+    "savedToast": "Logged",
+    "onsiteLabel": "On-site meter reading (°F)",
+    "onsiteButton": "Log reading",
+    "sourceForecast": "Forecast estimate",
+    "sourceOnsite": "On-site reading",
+    "historyTitle": "Saved readings",
+    "printButton": "Print log",
+    "storageNote": "Saved in this browser only — clearing site data deletes the log.",
+    "clearAll": "Clear all",
+    "clearConfirm": "Delete every saved reading?",
+    "cancel": "Cancel",
+    "delete": "Delete entry"
+  },
   "location": {
     "heading": "Where is practice?",
     "zipPlaceholder": "ZIP code",
