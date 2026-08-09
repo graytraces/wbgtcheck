@@ -54,7 +54,7 @@ wbgtcheck/
 ```bash
 npm run dev      # 개발 서버 — 워커 없이 NWS 직접 호출 (dev 전용 폴백)
 npm run build    # tsc + vite build + prerender (32 HTML + sitemap)
-npm test         # tsc --noEmit + vitest (19파일 223테스트)
+npm test         # tsc --noEmit + vitest (22파일 241테스트)
 npm run preview  # 빌드 결과 미리보기
 ```
 
