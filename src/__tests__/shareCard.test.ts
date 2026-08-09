@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildShareCardModel, layoutVerdictBlock } from '../utils/shareCard'
+import { buildShareCardModel, layoutVerdictBlock, fitText } from '../utils/shareCard'
 import { annotateHours, groupByDay } from '../utils/verdict'
 import type { HourPoint } from '../utils/nws'
 import { UIL_CLASS_3, classifyWbgt } from '../data/policyOracle'
@@ -119,5 +119,76 @@ describe('share card verdict layout', () => {
     expect(layout.numberScale).toBeLessThan(1)
     expect(layout.numberInkBottom).toBeLessThan(layout.labelInkTop)
     expect(layout.gap).toBeGreaterThanOrEqual(24 - 1e-9)
+  })
+})
+
+/**
+ * Footer notice fitting.
+ *
+ * The old wrapper pushed all leftover text onto the final line and drew it
+ * with `fillText(..., maxWidth)`, which horizontally compresses glyphs — no
+ * clipping, no warning, just unreadable text. Measured in both engines on
+ * 2026-08-10, the Spanish safety note cleared its 960px budget by 0.41px, so a
+ * copy edit of a few characters would have shipped the conservative-bias and
+ * verify-on-site sentences squashed. Those two are the reason the card is
+ * allowed to leave the site.
+ *
+ * A fake context measures a fixed width per character, which makes wrapping
+ * deterministic without a canvas.
+ */
+function fakeCtx(pxPerCharAt1px = 0.6) {
+  let px = 24
+  return {
+    set font(value: string) {
+      px = Number(/(\d+(?:\.\d+)?)px/.exec(value)?.[1] ?? 24)
+    },
+    get font() {
+      return `${px}px test`
+    },
+    measureText(text: string) {
+      return { width: text.length * px * pxPerCharAt1px } as TextMetrics
+    },
+  } as unknown as CanvasRenderingContext2D
+}
+
+const font = (px: number) => `600 ${px}px system-ui, sans-serif`
+
+describe('share card notice fitting', () => {
+  it('keeps the nominal size when the text already fits', () => {
+    const fitted = fitText(fakeCtx(), 'short note', 960, 3, font, 24, 17)
+    expect(fitted.fits).toBe(true)
+    expect(fitted.px).toBe(24)
+    expect(fitted.lines.length).toBeLessThanOrEqual(3)
+  })
+
+  it('shrinks rather than squashing when the budget is tight', () => {
+    // Long enough to need four lines at 24px, which must become three smaller.
+    const long = Array.from({ length: 40 }, (_, i) => `word${i}`).join(' ')
+    const fitted = fitText(fakeCtx(), long, 960, 3, font, 24, 17)
+    expect(fitted.fits).toBe(true)
+    expect(fitted.px).toBeLessThan(24)
+    expect(fitted.lines.length).toBeLessThanOrEqual(3)
+    // Nothing is dropped: every word survives the wrap.
+    expect(fitted.lines.join(' ').split(' ')).toHaveLength(40)
+  })
+
+  it('reports failure instead of silently overflowing at the floor', () => {
+    const absurd = Array.from({ length: 400 }, (_, i) => `word${i}`).join(' ')
+    const fitted = fitText(fakeCtx(), absurd, 960, 3, font, 24, 17)
+    expect(fitted.fits).toBe(false)
+    expect(fitted.px).toBe(17)
+    // Still no truncation — the caller decides, and the text is all there.
+    expect(fitted.lines.join(' ').split(' ')).toHaveLength(400)
+  })
+
+  it('never returns a line wider than the budget it was given', () => {
+    const ctx = fakeCtx()
+    const long = Array.from({ length: 40 }, (_, i) => `word${i}`).join(' ')
+    const fitted = fitText(ctx, long, 960, 3, font, 24, 17)
+    ctx.font = font(fitted.px)
+    for (const line of fitted.lines) {
+      // Single words longer than the budget are the one unavoidable exception.
+      if (line.includes(' ')) expect(ctx.measureText(line).width).toBeLessThanOrEqual(960)
+    }
   })
 })

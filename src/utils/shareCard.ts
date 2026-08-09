@@ -234,38 +234,75 @@ function drawFlagIcon(
   ctx.restore()
 }
 
-function wrapText(
-  ctx: CanvasRenderingContext2D,
-  text: string,
-  maxWidth: number,
-  maxLines: number,
-): string[] {
-  const words = text.split(' ')
+/** Greedy wrap at the current font. No line limit — the caller sizes to fit. */
+function wrapGreedy(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
   const lines: string[] = []
   let line = ''
-  for (const word of words) {
+  for (const word of text.split(' ')) {
     const candidate = line ? `${line} ${word}` : word
-    if (ctx.measureText(candidate).width > maxWidth && line) {
+    if (line && ctx.measureText(candidate).width > maxWidth) {
       lines.push(line)
       line = word
-      if (lines.length === maxLines - 1) break
     } else {
       line = candidate
     }
   }
-  if (line) {
-    const rest = words.slice(lines.join(' ').split(' ').filter(Boolean).length).join(' ')
-    lines.push(lines.length === maxLines - 1 ? rest : line)
-  }
-  return lines.slice(0, maxLines)
+  if (line) lines.push(line)
+  return lines
 }
 
-export function drawShareCard(canvas: HTMLCanvasElement, model: ShareCardModel): void {
+export interface FittedText {
+  lines: string[]
+  /** Font size actually used. */
+  px: number
+  /** False when even the minimum size overflows maxLines. */
+  fits: boolean
+}
+
+/**
+ * Lay text out inside a line budget by SHRINKING it, never by squashing it.
+ *
+ * The previous wrapper pushed everything left over onto the final line and
+ * drew it with `fillText(..., maxWidth)`, which horizontally compresses the
+ * glyphs — no clipping, no warning, just progressively unreadable text. The
+ * Spanish safety note cleared its 960px budget by 8px, so a copy edit of a few
+ * characters would have shipped the conservative-bias and verify-on-site
+ * notices as a squashed line. Those two sentences are the reason the card is
+ * allowed to leave the site at all.
+ */
+export function fitText(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+  maxLines: number,
+  font: (px: number) => string,
+  startPx: number,
+  minPx: number,
+): FittedText {
+  for (let px = startPx; px >= minPx; px -= 1) {
+    ctx.font = font(px)
+    const lines = wrapGreedy(ctx, text, maxWidth)
+    if (lines.length <= maxLines) return { lines, px, fits: true }
+  }
+  ctx.font = font(minPx)
+  return { lines: wrapGreedy(ctx, text, maxWidth), px: minPx, fits: false }
+}
+
+/** What the footer actually laid out — lets a check assert the notices fit. */
+export interface ShareCardRender {
+  safety: FittedText
+  compliance: FittedText | null
+}
+
+export function drawShareCard(
+  canvas: HTMLCanvasElement,
+  model: ShareCardModel,
+): ShareCardRender | null {
   const S = SHARE_CARD_SIZE
   canvas.width = S
   canvas.height = S
   const ctx = canvas.getContext('2d')
-  if (!ctx) return
+  if (!ctx) return null
 
   const peak = FLAG_HEX[model.peakFlag]
   const display = (px: number) => `${px}px "Anton", "Arial Narrow", sans-serif`
@@ -357,20 +394,28 @@ export function drawShareCard(canvas: HTMLCanvasElement, model: ShareCardModel):
   ctx.fillStyle = '#0c0f14'
   ctx.fillRect(0, footerTop, S, S - footerTop)
 
+  const noteWidth = S - margin * 2
   ctx.textAlign = 'left'
-  ctx.font = sans(24, 600)
   ctx.fillStyle = '#f2f4f0'
   let y = footerTop + 22
-  for (const line of wrapText(ctx, model.safetyNote, S - margin * 2, 3)) {
-    ctx.fillText(line, margin, y, S - margin * 2)
-    y += 31
+
+  // No maxWidth argument on any fillText below: the text was sized to fit, so
+  // squashing it is never the fallback.
+  const safety = fitText(ctx, model.safetyNote, noteWidth, 3, (px) => sans(px, 600), 24, 17)
+  ctx.font = sans(safety.px, 600)
+  for (const line of safety.lines) {
+    ctx.fillText(line, margin, y)
+    y += Math.round(safety.px * 1.3)
   }
+
+  let compliance: FittedText | null = null
   if (model.complianceNote) {
-    ctx.font = sans(24, 700)
+    compliance = fitText(ctx, model.complianceNote, noteWidth, 2, (px) => sans(px, 700), 24, 17)
+    ctx.font = sans(compliance.px, 700)
     ctx.fillStyle = '#f5c518'
-    for (const line of wrapText(ctx, model.complianceNote, S - margin * 2, 2)) {
-      ctx.fillText(line, margin, y, S - margin * 2)
-      y += 31
+    for (const line of compliance.lines) {
+      ctx.fillText(line, margin, y)
+      y += Math.round(compliance.px * 1.3)
     }
   }
 
@@ -387,4 +432,6 @@ export function drawShareCard(canvas: HTMLCanvasElement, model: ShareCardModel):
     ? `${model.policyName} · ${model.estimatedNote}`
     : model.policyName
   ctx.fillText(footerNote, S - margin, bottomRowY + 8, S - margin * 2 - 320)
+
+  return { safety, compliance }
 }
