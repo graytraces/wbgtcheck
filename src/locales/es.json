@@ -747,7 +747,7 @@
       "helmetsOnly": "En prácticas, solo casco de fútbol americano — ningún otro equipo de protección.",
       "noOutside": "No debe realizarse actividad, práctica ni encuentro al aire libre. Actividad bajo techo solo si hay aire acondicionado."
     },
-    "wbgtChartNote": "Esta página decía antes que el cuadro WBGT no era legible por máquina en el documento fuente. Eso describía cómo leímos el archivo — el cuadro es una imagen incrustada — no el documento, y se leyó sin problema una vez extraído. Se reproduce más abajo.",
+    "wbgtChartNote": "NYSPHSAA imprime este cuadro como imagen y no como texto, así que buscar un umbral dentro del documento no lo encuentra. Se reproduce más abajo.",
     "wbgtHeading": "El cuadro WBGT de la NYSPHSAA",
     "wbgtIntro": "El mismo documento lleva una segunda escala, escrita sobre WBGT, en tres categorías regionales. Las filas de abajo son sus propias bandas de color.",
     "tableHeadingWbgt": "Umbrales WBGT (°F)",

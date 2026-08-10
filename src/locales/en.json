@@ -747,7 +747,7 @@
       "helmetsOnly": "For practices, football helmets only — no other protective equipment.",
       "noOutside": "No outside activity, practice or contest, should be held. Indoor activity only if air conditioned."
     },
-    "wbgtChartNote": "This page previously said the WBGT chart was not machine-readable in the source document. That described how we read the file — the chart is an embedded image — not the document, and it read cleanly once extracted. It is reproduced below.",
+    "wbgtChartNote": "NYSPHSAA prints this chart as an image rather than as text, so searching the document for a threshold will not find it. It is reproduced below.",
     "wbgtHeading": "NYSPHSAA's WBGT chart",
     "wbgtIntro": "The same document carries a second ladder, written against WBGT, in three regional categories. The rows below are its own colour bands.",
     "tableHeadingWbgt": "WBGT thresholds (°F)",
