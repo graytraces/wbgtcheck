@@ -998,8 +998,16 @@ function generateBodyContent(lang, page) {
   } else if (page.key === 'states') {
     push(`<h1>${escapeHtml(t('states.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('states.intro'))}</p>`)
+    // Mirrors States.tsx: the legend has a heading and now covers the mandate
+    // column too. Without the h2 a JS-off reader met an unlabelled bullet list.
+    push(`<h2>${escapeHtml(t('states.legendHeading'))}</h2>`)
+    push(`<h3>${escapeHtml(t('states.legendMeasurementHeading'))}</h3>`)
     push(
       `<ul><li>${escapeHtml(t('states.legendApps'))}</li><li>${escapeHtml(t('states.legendDevice'))}</li><li>${escapeHtml(t('states.legendUnverified'))}</li></ul>`,
+    )
+    push(`<h3>${escapeHtml(t('states.legendMandateHeading'))}</h3>`)
+    push(
+      `<ul><li>${escapeHtml(t('states.legendMandateRequired'))}</li><li>${escapeHtml(t('states.legendMandateConditional'))}</li><li>${escapeHtml(t('states.legendMandateHeatIndex'))}</li></ul>`,
     )
     // Hub lists first — mirrors States.tsx, where they moved above the table.
     const guideLinks = (guides) =>
@@ -1027,12 +1035,12 @@ function generateBodyContent(lang, page) {
       // Column order mirrors States.tsx: Measurement second.
       return `<tr><th scope="row">${row.abbr}</th><td>${escapeHtml(
         t(`states.measurement.${row.measurement}`),
-      )}</td><td>${escapeHtml(row.body)}</td><td>${escapeHtml(
+      )}</td><td>${escapeHtml(
         t(`states.mandate.${row.mandate}`),
-      )}</td><td>${escapeHtml(note)} ${GUIDE_SLUG_BY_ABBR[row.abbr] ? `<a href="/${lang}/${GUIDE_SLUG_BY_ABBR[row.abbr]}">${escapeHtml(t('states.rowGuideLink'))}</a> ` : ''}${escapeHtml(badge)}</td></tr>`
+      )}</td><td>${escapeHtml(row.body)}</td><td>${escapeHtml(note)} ${GUIDE_SLUG_BY_ABBR[row.abbr] ? `<a href="/${lang}/${GUIDE_SLUG_BY_ABBR[row.abbr]}">${escapeHtml(t('states.rowGuideLink'))}</a> ` : ''}${escapeHtml(badge)}</td></tr>`
     }).join('')
     push(
-      `<table><thead><tr><th>${escapeHtml(t('states.colState'))}</th><th>${escapeHtml(t('states.colMeasurement'))}</th><th>${escapeHtml(t('states.colBody'))}</th><th>${escapeHtml(t('states.colMandate'))}</th><th>${escapeHtml(t('states.colNote'))}</th></tr></thead><tbody>${rows}</tbody></table>`,
+      `<h2 id="states-table-heading">${escapeHtml(t('states.tableLabel'))}</h2><table aria-labelledby="states-table-heading"><thead><tr><th>${escapeHtml(t('states.colState'))}</th><th>${escapeHtml(t('states.colMeasurement'))}</th><th>${escapeHtml(t('states.colMandate'))}</th><th>${escapeHtml(t('states.colBody'))}</th><th>${escapeHtml(t('states.colNote'))}</th></tr></thead><tbody>${rows}</tbody></table>`,
     )
     push(`<p>${escapeHtml(t('states.caveat'))}</p>`)
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)

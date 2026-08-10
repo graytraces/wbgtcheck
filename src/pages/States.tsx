@@ -56,8 +56,12 @@ export default function States() {
         </ul>
       </section>
 
+      {/* The legend used to define the Measurement values only, leaving the
+          reader to guess at "Conditional / preferred" — the value carrying the
+          most nuance in the table. Both judgement columns are named now. */}
       <section className="border-2 border-line bg-surface p-4 text-sm">
         <h2 className="mb-2 font-bold uppercase tracking-wide">{t('states.legendHeading')}</h2>
+        <h3 className="mb-1 font-bold">{t('states.legendMeasurementHeading')}</h3>
         <ul className="space-y-1">
           <li className="flex items-start gap-2">
             <CircleCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
@@ -72,13 +76,33 @@ export default function States() {
             {t('states.legendUnverified')}
           </li>
         </ul>
+        <h3 className="mb-1 mt-3 font-bold">{t('states.legendMandateHeading')}</h3>
+        <ul className="space-y-1">
+          <li>{t('states.legendMandateRequired')}</li>
+          <li>{t('states.legendMandateConditional')}</li>
+          <li>{t('states.legendMandateHeatIndex')}</li>
+        </ul>
       </section>
 
       {/* The one table allowed to scroll internally on phones: five columns
           of prose cannot fit 320px legibly. scroll-x-fade paints edge
-          shadows so the clipping is visible (and marks the sweep exception). */}
-      <section className="scroll-x-fade">
-        <table className="w-full min-w-[44rem] border-collapse text-sm">
+          shadows so the clipping is visible (and marks the sweep exception).
+          role+tabIndex make the scroll container focusable, which is the only
+          way a keyboard user can reach the columns that start off-screen. */}
+      <h2 className="sr-only" id="states-table-heading">
+        {t('states.tableLabel')}
+      </h2>
+      <section
+        className="scroll-x-fade"
+        role="region"
+        aria-labelledby="states-table-heading"
+        tabIndex={0}
+      >
+        <p className="sr-only">{t('states.tableScrollHint')}</p>
+        <table
+          className="w-full min-w-[44rem] border-collapse text-sm"
+          aria-labelledby="states-table-heading"
+        >
           <thead>
             <tr className="border-b-2 border-ink text-left">
               <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('states.colState')}</th>
@@ -86,8 +110,11 @@ export default function States() {
                   page is titled after, and at 390px it previously started at
                   x=363 — past the edge, behind a horizontal scroll. */}
               <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('states.colMeasurement')}</th>
-              <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('states.colBody')}</th>
+              {/* Mandate ahead of Governing body: the body column is 202px of
+                  the least decision-relevant text on the page, and it pushed
+                  the mandate to x=413 at 390px — past the edge. */}
               <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('states.colMandate')}</th>
+              <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('states.colBody')}</th>
               <th className="py-2 font-bold uppercase tracking-wide">{t('states.colNote')}</th>
             </tr>
           </thead>
@@ -109,8 +136,8 @@ export default function States() {
                       {t(`states.measurement.${row.measurement}`)}
                     </span>
                   </td>
-                  <td className="py-2 pr-3">{row.body}</td>
                   <td className="py-2 pr-3">{t(`states.mandate.${row.mandate}`)}</td>
+                  <td className="py-2 pr-3">{row.body}</td>
                   <td className="py-2 text-ink-muted">
                     {t(`states.notes.${row.noteKey}`, { effectiveDate: UIL_EFFECTIVE_DATE })}{' '}
                     {GUIDE_SLUG_BY_ABBR[row.abbr] && (

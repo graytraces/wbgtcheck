@@ -324,3 +324,99 @@ describe('states outside the picker still reach their guide', () => {
     }
   })
 })
+
+/**
+ * The directory table is five columns of prose on a 358px wrapper, so most of
+ * it starts off-screen and the order decides what a phone reader sees. The
+ * two judgement columns — how you must measure, and whether WBGT is mandated
+ * — now come first; Governing body was 202px of the least decision-relevant
+ * text on the page and it pushed the mandate to x=413, past the edge.
+ *
+ * The clipping is legitimate. Being unable to reach the clipped part by
+ * keyboard was not: a scroll container needs to be focusable to be scrollable
+ * without a mouse.
+ */
+describe('the states directory table is readable and reachable', () => {
+  const renderStates = () => {
+    i18n.changeLanguage('en')
+    return render(
+      <MemoryRouter initialEntries={['/en/states']}>
+        <Routes>
+          <Route path="/:lang/*" element={<States />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+  }
+
+  it('puts the two judgement columns ahead of the governing body', () => {
+    const { container } = renderStates()
+    const headers = [...container.querySelectorAll('thead th')].map((th) => th.textContent?.trim())
+    expect(headers).toEqual([
+      en.states.colState,
+      en.states.colMeasurement,
+      en.states.colMandate,
+      en.states.colBody,
+      en.states.colNote,
+    ])
+  })
+
+  it('keeps every row cell in step with the header order', () => {
+    const { container } = renderStates()
+    const firstRow = container.querySelector('tbody tr')!
+    const cells = [...firstRow.querySelectorAll('th,td')].map((c) => c.textContent?.trim() ?? '')
+    // CA is the first row now the table is sorted by abbreviation.
+    expect(cells[0]).toBe('CA')
+    expect(cells[1]).toContain(en.states.measurement['apps-allowed'])
+    expect(cells[2]).toBe(en.states.mandate['wbgt-required'])
+    expect(cells[3]).toContain('CIF')
+  })
+
+  it('gives the table a name and the scroll container a keyboard route in', () => {
+    const { container } = renderStates()
+    const table = container.querySelector('table')!
+    expect(table.getAttribute('aria-labelledby')).toBe('states-table-heading')
+    expect(container.querySelector('#states-table-heading')?.textContent).toBe(en.states.tableLabel)
+    const region = table.closest('[role="region"]')!
+    expect(region, 'the scroll container is not a landmark').toBeTruthy()
+    expect(region.getAttribute('tabindex'), 'not focusable, so not scrollable by keyboard').toBe('0')
+    expect(region.getAttribute('aria-labelledby')).toBe('states-table-heading')
+  })
+
+  /**
+   * "Conditional / preferred" carries the most nuance of any value in the
+   * table and was the one value nothing defined. The legend also called the
+   * unverified case "Not specified / unverified" while the cell said "Confirm
+   * with association" — two names for one thing.
+   */
+  it('defines every value that actually appears in both judgement columns', () => {
+    const { container } = renderStates()
+    const legend = container.textContent ?? ''
+    const usedMandates = new Set(STATE_DIRECTORY.map((r) => r.mandate))
+    for (const mandate of usedMandates) {
+      expect(legend, `mandate value ${mandate} is undefined in the legend`).toContain(
+        en.states.mandate[mandate as keyof typeof en.states.mandate],
+      )
+    }
+    for (const measurement of new Set(STATE_DIRECTORY.map((r) => r.measurement))) {
+      expect(legend).toContain(en.states.measurement[measurement as keyof typeof en.states.measurement])
+    }
+  })
+
+  it('names the unverified case the same way the cells do', () => {
+    for (const dict of [en, es]) {
+      expect(dict.states.legendUnverified.startsWith(dict.states.measurement.unverified)).toBe(true)
+    }
+  })
+
+  it.skipIf(!existsSync(join(process.cwd(), 'dist')))(
+    'prerenders the legend under a heading, not as loose bullets',
+    () => {
+      for (const lang of ['en', 'es']) {
+        const html = readFileSync(join(process.cwd(), 'dist', lang, 'states.html'), 'utf-8')
+        const dict = lang === 'en' ? en : es
+        expect(html).toContain(`<h2>${dict.states.legendHeading}</h2>`)
+        expect(html).toContain(dict.states.legendMandateConditional)
+      }
+    },
+  )
+})
