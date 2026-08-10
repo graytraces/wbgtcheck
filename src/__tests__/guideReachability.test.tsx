@@ -15,7 +15,7 @@ import {
   NYSPHSAA_WBGT_BLACK_MIN_F,
 } from '../data/policyData.js'
 import { pageSEO, statePageKeyByPolicy, pickerLadderPageKeys } from '../seo'
-import { STATE_GUIDES, AIR_GUIDES, GUIDE_SLUG_BY_ABBR } from '../data/guideRegistry'
+import { STATE_GUIDES, AIR_GUIDES, TOPIC_GUIDES, GUIDE_SLUG_BY_ABBR } from '../data/guideRegistry'
 import { defaultPolicyFor } from '../hooks/useWbgt'
 import { STATE_DIRECTORY } from '../data/stateDirectory'
 import { VALID_TOOLS, VALID_PAGES } from '../utils/routeValidation'
@@ -266,6 +266,59 @@ describe('the guide registry is the single source for both renderers', () => {
       }
     },
   )
+})
+
+/**
+ * The two cross-state guides have no nav entry — the scroller is already full
+ * at five items — so /states is their ONLY route in, for a reader and for a
+ * crawler alike. That makes them the exact shape of the bug the air guides
+ * had: present in the router, absent from the hub, reachable by nobody.
+ *
+ * They are deliberately not in STATE_GUIDES (no abbr, no ladder, no directory
+ * row), so none of the assertions above covers them.
+ */
+describe('the cross-state topic guides are reachable at all', () => {
+  it('every topic guide is worker-valid and registered for SEO', () => {
+    expect(TOPIC_GUIDES.length).toBe(2)
+    for (const { slug, seoKey } of TOPIC_GUIDES) {
+      // A slug in the router but not here is a hard 404 for every request.
+      expect(VALID_TOOLS.has(slug), `${slug} would 404`).toBe(true)
+      expect(pageSEO[seoKey], `${seoKey} missing from seo.ts`).toBeTruthy()
+      expect(pageSEO[seoKey].path).toBe(slug)
+    }
+    // …and they are not smuggled into the state/air lists, whose joins to
+    // STATE_DIRECTORY and to the detected location would be meaningless.
+    const stateSlugs = new Set([...STATE_GUIDES, ...AIR_GUIDES].map((g) => g.slug))
+    for (const { slug } of TOPIC_GUIDES) expect(stateSlugs.has(slug)).toBe(false)
+  })
+
+  it('links every topic guide from the states hub', () => {
+    i18n.changeLanguage('en')
+    const { container } = render(
+      <MemoryRouter initialEntries={['/en/states']}>
+        <Routes>
+          <Route path="/:lang/*" element={<States />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+    for (const { slug } of TOPIC_GUIDES) {
+      expect(
+        container.querySelector(`a[href="/en/${slug}"]`),
+        `${slug} is not linked from the hub`,
+      ).toBeTruthy()
+    }
+  })
+
+  /** The reader whose JS failed gets the prerendered hub and nothing else. */
+  it('links every topic guide in the prerendered hub too, in both locales', () => {
+    requireFreshDist()
+    for (const lang of ['en', 'es']) {
+      const html = readFileSync(join(process.cwd(), 'dist', lang, 'states.html'), 'utf-8')
+      for (const { slug } of TOPIC_GUIDES) {
+        expect(html, `${lang}/states.html does not link ${slug}`).toContain(`/${lang}/${slug}`)
+      }
+    }
+  })
 })
 
 /**
