@@ -56,7 +56,10 @@
     "coolingZone": "Mandatory on-site rapid cooling zone (tub or tarp).",
     "noOutdoor": "No outdoor workouts. Delay practice until a cooler WBGT is reached.",
     "miaaEquipmentSports": "Equipment-intensive sports: helmet, shoulder pads and shorts only during activity; all protective equipment must be removed for conditioning.",
-    "miaaNoEquipmentAnySport": "No protective equipment may be worn during activity, in any sport."
+    "miaaNoEquipmentAnySport": "No protective equipment may be worn during activity, in any sport.",
+    "cifContactSportsEquipment": "Football and field hockey: helmet, shoulder pads and shorts only during practice.",
+    "cifRedContests": "Contests are permitted with additional hydration breaks.",
+    "cifRedNoEquipment": "No protective equipment may be worn during practice."
   },
   "policies": {
     "uil-class-2": "Texas UIL — Class 2",
@@ -354,6 +357,11 @@
       "title": "Florida Heat Safety Law for Athletics (Zachary Martin Act) | WBGT Check",
       "description": "What Florida's Zachary Martin Act requires for heat stress monitoring, cooling zones and on-site measurement in high school athletics.",
       "keywords": "Zachary Martin Act, Florida heat law athletics, FHSAA heat stress, Florida WBGT"
+    },
+    "california": {
+      "title": "California CIF WBGT Heat Policy (Categories 1-3) | WBGT Check",
+      "description": "CIF's three regional WBGT ladders under AB 1653 and Bylaw 503.K, the cancel thresholds, and the NOAA reading CIF points schools to.",
+      "keywords": "CIF heat policy, California WBGT, AB 1653, CIF Bylaw 503.K, California heat categories"
     }
   },
   "texas": {
@@ -464,7 +472,7 @@
       "ny": "NYSPHSAA works from heat index, not WBGT, and directs schools to read it from a named weather app by ZIP code — see the New York guide.",
       "nj": "Legislated heat participation rules since 2020.",
       "la": "Legislated WBGT-based rules.",
-      "ca": "AB 1653 orders CIF to set a standard; details pending.",
+      "ca": "Three regional WBGT ladders under AB 1653 and CIF Bylaw 503.K, with a hard cancel level for each. CIF requires a WBGT and points schools without a meter to a NOAA reading — one of the few states to name an online source.",
       "ma": "One statewide MIAA policy for every sport, with thresholds well below most states — outdoor activity stops in the 86s. An on-site WBGT instrument is required at each activity; games may continue where practice would stop."
     },
     "caveat": "This table is a navigation aid, not legal advice. Policies change midseason; the association's current document controls. Found an error? Tell your athletic trainer first, then us.",
@@ -478,7 +486,8 @@
     "newYorkLink": "New York NYSPHSAA guide",
     "virginiaLink": "Virginia heat law guide",
     "massachusettsLink": "Massachusetts MIAA guide",
-    "floridaLink": "Florida heat law guide"
+    "floridaLink": "Florida heat law guide",
+    "californiaLink": "California CIF heat guide"
   },
   "southCarolina": {
     "pageTitle": "South Carolina SCHSL WBGT Rules",
@@ -733,5 +742,27 @@
     "sourceHeading": "Source",
     "sourceBody": "Every quotation above was read from the Florida Senate's statute text on {{verifiedOn}}.",
     "ctaButton": "Plan with the forecast"
+  },
+  "california": {
+    "pageTitle": "California CIF WBGT Heat Policy",
+    "intro": "California is the only state on this site with three different WBGT ladders. CIF assigns each school a region category, and the same reading means different things in San Diego and in the Sierra foothills — so the number alone tells you nothing until you know your category.",
+    "categoryHeading": "Find your region category first",
+    "categoryBody": "The policy runs under {{basis}}, and it splits the state into Category 1, 2 and 3 by climate. Most states fall into one category or two; California spans all three.",
+    "cancelBody": "At the top of each ladder the language is not advisory — {{quote}}.",
+    "rosterLink": "Look up your school's category on the CIF roster",
+    "tableHeading": "Category {{category}} — activity guidelines by WBGT (°F)",
+    "boundaryHeading": "Where this site is stricter than the printed chart",
+    "boundaryBody": "The policy states its cancel levels twice and the two do not match: the text on the first page lists one set, the chart on the next prints another, and the chart also leaves a tenth of a degree unassigned between the top of red and the bottom of black. This site resolves every one of those gaps upward — the hotter flag wins — so a reading in a disputed range is never shown as the cooler category. Your association's own chart governs; ours only errs toward stopping sooner.",
+    "measurementHeading": "California expects a WBGT — and points schools without one at NOAA",
+    "measurementBody": "The policy is direct about the instrument: \"{{quote}}\"",
+    "noDeviceBody": "And then it does something no other association on this site does. For schools that do not own a meter, it names an online source: \"{{quote}}\" — linking NOAA's own WBGT map.",
+    "noaaLink": "The NOAA WBGT map the policy links",
+    "stillNotCompliance": "That makes California one of the few states where an online WBGT reading is explicitly contemplated. It still does not make this site your official reading: CIF names NOAA's map, not this one. Use this to plan, and follow your school's own procedure for the reading that counts.",
+    "acclimatizationHeading": "Fall acclimatization",
+    "acclimatizationBody": "The policy asks for a gradual build: start with light workouts in cooler conditions, then increase intensity and duration over {{min}} to {{max}} days, with hydration education and practices moved to the cooler ends of the day.",
+    "airLink": "California also has a separate air-quality policy — see the CIF air quality guide",
+    "sourceHeading": "Source",
+    "sourceBody": "All thresholds and quotations above were read from the CIF Constitution and Bylaws on {{verifiedOn}}.",
+    "ctaButton": "Plan around California flags"
   }
 }

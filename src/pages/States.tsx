@@ -18,6 +18,7 @@ const STATE_GUIDES = [
   { slug: 'virginia', labelKey: 'states.virginiaLink' },
   { slug: 'massachusetts', labelKey: 'states.massachusettsLink' },
   { slug: 'florida', labelKey: 'states.floridaLink' },
+  { slug: 'california', labelKey: 'states.californiaLink' },
 ] as const
 
 /** State guides that exist on this site — rendered as a per-row link. */
@@ -32,6 +33,7 @@ const GUIDE_SLUGS: Record<string, string> = {
   VA: 'virginia',
   MA: 'massachusetts',
   FL: 'florida',
+  CA: 'california',
 }
 
 const MEASUREMENT_STYLE: Record<MeasurementClass, { icon: typeof CircleCheck; cls: string }> = {

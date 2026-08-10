@@ -21,6 +21,7 @@ export const pageSEO: Record<string, PageSEO> = {
   virginia: { path: 'virginia', key: 'virginia' },
   massachusetts: { path: 'massachusetts', key: 'massachusetts' },
   florida: { path: 'florida', key: 'florida' },
+  california: { path: 'california', key: 'california' },
   wbgtVsHeatIndex: { path: 'wbgt-vs-heat-index', key: 'wbgtVsHeatIndex' },
   states: { path: 'states', key: 'states' },
   // Air-quality guides. Slug is "<state>-air-quality" rather than the bare

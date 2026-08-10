@@ -11,6 +11,11 @@ import {
   MIAA_DEVICE_QUOTE,
   MIAA_COMPETITION_QUOTE,
   MIAA_COOLING_ZONE_WBGT_F,
+  CIF_CATEGORIES,
+  CIF_CATEGORY_1,
+  CIF_CATEGORY_3,
+  CIF_NO_DEVICE_QUOTE,
+  CIF_NOAA_TOOL_URL,
   FL_ONSITE_MEASUREMENT_QUOTE,
   FL_YEAR_ROUND_QUOTE,
   FL_STATUTE_SOURCE,
@@ -185,6 +190,60 @@ describe('policy oracle — guideline facts vs primary sources', () => {
       expect(UIL_CLASS_2.bands.find((b) => b.flag === flag)!.guideline).toEqual(
         UIL_CLASS_3.bands.find((b) => b.flag === flag)!.guideline,
       )
+    }
+  })
+
+  it('CIF category ladders match the 2026-27 bylaw chart', () => {
+    // Read off the p.103 chart, which is an image — rendered to PNG at 170 dpi
+    // and read by eye (the TSSAA treatment). Three ladders, one guideline set.
+    expect(CIF_CATEGORIES).toHaveLength(3)
+    expect(flagAt(CIF_CATEGORY_1, 76.0)).toBe('green')
+    expect(flagAt(CIF_CATEGORY_1, 76.3)).toBe('yellow')
+    expect(flagAt(CIF_CATEGORY_1, 81.0)).toBe('yellow')
+    expect(flagAt(CIF_CATEGORY_1, 84.0)).toBe('orange')
+    expect(flagAt(CIF_CATEGORY_1, 86.0)).toBe('red')
+    expect(flagAt(CIF_CATEGORY_1, 86.2)).toBe('black')
+    // Category 3 is the hottest ladder — the same reading is two flags cooler
+    // there than in Category 1, which is why the category has to be chosen.
+    expect(flagAt(CIF_CATEGORY_3, 86.0)).toBe('yellow')
+    expect(flagAt(CIF_CATEGORY_3, 92.1)).toBe('black')
+    // All three share one guideline set, like UIL Class 2 and 3.
+    for (const flag of ['green', 'yellow', 'orange', 'red', 'black'] as const) {
+      expect(CIF_CATEGORIES[0].bands.find((b) => b.flag === flag)!.guideline).toEqual(
+        CIF_CATEGORIES[2].bands.find((b) => b.flag === flag)!.guideline,
+      )
+    }
+  })
+
+  it('CIF disputed top boundaries resolve to the hotter flag', () => {
+    // p.102 text says >86.2 / >89.9 / >92.0; the p.103 chart prints
+    // ≥86.2 / ≥89.8 / ≥92.1 and ends red at 86.0 / 89.6 / 91.9. Both the
+    // disagreement and the gap resolve upward, so nothing in the disputed
+    // range is ever shown as red.
+    expect(flagAt(CIF_CATEGORIES[0], 86.05)).toBe('black')
+    expect(flagAt(CIF_CATEGORIES[1], 89.7)).toBe('black')
+    expect(flagAt(CIF_CATEGORIES[2], 92.0)).toBe('black')
+  })
+
+  it('California stays out of the picker — its category cannot be inferred', () => {
+    // CIF assigns the category by region from a separate 28-page roster.
+    // Auto-selecting one would emit a confidently wrong flag; adding these to
+    // the picker needs the Texas class-prompt treatment first.
+    for (const policy of CIF_CATEGORIES) {
+      expect(Object.values(POLICIES)).not.toContain(policy)
+    }
+    expect(Object.keys(POLICIES)).not.toContain('cif-cat-1')
+  })
+
+  it('CIF names an online WBGT source for schools without a meter', () => {
+    // The strongest evidence in this oracle that a forecast belongs in a heat
+    // policy — and the reason California is marked apps-allowed.
+    expect(CIF_NO_DEVICE_QUOTE).toContain('Schools without a WBGT')
+    expect(CIF_NOAA_TOOL_URL).toContain('noaa.gov')
+    expect(CIF_CATEGORY_1.remoteEstimatesAllowed).toBe('yes')
+    // It names NOAA's map, not this site — the page must not claim otherwise.
+    for (const locale of [en, es]) {
+      expect(locale.california.stillNotCompliance.length).toBeGreaterThan(0)
     }
   })
 

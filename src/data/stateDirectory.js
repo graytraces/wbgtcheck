@@ -39,6 +39,6 @@ export const STATE_DIRECTORY = [
   { abbr: 'NY', body: 'NYSPHSAA', mandate: 'heat-index', measurement: 'apps-allowed', verified: 'primary', noteKey: 'ny' },
   { abbr: 'NJ', body: 'State law', mandate: 'wbgt-required', measurement: 'unverified', verified: 'research', noteKey: 'nj' },
   { abbr: 'LA', body: 'State law', mandate: 'wbgt-required', measurement: 'unverified', verified: 'research', noteKey: 'la' },
-  { abbr: 'CA', body: 'CIF (AB 1653)', mandate: 'standard-pending', measurement: 'unverified', verified: 'research', noteKey: 'ca' },
+  { abbr: 'CA', body: 'CIF (AB 1653)', mandate: 'wbgt-required', measurement: 'apps-allowed', verified: 'primary', noteKey: 'ca' },
   { abbr: 'MA', body: 'MIAA', mandate: 'wbgt-required', measurement: 'device-required', verified: 'primary', noteKey: 'ma' },
 ]

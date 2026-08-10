@@ -25,6 +25,16 @@ import {
   TSSAA,
   IOWA_CATEGORY_2,
   MIAA,
+  CIF_CATEGORIES,
+  CIF_LEGAL_BASIS,
+  CIF_WBGT_REQUIRED_QUOTE,
+  CIF_NO_DEVICE_QUOTE,
+  CIF_NOAA_TOOL_URL,
+  CIF_CANCEL_QUOTE,
+  CIF_CATEGORY_ROSTER_URL,
+  CIF_ACCLIMATIZATION_DAYS_MIN,
+  CIF_ACCLIMATIZATION_DAYS_MAX,
+  CIF_HEAT_SOURCE,
   FL_STATUTE_SECTION,
   FL_STATUTE_CITATION,
   FL_ONSITE_MEASUREMENT_QUOTE,
@@ -157,6 +167,7 @@ const pages = [
   { key: 'virginia', path: 'virginia', dateModified: today },
   { key: 'massachusetts', path: 'massachusetts', dateModified: today },
   { key: 'florida', path: 'florida', dateModified: today },
+  { key: 'california', path: 'california', dateModified: today },
   { key: 'wbgtVsHeatIndex', path: 'wbgt-vs-heat-index', dateModified: today },
   { key: 'states', path: 'states', dateModified: today },
   { key: 'washingtonAir', path: 'washington-air-quality', dateModified: today },
@@ -718,6 +729,42 @@ function generateBodyContent(lang, page) {
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
     push(correctionNoteHtml(t, 'new-york', lang))
+  } else if (page.key === 'california') {
+    push(`<h1>${escapeHtml(t('california.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('california.intro'))}</p>`)
+    push(`<h2>${escapeHtml(t('california.categoryHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('california.categoryBody', { basis: CIF_LEGAL_BASIS }))}</p>`)
+    push(`<p>${escapeHtml(t('california.cancelBody', { quote: CIF_CANCEL_QUOTE }))}</p>`)
+    push(
+      `<p><a href="${CIF_CATEGORY_ROSTER_URL}">${escapeHtml(t('california.rosterLink'))}</a></p>`,
+    )
+    CIF_CATEGORIES.forEach((policy, index) => {
+      push(`<h2>${escapeHtml(t('california.tableHeading', { category: index + 1 }))}</h2>`)
+      push(policyTableHtml(policy, t))
+    })
+    push(`<h2>${escapeHtml(t('california.boundaryHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('california.boundaryBody'))}</p>`)
+    push(`<h2>${escapeHtml(t('california.measurementHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(t('california.measurementBody', { quote: CIF_WBGT_REQUIRED_QUOTE }))}</p>`,
+    )
+    push(`<p>${escapeHtml(t('california.noDeviceBody', { quote: CIF_NO_DEVICE_QUOTE }))}</p>`)
+    push(`<p><a href="${CIF_NOAA_TOOL_URL}">${escapeHtml(t('california.noaaLink'))}</a></p>`)
+    push(`<p>${escapeHtml(t('california.stillNotCompliance'))}</p>`)
+    push(`<h2>${escapeHtml(t('california.acclimatizationHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('california.acclimatizationBody', {
+          min: CIF_ACCLIMATIZATION_DAYS_MIN,
+          max: CIF_ACCLIMATIZATION_DAYS_MAX,
+        }),
+      )}</p>`,
+    )
+    push(
+      `<h2>${escapeHtml(t('california.sourceHeading'))}</h2><p>${escapeHtml(t('california.sourceBody', { verifiedOn: CIF_HEAT_SOURCE.verifiedOn }))} <a href="${CIF_HEAT_SOURCE.url}">${escapeHtml(CIF_HEAT_SOURCE.name)}</a></p>`,
+    )
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+    push(correctionNoteHtml(t, 'california', lang))
   } else if (page.key === 'florida') {
     push(`<h1>${escapeHtml(t('florida.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('florida.intro'))}</p>`)
@@ -947,7 +994,7 @@ function generateBodyContent(lang, page) {
 const GUIDE_SLUGS = {
   TX: 'texas', GA: 'georgia', SC: 'south-carolina', TN: 'tennessee',
   IA: 'iowa', NC: 'north-carolina', NY: 'new-york', VA: 'virginia',
-  MA: 'massachusetts', FL: 'florida',
+  MA: 'massachusetts', FL: 'florida', CA: 'california',
 }
 
 const SITEMAP_EXCLUDE_KEYS = new Set(['privacy', 'disclaimer'])

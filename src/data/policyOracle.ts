@@ -21,6 +21,10 @@ import {
   TSSAA as TSSAA_RAW,
   IOWA_CATEGORY_2 as IOWA_CATEGORY_2_RAW,
   MIAA as MIAA_RAW,
+  CIF_CATEGORY_1 as CIF_CATEGORY_1_RAW,
+  CIF_CATEGORY_2 as CIF_CATEGORY_2_RAW,
+  CIF_CATEGORY_3 as CIF_CATEGORY_3_RAW,
+  CIF_CATEGORIES as CIF_CATEGORIES_RAW,
   GENERIC_NATA as GENERIC_NATA_RAW,
   NCHSAA_REFERENCE as NCHSAA_REFERENCE_RAW,
   NYSPHSAA_HEAT_INDEX_REFERENCE as NYSPHSAA_HEAT_INDEX_REFERENCE_RAW,
@@ -92,6 +96,15 @@ export {
   MIAA_COMPETITION_QUOTE,
   MIAA_COOLING_ZONE_WBGT_F,
   MIAA_SOURCE,
+  CIF_LEGAL_BASIS,
+  CIF_WBGT_REQUIRED_QUOTE,
+  CIF_NO_DEVICE_QUOTE,
+  CIF_NOAA_TOOL_URL,
+  CIF_CANCEL_QUOTE,
+  CIF_CATEGORY_ROSTER_URL,
+  CIF_ACCLIMATIZATION_DAYS_MIN,
+  CIF_ACCLIMATIZATION_DAYS_MAX,
+  CIF_HEAT_SOURCE,
   FL_STATUTE_SECTION,
   FL_STATUTE_CITATION,
   FL_ONSITE_MEASUREMENT_QUOTE,
@@ -234,6 +247,19 @@ export const SCHSL = SCHSL_RAW as HeatPolicy
 export const TSSAA = TSSAA_RAW as HeatPolicy
 export const IOWA_CATEGORY_2 = IOWA_CATEGORY_2_RAW as HeatPolicy
 export const MIAA = MIAA_RAW as HeatPolicy
+
+/**
+ * California's three regional ladders. HeatPolicy objects, so they render
+ * through the same table as every other state — but deliberately NOT in
+ * POLICIES: CIF assigns a school's category by region from a separate roster,
+ * and picking one for the user would be the confidently-wrong flag this site
+ * exists to avoid. Wiring them into the picker needs the Texas class-prompt
+ * treatment first. policyOracle.test.ts pins the exclusion.
+ */
+export const CIF_CATEGORY_1 = CIF_CATEGORY_1_RAW as HeatPolicy
+export const CIF_CATEGORY_2 = CIF_CATEGORY_2_RAW as HeatPolicy
+export const CIF_CATEGORY_3 = CIF_CATEGORY_3_RAW as HeatPolicy
+export const CIF_CATEGORIES = CIF_CATEGORIES_RAW as HeatPolicy[]
 export const GENERIC_NATA = GENERIC_NATA_RAW as HeatPolicy
 export const POLICIES = POLICIES_RAW as Record<PolicyId, HeatPolicy>
 

@@ -865,6 +865,156 @@ export const NYSPHSAA_HEAT_INDEX_REFERENCE = {
   ],
 }
 
+// --- California (CIF) ----------------------------------------------------
+// "Extreme Heat and Air Quality Policy", pp.102-104 of the CIF 2026-27
+// Constitution and Bylaws. Fetched 2026-08-10 through the CloudFront address
+// embedded in cifstate.org's HTML shell (the .pdf URL itself serves the shell,
+// not the file). The band table on p.103 is an IMAGE — it was read by
+// rendering the page to PNG at 170 dpi, the TSSAA treatment.
+//
+// California is the only state here with THREE regional ladders. CIF assigns
+// each school a Category 1/2/3 by region, published as a separate 28-page
+// roster, so this site cannot derive a school's category and does not guess
+// one: the page shows all three and the picker carries none of them. Wiring
+// these into the picker needs the Texas class-prompt treatment first.
+
+export const CIF_LEGAL_BASIS = 'CA State Law AB 1653 and CIF Bylaw 503.K. Heat Illness and 503.L. Air Quality Index Protocols'
+export const CIF_WBGT_REQUIRED_QUOTE =
+  'The CIF requires that schools use the WBGT for the most accurate measurement.'
+/**
+ * The rarest sentence in this oracle. CIF does not merely tolerate an online
+ * WBGT source — it directs schools without a meter to one, and links NOAA's
+ * own map. Outside Texas no other association here goes this far, and it is
+ * the single strongest piece of evidence that a forecast tool has a legitimate
+ * place in a heat policy.
+ */
+export const CIF_NO_DEVICE_QUOTE =
+  'Schools without a WBGT should use the link below from the NOAA for a WBGT reading'
+export const CIF_NOAA_TOOL_URL =
+  'https://digital.mdl.nws.noaa.gov/?zoom=7&lat=35.28787&lon=-79.36779&layers=F000BTTTFTT&region=0&element=8&mxmz=true&barbs=false&subl=TTFFFF&units=english&wunits=nautical&coords=latlon&tunits=localt'
+export const CIF_CANCEL_QUOTE =
+  'it is mandated for the benefit of the health and safety of our student-athletes that practice/games be canceled, or delayed until cooler when WBGT exceeds these levels'
+export const CIF_CATEGORY_ROSTER_URL = 'https://www.cifstate.org/sports-medicine/WBGT_Category.pdf'
+export const CIF_ACCLIMATIZATION_DAYS_MIN = 10
+export const CIF_ACCLIMATIZATION_DAYS_MAX = 14
+
+export const CIF_HEAT_SOURCE = {
+  name: 'CIF 2026-27 Constitution and Bylaws \u2014 Extreme Heat and Air Quality Policy (pp.102-104)',
+  url: 'https://cifstate.org/governance/constitution/EXTREME_HEAT_AND_AIR_QUALITY_POLICY.pdf',
+  verifiedOn: '2026-08-10',
+}
+
+// All three categories share one set of activity guidelines — only the
+// temperatures move, exactly like UIL Class 2 vs Class 3.
+const CIF_GREEN = {
+  maxPracticeMinutes: null,
+  restBreaksPerHour: 3,
+  restBreakMinMinutes: 3,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: false,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: false,
+}
+const CIF_YELLOW = {
+  maxPracticeMinutes: null,
+  restBreaksPerHour: 3,
+  restBreakMinMinutes: 4,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: false,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: false,
+}
+/**
+ * The orange cell also says "If the WBGT rises to this level during practice,
+ * players may continue to work out wearing full pads without changing to
+ * shorts." Deliberately NOT rendered, for the reason the identical GHSA clause
+ * is not: it governs a transition inside a practice already under way, which
+ * an on-site instrument decides, while this page's flags are read beforehand.
+ */
+const CIF_ORANGE = {
+  maxPracticeMinutes: 120,
+  restBreaksPerHour: 4,
+  restBreakMinMinutes: 4,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: false,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: false,
+  extraKeys: ['guideline.cifContactSportsEquipment'],
+}
+const CIF_RED = {
+  maxPracticeMinutes: 60,
+  restBreaksPerHour: null,
+  restBreakMinMinutes: null,
+  restMinutesPerHour: 20,
+  footballEquipment: null,
+  noConditioning: true,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: false,
+  extraKeys: ['guideline.cifRedContests', 'guideline.cifRedNoEquipment'],
+}
+const CIF_BLACK = {
+  maxPracticeMinutes: 0,
+  restBreaksPerHour: null,
+  restBreakMinMinutes: null,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: true,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: true,
+}
+
+/**
+ * DOCUMENT CONFLICT at every top boundary, resolved conservatively.
+ *
+ * Page 102 lists the cancel levels as ">86.2 / >89.9 / >92.0"; the p.103 chart
+ * prints the black row as "\u226586.2 / \u226589.8 / \u226592.1" and ends red at
+ * 86.0 / 89.6 / 91.9. The two disagree, AND the chart leaves a gap between the
+ * top of red and the bottom of black. Both are resolved the same way the Iowa
+ * 79.7 gap was: black begins immediately above the red band's printed top, so
+ * no reading in the disputed range is ever shown as red.
+ */
+const cifBands = (yellowMin, orangeAfter, redAfter, blackAfter, labels) => [
+  { flag: 'black', minF: blackAfter, minInclusive: false, sourceLabel: labels.black, guideline: CIF_BLACK },
+  { flag: 'red', minF: redAfter, minInclusive: false, sourceLabel: labels.red, guideline: CIF_RED },
+  { flag: 'orange', minF: orangeAfter, minInclusive: false, sourceLabel: labels.orange, guideline: CIF_ORANGE },
+  { flag: 'yellow', minF: yellowMin, minInclusive: true, sourceLabel: labels.yellow, guideline: CIF_YELLOW },
+  { flag: 'green', minF: null, minInclusive: true, sourceLabel: labels.green, guideline: CIF_GREEN },
+]
+
+// Arguments are the COOLER band's printed top, not the hotter band's printed
+// start, so every unassigned tenth between them lands in the hotter band. The
+// green/yellow edge is the exception: green is printed as "<X", so X itself is
+// already the first unassigned value and yellow takes it inclusively.
+export const CIF_CATEGORY_1 = {
+  id: 'cif-cat-1',
+  source: CIF_HEAT_SOURCE,
+  remoteEstimatesAllowed: 'yes',
+  bands: cifBands(76.1, 81.0, 84.0, 86.0, {
+    green: '<76.1°F', yellow: '76.3 - 81.0°F', orange: '81.1 - 84.0°F', red: '84.2 - 86.0°F', black: '\u226586.2°F',
+  }),
+}
+export const CIF_CATEGORY_2 = {
+  id: 'cif-cat-2',
+  source: CIF_HEAT_SOURCE,
+  remoteEstimatesAllowed: 'yes',
+  bands: cifBands(79.7, 84.6, 87.6, 89.6, {
+    green: '<79.7°F', yellow: '79.9 - 84.6°F', orange: '84.7 - 87.6°F', red: '87.8 - 89.6°F', black: '\u226589.8°F',
+  }),
+}
+export const CIF_CATEGORY_3 = {
+  id: 'cif-cat-3',
+  source: CIF_HEAT_SOURCE,
+  remoteEstimatesAllowed: 'yes',
+  bands: cifBands(82.0, 86.9, 90.0, 91.9, {
+    green: '<82.0°F', yellow: '82.2 - 86.9°F', orange: '87.1 - 90.0°F', red: '90.1 - 91.9°F', black: '\u226592.1°F',
+  }),
+}
+/** All three, coolest region first — the order the CIF chart prints. */
+export const CIF_CATEGORIES = [CIF_CATEGORY_1, CIF_CATEGORY_2, CIF_CATEGORY_3]
+
 // --- Florida statute constants -------------------------------------------
 // Fla. Stat. § 1006.165(2), "Well-being of students participating in
 // extracurricular activities; training" — the heat-stress provisions added by

@@ -56,7 +56,10 @@
     "coolingZone": "Zona de enfriamiento rápido obligatoria en el sitio (tina o lona).",
     "noOutdoor": "Sin entrenamientos al aire libre. Posponga la práctica hasta un WBGT más fresco.",
     "miaaEquipmentSports": "Deportes con equipo intensivo: solo casco, hombreras y shorts durante la actividad; todo el equipo de protección debe retirarse para el acondicionamiento.",
-    "miaaNoEquipmentAnySport": "No puede usarse equipo de protección durante la actividad, en ningún deporte."
+    "miaaNoEquipmentAnySport": "No puede usarse equipo de protección durante la actividad, en ningún deporte.",
+    "cifContactSportsEquipment": "Fútbol americano y hockey sobre césped: solo casco, hombreras y shorts durante la práctica.",
+    "cifRedContests": "Se permiten las competiciones con descansos de hidratación adicionales.",
+    "cifRedNoEquipment": "No puede usarse equipo de protección durante la práctica."
   },
   "policies": {
     "uil-class-2": "UIL de Texas — Clase 2",
@@ -354,6 +357,11 @@
       "title": "Ley de seguridad ante el calor de Florida (Zachary Martin Act) | WBGT Check",
       "description": "Qué exige la Zachary Martin Act de Florida sobre monitoreo del estrés por calor, zonas de enfriamiento y medición en el sitio.",
       "keywords": "Zachary Martin Act, ley de calor Florida, FHSAA estrés por calor, WBGT Florida"
+    },
+    "california": {
+      "title": "Política de calor WBGT de la CIF de California (Categorías 1-3) | WBGT Check",
+      "description": "Las tres escalas WBGT regionales de la CIF bajo AB 1653 y el estatuto 503.K, los umbrales de cancelación y la lectura de la NOAA que la CIF señala.",
+      "keywords": "política de calor CIF, WBGT California, AB 1653, estatuto 503.K de la CIF"
     }
   },
   "texas": {
@@ -464,7 +472,7 @@
       "ny": "La NYSPHSAA trabaja con índice de calor, no WBGT, e indica leerlo desde una app del clima nombrada, por código ZIP — vea la guía de Nueva York.",
       "nj": "Reglas de participación en calor legisladas desde 2020.",
       "la": "Reglas basadas en WBGT legisladas.",
-      "ca": "La AB 1653 ordena a la CIF fijar un estándar; detalles pendientes.",
+      "ca": "Tres escalas WBGT regionales bajo AB 1653 y el estatuto 503.K de la CIF, cada una con un nivel de cancelación estricto. La CIF exige un WBGT y envía a las escuelas sin medidor a una lectura de la NOAA — uno de los pocos estados que nombra una fuente en línea.",
       "ma": "Una sola política estatal de la MIAA para todos los deportes, con umbrales muy por debajo de la mayoría — la actividad al aire libre se detiene en los 86. Se exige un instrumento WBGT en el sitio en cada actividad; los partidos pueden continuar donde la práctica se detendría."
     },
     "caveat": "Esta tabla es una ayuda de navegación, no asesoría legal. Las políticas cambian a mitad de temporada; el documento vigente de la asociación manda. ¿Encontró un error? Avise primero a su preparador físico, luego a nosotros.",
@@ -478,7 +486,8 @@
     "newYorkLink": "Guía NYSPHSAA de Nueva York",
     "virginiaLink": "Guía de la ley de calor de Virginia",
     "massachusettsLink": "Guía de la MIAA de Massachusetts",
-    "floridaLink": "Guía de la ley de calor de Florida"
+    "floridaLink": "Guía de la ley de calor de Florida",
+    "californiaLink": "Guía de calor de la CIF de California"
   },
   "southCarolina": {
     "pageTitle": "Reglas WBGT de la SCHSL de Carolina del Sur",
@@ -733,5 +742,27 @@
     "sourceHeading": "Fuente",
     "sourceBody": "Todas las citas anteriores se leyeron del texto legal del Senado de Florida el {{verifiedOn}}.",
     "ctaButton": "Planifique con el pronóstico"
+  },
+  "california": {
+    "pageTitle": "Política de calor WBGT de la CIF de California",
+    "intro": "California es el único estado de este sitio con tres escalas WBGT distintas. La CIF asigna a cada escuela una categoría regional, y la misma lectura significa cosas distintas en San Diego y en las estribaciones de la Sierra — así que el número por sí solo no dice nada hasta que sepa su categoría.",
+    "categoryHeading": "Primero encuentre su categoría regional",
+    "categoryBody": "La política se rige por {{basis}}, y divide el estado en Categoría 1, 2 y 3 según el clima. La mayoría de los estados cae en una o dos categorías; California abarca las tres.",
+    "cancelBody": "En lo alto de cada escala el lenguaje no es orientativo — {{quote}}.",
+    "rosterLink": "Consulte la categoría de su escuela en la lista de la CIF",
+    "tableHeading": "Categoría {{category}} — guía de actividad por WBGT (°F)",
+    "boundaryHeading": "Dónde este sitio es más estricto que la tabla publicada",
+    "boundaryBody": "La política enuncia sus niveles de cancelación dos veces y ambos no coinciden: el texto de la primera página da un conjunto y la tabla de la siguiente imprime otro, y esa tabla además deja una décima de grado sin asignar entre el tope del rojo y el inicio del negro. Este sitio resuelve todos esos huecos hacia arriba — gana la bandera más caliente — para que una lectura en un rango en disputa nunca se muestre con la categoría más fresca. Rige la tabla de su asociación; la nuestra solo se equivoca hacia detenerse antes.",
+    "measurementHeading": "California espera un WBGT — y envía a la NOAA a quien no tenga uno",
+    "measurementBody": "La política es directa sobre el instrumento: «{{quote}}»",
+    "noDeviceBody": "Y después hace algo que ninguna otra asociación de este sitio hace. Para las escuelas que no tienen medidor, nombra una fuente en línea: «{{quote}}» — enlazando el propio mapa WBGT de la NOAA.",
+    "noaaLink": "El mapa WBGT de la NOAA que enlaza la política",
+    "stillNotCompliance": "Eso hace de California uno de los pocos estados donde una lectura WBGT en línea está contemplada explícitamente. Aun así, no convierte a este sitio en su lectura oficial: la CIF nombra el mapa de la NOAA, no este. Úselo para planificar y siga el procedimiento de su escuela para la lectura que cuenta.",
+    "acclimatizationHeading": "Aclimatación de otoño",
+    "acclimatizationBody": "La política pide una progresión gradual: empezar con sesiones ligeras en condiciones más frescas y luego aumentar intensidad y duración a lo largo de {{min}} a {{max}} días, con educación sobre hidratación y prácticas movidas a las horas más frescas del día.",
+    "airLink": "California también tiene una política de calidad del aire aparte — vea la guía de calidad del aire de la CIF",
+    "sourceHeading": "Fuente",
+    "sourceBody": "Todos los umbrales y citas anteriores se leyeron de la Constitución y Estatutos de la CIF el {{verifiedOn}}.",
+    "ctaButton": "Planifique con las banderas de California"
   }
 }
