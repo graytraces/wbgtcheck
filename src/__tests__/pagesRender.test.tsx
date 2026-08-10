@@ -1,10 +1,13 @@
-import { describe, it, expect, beforeAll } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { describe, it, expect, beforeAll, vi } from 'vitest'
+import { render, screen, within, fireEvent } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
 import type { ReactElement } from 'react'
+import { readFileSync } from 'node:fs'
+import { join } from 'node:path'
 import i18n from '../i18n'
 import en from '../locales/en.json'
 import Home from '../pages/Home'
+import VerdictCard from '../components/VerdictCard'
 import Texas from '../pages/Texas'
 import Georgia from '../pages/Georgia'
 import SouthCarolina from '../pages/SouthCarolina'
@@ -47,6 +50,7 @@ import {
   MIAA_NO_GAMES_FOOTNOTE_QUOTE,
   FL_ONSITE_MEASUREMENT_QUOTE,
   CIF_CATEGORIES,
+  GENERIC_NATA,
   KHSAA_WBGT_REFERENCE,
   KY_LOWEST_BAND_FLOOR,
   KY_REVISION_ISO,
@@ -343,5 +347,73 @@ describe('post-JS rendered DOM — interpolated corrections', () => {
     } finally {
       await i18n.changeLanguage('en')
     }
+  })
+})
+
+/**
+ * Changing location meant scrolling 3.4 screens to a button that cleared
+ * everything and left the reader in place — with the new ZIP field 1.35
+ * screens ABOVE where they were standing, so the visible result of pressing it
+ * was a wall of prose. The label saying WHERE the reading is sits at the top
+ * of the verdict card; the way to change it now sits beside it.
+ *
+ * LocationSetup had carried a `compact` prop for this since it was written,
+ * with no caller anywhere.
+ */
+describe('changing location starts where the location is shown', () => {
+  const hourFixture = {
+    time: '2026-08-14T20:00:00Z',
+    wbgtF: 84,
+    flag: 'red',
+    borderline: false,
+    localHour: 15,
+    localDate: '2026-08-14',
+    source: 'forecast',
+  } as never
+
+  it('the verdict card offers the change beside the place name', () => {
+    const onChangeLocation = vi.fn()
+    render(
+      <MemoryRouter initialEntries={['/en']}>
+        <VerdictCard
+          hour={hourFixture}
+          policy={GENERIC_NATA}
+          locationLabel="Austin, TX"
+          stateAbbr="TX"
+          timeZone="America/Chicago"
+          onChangeLocation={onChangeLocation}
+        />
+      </MemoryRouter>,
+    )
+    const label = screen.getByText('Austin, TX')
+    const button = within(label.closest('span')!).getByRole('button')
+    expect(button.textContent).toBe(en.location.change)
+    fireEvent.click(button)
+    expect(onChangeLocation).toHaveBeenCalled()
+  })
+
+  it('renders no change control when the page does not offer one', () => {
+    render(
+      <MemoryRouter initialEntries={['/en']}>
+        <VerdictCard
+          hour={hourFixture}
+          policy={GENERIC_NATA}
+          locationLabel="Austin, TX"
+          stateAbbr="TX"
+          timeZone="America/Chicago"
+        />
+      </MemoryRouter>,
+    )
+    expect(within(screen.getByText('Austin, TX').closest('span')!).queryByRole('button')).toBeNull()
+  })
+
+  it('the compact editor prop has a caller now', () => {
+    const src = readFileSync(join(process.cwd(), 'src/pages/Home.tsx'), 'utf8')
+    expect(src).toContain('<LocationSetup')
+    expect(src).toMatch(/compact\s*$/m)
+    // Opening it scrolls to and focuses the field rather than leaving the
+    // reader wherever they were.
+    expect(src).toContain('scrollIntoView')
+    expect(src).toContain("getElementById('zip-input')")
   })
 })

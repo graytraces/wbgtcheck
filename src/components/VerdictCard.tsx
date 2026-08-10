@@ -25,6 +25,9 @@ interface VerdictCardProps {
   timeZone: string
   /** Epoch ms when the forecast payload was fetched — shown as "as of". */
   fetchedAt?: number | null
+  /** Opens the inline location editor. The label says WHERE this reading is;
+      the way to change it belongs next to it, not 3.4 screens down. */
+  onChangeLocation?: () => void
 }
 
 export default function VerdictCard({
@@ -34,6 +37,7 @@ export default function VerdictCard({
   stateAbbr,
   timeZone,
   fetchedAt = null,
+  onChangeLocation,
 }: VerdictCardProps) {
   const { t, i18n } = useTranslation()
   const band = classifyWbgt(policy, hour.wbgtF)
@@ -66,6 +70,15 @@ export default function VerdictCard({
           <span className="inline-flex items-center gap-1.5">
             <MapPin className="h-4 w-4" aria-hidden="true" />
             {locationLabel}
+            {onChangeLocation && (
+              <button
+                type="button"
+                onClick={onChangeLocation}
+                className="ml-1 underline decoration-dotted underline-offset-2 hover:no-underline"
+              >
+                {t('location.change')}
+              </button>
+            )}
           </span>
           <span>
             {t('verdict.nowHeading')} · {t('verdict.atTime', { time: timeLabel })}

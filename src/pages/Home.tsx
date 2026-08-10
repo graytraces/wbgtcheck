@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { RefreshCw } from 'lucide-react'
@@ -61,7 +61,7 @@ export default function Home() {
     fetchedAt,
     errorKey,
     setZip,
-    useMyLocation,
+    useMyLocation: geolocate,
     setPolicyId,
     clearLocation,
     refetch,
@@ -92,6 +92,27 @@ export default function Home() {
   // day — its PEAK — which is the right summary and the wrong place to stop:
   // "Monday is black" and "Monday is black at 3pm but amber by 6" are
   // different decisions. Same forecast data, so this is a view change.
+  /**
+   * Changing location used to mean scrolling 3.4 screens to a button that
+   * cleared everything and left the reader where they stood — looking at a
+   * wall of prose, with the new ZIP field 1.35 screens ABOVE them. The label
+   * saying where you are sits at the top of the verdict; the way to change it
+   * now sits beside it, and the old button opens the same editor rather than
+   * wiping the verdict first.
+   *
+   * LocationSetup already had a `compact` prop for this and no caller.
+   */
+  const [changingLocation, setChangingLocation] = useState(false)
+  const locationEditorRef = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    if (!changingLocation) return
+    locationEditorRef.current?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+    // Focus after the scroll is queued so the field is both visible and typed
+    // into — the previous flow left focus wherever the reader had been.
+    const input = document.getElementById('zip-input') as HTMLInputElement | null
+    input?.focus()
+  }, [changingLocation])
+
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
   // The rule lives in utils/verdict so it can be tested without a clock:
   // see pickTimelineDay for why today is not always the answer.
@@ -202,7 +223,7 @@ export default function Home() {
 
       {!location && (
         <>
-          <LocationSetup onZip={setZip} onGeolocate={useMyLocation} busy={busy} errorKey={errorKey} />
+          <LocationSetup onZip={setZip} onGeolocate={geolocate} busy={busy} errorKey={errorKey} />
           <div className="max-w-sm">
             <PolicyPicker value={policyId} onChange={setPolicyId} />
           </div>
@@ -262,7 +283,26 @@ export default function Home() {
           stateAbbr={location.stateAbbr}
           timeZone={timeZone}
           fetchedAt={fetchedAt}
+          onChangeLocation={() => setChangingLocation(true)}
         />
+      )}
+
+      {location && status === 'ready' && changingLocation && (
+        <div ref={locationEditorRef} className="border-2 border-ink bg-surface p-4">
+          <LocationSetup
+            compact
+            onZip={(zip) => {
+              setZip(zip)
+              setChangingLocation(false)
+            }}
+            onGeolocate={() => {
+              geolocate()
+              setChangingLocation(false)
+            }}
+            busy={busy}
+            errorKey={errorKey}
+          />
+        </div>
       )}
 
       {/* Directly under the verdict: a reader who stops at the flag must
@@ -353,7 +393,7 @@ export default function Home() {
               </div>
               <button
                 type="button"
-                onClick={clearLocation}
+                onClick={() => setChangingLocation(true)}
                 className="inline-flex min-h-11 items-center border-2 border-line px-4 text-sm font-semibold text-ink-muted hover:text-ink"
               >
                 {t('location.change')}
