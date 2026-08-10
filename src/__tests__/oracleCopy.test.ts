@@ -382,8 +382,10 @@ describe('the Massachusetts footnote note reads the way the footnote works', () 
   })
 
   it('makes the equipment the thing modified, not the actor', () => {
-    expect(en.states.notes.ma).toMatch(/equipment has to be modified/i)
-    expect(es.states.notes.ma).toMatch(/equipo deba modificarse/i)
+    expect(en.states.notes.ma).toMatch(/protective equipment has to be modified/i)
+    // `equipo` alone reads as team; the guideline copy says `equipo de
+    // protección` and this note now matches it.
+    expect(es.states.notes.ma).toMatch(/equipo de protección deba modificarse/i)
     // The inverted Spanish reading that shipped.
     expect(es.states.notes.ma).not.toMatch(/equipo modifique la banda/i)
   })
@@ -453,5 +455,62 @@ describe('meta descriptions survive their trim in both languages', () => {
     expect(es.seo.iowa.description).toMatch(/porristas/i)
     expect(es.seo.northCarolina.description).toMatch(/selector/i)
     expect(en.seo.northCarolina.description).toMatch(/picker/i)
+  })
+})
+
+/**
+ * Three places where this site stated a rule more broadly than the document.
+ */
+describe('scope claims match the documents', () => {
+  it('Kentucky names the four sports its measurement rule reaches', () => {
+    // KHSAA's matrix puts the rule in football (must) and in cross country,
+    // field hockey and soccer (strong recommendation). The ALL OUTDOOR SPORTS
+    // column has no measurement-location rule, so baseball, tennis, golf and
+    // marching band get nothing — "the other sports" swept them all in.
+    for (const [copy, name] of [
+      [en.kentucky.intro, 'en intro'],
+      [en.states.notes.ky, 'en note'],
+    ] as const) {
+      expect(copy, name).toMatch(/cross country/i)
+      expect(copy, name).toMatch(/field hockey/i)
+      expect(copy, name).not.toMatch(/the other sports/i)
+    }
+    for (const [copy, name] of [
+      [es.kentucky.intro, 'es intro'],
+      [es.states.notes.ky, 'es note'],
+    ] as const) {
+      expect(copy, name).toMatch(/campo traviesa/i)
+      expect(copy, name).not.toMatch(/los demás deportes/i)
+    }
+    expect(en.states.notes.ky).toMatch(/all-sports column sets no measurement-location rule/i)
+  })
+
+  it('the Massachusetts footnote says games SHOULD not occur, not that they stop', () => {
+    // Source: "If equipment modifications are necessary, no games should
+    // occur for that sport." The English note had promoted should to a stop —
+    // the same overreach this project bans in translation, in the original.
+    expect(en.states.notes.ma).toMatch(/games should not occur/i)
+    expect(en.states.notes.ma).not.toMatch(/stops games entirely/i)
+    expect(es.states.notes.ma).toMatch(/no deberían jugarse partidos/i)
+  })
+
+  /**
+   * MIAA §2 contrasts competition with "continuous 1 to 2 hour practices",
+   * and 1 and 2 hours ARE the table's caps — so the document is not silent
+   * about them, it just never says how they apply to a game. "Nothing about
+   * the caps" overshot; the narrower claim is the true one.
+   */
+  it('does not claim MIAA is silent about the caps, only about their application', () => {
+    expect(en.massachusetts.competitionBody).toMatch(/does not say is how the practice time caps apply/i)
+    expect(en.massachusetts.competitionBody).not.toMatch(/nothing about the caps/i)
+    expect(es.massachusetts.competitionBody).not.toMatch(/nada sobre los topes/i)
+  })
+
+  it('the conditional legend covers delegation and silence, not just recommendation', () => {
+    // FL requires monitoring year-round (not conditional), MD delegates, and
+    // NJ/LA never use the term. One definition covered none of them.
+    expect(en.states.legendMandateConditional).toMatch(/delegated/i)
+    expect(en.states.legendMandateConditional).toMatch(/never uses the term/i)
+    expect(es.states.legendMandateConditional).toMatch(/delega/i)
   })
 })

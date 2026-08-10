@@ -1266,10 +1266,16 @@ export const MIAA_NO_GAMES_FOOTNOTE_QUOTE =
  * practice could not: pauses in play, changes of possession, better
  * work-to-rest ratios.
  *
- * ⚠️ It states a CEILING and a rationale. It says nothing about the practice
- * time caps, and this file previously described it as explaining why games are
- * exempt from them — an inference, in the permissive direction, presented as
- * policy. The table governs games (see MIAA_TABLE_SCOPE_QUOTE), so exempting
+ * ⚠️ It states a CEILING and a rationale, and this file previously described
+ * it as explaining why games are exempt from the practice time caps — an
+ * inference, in the permissive direction, presented as policy.
+ *
+ * Note the caps are not entirely absent from the document: §2 on page 1
+ * contrasts competition with "continuous 1 to 2 hour practices", and 1 and 2
+ * hours are the caps the table sets at 84.1-86.0 and 81.1-84.0. So the
+ * accurate statement is that MIAA never says HOW the caps apply to a game,
+ * not that it says nothing about them at all. Do not re-broaden this in
+ * either direction on rediscovering §2. The table governs games (see MIAA_TABLE_SCOPE_QUOTE), so exempting
  * games from part of it needs the document to say so. It does not. Do not
  * fill that silence in either direction.
  *

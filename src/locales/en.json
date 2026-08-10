@@ -453,7 +453,7 @@
     "legendMeasurementHeading": "Measurement column",
     "legendMandateHeading": "WBGT mandate column",
     "legendMandateRequired": "WBGT required — the policy directs schools to use WBGT readings.",
-    "legendMandateConditional": "Conditional / preferred — WBGT is recommended, or required only in certain conditions, rather than mandated outright.",
+    "legendMandateConditional": "Conditional / preferred — WBGT is recommended rather than mandated, or required only in certain conditions, or the rule is delegated to districts, or the source never uses the term at all. Read the note for which of those it is.",
     "legendMandateHeatIndex": "Heat index based — the policy works from heat index rather than WBGT.",
     "tableLabel": "State-by-state WBGT policy directory",
     "tableScrollHint": "Scrollable table — use the arrow keys to reach the remaining columns.",
@@ -482,7 +482,7 @@
     "notes": {
       "tx": "Effective {{effectiveDate}}; covers athletics and marching band. Class 2/3 regional thresholds — see the Texas guide. Internet WBGT resources are explicitly allowed; no approval list is published.",
       "ga": "On-site calibrated instrument required at each practice — see the Georgia guide.",
-      "ky": "Four WBGT bands for contest alterations with a hard stop at the top, re-checked every 30 minutes. Football must measure at the competition site with no off-site measurement permitted; other sports get the same rule as a strong recommendation. The document covers contest alterations only — a general duty to use WBGT was not found in it. Read from a web-archive capture; khsaa.org answers nothing, so currency is unconfirmed.",
+      "ky": "Four WBGT bands for contest alterations with a hard stop at the top, re-checked every 30 minutes. Football must measure at the competition site with no off-site measurement permitted; cross country, field hockey and soccer get the same rule as a strong recommendation, and the all-sports column sets no measurement-location rule at all. The document covers contest alterations only — a general duty to use WBGT was not found in it. Read from a web-archive capture; khsaa.org answers nothing, so currency is unconfirmed.",
       "sc": "Schools are required to own and use an on-site WBGT thermometer; \"phone apps are not scientifically approved\". Range-hold rule locks in restrictions — see the South Carolina guide.",
       "ia": "WBGT is recommended (not mandated) year-round above 80 °F, readings every 30 minutes; marching band and cheer have their own rows — see the Iowa guide.",
       "fl": "The Zachary Martin Act requires heat-stress monitoring year-round and cooling zones, and requires the reading to be measured at the site of the activity. The thresholds themselves are FHSAA guidelines, which we have not been able to open.",
@@ -495,7 +495,7 @@
       "nj": "Legislated heat participation rules since 2020.",
       "la": "Legislated WBGT-based rules.",
       "ca": "Three regional WBGT ladders under AB 1653 and CIF Bylaw 503.K, with a hard cancel level for each. CIF requires a WBGT and, for schools without a meter, names one specific NOAA page — a single government source, not app readings in general.",
-      "ma": "One statewide MIAA policy covering practice AND competition, with thresholds well below most states — outdoor activity stops in the 86s. An on-site WBGT instrument is required at each activity, and a footnote stops games entirely in any sport whose equipment has to be modified at that WBGT band."
+      "ma": "One statewide MIAA policy covering practice AND competition, with thresholds well below most states — outdoor activity stops in the 86s. An on-site WBGT instrument is required at each activity, and a footnote says games should not occur in any sport whose protective equipment has to be modified at that WBGT band."
     },
     "caveat": "This table is a navigation aid, not legal advice. Policies change midseason; the association's current document controls. Found an error? Tell your athletic trainer first, then us.",
     "guidesHeading": "State guides on this site",
@@ -743,7 +743,7 @@
     "indoorBody": "It reaches indoors as well: \"{{quote}}\"",
     "deviceWarning": "App and web estimates — including this site — are not the reading the MIAA asks for. Plan tomorrow's schedule here; take the reading at the activity, with a scientifically approved instrument.",
     "competitionHeading": "Games: the table covers them too",
-    "competitionBody": "The table's own column is headed \"{{scope}}\", so it governs games as well as practices. MIAA does not say how the practice time caps apply to a game — it states a ceiling and the reasoning behind it, and nothing about the caps: \"{{quote}}\"",
+    "competitionBody": "The table's own column is headed \"{{scope}}\", so it governs games as well as practices. What MIAA does not say is how the practice time caps apply to a game — it gives a ceiling and the reasoning behind it: \"{{quote}}\"",
     "coolingHeading": "Cooling zone",
     "coolingBody": "Above a WBGT of {{wbgt}} °F the policy calls for ice water and towels in the cooling zone, and for cold-water immersion tubs to be available for any player showing signs of heat illness.",
     "sourceHeading": "Source",
@@ -813,7 +813,7 @@
   },
   "kentucky": {
     "pageTitle": "Kentucky KHSAA WBGT Contest Alterations",
-    "intro": "KHSAA's WBGT guidance is written for contests rather than practices: four bands, per-sport adjustments, and one hard stop. Its measurement rule is the bluntest on this site, but it is not one rule for everyone — in football no off-site reading is permitted at all, and for the other sports KHSAA recommends the same in unusually strong terms.",
+    "intro": "KHSAA's WBGT guidance is written for contests rather than practices: four bands, per-sport adjustments, and one hard stop. Its measurement rule is the bluntest on this site, but it reaches four sports and no others — football may not use an off-site reading at all, and cross country, field hockey and soccer get the same rule as a strong recommendation.",
     "currencyHeading": "Read from an archive, not from KHSAA",
     "currencyBody": "khsaa.org does not answer any request from us — not the root, not the sports-medicine section, not the file itself. This page was built from a web-archive capture of KHSAA's own document, revised {{revision}}. We cannot confirm that KHSAA still publishes this revision, only that it published it. Confirm with KHSAA or your athletic director before relying on these numbers.",
     "tableHeading": "Contest alterations by WBGT (°F)",

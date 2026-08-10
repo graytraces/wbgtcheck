@@ -453,7 +453,7 @@
     "legendMeasurementHeading": "Columna de medición",
     "legendMandateHeading": "Columna de obligación WBGT",
     "legendMandateRequired": "WBGT obligatorio — la política indica a las escuelas que usen lecturas WBGT.",
-    "legendMandateConditional": "Condicional / preferido — el WBGT se recomienda, o se exige solo en ciertas condiciones, en vez de ser obligatorio sin más.",
+    "legendMandateConditional": "Condicional / preferido — el WBGT se recomienda en vez de exigirse, o se exige solo en ciertas condiciones, o la norma se delega en los distritos, o la fuente ni siquiera usa el término. Lea la nota para saber cuál de esos casos es.",
     "legendMandateHeatIndex": "Basado en índice de calor — la política parte del índice de calor y no del WBGT.",
     "tableLabel": "Directorio de políticas WBGT por estado",
     "tableScrollHint": "Tabla desplazable — use las teclas de flecha para llegar a las columnas restantes.",
@@ -482,7 +482,7 @@
     "notes": {
       "tx": "Vigente desde el {{effectiveDate}}; cubre atletismo y banda de marcha. Umbrales regionales Clase 2/3 — vea la guía de Texas. Los recursos WBGT por internet están permitidos explícitamente; no se publica una lista de aprobación.",
       "ga": "Instrumento calibrado en el sitio requerido en cada práctica — vea la guía de Georgia.",
-      "ky": "Cuatro bandas WBGT para alterar competiciones con una parada tajante en lo alto, recomprobadas cada 30 minutos. El fútbol americano debe medir en el sitio de competición sin medición externa permitida; los demás deportes reciben la misma regla como recomendación firme. El documento cubre solo alteraciones de competición — no se halló en él un deber general de usar WBGT. Leído de una captura de archivo web; khsaa.org no responde, así que la vigencia no está confirmada.",
+      "ky": "Cuatro bandas WBGT para alterar competiciones con una parada tajante en lo alto, recomprobadas cada 30 minutos. El fútbol americano debe medir en el sitio de competición sin medición externa permitida; campo traviesa, hockey sobre césped y fútbol reciben la misma regla como recomendación firme, y la columna de todos los deportes no fija ninguna regla sobre dónde medir. El documento cubre solo alteraciones de competición — no se halló en él un deber general de usar WBGT. Leído de una captura de archivo web; khsaa.org no responde, así que la vigencia no está confirmada.",
       "sc": "Se exige que las escuelas tengan y usen un termómetro WBGT en el sitio; «phone apps are not scientifically approved» (las apps del teléfono no están aprobadas científicamente). La regla de permanencia fija las restricciones — vea la guía de Carolina del Sur.",
       "ia": "El WBGT es recomendado (no obligatorio) todo el año sobre 80 °F, con lecturas cada 30 minutos; la banda de marcha y las porristas tienen filas propias — vea la guía de Iowa.",
       "fl": "La Zachary Martin Act exige monitoreo del estrés por calor todo el año y zonas de enfriamiento, y exige que la lectura se mida en el sitio de la actividad. Los umbrales en sí son pautas de la FHSAA, que no hemos podido abrir.",
@@ -495,7 +495,7 @@
       "nj": "Reglas de participación en calor legisladas desde 2020.",
       "la": "Reglas basadas en WBGT legisladas.",
       "ca": "Tres escalas WBGT regionales bajo AB 1653 y el estatuto 503.K de la CIF, cada una con un nivel de cancelación estricto. La CIF exige un WBGT y, para las escuelas sin medidor, nombra una página concreta de la NOAA — una sola fuente gubernamental, no las lecturas por app en general.",
-      "ma": "Una sola política estatal de la MIAA que cubre práctica Y competición, con umbrales muy por debajo de la mayoría — la actividad al aire libre se detiene en los 86. Se exige un instrumento WBGT en el sitio en cada actividad, y una nota al pie detiene por completo los partidos en cualquier deporte cuyo equipo deba modificarse en esa banda WBGT."
+      "ma": "Una sola política estatal de la MIAA que cubre práctica Y competición, con umbrales muy por debajo de la mayoría — la actividad al aire libre se detiene en los 86. Se exige un instrumento WBGT en el sitio en cada actividad, y una nota al pie dice que no deberían jugarse partidos en ningún deporte cuyo equipo de protección deba modificarse en esa banda WBGT."
     },
     "caveat": "Esta tabla es una ayuda de navegación, no asesoría legal. Las políticas cambian a mitad de temporada; el documento vigente de la asociación manda. ¿Encontró un error? Avise primero a su preparador físico, luego a nosotros.",
     "guidesHeading": "Guías estatales en este sitio",
@@ -743,7 +743,7 @@
     "indoorBody": "También alcanza a los espacios interiores: «{{quote}}»",
     "deviceWarning": "Las estimaciones por app o web — incluido este sitio — no son la lectura que pide la MIAA. Planifique aquí el horario de mañana; tome la lectura en la actividad, con un instrumento aprobado científicamente.",
     "competitionHeading": "Partidos: la tabla también los cubre",
-    "competitionBody": "La columna de la tabla se titula «{{scope}}», así que rige tanto los partidos como las prácticas. La MIAA no dice cómo se aplican a un partido los topes de tiempo de práctica: enuncia un techo y el razonamiento detrás, y nada sobre los topes: «{{quote}}»",
+    "competitionBody": "La columna de la tabla se titula «{{scope}}», así que rige tanto los partidos como las prácticas. Lo que la MIAA no dice es cómo se aplican a un partido los topes de tiempo de práctica: da un techo y el razonamiento detrás: «{{quote}}»",
     "coolingHeading": "Zona de enfriamiento",
     "coolingBody": "Por encima de un WBGT de {{wbgt}} °F la política pide agua helada y toallas en la zona de enfriamiento, y que haya tinas de inmersión en agua fría disponibles para cualquier jugador con signos de enfermedad por calor.",
     "sourceHeading": "Fuente",
@@ -813,7 +813,7 @@
   },
   "kentucky": {
     "pageTitle": "Alteraciones de competición por WBGT de la KHSAA de Kentucky",
-    "intro": "La guía WBGT de la KHSAA está escrita para competiciones más que para prácticas: cuatro bandas, ajustes por deporte y una parada tajante. Su regla de medición es la más rotunda de este sitio, pero no es la misma para todos: en fútbol americano no se permite ninguna lectura fuera del sitio, y en los demás deportes la KHSAA lo recomienda en términos inusualmente firmes.",
+    "intro": "La guía WBGT de la KHSAA está escrita para competiciones más que para prácticas: cuatro bandas, ajustes por deporte y una parada tajante. Su regla de medición es la más rotunda de este sitio, pero alcanza a cuatro deportes y a ningún otro: el fútbol americano no puede usar ninguna lectura fuera del sitio, y campo traviesa, hockey sobre césped y fútbol reciben la misma regla como recomendación firme.",
     "currencyHeading": "Leído de un archivo, no de la KHSAA",
     "currencyBody": "khsaa.org no responde a ninguna solicitud nuestra — ni la raíz, ni la sección de medicina deportiva, ni el archivo mismo. Esta página se construyó a partir de una captura de archivo web del propio documento de la KHSAA, revisado el {{revision}}. No podemos confirmar que la KHSAA siga publicando esta revisión, solo que la publicó. Confirme con la KHSAA o con su director atlético antes de basarse en estos números.",
     "tableHeading": "Alteraciones de competición por WBGT (°F)",

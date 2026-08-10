@@ -493,7 +493,13 @@ describe('the states directory table is readable and reachable', () => {
    */
   it('defines every value that actually appears in both judgement columns', () => {
     const { container } = renderStates()
-    const legend = container.textContent ?? ''
+    // Scoped to the legend. Reading container.textContent meant the whole
+    // PAGE, so a value merely appearing in a table cell satisfied the
+    // assertion — the legend could define nothing and still pass.
+    const heading = [...container.querySelectorAll('h2')].find(
+      (h) => h.textContent === en.states.legendHeading,
+    )!
+    const legend = heading.closest('section')?.textContent ?? ''
     const usedMandates = new Set(STATE_DIRECTORY.map((r) => r.mandate))
     for (const mandate of usedMandates) {
       expect(legend, `mandate value ${mandate} is undefined in the legend`).toContain(
