@@ -47,5 +47,14 @@ export const STATE_DIRECTORY = [
   { abbr: 'SC', body: 'SCHSL', mandate: 'wbgt-required', measurement: 'device-required', verified: 'primary', noteKey: 'sc' },
   { abbr: 'TN', body: 'TSSAA', mandate: 'conditional', measurement: 'apps-allowed', verified: 'primary', noteKey: 'tn' },
   { abbr: 'TX', body: 'UIL', mandate: 'wbgt-required', measurement: 'apps-allowed', verified: 'primary', noteKey: 'tx' },
-  { abbr: 'VA', body: '§22.1-271.10 (school boards)', mandate: 'wbgt-required', measurement: 'unverified', verified: 'primary', noteKey: 'va' },
+  // Was 'unverified', on the strength of the STATUTE, which really does fix no
+  // measurement method. The VHSL guidance the statute points at devotes a
+  // paragraph to exactly this question (VHSL_FORECAST_* in policyData.js):
+  // forecasting tools and mobile apps may guide planning and "should never
+  // replace" the on-site real-time evaluation. So the method is regulated, the
+  // answer is that a remote reading is not the reading, and this row said the
+  // opposite — the same mistake VA's ladder classification made, in the
+  // adjacent column: a document nobody had read recorded as a document that
+  // does not exist.
+  { abbr: 'VA', body: '§22.1-271.10 (school boards)', mandate: 'wbgt-required', measurement: 'device-required', verified: 'primary', noteKey: 'va' },
 ]

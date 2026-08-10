@@ -33,6 +33,10 @@ import {
   FHSAA_PRACTICE_REFERENCE as FHSAA_PRACTICE_REFERENCE_RAW,
   NYSPHSAA_WBGT_CATEGORIES as NYSPHSAA_WBGT_CATEGORIES_RAW,
   NYSPHSAA_WBGT_ACTIONS as NYSPHSAA_WBGT_ACTIONS_RAW,
+  KY_ONSITE_STRENGTHS as KY_ONSITE_STRENGTHS_RAW,
+  IOWA_BAND_ROWS as IOWA_BAND_ROWS_RAW,
+  MEASUREMENT_STANCES as MEASUREMENT_STANCES_RAW,
+  BAND_COVERAGE as BAND_COVERAGE_RAW,
 } from './policyData.js'
 
 export {
@@ -89,6 +93,9 @@ export {
   NCHSAA_DEVICE_QUOTE,
   NCHSAA_CADENCE_QUOTE,
   NCHSAA_MANDATE_QUOTE,
+  NCHSAA_ALL_SPORTS_HEADING_QUOTE,
+  NCHSAA_CHART_TITLE_QUOTE,
+  NCHSAA_CHEER_JURISDICTION_QUOTE,
   NYSPHSAA_APPROVED_ON,
   NYSPHSAA_UPDATED_ON,
   NYSPHSAA_CHECK_LEAD_HOURS,
@@ -96,6 +103,8 @@ export {
   NYSPHSAA_WARNING_BREAK_INTERVAL_MINUTES,
   NYSPHSAA_APP_QUOTE,
   NYSPHSAA_ZIP_QUOTE,
+  NYSPHSAA_ONFIELD_WBGT_QUOTE,
+  NYSPHSAA_REMOTE_SCALE,
   MIAA_DEVICE_QUOTE,
   MIAA_INDOOR_QUOTE,
   MIAA_COMPETITION_QUOTE,
@@ -110,6 +119,7 @@ export {
   KY_ONSITE_ONLY_QUOTE,
   KY_OFFSITE_INVALID_QUOTE,
   KY_FOOTBALL_ONSITE_QUOTE,
+  KY_ALL_SPORTS_COLUMN_QUOTE,
   CIF_LEGAL_BASIS,
   CIF_AIR_BYLAW_CITATION,
   CIF_BYLAW_L_SUBJECT,
@@ -156,6 +166,9 @@ export {
   VHSL_CANCEL_QUOTE,
   VHSL_TABLE_TITLE_QUOTE,
   VHSL_ICE_LEVEL,
+  VHSL_FORECAST_PLANNING_QUOTE,
+  VHSL_FORECAST_NOT_REPLACE_QUOTE,
+  VHSL_FORECAST_GENERALIZED_QUOTE,
   FHSAA_SOURCE,
   FHSAA_NO_OUTDOOR_WBGT_F,
   FHSAA_SECTION,
@@ -183,6 +196,17 @@ export {
   REMOTE_UNDERESTIMATE_MIN_F,
   REMOTE_UNDERESTIMATE_MAX_F,
   BORDERLINE_MARGIN_F,
+  // Scope sentences — what each document says it governs (/marching-band).
+  GHSA_ALL_SPORTS_QUOTE,
+  SCHSL_TABLE_SCOPE_QUOTE,
+  MIAA_ALL_SPORTS_QUOTE,
+  FHSAA_STUDENT_ATHLETE_SCOPE_QUOTE,
+  UIL_BAND_HEADING_QUOTE,
+  UIL_BAND_COOLING_ZONE_QUOTE,
+  UIL_BAND_PRACTICE_DEFINITION_QUOTE,
+  IOWA_APPENDIX_C_SCOPE_QUOTE,
+  IOWA_BAND_ROW_HEADING_QUOTE,
+  IOWA_BAND_FOOTNOTE_SOURCE,
 } from './policyData.js'
 
 import { BORDERLINE_MARGIN_F } from './policyData.js'
@@ -248,25 +272,60 @@ export interface PolicySource {
   verifiedOn: string
 }
 
-export interface HeatPolicy {
+/**
+ * Whether the governing body accepts internet/app-based WBGT estimates as the
+ * reading its own policy is satisfied by.
+ *
+ * 'yes'                 explicitly permitted — the document names an online or
+ *                       app source and lets a school work from it.
+ * 'device-required'     an on-site instrument is MANDATED (or the statute fixes
+ *                       where the variables are measured), so a remote estimate
+ *                       cannot satisfy the policy at all.
+ * 'device-recommended'  the method the source NAMES for the reading is on site,
+ *                       stated as a recommendation rather than a mandate, so a
+ *                       remote estimate still must not stand in for it. Some
+ *                       sources in this class go further and say a phone or web
+ *                       reading is inaccurate for the venue (Iowa, TSSAA, VHSL);
+ *                       others simply never offer one (NCHSAA). Both are this
+ *                       value — the field records what may be the reading, not
+ *                       how loudly the document argues about it.
+ * 'unspecified'         the source does not say.
+ *
+ * ⚠️ It is a WBGT claim. New York authorises a remote lookup by ZIP code and is
+ * still 'device-recommended' here, because the lookup it authorises is on the
+ * HEAT INDEX scale (NYSPHSAA_REMOTE_SCALE) and its WBGT leg is always an
+ * indicator "on the field".
+ */
+export type RemoteEstimateStance =
+  | 'yes'
+  | 'device-required'
+  | 'device-recommended'
+  | 'unspecified'
+
+/** Anything this site can ask the measurement-legality question about. */
+export interface MeasurementSubject {
+  remoteEstimatesAllowed: RemoteEstimateStance
+}
+
+export interface HeatPolicy extends MeasurementSubject {
   id: PolicyId
   /** Bands ordered hottest first — classifyWbgt scans top-down. */
   bands: PolicyBand[]
   source: PolicySource
-  /**
-   * Whether the governing body accepts internet/app-based WBGT estimates for
-   * compliance. 'yes' — explicitly permitted; 'device-required' — an on-site
-   * scientifically-approved instrument is mandated, so a web estimate cannot
-   * satisfy the policy; 'device-recommended' — an on-site instrument is the
-   * recommended (not mandated) method AND the source states that phone/web
-   * readings are inaccurate for the venue, so a remote estimate still must not
-   * stand in for it; 'unspecified' — the source does not say.
-   */
-  remoteEstimatesAllowed: 'yes' | 'device-required' | 'device-recommended' | 'unspecified'
+  /** See ReferenceTable.remoteScale — TSSAA carries it for the same reason. */
+  remoteScale?: string
 }
 
-/** True when a remote estimate cannot substitute for the policy's own reading. */
-export function requiresOnSiteReading(policy: HeatPolicy): boolean {
+/**
+ * True when a remote estimate cannot substitute for the subject's own reading.
+ *
+ * Widened from HeatPolicy to MeasurementSubject so the six jurisdictions that
+ * are reference tables rather than pickable policies — KY, NC, NY, FL, VA —
+ * answer the same question through the same function. It cannot change any
+ * verdict card by doing so: VerdictCard and ShareCardButton are only ever
+ * handed a POLICIES entry, and none of those tables is one.
+ */
+export function requiresOnSiteReading(policy: MeasurementSubject): boolean {
   return (
     policy.remoteEstimatesAllowed === 'device-required' ||
     policy.remoteEstimatesAllowed === 'device-recommended'
@@ -311,10 +370,24 @@ export interface VhslReferenceRow extends VarsReferenceRow {
   level: number
 }
 
-export interface ReferenceTable<Row> {
+/**
+ * `remoteEstimatesAllowed` is optional here only because not every reference
+ * table's document says anything about measurement. Where one does, the field
+ * carries the same vocabulary a HeatPolicy uses, so /forecast-or-device can
+ * ask all twelve jurisdictions one question.
+ */
+export interface ReferenceTable<Row> extends Partial<MeasurementSubject> {
   id: string
   source: PolicySource
   rows: Row[]
+  /**
+   * Present only when the document answers the measurement question
+   * differently on a scale other than WBGT — New York, and nowhere else so
+   * far. `remoteEstimatesAllowed` is always the WBGT answer; this names the
+   * scale whose answer differs, so a surface can say so instead of looking
+   * like it contradicts the other surface.
+   */
+  remoteScale?: string
 }
 
 /** One of NYSPHSAA's three regional WBGT ladders. Never a HeatPolicy — see below. */
@@ -388,6 +461,69 @@ export const FHSAA_PRACTICE_REFERENCE =
   FHSAA_PRACTICE_REFERENCE_RAW as ReferenceTable<VarsReferenceRow>
 export const NYSPHSAA_WBGT_CATEGORIES = NYSPHSAA_WBGT_CATEGORIES_RAW as NyWbgtCategory[]
 export const NYSPHSAA_WBGT_ACTIONS = NYSPHSAA_WBGT_ACTIONS_RAW as NyWbgtAction[]
+
+/**
+ * Kentucky's measurement rule at each of the three strengths its own matrix
+ * gives it. `strength` is the modal verb the source uses; 'unstated' is the
+ * ALL OUTDOOR SPORTS column, which fixes no location at all.
+ */
+export interface OnSiteStrength {
+  sportKey: string
+  strength: 'must' | 'recommended' | 'unstated'
+  quote: string | null
+}
+export const KY_ONSITE_STRENGTHS = KY_ONSITE_STRENGTHS_RAW as OnSiteStrength[]
+
+/** One Appendix C Marching Band/Cheerleading row, joined to its athletics band. */
+export interface IowaBandRow {
+  flag: FlagColor
+  sourceLabel: string
+  quote: string
+}
+export const IOWA_BAND_ROWS = IOWA_BAND_ROWS_RAW as IowaBandRow[]
+
+/**
+ * A jurisdiction's answer to "may a forecast be the reading?".
+ *
+ * `subject` is the oracle object itself, so `stanceOf` reads the same field
+ * the rest of the site classifies against — a row cannot claim a stance the
+ * oracle does not hold.
+ */
+export interface MeasurementStanceRow {
+  abbr: string
+  subject: MeasurementSubject & { remoteScale?: string }
+  source: PolicySource
+  quote: string
+}
+export const MEASUREMENT_STANCES = MEASUREMENT_STANCES_RAW as MeasurementStanceRow[]
+
+/** The stance a row asserts, read off the oracle rather than stored twice. */
+export function stanceOf(row: MeasurementStanceRow): RemoteEstimateStance {
+  return row.subject.remoteEstimatesAllowed
+}
+
+/**
+ * Whether a state's heat rule names marching band.
+ *
+ * 'named'          the document names marching band in its own requirement.
+ * 'athletics-only' the document's scope words are sports/athletes and band
+ *                  appears nowhere in it.
+ *
+ * `partialCoverage` and `reachesBeyondAthletics` are the two places where
+ * 'athletics-only' would be a lie by omission on its own: NCHSAA covers
+ * cheerleading for health and safety, and Florida's statute makes a band
+ * director complete heat-illness training while giving them no threshold.
+ */
+export type BandCoverageKind = 'named' | 'athletics-only'
+export interface BandCoverageRow {
+  abbr: string
+  coverage: BandCoverageKind
+  source: PolicySource
+  scopeQuote: string
+  partialCoverage?: string
+  reachesBeyondAthletics?: string
+}
+export const BAND_COVERAGE = BAND_COVERAGE_RAW as BandCoverageRow[]
 
 export function classifyWbgt(policy: HeatPolicy, wbgtF: number): PolicyBand {
   for (const band of policy.bands) {

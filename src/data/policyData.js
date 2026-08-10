@@ -480,13 +480,25 @@ export const SCHSL_CONTINUOUS_QUOTE =
  *
  * Re-verified 2026-08-10 against the cited PDF (sha256
  * 809dab2bc0481d6a15873f3aa83386bd0b2fd747e2b11d39efc4ed8b048c461b, 7 pages).
- * A reported "every 20 to 30 minutes" variant was searched for across every
- * page and does NOT appear in this edition — the only occurrences of "20" are
- * "15 - 20 times greater than at rest" and the red band's "20 minutes of rest
- * breaks". So there is no in-document conflict to resolve here, unlike the
- * SCHSL top boundary or the 79.7 gap below. If a future edition or a separate
- * IHSAA FAQ does print a 20-30 range, record it here and keep 30 (the chart is
- * normative, and the longer interval is the permissive reading).
+ *
+ * ⚠️ CORRECTED 2026-08-11. This comment previously recorded that a reported
+ * "every 20 to 30 minutes" variant "does NOT appear in this edition", on the
+ * strength of a text search across every page. It does appear. Page 2 of this
+ * PDF extracts ZERO characters — its FAQ panels are drawn as vector paths, not
+ * text — so the search that cleared it could not see the page it needed to
+ * read. Rendered at 170 dpi, page 2 says: "The WBGT should be monitored
+ * throughout the event—taking new readings every 20 to 30 minutes and
+ * adjusting athletic participation or activities accordingly".
+ *
+ * So there IS an in-document conflict, and it is resolved the way the comment
+ * already said to resolve it: the constant stays 30. The chart's own
+ * "Additional information" line is normative and the longer interval is the
+ * permissive reading, so nothing below this changes — only the claim about
+ * what the document contains.
+ *
+ * The general lesson is the one the NYSPHSAA chart taught: in this corpus a
+ * zero-hit text search is evidence about the extractor, not about the
+ * document. Check the page's character count before trusting an absence.
  */
 export const IOWA_READING_INTERVAL_MINUTES = 30
 export const IOWA_ACCLIMATIZE_DEVICE_MIN_MINUTES = 15
@@ -766,6 +778,18 @@ export const TSSAA = {
   // INDEX and only when no other instrument is available. On-site is the
   // named method, so the verdict card carries the on-site caveat.
   remoteEstimatesAllowed: 'device-recommended',
+  /**
+   * The second of the two documents whose app permission belongs to a scale
+   * this site does not compute — see NYSPHSAA_HEAT_INDEX_REFERENCE for the
+   * first, and for why the field exists at all.
+   *
+   * ⚠️ The two are NOT the same permission, and copy must not merge them.
+   * New York's is a genuinely remote lookup ("Enter zip code…"). TSSAA's app
+   * is still used AT THE VENUE and only "if no other instrument is available"
+   * — a last resort for reading heat index on site, not a route to reading
+   * anything from somewhere else. Neither is a WBGT permission.
+   */
+  remoteScale: 'heat-index',
   bands: [
     { flag: 'black', minF: 92.0, minInclusive: false, sourceLabel: 'Above 92.0', guideline: TSSAA_BLACK },
     { flag: 'red', minF: 90.0, minInclusive: true, sourceLabel: '90 to 92', guideline: TSSAA_RED },
@@ -809,6 +833,29 @@ export const NCHSAA_CADENCE_QUOTE =
 export const NCHSAA_MANDATE_QUOTE =
   'All schools should have a heat illness prevention and management policy for all sanctioned activities and this policy must be followed.'
 
+/**
+ * §2.3.3, the heading of the section that contains the whole heat policy, and
+ * §2.3.5's chart title. Both say SPORTS/ATHLETIC and neither says anything
+ * else — which is the fact the marching-band page reports for North Carolina.
+ */
+export const NCHSAA_ALL_SPORTS_HEADING_QUOTE =
+  'Fundamentals of Heat Illness Prevention and Management for All Sports'
+export const NCHSAA_CHART_TITLE_QUOTE = 'WBGT Index and Athletic Activity Chart'
+/**
+ * §3.5.1, first sentence. The reason North Carolina cannot be filed under a
+ * flat "athletics only": §2.3.3(g) requires a heat policy for "all sanctioned
+ * activities", and cheerleading is under NCHSAA jurisdiction for exactly the
+ * category a heat policy belongs to. Marching band is not — "marching" does
+ * not occur once in the 136-page handbook, and its nine "band" hits are all
+ * "Pep Bands" in basketball game administration (§4.3.1(j), §4.9).
+ *
+ * Read from the handbook named in NCHSAA_REFERENCE.source, sha256
+ * 8834cff66344339f6d153bbfd05af96376d287d1f3567a2481f7f931b296b083 (136 pages,
+ * re-read 2026-08-11).
+ */
+export const NCHSAA_CHEER_JURISDICTION_QUOTE =
+  'Cheerleading is an activity that comes under the jurisdiction of the North Carolina High School Athletic Association in two areas – eligibility and health and safety guidelines'
+
 export const NCHSAA_REFERENCE = {
   id: 'nchsaa',
   source: {
@@ -816,6 +863,19 @@ export const NCHSAA_REFERENCE = {
     url: 'https://nchsaa.org/wp-content/uploads/2025/08/25-26-NCHSAA-Handbook-Print-Version.pdf',
     verifiedOn: '2026-08-09',
   },
+  /**
+   * §2.3.5(a) names a device — "using a scientifically approved device" — and
+   * the current edition carries NO remote-fallback clause at all (the
+   * weather-station/airport wording died with the 2015 guidance PDF). But the
+   * modal verb is "should", not "must", so this is not the mandate GHSA and
+   * SCHSL write. `device-recommended` is that pair: the named method is an
+   * on-site instrument, stated as a recommendation.
+   *
+   * It differs from Iowa's and TSSAA's `device-recommended` in one way worth
+   * not overstating — NCHSAA never says a phone or web reading is inaccurate.
+   * It simply never offers one. Silence, not a prohibition.
+   */
+  remoteEstimatesAllowed: 'device-recommended',
   /** Rows hottest first, matching the reversed-render convention elsewhere. */
   rows: [
     { sourceLabel: '90 or above', breakMinutes: null, breakEveryMinutes: null, textKeys: ['northCarolina.rows.suspend'] },
@@ -839,6 +899,25 @@ export const NYSPHSAA_APP_QUOTE =
 export const NYSPHSAA_ZIP_QUOTE =
   'Enter zip code or city and state in the location section of the app or on-line or determine the THI by using a Wet Bulb Globe Temperature Indicator.'
 
+/**
+ * The sentence that keeps New York from being read as "your state says a
+ * website is fine".
+ *
+ * NYSPHSAA is the only association in this oracle that tells schools to look a
+ * number up remotely — NYSPHSAA_ZIP_QUOTE, "Enter zip code or city and state"
+ * — and the number it means is the HEAT INDEX, read from WeatherBug. The WBGT
+ * leg of the same bullet is an indicator "on the field". Two scales, two
+ * methods, one document; copy that merges them manufactures a remote WBGT
+ * route New York never wrote.
+ *
+ * Verbatim from page 1, re-read 2026-08-11 from the PDF named below (sha256
+ * 1d6f8e64aede79c1acf20201f37a64bfceccb7ec7c6191e350149ea7910d5ae6).
+ */
+export const NYSPHSAA_ONFIELD_WBGT_QUOTE =
+  'Schools may also use a Wet Bulb Globe Temperature Indicator (see chart below) on the field that will be used.'
+/** Which scale the remote lookup NYSPHSAA authorises is written against. */
+export const NYSPHSAA_REMOTE_SCALE = 'heat-index'
+
 export const NYSPHSAA_HEAT_INDEX_REFERENCE = {
   id: 'nysphsaa',
   source: {
@@ -846,6 +925,38 @@ export const NYSPHSAA_HEAT_INDEX_REFERENCE = {
     url: 'https://s3.amazonaws.com/nysphsaa.org/documents/2023/5/5/Heat_Index_Procedure_5_23.pdf',
     verifiedOn: '2026-08-09',
   },
+  /**
+   * ⚠️ This field is about the WBGT axis, which is the only axis this site
+   * computes — and on that axis New York names an on-field indicator every
+   * time it mentions one (NYSPHSAA_EITHER_SCALE_QUOTE: "on the field";
+   * NYSPHSAA_ONFIELD_WBGT_QUOTE: "on the field that will be used"). There is
+   * no remote WBGT route in the document.
+   *
+   * `device-recommended` rather than `device-required` because the WBGT lane
+   * is itself optional — a school may work in heat index instead — so nothing
+   * here mandates owning an indicator. What it does do is refuse to let a
+   * looked-up number BE the WBGT reading.
+   *
+   * Do NOT "correct" this to 'yes' on rediscovering NYSPHSAA_ZIP_QUOTE. That
+   * sentence is the heat-index lane (NYSPHSAA_REMOTE_SCALE), and reading it as
+   * a WBGT permission is the exact error this comment exists to stop.
+   */
+  remoteEstimatesAllowed: 'device-recommended',
+  /**
+   * The scale New York's remote lookup IS written against, declared so the
+   * split is a property of the data rather than a caveat somebody remembered
+   * to put in copy.
+   *
+   * New York is the only jurisdiction here whose document answers the
+   * measurement question differently on its two scales, which is why
+   * /states can honestly file it as apps-allowed (the heat-index lane, which
+   * NYSPHSAA really does tell schools to read by ZIP code) while this field
+   * says device-recommended (the WBGT lane, which is always "on the field").
+   * Both are true of the same document. Any surface showing one of them owes
+   * the reader the other, and measurementLegality.test.ts enforces that on
+   * both surfaces rather than letting the two pages look like they disagree.
+   */
+  remoteScale: NYSPHSAA_REMOTE_SCALE,
   /** Rows hottest first. `tier` is the source's own banner for the row. */
   rows: [
     { sourceLabel: '96 degrees or greater', tierKey: 'alert', required: true, textKeys: ['newYork.rows.noOutside'] },
@@ -912,6 +1023,34 @@ export const KY_OFFSITE_INVALID_QUOTE =
 export const KY_FOOTBALL_ONSITE_QUOTE =
   'The WBGT measurement must be taken at the competition site with no off-site measurement permitted.'
 
+/**
+ * Kentucky's measurement rule at all three of its strengths, in one place, so
+ * a page cannot quote one and describe another.
+ *
+ * The matrix is read COLUMN by column, and the columns disagree:
+ *
+ *   Football                    must, "no off-site measurement permitted",
+ *                               repeated in every band below the stop level
+ *   Cross country / field       "It is strongly recommended\u2026", plus the
+ *   hockey / soccer             off-campus invalidity sentence
+ *   ALL OUTDOOR SPORTS          nothing. The column exists and says only what
+ *                               to have ready and to re-check every 30
+ *                               minutes \u2014 it fixes no location at all.
+ *
+ * `strength` is the modal verb the source uses, not this site's summary of it.
+ * Re-read column by column 2026-08-11 from the capture named below (sha256
+ * 4e7b3473a77f495c72a04023196384f8d85999e05bfff6ad89c071bffc31fa42, 3 pages).
+ */
+export const KY_ONSITE_STRENGTHS = [
+  { sportKey: 'football', strength: 'must', quote: KY_FOOTBALL_ONSITE_QUOTE },
+  { sportKey: 'crossCountry', strength: 'recommended', quote: KY_ONSITE_ONLY_QUOTE },
+  { sportKey: 'fieldHockey', strength: 'recommended', quote: KY_ONSITE_ONLY_QUOTE },
+  { sportKey: 'soccer', strength: 'recommended', quote: KY_ONSITE_ONLY_QUOTE },
+  { sportKey: 'allOutdoor', strength: 'unstated', quote: null },
+]
+/** The column header the matrix gives the rule-free all-sports column. */
+export const KY_ALL_SPORTS_COLUMN_QUOTE = 'ALL OUTDOOR SPORTS'
+
 export const KHSAA_WBGT_REFERENCE = {
   id: 'khsaa',
   source: {
@@ -919,6 +1058,19 @@ export const KHSAA_WBGT_REFERENCE = {
     url: 'https://web.archive.org/web/2024/https://khsaa.org/common_documents/Sports%20Medicine/Adaptation%20of%20Contests%20for%20WBGT%20Adjustments%20FINAL%20per%2008-21-24%20Meeting.pdf',
     verifiedOn: '2026-08-10',
   },
+  /**
+   * The strictest sentence in this oracle sets this field: football's rule is
+   * unconditional and names the prohibition outright \u2014 "no off-site
+   * measurement permitted". A forecast is an off-site measurement.
+   *
+   * \u26a0\ufe0f One value cannot carry three strengths, and this one is the STRICTEST
+   * of the three (see KY_ONSITE_STRENGTHS). That is the site's standing
+   * conservative resolution, and it is safe here only because the summary is
+   * never shown without the per-sport breakdown beside it. Any surface that
+   * renders this field for Kentucky must render KY_ONSITE_STRENGTHS too \u2014
+   * `forecastOrDevice` copy does, and a test pins it.
+   */
+  remoteEstimatesAllowed: 'device-required',
   /** Hottest first, matching every other table in this file. */
   rows: [
     { sourceLabel: '92.0 and above', textKeys: ['kentucky.rows.stopAll'] },
@@ -1437,6 +1589,28 @@ export const VHSL_SOURCE = {
    */
   verifiedOn: '2026-08-10',
 }
+/**
+ * The three sentences on p.1 that this site told Virginia readers did not
+ * exist. /states said "measurement method not regulated"; VHSL regulates it in
+ * a paragraph of its own, and says almost exactly what this site says about
+ * itself — a forecast plans, the on-site evaluation decides.
+ *
+ * This is the clearest statement of the forecast/instrument split anywhere in
+ * this oracle, and it comes from a state association rather than from us, so
+ * the measurement-legality page leads with it rather than paraphrasing the
+ * stance in the site's own voice.
+ *
+ * Verbatim including the source's own typo ("tend be") and its curly quotes.
+ * Read 2026-08-11 from the PDF named in VHSL_SOURCE (sha256
+ * 3dd4bf78b5c74e977d2e47024823438aee1c1982017d22c599cc312ad3dd1415, 9 pages).
+ */
+export const VHSL_FORECAST_PLANNING_QUOTE =
+  'Forecasting tools, including online resources and/or mobile “apps” can be used to better anticipate if/when activity modifications may be required.'
+export const VHSL_FORECAST_NOT_REPLACE_QUOTE =
+  'While these services can provide guidance for planning purposes, they should never replace the “real-time” evaluation of environmental conditions on-site at the activity location.'
+export const VHSL_FORECAST_GENERALIZED_QUOTE =
+  'Weather forecasts tend be generalized over a large area, can and do change frequently, and ultimately may not be specific for the athletic venue.'
+
 /** The level at which Virginia stops outdoor activity outright. */
 export const VHSL_CANCEL_WBGT_F = 90.0
 export const VHSL_LEVEL_COUNT = 6
@@ -1552,6 +1726,17 @@ export const NYSPHSAA_CATEGORY_LOOKUP_QUOTE =
 export const VHSL_REFERENCE = {
   id: 'vhsl',
   source: VHSL_SOURCE,
+  /**
+   * VHSL permits the forecast and then draws the line: it may guide planning,
+   * it may "never replace" the on-site real-time evaluation. That is precisely
+   * `device-recommended` — the named method for the decision is on site, and a
+   * remote estimate must not stand in for it — and it is a stronger statement
+   * of that stance than either Iowa's or TSSAA's.
+   *
+   * Not `device-required`: VHSL never mandates owning an instrument, and the
+   * statute above it fixes no measurement method either.
+   */
+  remoteEstimatesAllowed: 'device-recommended',
   rows: [
     {
       level: 6,
@@ -1654,6 +1839,14 @@ export const VHSL_ICE_LEVEL = VHSL_REFERENCE.rows.find(
 export const FHSAA_PRACTICE_REFERENCE = {
   id: 'fhsaa-practice',
   source: FHSAA_SOURCE,
+  /**
+   * Florida is the only jurisdiction here where the on-site requirement is
+   * STATUTORY. §41.6.2 mandates the device ("shall monitor heat stress with a
+   * WBGT") and Fla. Stat. § 1006.165(2)(a)2 fixes where the five variables are
+   * read — "at the site of the athletic activity". A forecast is not measured
+   * at the site, so it cannot be Florida's reading. No hedge to preserve.
+   */
+  remoteEstimatesAllowed: 'device-required',
   rows: [
     { sourceLabel: '≥ 92.1', textKeys: ['florida.rows.noOutdoor'], vars: {} },
     {
@@ -1838,3 +2031,215 @@ export const POLICIES = {
   miaa: MIAA,
   generic: GENERIC_NATA,
 }
+
+// =========================================================================
+// Scope sentences — what each document says it governs
+// =========================================================================
+// One sentence per jurisdiction, chosen because it is the document's own
+// statement of reach rather than a summary of it. These feed /marching-band
+// and they are the evidence for every "this rule is written for athletics"
+// claim on the site. Each was read from the file recorded in that state's
+// source block; the sha256 of every one is in the commit that added this.
+
+/** GHSA By-law 2.67(a), the clause after the year-round parenthetical. */
+export const GHSA_ALL_SPORTS_QUOTE =
+  'in all sports during times of extremely high heat and/or humidity'
+/** SCHSL §3's own heading — the table's scope, in the source's words. */
+export const SCHSL_TABLE_SCOPE_QUOTE =
+  'Guidelines for the Modification of Athletic Competition in Hot or Humid Environments'
+/** MIAA p.1, the sentence that mandates the statewide policy. */
+export const MIAA_ALL_SPORTS_QUOTE =
+  'Schools must follow the statewide policy for conducting activities in all sports during times of extremely high environmental conditions.'
+/** FHSAA Policy 41's own purpose sentence, p.103. */
+export const FHSAA_STUDENT_ATHLETE_SCOPE_QUOTE =
+  'The following policy provides guidelines and procedures for conducting preseason practices and activities to ensure the well-being of student-athletes.'
+
+// --- Texas: the one state that wrote marching band into the requirement ---
+// Read 2026-08-11 from the 2026-27 plan page (UIL_SOURCE.url, sha256 of the
+// served HTML ceea236cc327e978142b36bbd85e24edc325667684a67f91de1f41a440334236)
+// and the FAQ (UIL_FAQ_SOURCE.url, sha256
+// d8ceb75f0002f2908d4384b77d876acd94b74514d93d71c19e067f5a961e7748).
+//
+// UIL_MANDATE_2026_QUOTE already carries the headline. These are the two
+// sentences that show the naming is structural rather than a nod in an
+// introduction: the cooling-zone duty and the definition of "practice" are
+// both written to include band, and the definition even changes "coach" to
+// "coach/director" to do it.
+
+/** The plan's own section heading. */
+export const UIL_BAND_HEADING_QUOTE =
+  '2026-2027 REQUIRED Heat Protocols and Procedures for Outdoor UIL Athletic and Marching Band Activities'
+/**
+ * Carries the two Class 2/3 trigger temperatures, so it must reach copy by
+ * interpolation like every other numeric quote — never pasted into a locale
+ * file. Those two numbers are the yellow-band floors in UIL_CLASS_2 and
+ * UIL_CLASS_3 respectively.
+ */
+export const UIL_BAND_COOLING_ZONE_QUOTE =
+  'Rapid cooling zones must be available for each outdoor athletic and marching band contest, practice, workout, or conditioning session that is held in wet bulb globe temperatures of 79.7 in Class 2 or 82 in Class 3 degrees or higher.'
+export const UIL_BAND_PRACTICE_DEFINITION_QUOTE =
+  'Practices are defined as the time period that a participant engages in a coach/director-supervised, school-approved sport or band conditioning-related activity.'
+
+// --- Iowa: Appendix C's Marching Band/Cheerleading rows --------------------
+// The second state that names band, and the only one that writes it its own
+// actions. Read 2026-08-11 from the PDF in IOWA_CATEGORY_2.source (sha256
+// 809dab2bc0481d6a15873f3aa83386bd0b2fd747e2b11d39efc4ed8b048c461b), p.4.
+//
+// The guidance is co-issued by the IHSMA (music) and IHSSA alongside the two
+// athletic bodies — the joint masthead is why band appears at all.
+
+/**
+ * Appendix C's opening sentence, and the reason these rows are ADDITIONAL to
+ * the main ladder rather than a ladder of their own. Copy must not imply
+ * Iowa runs a separate scale for band: the WBGT bands are the same bands, and
+ * only the required actions differ.
+ */
+export const IOWA_APPENDIX_C_SCOPE_QUOTE =
+  'All sports/activities performed in a non-climate-controlled setting should follow the Wet Bulb Globe Thermometer Heat Modification Policy, however, below are some additional sport/activity guidance.'
+/**
+ * The row heading. The source prints a superscript footnote marker after
+ * "Band" (it extracts inline as "Marching Band5/Cheerleading") pointing at
+ * IOWA_BAND_FOOTNOTE_SOURCE. The marker is typography, not words, so it is
+ * dropped here — the heading itself is otherwise verbatim.
+ */
+export const IOWA_BAND_ROW_HEADING_QUOTE = 'Marching Band/Cheerleading'
+/** Footnote 5 — what Iowa cites for writing band into a heat policy at all. */
+export const IOWA_BAND_FOOTNOTE_SOURCE = {
+  name: 'NFHS — Heat Illness Prevention: Keep the Marching Band Playing',
+  url: 'https://www.nfhs.org/articles/heat-illness-prevention-keep-the-marching-band-playing/',
+  verifiedOn: '2026-08-11',
+}
+/**
+ * The three rows, hottest first, matching every other table in this file.
+ *
+ * `flag` joins each row to the athletics band it shares, so the page can show
+ * that the temperatures are identical and only the actions move. The labels
+ * are Appendix C's own, which differ typographically from the main chart's
+ * (Appendix C writes "89.8 or greater (BLACK)" where the chart writes
+ * "> 89.7") — same boundary, both as printed, the treatment the black band's
+ * comment already documents.
+ *
+ * Action text is quoted rather than keyed: these are the association's
+ * sentences and they stay in its English on both locales, like every other
+ * quotation on this site. Whitespace is normalised to single spaces — the PDF
+ * double-spaces after a full stop — and nothing else is changed.
+ */
+export const IOWA_BAND_ROWS = [
+  {
+    flag: 'black',
+    sourceLabel: '89.8 or greater (BLACK)',
+    quote: 'No outdoor activities, cancel or delay practices until lower WBGT is recorded.',
+  },
+  {
+    flag: 'red',
+    sourceLabel: '87.7 to 89.7 (RED)',
+    quote: 'out of uniform. Shorts, t-shirts and footwear only for activities. No conditioning allowed.',
+  },
+  {
+    flag: 'orange',
+    sourceLabel: '84.7 to 87.6 (ORANGE)',
+    quote:
+      'Partial / 1/2 uniform (no long sleeves or long pants). Move practice to grassy area rather than turf or concrete.',
+  },
+]
+
+// =========================================================================
+// /forecast-or-device — where a website reading is allowed to be the reading
+// =========================================================================
+// The most consequential question about this site's own standing, and the
+// oracle has carried the answer since the first state landed:
+// `remoteEstimatesAllowed`. It had simply never been shown per state.
+//
+// `subject` is the oracle object itself, never a copied string, so a row's
+// stance IS the stance the rest of the site classifies against. A state whose
+// field is edited moves on this page in the same commit or not at all.
+//
+// `quote` is the sentence that DECIDES the stance for that jurisdiction —
+// the one a reader would have to argue with — not a general description of
+// the policy. Ordered by abbreviation, matching guideRegistry and
+// stateDirectory so all three scan the same way.
+
+export const MEASUREMENT_STANCES = [
+  { abbr: 'CA', subject: CIF_CATEGORY_1, source: CIF_HEAT_SOURCE, quote: CIF_NO_DEVICE_QUOTE },
+  { abbr: 'FL', subject: FHSAA_PRACTICE_REFERENCE, source: FL_STATUTE_SOURCE, quote: FL_ONSITE_MEASUREMENT_QUOTE },
+  { abbr: 'GA', subject: GHSA, source: GHSA_REMINDER_SOURCE, quote: GHSA_NO_APPS_QUOTE },
+  { abbr: 'IA', subject: IOWA_CATEGORY_2, source: IOWA_CATEGORY_2.source, quote: IOWA_APP_QUOTE },
+  { abbr: 'KY', subject: KHSAA_WBGT_REFERENCE, source: KHSAA_WBGT_REFERENCE.source, quote: KY_FOOTBALL_ONSITE_QUOTE },
+  { abbr: 'MA', subject: MIAA, source: MIAA_SOURCE, quote: MIAA_DEVICE_QUOTE },
+  { abbr: 'NC', subject: NCHSAA_REFERENCE, source: NCHSAA_REFERENCE.source, quote: NCHSAA_DEVICE_QUOTE },
+  { abbr: 'NY', subject: NYSPHSAA_HEAT_INDEX_REFERENCE, source: NYSPHSAA_WBGT_SOURCE, quote: NYSPHSAA_ONFIELD_WBGT_QUOTE },
+  { abbr: 'SC', subject: SCHSL, source: SCHSL.source, quote: SCHSL_DEVICE_QUOTE },
+  { abbr: 'TN', subject: TSSAA, source: TSSAA.source, quote: TSSAA_APP_QUOTE },
+  { abbr: 'TX', subject: UIL_CLASS_3, source: UIL_FAQ_SOURCE, quote: UIL_FAQ_FORECAST_QUOTE },
+  { abbr: 'VA', subject: VHSL_REFERENCE, source: VHSL_SOURCE, quote: VHSL_FORECAST_NOT_REPLACE_QUOTE },
+]
+
+// =========================================================================
+// /marching-band — does the state's heat rule cover the band?
+// =========================================================================
+// Two states wrote marching band into the rule. Everywhere else the heat
+// policy is an ATHLETICS document, and a band director has no state threshold
+// to point at — which falls to the district.
+//
+// 'named'          the document names marching band in its own requirement
+// 'athletics-only' the document's scope words are sports/athletes and band
+//                  appears nowhere in it
+//
+// ⚠️ 'athletics-only' is a claim about a document, not about whether band
+// directors should watch the WBGT. Every one of these was established by
+// reading the file, not by failing to find a word in it: three of the twelve
+// hide table content inside images or vector paths, where a text search
+// returns a confident zero. A silent document is not a clearance.
+
+export const BAND_COVERAGE = [
+  { abbr: 'CA', coverage: 'athletics-only', source: CIF_HEAT_SOURCE, scopeQuote: CIF_CANCEL_QUOTE },
+  {
+    abbr: 'FL',
+    coverage: 'athletics-only',
+    source: FHSAA_SOURCE,
+    scopeQuote: FHSAA_STUDENT_ATHLETE_SCOPE_QUOTE,
+    /**
+     * Florida is the one 'athletics-only' state where something in the law
+     * does reach a band director: the training duty is written for "each
+     * athletic coach AND sponsor of extracurricular activities involving
+     * outdoor practices or events". So a Florida band director must be
+     * trained in exertional heat illness — and still has no threshold, because
+     * the monitoring and modification duties next to it are written for the
+     * "outdoor athletic contest, practice, workout, or conditioning session".
+     */
+    reachesBeyondAthletics: FL_TRAINING_QUOTE,
+  },
+  { abbr: 'GA', coverage: 'athletics-only', source: GHSA.source, scopeQuote: GHSA_ALL_SPORTS_QUOTE },
+  {
+    abbr: 'IA',
+    coverage: 'named',
+    source: IOWA_CATEGORY_2.source,
+    scopeQuote: IOWA_APPENDIX_C_SCOPE_QUOTE,
+  },
+  { abbr: 'KY', coverage: 'athletics-only', source: KHSAA_WBGT_REFERENCE.source, scopeQuote: KY_ALL_SPORTS_COLUMN_QUOTE },
+  { abbr: 'MA', coverage: 'athletics-only', source: MIAA_SOURCE, scopeQuote: MIAA_ALL_SPORTS_QUOTE },
+  {
+    abbr: 'NC',
+    coverage: 'athletics-only',
+    source: NCHSAA_REFERENCE.source,
+    scopeQuote: NCHSAA_ALL_SPORTS_HEADING_QUOTE,
+    /**
+     * North Carolina is the one state where 'athletics-only' needs a second
+     * sentence rather than a footnote. §2.3.3(g) requires a heat policy for
+     * "all sanctioned activities" — broader than the section's own "for All
+     * Sports" heading — and §3.5.1 puts cheerleading under NCHSAA jurisdiction
+     * for "health and safety guidelines", which is the category a heat policy
+     * is in. Marching band is in neither: it appears nowhere in the handbook.
+     *
+     * So a NC cheer coach has a rule to point at and a NC band director does
+     * not, from one document. Flattening that to "athletics only" would lose
+     * the half that helps somebody.
+     */
+    partialCoverage: NCHSAA_CHEER_JURISDICTION_QUOTE,
+  },
+  { abbr: 'NY', coverage: 'athletics-only', source: NYSPHSAA_WBGT_SOURCE, scopeQuote: NYSPHSAA_EITHER_SCALE_QUOTE },
+  { abbr: 'SC', coverage: 'athletics-only', source: SCHSL.source, scopeQuote: SCHSL_TABLE_SCOPE_QUOTE },
+  { abbr: 'TN', coverage: 'athletics-only', source: TSSAA.source, scopeQuote: TSSAA_EITHER_QUOTE },
+  { abbr: 'TX', coverage: 'named', source: UIL_SOURCE, scopeQuote: UIL_MANDATE_2026_QUOTE },
+  { abbr: 'VA', coverage: 'athletics-only', source: VA_STATUTE_SOURCE, scopeQuote: VA_CANCEL_QUOTE },
+]
