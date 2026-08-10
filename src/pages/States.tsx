@@ -3,52 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { CircleCheck, MonitorX, CircleHelp } from 'lucide-react'
 import SEO from '../components/SEO'
 import { STATE_DIRECTORY, type MeasurementClass } from '../data/stateDirectory'
+import { STATE_GUIDES, AIR_GUIDES, GUIDE_SLUG_BY_ABBR } from '../data/guideRegistry'
 import { UIL_EFFECTIVE_DATE } from '../data/policyOracle'
 import { cn } from '../lib/utils'
 
 /** Slug ↔ label for every state that has its own guide page. */
-const STATE_GUIDES = [
-  { slug: 'texas', labelKey: 'states.texasLink' },
-  { slug: 'georgia', labelKey: 'states.georgiaLink' },
-  { slug: 'south-carolina', labelKey: 'states.southCarolinaLink' },
-  { slug: 'tennessee', labelKey: 'states.tennesseeLink' },
-  { slug: 'iowa', labelKey: 'states.iowaLink' },
-  { slug: 'north-carolina', labelKey: 'states.northCarolinaLink' },
-  { slug: 'new-york', labelKey: 'states.newYorkLink' },
-  { slug: 'virginia', labelKey: 'states.virginiaLink' },
-  { slug: 'massachusetts', labelKey: 'states.massachusettsLink' },
-  { slug: 'florida', labelKey: 'states.floridaLink' },
-  { slug: 'california', labelKey: 'states.californiaLink' },
-  { slug: 'kentucky', labelKey: 'states.kentuckyLink' },
-] as const
-
-/**
- * The air axis. These three had NO working route in: they sat past the right
- * edge of the nav scroller on a phone and were absent from this hub, leaving
- * the home AQI card as the only way to reach them.
- */
-const AIR_GUIDES = [
-  { slug: 'washington-air-quality', labelKey: 'states.washingtonAirLink' },
-  { slug: 'oregon-air-quality', labelKey: 'states.oregonAirLink' },
-  { slug: 'california-air-quality', labelKey: 'states.californiaAirLink' },
-] as const
-
-/** State guides that exist on this site — rendered as a per-row link. */
-const GUIDE_SLUGS: Record<string, string> = {
-  TX: 'texas',
-  GA: 'georgia',
-  SC: 'south-carolina',
-  TN: 'tennessee',
-  IA: 'iowa',
-  NC: 'north-carolina',
-  NY: 'new-york',
-  VA: 'virginia',
-  MA: 'massachusetts',
-  FL: 'florida',
-  CA: 'california',
-  KY: 'kentucky',
-}
-
 const MEASUREMENT_STYLE: Record<MeasurementClass, { icon: typeof CircleCheck; cls: string }> = {
   'apps-allowed': { icon: CircleCheck, cls: 'bg-tint-green text-ink' },
   'device-required': { icon: MonitorX, cls: 'bg-tint-red text-ink' },
@@ -154,9 +113,9 @@ export default function States() {
                   <td className="py-2 pr-3">{t(`states.mandate.${row.mandate}`)}</td>
                   <td className="py-2 text-ink-muted">
                     {t(`states.notes.${row.noteKey}`, { effectiveDate: UIL_EFFECTIVE_DATE })}{' '}
-                    {GUIDE_SLUGS[row.abbr] && (
+                    {GUIDE_SLUG_BY_ABBR[row.abbr] && (
                       <Link
-                        to={`/${lang}/${GUIDE_SLUGS[row.abbr]}`}
+                        to={`/${lang}/${GUIDE_SLUG_BY_ABBR[row.abbr]}`}
                         className="font-semibold underline"
                       >
                         {t('states.rowGuideLink')}

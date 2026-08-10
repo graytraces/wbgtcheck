@@ -138,6 +138,7 @@ import {
 } from '../src/data/policyData.js'
 import { guidelineSentences } from '../src/lib/guidelineSentences.js'
 import { STATE_DIRECTORY } from '../src/data/stateDirectory.js'
+import { STATE_GUIDES, AIR_GUIDES, GUIDE_SLUG_BY_ABBR } from '../src/data/guideRegistry.js'
 import { feedbackMailto } from '../src/data/feedbackContact.js'
 import { MAX_LOG_ENTRIES } from '../src/data/logRetention.js'
 import {
@@ -1001,38 +1002,21 @@ function generateBodyContent(lang, page) {
       `<ul><li>${escapeHtml(t('states.legendApps'))}</li><li>${escapeHtml(t('states.legendDevice'))}</li><li>${escapeHtml(t('states.legendUnverified'))}</li></ul>`,
     )
     // Hub lists first — mirrors States.tsx, where they moved above the table.
-    const guideLinks = (items) =>
-      `<ul>${items
+    const guideLinks = (guides) =>
+      `<ul>${guides
         .map(
-          ([slug, key]) =>
-            `<li><a href="/${lang}/${slug}">${escapeHtml(t(key))}</a></li>`,
+          ({ slug, labelKey }) =>
+            `<li><a href="/${lang}/${slug}">${escapeHtml(t(labelKey))}</a></li>`,
         )
         .join('')}</ul>`
     push(`<h2>${escapeHtml(t('states.guidesHeading'))}</h2>`)
     push(
-      guideLinks([
-        ['texas', 'states.texasLink'],
-        ['georgia', 'states.georgiaLink'],
-        ['south-carolina', 'states.southCarolinaLink'],
-        ['tennessee', 'states.tennesseeLink'],
-        ['iowa', 'states.iowaLink'],
-        ['north-carolina', 'states.northCarolinaLink'],
-        ['new-york', 'states.newYorkLink'],
-        ['virginia', 'states.virginiaLink'],
-        ['massachusetts', 'states.massachusettsLink'],
-        ['florida', 'states.floridaLink'],
-        ['california', 'states.californiaLink'],
-        ['kentucky', 'states.kentuckyLink'],
-      ]),
+      guideLinks(STATE_GUIDES),
     )
     push(`<h2>${escapeHtml(t('states.airGuidesHeading'))}</h2>`)
     push(`<p>${escapeHtml(t('states.airGuidesIntro'))}</p>`)
     push(
-      guideLinks([
-        ['washington-air-quality', 'states.washingtonAirLink'],
-        ['oregon-air-quality', 'states.oregonAirLink'],
-        ['california-air-quality', 'states.californiaAirLink'],
-      ]),
+      guideLinks(AIR_GUIDES),
     )
     const rows = STATE_DIRECTORY.map((row) => {
       const note = t(`states.notes.${row.noteKey}`, { effectiveDate: UIL_EFFECTIVE_DATE })
@@ -1045,7 +1029,7 @@ function generateBodyContent(lang, page) {
         t(`states.measurement.${row.measurement}`),
       )}</td><td>${escapeHtml(row.body)}</td><td>${escapeHtml(
         t(`states.mandate.${row.mandate}`),
-      )}</td><td>${escapeHtml(note)} ${GUIDE_SLUGS[row.abbr] ? `<a href="/${lang}/${GUIDE_SLUGS[row.abbr]}">${escapeHtml(t('states.rowGuideLink'))}</a> ` : ''}${escapeHtml(badge)}</td></tr>`
+      )}</td><td>${escapeHtml(note)} ${GUIDE_SLUG_BY_ABBR[row.abbr] ? `<a href="/${lang}/${GUIDE_SLUG_BY_ABBR[row.abbr]}">${escapeHtml(t('states.rowGuideLink'))}</a> ` : ''}${escapeHtml(badge)}</td></tr>`
     }).join('')
     push(
       `<table><thead><tr><th>${escapeHtml(t('states.colState'))}</th><th>${escapeHtml(t('states.colMeasurement'))}</th><th>${escapeHtml(t('states.colBody'))}</th><th>${escapeHtml(t('states.colMandate'))}</th><th>${escapeHtml(t('states.colNote'))}</th></tr></thead><tbody>${rows}</tbody></table>`,
@@ -1149,11 +1133,6 @@ function generateBodyContent(lang, page) {
   return parts.length > 0 ? `<div data-prerender="true">${parts.join('\n')}</div>` : ''
 }
 
-const GUIDE_SLUGS = {
-  TX: 'texas', GA: 'georgia', SC: 'south-carolina', TN: 'tennessee',
-  IA: 'iowa', NC: 'north-carolina', NY: 'new-york', VA: 'virginia',
-  MA: 'massachusetts', FL: 'florida', CA: 'california', KY: 'kentucky',
-}
 
 const SITEMAP_EXCLUDE_KEYS = new Set(['privacy', 'disclaimer'])
 

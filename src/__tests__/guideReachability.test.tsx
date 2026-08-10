@@ -10,6 +10,11 @@ import States from '../pages/States'
 import California from '../pages/California'
 import { POLICIES, type PolicyId } from '../data/policyOracle'
 import { pageSEO, statePageKeyByPolicy } from '../seo'
+import { STATE_GUIDES, AIR_GUIDES, GUIDE_SLUG_BY_ABBR } from '../data/guideRegistry'
+import { STATE_DIRECTORY } from '../data/stateDirectory'
+import { VALID_TOOLS, VALID_PAGES } from '../utils/routeValidation'
+import { existsSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 
 /**
  * Can a reader get from the tool to the guide for the policy they are using?
@@ -183,4 +188,76 @@ describe('California table structure', () => {
     // Five flags, each a row header rather than a plain cell.
     expect(grid.querySelectorAll('tbody th[scope="row"]')).toHaveLength(5)
   })
+})
+
+/**
+ * The hub lists used to be written out six times — STATE_GUIDES, AIR_GUIDES
+ * and GUIDE_SLUGS, each once in States.tsx and once in prerender.mjs — with
+ * nothing tying the copies together. Deleting kentucky and
+ * oregon-air-quality from the prerender copies failed zero tests.
+ *
+ * They now come from one module, which makes that particular drift
+ * impossible, so what is left to guard is the registry's joins: a guide whose
+ * slug the worker rejects, or which no page renders, is still unreachable.
+ */
+describe('the guide registry is the single source for both renderers', () => {
+  const ALL = [...STATE_GUIDES, ...AIR_GUIDES]
+
+  it('every guide slug is worker-valid and has a pageSEO entry', () => {
+    expect(ALL.length).toBe(15)
+    for (const { slug, seoKey } of ALL) {
+      expect(VALID_TOOLS.has(slug) || VALID_PAGES.has(slug), `${slug} would 404`).toBe(true)
+      expect(pageSEO[seoKey], `${seoKey} missing from seo.ts`).toBeTruthy()
+      expect(pageSEO[seoKey].path).toBe(slug)
+    }
+  })
+
+  it('every state guide names a state the directory table lists', () => {
+    const known = new Set(STATE_DIRECTORY.map((row) => row.abbr))
+    for (const { abbr } of STATE_GUIDES) {
+      expect(known.has(abbr), `${abbr} has a guide but no directory row`).toBe(true)
+    }
+    expect(Object.keys(GUIDE_SLUG_BY_ABBR).sort()).toEqual(STATE_GUIDES.map((g) => g.abbr).sort())
+  })
+
+  it('the hub list and the directory table scan in the same order', () => {
+    const guideOrder = STATE_GUIDES.map((g) => g.abbr)
+    expect(guideOrder).toEqual([...guideOrder].sort())
+    const tableOrder = STATE_DIRECTORY.map((r) => r.abbr)
+    expect(tableOrder).toEqual([...tableOrder].sort())
+  })
+
+  it('renders every registered guide as a link on /states', () => {
+    i18n.changeLanguage('en')
+    const { container } = render(
+      <MemoryRouter initialEntries={['/en/states']}>
+        <Routes>
+          <Route path="/:lang/*" element={<States />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+    for (const { slug } of ALL) {
+      expect(
+        container.querySelector(`a[href="/en/${slug}"]`),
+        `${slug} is not linked from the hub`,
+      ).toBeTruthy()
+    }
+  })
+
+  /**
+   * The one the old duplication actually broke. A guide missing from the
+   * PRERENDERED hub does not exist for a reader whose JS failed — and since
+   * the nav dropped to five items, /states is the only hub there is.
+   */
+  it.skipIf(!existsSync(join(process.cwd(), 'dist')))(
+    'links every registered guide in the prerendered hub too, in both locales',
+    () => {
+      for (const lang of ['en', 'es']) {
+        const html = readFileSync(join(process.cwd(), 'dist', lang, 'states.html'), 'utf-8')
+        for (const { slug } of ALL) {
+          expect(html, `${lang}/states.html does not link ${slug}`).toContain(`/${lang}/${slug}`)
+        }
+      }
+    },
+  )
 })
