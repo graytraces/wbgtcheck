@@ -1257,10 +1257,18 @@ export const MIAA_TABLE_SCOPE_QUOTE = 'PRACTICE AND/OR COMPETITION ACTIVITY'
 export const MIAA_NO_GAMES_FOOTNOTE_QUOTE =
   'If equipment modifications are necessary, no games should occur for that sport.'
 /**
- * Why competition is not simply capped the way a continuous practice is —
- * pauses in play and changes of possession give work-to-rest ratios a practice
- * does not. Read together with the footnote above: this lifts the practice
- * TIME caps for games, it does not let a game run past the table.
+ * The reason MIAA gives for letting competition run at readings a continuous
+ * practice could not: pauses in play, changes of possession, better
+ * work-to-rest ratios.
+ *
+ * ⚠️ It states a CEILING and a rationale. It says nothing about the practice
+ * time caps, and this file previously described it as explaining why games are
+ * exempt from them — an inference, in the permissive direction, presented as
+ * policy. The table governs games (see MIAA_TABLE_SCOPE_QUOTE), so exempting
+ * games from part of it needs the document to say so. It does not. Do not
+ * fill that silence in either direction.
+ *
+ * Read together with the footnote above, which cuts the other way.
  */
 export const MIAA_COMPETITION_QUOTE =
   'Given the opportunity for pauses in play, breaks when changing possessions and valuable work to rest ratios, interscholastic competition can take place up to and including WBGT readings of 86.0°F.'

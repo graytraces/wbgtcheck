@@ -12,6 +12,7 @@ import {
   TSSAA,
   IOWA_CATEGORY_2,
   GHSA_FAQ_WBGT_HI_COMPARISON,
+  MIAA_COMPETITION_QUOTE,
   NCHSAA_REFERENCE,
   NYSPHSAA_HEAT_INDEX_REFERENCE,
   requiresOnSiteReading,
@@ -320,6 +321,33 @@ describe('Kentucky does not promote a football rule to all sports', () => {
     for (const dict of [en, es]) {
       expect(dict.kentucky.footballBody).toMatch(/\{\{quote\}\}/)
       expect(dict.kentucky.invalidBody).toMatch(/recommendation|recomendación/i)
+    }
+  })
+})
+
+/**
+ * MIAA's competition sentence gives a ceiling and a rationale. The page used
+ * to introduce it as "an explanation of why games are not held to the
+ * practice time caps" — an inference, in the permissive direction, presented
+ * as policy, and one the page had just contradicted by saying the table
+ * governs games.
+ *
+ * The quote is checked first, because the silence is what makes the wording
+ * wrong: if MIAA ever does address the caps, this test should fail and the
+ * copy should be revisited rather than the assertion relaxed.
+ */
+describe('Massachusetts does not infer a competition exemption', () => {
+  it('the source sentence says nothing about time caps', () => {
+    expect(MIAA_COMPETITION_QUOTE).toMatch(/86\.0/)
+    expect(MIAA_COMPETITION_QUOTE).not.toMatch(/minute|hour|cap|limit|duration/i)
+  })
+
+  it('the copy reports that silence instead of filling it', () => {
+    expect(en.massachusetts.competitionBody).toMatch(/does not say/i)
+    expect(es.massachusetts.competitionBody).toMatch(/no dice/i)
+    for (const dict of [en, es]) {
+      expect(dict.massachusetts.competitionBody).toMatch(/\{\{quote\}\}/)
+      expect(dict.massachusetts.competitionBody).toMatch(/\{\{scope\}\}/)
     }
   })
 })
