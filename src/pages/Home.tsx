@@ -26,6 +26,7 @@ import {
 } from '../seo'
 import { STATE_GUIDES } from '../data/guideRegistry'
 import { feedbackMailto } from '../utils/feedback'
+import { priorVisitCount } from '../utils/analytics'
 import { buildHourlySeries } from '../utils/nws'
 import {
   annotateHours,
@@ -104,6 +105,16 @@ export default function Home() {
    *
    * LocationSetup already had a `compact` prop for this and no caller.
    */
+  /**
+   * Has this browser reached a verdict before today's load?
+   *
+   * Frozen at first render on purpose: `trackVerdictView` records THIS visit a
+   * moment later, and a live read would flip mid-session and show the
+   * add-to-home-screen hint to a first-time reader — the exact audience it is
+   * wrong for.
+   */
+  const [returningReader] = useState(() => priorVisitCount() >= 1)
+
   const [changingLocation, setChangingLocation] = useState(false)
   const locationEditorRef = useRef<HTMLDivElement | null>(null)
   useEffect(() => {
@@ -409,6 +420,13 @@ export default function Home() {
         />
       )}
 
+      {/* The one retention affordance on the site used to render LAST, below
+          the footer nav, at ~90% scroll depth — a low-contrast paragraph one ×
+          away from permanent dismissal, offered to a first-time reader who has
+          no reason yet to want it. It sits here now, under the verdict and the
+          log button, and only for someone who has been here before. */}
+      {location && status === 'ready' && current && returningReader && <InstallHint />}
+
       {location && status === 'ready' && !current && (
         <div className="border-2 border-line bg-surface p-5">
           <p>{t('verdict.noData')}</p>
@@ -585,8 +603,6 @@ export default function Home() {
           </Link>
         </p>
       </section>
-
-      <InstallHint />
     </div>
   )
 }

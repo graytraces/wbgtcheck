@@ -50,7 +50,7 @@ describe('privacy disclosure', () => {
     const keys = storageKeysInSource()
     // Guard the guard: if the regex stops matching, this test would pass
     // vacuously and the disclosure could rot unnoticed.
-    expect(keys.length).toBeGreaterThanOrEqual(7)
+    expect(keys.length).toBeGreaterThanOrEqual(10)
 
     // What each key is, in the words the policy uses for it. Adding a storage
     // key means adding it here AND saying so on the page.
@@ -63,6 +63,9 @@ describe('privacy disclosure', () => {
       'wbgt:log:v1': /reading log/i,
       'wbgt-a2hs-dismissed': /add-to-home-screen/i,
       'wbgt-stale-reload': /session storage/i,
+      'wbgt-visit-count': /how many times you have opened a verdict/i,
+      'wbgt-first-seen': /date of the first visit/i,
+      'wbgt-visit-counted': /counted twice/i,
     }
     const policyText = `${en.privacy.locationContent} ${en.privacy.logContent} ${en.privacy.storageContent}`
     for (const key of keys) {
@@ -70,6 +73,31 @@ describe('privacy disclosure', () => {
       expect(pattern, `storage key ${key} is not described in the privacy policy`).toBeDefined()
       expect(policyText, `privacy policy does not describe ${key}`).toMatch(pattern)
     }
+  })
+
+  /**
+   * The visit counter is the first stored value whose CONTENT leaves the
+   * device — it rides on every verdict_view so the ~09-30 readout can tell a
+   * returning coach from a new one. The storage paragraph said "None of it is
+   * sent to us", which was true of every key before this one and false the
+   * moment it shipped.
+   */
+  it('does not claim device storage stays on the device once part of it does not', () => {
+    expect(en.privacy.storageContent).not.toMatch(/none of it is sent to us/i)
+    expect(es.privacy.storageContent).not.toMatch(/nada de esto se nos envía/i)
+    expect(en.privacy.storageContent).toMatch(/only the visit count leaves your device/i)
+    expect(es.privacy.storageContent).toMatch(/solo el recuento de visitas sale de su dispositivo/i)
+  })
+
+  it('discloses in the analytics section what the visit counter sends', () => {
+    for (const [locale, dict] of [['en', en], ['es', es]] as const) {
+      expect(dict.privacy.analyticsContent, `${locale} visits`).toMatch(/visits|visitas/i)
+      expect(dict.privacy.analyticsContent, `${locale} days`).toMatch(/days since|días desde/i)
+    }
+    // And says what it is not, because a per-device sequence number is the
+    // kind of thing a reader is right to be suspicious of.
+    expect(en.privacy.analyticsContent).toMatch(/not an identifier/i)
+    expect(es.privacy.analyticsContent).toMatch(/no un identificador/i)
   })
 
   it('states what a log entry holds, its cap, and how to delete it', () => {
