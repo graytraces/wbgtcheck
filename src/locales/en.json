@@ -478,7 +478,7 @@
       "nj": "Legislated heat participation rules since 2020.",
       "la": "Legislated WBGT-based rules.",
       "ca": "Three regional WBGT ladders under AB 1653 and CIF Bylaw 503.K, with a hard cancel level for each. CIF requires a WBGT and points schools without a meter to a NOAA reading — one of the few states to name an online source.",
-      "ma": "One statewide MIAA policy for every sport, with thresholds well below most states — outdoor activity stops in the 86s. An on-site WBGT instrument is required at each activity; games may continue where practice would stop."
+      "ma": "One statewide MIAA policy covering practice AND competition, with thresholds well below most states — outdoor activity stops in the 86s. An on-site WBGT instrument is required at each activity, and a footnote stops games entirely in any sport whose equipment the band modifies."
     },
     "caveat": "This table is a navigation aid, not legal advice. Policies change midseason; the association's current document controls. Found an error? Tell your athletic trainer first, then us.",
     "guidesHeading": "State guides",
@@ -720,13 +720,14 @@
     "deviceBody": "The policy's wording: \"{{quote}}\"",
     "indoorBody": "It reaches indoors as well: \"{{quote}}\"",
     "deviceWarning": "App and web estimates — including this site — are not the reading the MIAA asks for. Plan tomorrow's schedule here; take the reading at the activity, with a scientifically approved instrument.",
-    "competitionHeading": "Games are treated differently from practice",
-    "competitionBody": "The policy lets competition continue where a practice would already have stopped, and says why: \"{{quote}}\" Note what that does not do — it does not raise the practice thresholds in the table above.",
+    "competitionHeading": "Games: the table covers them too",
+    "competitionBody": "The table's own column is headed \"{{scope}}\", so it governs games as well as practices. What the policy adds for competition is an explanation of why games are not held to the practice time caps: \"{{quote}}\"",
     "coolingHeading": "Cooling zone",
     "coolingBody": "Above a WBGT of {{wbgt}} °F the policy calls for ice water and towels in the cooling zone, and for cold-water immersion tubs to be available for any player showing signs of heat illness.",
     "sourceHeading": "Source",
     "sourceBody": "All thresholds and modification text above derive from the MIAA Heat Modification Policy, cross-checked on {{verifiedOn}}.",
-    "ctaButton": "Plan around Massachusetts flags"
+    "ctaButton": "Plan around Massachusetts flags",
+    "noGamesBody": "And then the footnote under the table cuts the other way, which is the part worth reading twice: \"{{footnote}}\" Equipment modifications begin in the {{band}} band — so from there upward an equipment-intensive sport should not be playing games at all, even though a practice in the same conditions may continue under the caps."
   },
   "florida": {
     "pageTitle": "Florida Heat Safety Law (Zachary Martin Act)",

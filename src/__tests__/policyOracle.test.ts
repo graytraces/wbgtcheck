@@ -11,6 +11,8 @@ import {
   MIAA_DEVICE_QUOTE,
   MIAA_COMPETITION_QUOTE,
   MIAA_COOLING_ZONE_WBGT_F,
+  MIAA_TABLE_SCOPE_QUOTE,
+  MIAA_NO_GAMES_FOOTNOTE_QUOTE,
   KHSAA_WBGT_REFERENCE,
   KY_OFFSITE_INVALID_QUOTE,
   CIF_CATEGORIES,
@@ -321,6 +323,27 @@ describe('policy oracle — guideline facts vs primary sources', () => {
       [86.05, 'black'],
     ] as const) {
       expect(flagAt(MIAA, wbgt), `${wbgt} must resolve upward`).toBe(flag)
+    }
+  })
+
+  it('the MIAA table governs games, and its footnote STOPS games it modifies', () => {
+    // This was backwards: the site said competition "continues where a
+    // practice would already have stopped". No such range exists — practice
+    // runs to 86.0 under caps — and the footnote points the other way, ending
+    // games for any sport whose equipment the band modifies (81.1°F up).
+    expect(MIAA_TABLE_SCOPE_QUOTE).toContain('COMPETITION')
+    expect(MIAA_NO_GAMES_FOOTNOTE_QUOTE).toContain('no games should occur')
+    // Equipment modification starts at orange, so that is the band the copy
+    // must name as the point games stop for equipment-intensive sports.
+    const orange = MIAA.bands.find((b) => b.flag === 'orange')!
+    expect(orange.guideline.extraKeys).toContain('guideline.miaaEquipmentSports')
+    for (const locale of [en, es]) {
+      expect(locale.massachusetts.noGamesBody).toContain('{{footnote}}')
+      // The old, inverted framing must not come back.
+      expect(locale.massachusetts.competitionBody.toLowerCase()).not.toContain(
+        'where a practice would already have stopped',
+      )
+      expect(locale.states.notes.ma.toLowerCase()).not.toContain('games may continue where practice would stop')
     }
   })
 

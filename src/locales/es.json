@@ -478,7 +478,7 @@
       "nj": "Reglas de participación en calor legisladas desde 2020.",
       "la": "Reglas basadas en WBGT legisladas.",
       "ca": "Tres escalas WBGT regionales bajo AB 1653 y el estatuto 503.K de la CIF, cada una con un nivel de cancelación estricto. La CIF exige un WBGT y envía a las escuelas sin medidor a una lectura de la NOAA — uno de los pocos estados que nombra una fuente en línea.",
-      "ma": "Una sola política estatal de la MIAA para todos los deportes, con umbrales muy por debajo de la mayoría — la actividad al aire libre se detiene en los 86. Se exige un instrumento WBGT en el sitio en cada actividad; los partidos pueden continuar donde la práctica se detendría."
+      "ma": "Una sola política estatal de la MIAA que cubre práctica Y competición, con umbrales muy por debajo de la mayoría — la actividad al aire libre se detiene en los 86. Se exige un instrumento WBGT en el sitio en cada actividad, y una nota al pie detiene por completo los partidos en cualquier deporte cuyo equipo modifique la banda."
     },
     "caveat": "Esta tabla es una ayuda de navegación, no asesoría legal. Las políticas cambian a mitad de temporada; el documento vigente de la asociación manda. ¿Encontró un error? Avise primero a su preparador físico, luego a nosotros.",
     "guidesHeading": "Guías por estado",
@@ -720,13 +720,14 @@
     "deviceBody": "Texto de la política: «{{quote}}»",
     "indoorBody": "También alcanza a los espacios interiores: «{{quote}}»",
     "deviceWarning": "Las estimaciones por app o web — incluido este sitio — no son la lectura que pide la MIAA. Planifique aquí el horario de mañana; tome la lectura en la actividad, con un instrumento aprobado científicamente.",
-    "competitionHeading": "Los partidos se tratan distinto que las prácticas",
-    "competitionBody": "La política permite que la competición continúe donde una práctica ya se habría detenido, y explica por qué: «{{quote}}» Note lo que eso no hace — no eleva los umbrales de práctica de la tabla anterior.",
+    "competitionHeading": "Partidos: la tabla también los cubre",
+    "competitionBody": "La columna de la tabla se titula «{{scope}}», así que rige tanto los partidos como las prácticas. Lo que la política añade para la competición es una explicación de por qué los partidos no están sujetos a los topes de tiempo de práctica: «{{quote}}»",
     "coolingHeading": "Zona de enfriamiento",
     "coolingBody": "Por encima de un WBGT de {{wbgt}} °F la política pide agua helada y toallas en la zona de enfriamiento, y que haya tinas de inmersión en agua fría disponibles para cualquier jugador con signos de enfermedad por calor.",
     "sourceHeading": "Fuente",
     "sourceBody": "Todos los umbrales y textos de modificación anteriores derivan de la MIAA Heat Modification Policy, cotejados el {{verifiedOn}}.",
-    "ctaButton": "Planifique con las banderas de Massachusetts"
+    "ctaButton": "Planifique con las banderas de Massachusetts",
+    "noGamesBody": "Y entonces la nota al pie de la tabla corta en sentido contrario, que es la parte que conviene leer dos veces: «{{footnote}}» Las modificaciones de equipo empiezan en la banda {{band}} — así que de ahí hacia arriba un deporte con equipo intensivo no debería estar jugando partidos, aunque una práctica en las mismas condiciones pueda continuar bajo los topes."
   },
   "florida": {
     "pageTitle": "Ley de seguridad ante el calor de Florida (Zachary Martin Act)",

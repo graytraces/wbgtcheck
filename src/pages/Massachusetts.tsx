@@ -9,6 +9,8 @@ import {
   MIAA_DEVICE_QUOTE,
   MIAA_INDOOR_QUOTE,
   MIAA_COMPETITION_QUOTE,
+  MIAA_TABLE_SCOPE_QUOTE,
+  MIAA_NO_GAMES_FOOTNOTE_QUOTE,
   MIAA_COOLING_ZONE_WBGT_F,
 } from '../data/policyOracle'
 
@@ -57,7 +59,20 @@ export default function Massachusetts() {
           <Trophy className="h-6 w-6" aria-hidden="true" />
           {t('massachusetts.competitionHeading')}
         </h2>
-        <p>{t('massachusetts.competitionBody', { quote: MIAA_COMPETITION_QUOTE })}</p>
+        <p>
+          {t('massachusetts.competitionBody', {
+            scope: MIAA_TABLE_SCOPE_QUOTE,
+            quote: MIAA_COMPETITION_QUOTE,
+          })}
+        </p>
+        {/* The footnote restricts games rather than permitting them — this
+            site had the direction backwards. */}
+        <p className="mt-3 font-bold">
+          {t('massachusetts.noGamesBody', {
+            footnote: MIAA_NO_GAMES_FOOTNOTE_QUOTE,
+            band: MIAA.bands[2].sourceLabel,
+          })}
+        </p>
       </section>
 
       <section>

@@ -1138,11 +1138,24 @@ export const MIAA_DEVICE_QUOTE =
 export const MIAA_INDOOR_QUOTE =
   'For indoor events without climate control, a WBGT reading should be taken indoors. For climate-controlled indoor events, this measurement is unnecessary.'
 /**
- * Competition is treated differently from practice, and the policy says why —
- * pauses in play and changes of possession give work-to-rest ratios a
- * continuous practice does not. Quoted rather than paraphrased because it is
- * the one place the policy permits activity a practice-only reading would
- * stop.
+ * The table's own column header. It governs BOTH practice and competition —
+ * this site briefly described it as a practice table with a competition
+ * carve-out on top, which is not what MIAA printed.
+ */
+export const MIAA_TABLE_SCOPE_QUOTE = 'PRACTICE AND/OR COMPETITION ACTIVITY'
+/**
+ * The full-width footnote under the table, and the sentence that makes the
+ * competition rule a RESTRICTION rather than a permission: equipment
+ * modifications begin in the 81.1-84.0 band, so from there up an
+ * equipment-intensive sport should not be playing games at all.
+ */
+export const MIAA_NO_GAMES_FOOTNOTE_QUOTE =
+  'If equipment modifications are necessary, no games should occur for that sport.'
+/**
+ * Why competition is not simply capped the way a continuous practice is —
+ * pauses in play and changes of possession give work-to-rest ratios a practice
+ * does not. Read together with the footnote above: this lifts the practice
+ * TIME caps for games, it does not let a game run past the table.
  */
 export const MIAA_COMPETITION_QUOTE =
   'Given the opportunity for pauses in play, breaks when changing possessions and valuable work to rest ratios, interscholastic competition can take place up to and including WBGT readings of 86.0°F.'

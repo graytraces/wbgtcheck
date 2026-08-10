@@ -52,6 +52,8 @@ import {
   MIAA_DEVICE_QUOTE,
   MIAA_INDOOR_QUOTE,
   MIAA_COMPETITION_QUOTE,
+  MIAA_TABLE_SCOPE_QUOTE,
+  MIAA_NO_GAMES_FOOTNOTE_QUOTE,
   MIAA_COOLING_ZONE_WBGT_F,
   NCHSAA_REFERENCE,
   NYSPHSAA_HEAT_INDEX_REFERENCE,
@@ -850,7 +852,20 @@ function generateBodyContent(lang, page) {
     push(`<p>${escapeHtml(t('massachusetts.deviceWarning'))}</p>`)
     push(`<h2>${escapeHtml(t('massachusetts.competitionHeading'))}</h2>`)
     push(
-      `<p>${escapeHtml(t('massachusetts.competitionBody', { quote: MIAA_COMPETITION_QUOTE }))}</p>`,
+      `<p>${escapeHtml(
+        t('massachusetts.competitionBody', {
+          scope: MIAA_TABLE_SCOPE_QUOTE,
+          quote: MIAA_COMPETITION_QUOTE,
+        }),
+      )}</p>`,
+    )
+    push(
+      `<p>${escapeHtml(
+        t('massachusetts.noGamesBody', {
+          footnote: MIAA_NO_GAMES_FOOTNOTE_QUOTE,
+          band: MIAA.bands[2].sourceLabel,
+        }),
+      )}</p>`,
     )
     push(`<h2>${escapeHtml(t('massachusetts.coolingHeading'))}</h2>`)
     push(

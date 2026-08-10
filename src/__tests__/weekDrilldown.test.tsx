@@ -77,12 +77,19 @@ describe('week strip drill-down', () => {
   it('the hourly view changes content, not just its label', async () => {
     const days = await week()
     const hourly = () =>
-      within(document.getElementById('hourly-view')!).getAllByRole('listitem').length
-    const todayHours = hourly()
-    expect(todayHours).toBeGreaterThan(0)
+      within(document.getElementById('hourly-view')!).queryAllByRole('listitem').length
+
+    // Deliberately compares two FUTURE days rather than today. The series
+    // starts at the current hour (buildHourlySeries), so when the forecast's
+    // own timezone is past 21:00 local, today legitimately has no hours left
+    // in the 6-21 window and the strip says so — correct behaviour that used
+    // to fail this test depending on the wall clock it ran at.
     fireEvent.click(days[2])
     expect(hourly()).toBeGreaterThan(0)
-    // The "now" ring belongs to today only — a later day has no current hour.
+    fireEvent.click(days[1])
+    expect(hourly()).toBeGreaterThan(0)
+
+    // And returning to today restores the "today" heading either way.
     fireEvent.click(days[0])
     expect(screen.getByText(en.verdict.todayHeading)).toBeInTheDocument()
   })
