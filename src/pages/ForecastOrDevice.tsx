@@ -6,6 +6,8 @@ import CorrectionNote from '../components/CorrectionNote'
 import {
   MEASUREMENT_STANCES,
   KY_ONSITE_STRENGTHS,
+  KY_REVISION,
+  KY_REVISION_ISO,
   stanceOf,
   type RemoteEstimateStance,
   CIF_NO_DEVICE_QUOTE,
@@ -30,8 +32,9 @@ import { cn } from '../lib/utils'
  *
  * Every stance here is read off the oracle object itself (see `stanceOf`), not
  * restated, so this page cannot disagree with the verdict card. The deciding
- * SENTENCE is shown beside each one because the classification is a judgement
- * and the reader is entitled to check it.
+ * SENTENCE is shown under each one because the classification is a judgement
+ * and the reader is entitled to check it — for a while this comment said so
+ * while the table rendered the badge alone.
  *
  * ⚠️ No table on this page may need horizontal scroll — /states is the only
  * declared exception in scripts/checks/no-hscroll-sweep.mjs. That is why the
@@ -152,9 +155,12 @@ export default function ForecastOrDevice() {
         <h2 className="display-num mb-2 text-2xl uppercase" id="stance-table-heading">
           {t('forecastOrDevice.tableHeading')}
         </h2>
-        {/* Two columns on purpose: the deciding sentences are long enough to
-            force this table off a 320px screen as a third column, and the
-            sweep allows no horizontal scroll outside /states. */}
+        {/* Two columns, with the deciding sentence as a LINE under each badge
+            rather than a third column: the quotes are long enough to force
+            this table off a 320px screen as a column of their own, and the
+            sweep allows no horizontal scroll outside /states. They were
+            carried in the oracle and shown nowhere, which made the header
+            comment above a promise the page did not keep. */}
         <table className="w-full border-collapse text-sm" aria-labelledby="stance-table-heading">
           <thead>
             <tr className="border-b-2 border-ink text-left">
@@ -183,6 +189,14 @@ export default function ForecastOrDevice() {
                 </th>
                 <td className="py-2">
                   <StanceBadge stance={stanceOf(row)} />
+                  {/* The sr-only label is what the deleted third column
+                      heading was for: in a two-column table a screen reader
+                      otherwise reads a quotation with nothing saying what it
+                      is doing there. */}
+                  <p className="mt-1 text-xs [overflow-wrap:anywhere]">
+                    <span className="sr-only">{t('forecastOrDevice.colSays')}: </span>
+                    {row.quote}
+                  </p>
                 </td>
               </tr>
             ))}
@@ -243,6 +257,16 @@ export default function ForecastOrDevice() {
           ))}
         </dl>
         <p className="mt-3 font-semibold">{t('forecastOrDevice.kentuckySummaryNote')}</p>
+        {/* /states and /kentucky both carry this and this page did not, while
+            printing "read 2026-08-10" beside the Kentucky row like every other
+            source — a date that attests when the capture was read and nothing
+            about whether KHSAA still publishes it. `8/22/24` is month-first,
+            so Spanish gets the ISO form (the /kentucky treatment). */}
+        <p className="mt-2 text-sm text-ink-muted">
+          {t('forecastOrDevice.kentuckyCurrencyNote', {
+            revision: lang === 'es' ? KY_REVISION_ISO : KY_REVISION,
+          })}
+        </p>
       </section>
 
       {/* The one state where a reader could take a real permission and apply

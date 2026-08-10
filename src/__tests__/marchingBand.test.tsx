@@ -308,6 +308,35 @@ describe('the /marching-band-heat-rules page', () => {
  * activity. The existing claim survives, so this pins it rather than changing
  * it — and pins it to BAND_COVERAGE so the two pages cannot drift apart.
  */
+/**
+ * `scopeQuote` is provenance, not copy.
+ *
+ * /forecast-or-device publishes its `quote` under every row, because each one
+ * is the sentence that decides that state's stance. This page deliberately
+ * does not publish its scope sentences: two of the twelve carry no scope claim
+ * at all — TSSAA's is a measurement sentence and NYSPHSAA's is its first
+ * procedure bullet. Printed under a heading that says what the document
+ * governs, either would assert a finding its own words do not support. So
+ * there is no `colSays` key here, and this is what stops one being restored
+ * before the two quotes are replaced.
+ */
+describe('the marching-band table publishes no scope column', () => {
+  it('has no colSays key in either locale, and the two weak quotes are still weak', () => {
+    for (const dict of [en, es]) {
+      expect('colSays' in dict.marchingBand, 'a scope column reappeared').toBe(false)
+    }
+    for (const abbr of ['TN', 'NY'] as const) {
+      const row = BAND_COVERAGE.find((r) => r.abbr === abbr)!
+      // Both are sentences about TAKING A READING — "obtaining … a reading",
+      // "will be checked 1 hour before". A measurement sentence cannot carry a
+      // claim about who the document covers, and that is the whole reason the
+      // column is unpublished. When one of these is replaced by a sentence
+      // that does state scope, this assertion fails and the column can go up.
+      expect(row.scopeQuote, `${abbr} scope quote`).toMatch(/\breading\b|\bchecked\b/i)
+    }
+  })
+})
+
 describe('the Tennessee scope claim survives a visual re-read', () => {
   it('agrees with the guide page that already made the claim', () => {
     const tn = BAND_COVERAGE.find((r) => r.abbr === 'TN')!

@@ -2197,6 +2197,11 @@ export const IOWA_BAND_ROWS = [
 // the one a reader would have to argue with — not a general description of
 // the policy. Ordered by abbreviation, matching guideRegistry and
 // stateDirectory so all three scan the same way.
+//
+// It is PRINTED under each row on /forecast-or-device, which is the whole
+// reason the field is specified this tightly: the stance is a judgement, and a
+// reader who disagrees with it has to be able to see what it was made from.
+// Anything replacing one of these must survive being read on its own.
 
 export const MEASUREMENT_STANCES = [
   { abbr: 'CA', subject: CIF_CATEGORY_1, source: CIF_HEAT_SOURCE, quote: CIF_NO_DEVICE_QUOTE },
@@ -2230,6 +2235,19 @@ export const MEASUREMENT_STANCES = [
 // reading the file, not by failing to find a word in it: three of the twelve
 // hide table content inside images or vector paths, where a text search
 // returns a confident zero. A silent document is not a clearance.
+//
+// ⚠️ `scopeQuote` is PROVENANCE and is deliberately NOT printed, unlike
+// MEASUREMENT_STANCES.quote above. Two of the twelve are measurement sentences
+// carrying no scope claim: TSSAA's ("Each school is responsible for obtaining
+// either a Wet Bulb Globe Temperature or Heat Index reading at the site of
+// practices and competitions") and NYSPHSAA's first bullet. Published under a
+// heading like "what the document says it governs", either would assert a
+// scope finding its own words do not support — a new error in place of a dead
+// key. Replacing them means re-reading two documents: TSSAA's text is behind a
+// custom font encoding that still extracts as mojibake (checked again
+// 2026-08-11), so it is a render-and-read job rather than a grep. Until both
+// are replaced this column stays unpublished, which is why /marching-band has
+// no `colSays` key while /forecast-or-device does.
 
 export const BAND_COVERAGE = [
   { abbr: 'CA', coverage: 'athletics-only', source: CIF_HEAT_SOURCE, scopeQuote: CIF_CANCEL_QUOTE },

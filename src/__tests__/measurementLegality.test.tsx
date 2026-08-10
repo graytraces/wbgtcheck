@@ -15,6 +15,7 @@ import {
   BAND_COVERAGE,
   NYSPHSAA_WBGT_SOURCE,
   KY_ONSITE_STRENGTHS,
+  KY_REVISION,
   stanceOf,
   requiresOnSiteReading,
   POLICIES,
@@ -352,6 +353,41 @@ describe('the /forecast-or-device page', () => {
     expect(text).toContain(NYSPHSAA_ZIP_QUOTE)
     expect(text).toContain(NYSPHSAA_ONFIELD_WBGT_QUOTE)
     expect(text).not.toContain('{{')
+  })
+
+  /**
+   * The page's own header comment says the deciding sentence is shown "because
+   * the classification is a judgement and the reader is entitled to check it".
+   * For a while it said that while the table rendered the badge alone and
+   * `colSays` sat unused in both locales.
+   */
+  it('shows each row its own deciding sentence, and labels what it is', () => {
+    const { container } = renderPage()
+    const text = container.textContent ?? ''
+    for (const row of MEASUREMENT_STANCES) {
+      expect(text, `${row.abbr}'s deciding sentence is not on the page`).toContain(row.quote)
+    }
+    // The label a reader who cannot see the layout needs to know what those
+    // twelve quotations are doing in the second column.
+    expect(text).toContain(en.forecastOrDevice.colSays)
+  })
+
+  /**
+   * /states and /kentucky both say khsaa.org cannot be reached and the
+   * document was read from an archive capture; this page printed "read
+   * 2026-08-10" beside the Kentucky row like every other source and said
+   * nothing.
+   */
+  it('carries the Kentucky currency caveat beside its Kentucky section', () => {
+    const { container } = renderPage()
+    const text = container.textContent ?? ''
+    expect(text).toContain(
+      i18n.t('forecastOrDevice.kentuckyCurrencyNote', { revision: KY_REVISION }),
+    )
+    for (const dict of [en, es]) {
+      expect(dict.forecastOrDevice.kentuckyCurrencyNote).toContain('{{revision}}')
+      expect(dict.forecastOrDevice.kentuckyCurrencyNote).toMatch(/archive|archivo/i)
+    }
   })
 
   /**
