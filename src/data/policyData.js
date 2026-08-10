@@ -1157,9 +1157,59 @@ export const CIF_NO_DEVICE_QUOTE =
   'Schools without a WBGT should use the link below from the NOAA for a WBGT reading'
 export const CIF_NOAA_TOOL_URL =
   'https://digital.mdl.nws.noaa.gov/?zoom=7&lat=35.28787&lon=-79.36779&layers=F000BTTTFTT&region=0&element=8&mxmz=true&barbs=false&subl=TTFFFF&units=english&wunits=nautical&coords=latlon&tunits=localt'
+/**
+ * ⚠️ THE LINK ABOVE NO LONGER RESOLVES, and /california says so rather than
+ * leaving a reader to conclude they clicked it wrong.
+ *
+ * `digital.mdl.nws.noaa.gov` returns NODATA — the nws.noaa.gov zone answers
+ * authoritatively with an SOA and no A, AAAA or CNAME record. Checked from
+ * three independent public resolvers (8.8.8.8, 1.1.1.1, 9.9.9.9) on the date
+ * below; `mdl.nws.noaa.gov` itself still resolves, so this is that one host
+ * going away rather than a network fault here.
+ *
+ * This does NOT change what CIF permits, and must not be read as though it
+ * did: the stance below is a claim about the POLICY, and the policy still
+ * sends meter-less schools to an online WBGT reading. What the dead host
+ * changes is who is left holding the question — a California school without an
+ * instrument now has no working route to the one resource its association
+ * named. That is a reason to be more careful about what this site claims for
+ * itself, not less.
+ *
+ * The URL is kept verbatim because it is what CIF prints on p.103. Do not
+ * silently substitute a working NOAA product for it: none of them is the one
+ * CIF named, and swapping one in would put this site's judgement inside a
+ * quotation of the association's.
+ */
+export const CIF_NOAA_TOOL_UNREACHABLE_ON = '2026-08-11'
 export const CIF_CANCEL_QUOTE =
   'it is mandated for the benefit of the health and safety of our student-athletes that practice/games be canceled, or delayed until cooler when WBGT exceeds these levels'
+/**
+ * The address CIF prints on p.102 ("Click here to find your school's heat
+ * catagory"), kept as the citation.
+ */
 export const CIF_CATEGORY_ROSTER_URL = 'https://www.cifstate.org/sports-medicine/WBGT_Category.pdf'
+/**
+ * The address the roster is actually SERVED from, and the one every "find your
+ * category" affordance links, because the category question is now the first
+ * thing this site asks a California reader and a link that half-works is not
+ * an answer to it.
+ *
+ * cifstate.org serves an HTML shell for its own `.pdf` links — the trap the
+ * heat policy itself sprang (wiki: primary-source-extraction) — and here the
+ * shell also answers 403 to any non-browser client. The file behind it is a
+ * real PDF: 28 pages, County / District-or-Private-School / WBGT Category,
+ * 810 rows, sha256
+ * b8be9b1ea70d70c29bae2ac40f6064f582532f082b38541b734394ef86a762a0, fetched
+ * and read 2026-08-11.
+ *
+ * That roster existing and being readable is the entire difference between
+ * California and New York on this site. NYSPHSAA runs the same three-category
+ * split and the lookup IT names is dead (NYSPHSAA_CATEGORY_LOOKUP_CHECKED_ON),
+ * so New York gets no prompt: a question a reader cannot answer is not a
+ * safeguard, it is a coin flip with a stop line 3.6 °F wide.
+ */
+export const CIF_CATEGORY_ROSTER_FILE_URL =
+  'https://d2o2figo6ddd0g.cloudfront.net/9/j/u0syhj3adcxckf/WBGT_Category.pdf'
 export const CIF_ACCLIMATIZATION_DAYS_MIN = 10
 export const CIF_ACCLIMATIZATION_DAYS_MAX = 14
 
@@ -1280,15 +1330,58 @@ const cifBands = (yellowMin, orangeAfter, redAfter, blackAfter, labels) => [
 // green/yellow edge is the exception: green is printed as "<X", so X itself is
 // already the first unassigned value and yellow takes it inclusively.
 /**
- * ⚠️ `remoteEstimatesAllowed: 'yes'` is correct for the source — CIF names an
- * online NOAA reading for schools without a meter — but it is harmless ONLY
- * while these stay out of POLICIES. If a future change adds them to the
- * picker, 'yes' SUPPRESSES the device-required warning on the verdict and
- * share cards, and no current test would notice. Re-derive this field at that
- * point: CIF points at NOAA's map specifically, not at any forecast.
+ * `remoteEstimatesAllowed: 'yes'` — RE-DERIVED 2026-08-11, at exactly the
+ * moment the old hazard comment here warned about.
+ *
+ * That comment said 'yes' was harmless only while these objects stayed out of
+ * POLICIES, because 'yes' SUPPRESSES the device notice on the verdict and
+ * share cards. They are in POLICIES now, so the field was read off the pinned
+ * document again (sha256 63c9b498932eca9da5cc2c3808b04009ae6b08b47d984d61804a09317332557b,
+ * 5 pages) rather than left standing. Three sentences decide it:
+ *
+ *   p.102  "The CIF requires that schools use the WBGT for the most accurate
+ *          measurement."                            (CIF_WBGT_REQUIRED_QUOTE)
+ *   p.103  "Schools without a WBGT should use the link below from the NOAA
+ *          for a WBGT reading"                        (CIF_NO_DEVICE_QUOTE)
+ *   p.103  the NOAA URL itself                          (CIF_NOAA_TOOL_URL)
+ *
+ * The requirement is on the SCALE, and the document then plans explicitly for
+ * schools that do not own an instrument. Nowhere in five pages does it fix
+ * where the reading is taken: "at the site" / "on the field" / "at the venue"
+ * appear only in the cooling-method sentence, about equipment. So:
+ *
+ *   'device-required'    would be false — Florida's answer, and Florida earns
+ *                        it from a STATUTE that fixes the five variables "at
+ *                        the site of the athletic activity". California has no
+ *                        such sentence, and copying Florida's conclusion here
+ *                        because the two arrived a day apart is precisely the
+ *                        borrowing the FHSAA comment refused to do.
+ *   'device-recommended' would be false in its operative half — that value
+ *                        means a remote estimate must not stand in for the
+ *                        named method, and a remote estimate is what CIF tells
+ *                        meter-less schools to use.
+ *   'yes'                is the definition, met verbatim: the document names
+ *                        an online source and lets a school work from it.
+ *
+ * ⚠️ AND THAT IS NOT A CLEARANCE FOR THIS SITE, which is the narrow thing the
+ * old comment was right about. CIF blesses one named NOAA page, not forecasts
+ * as a class — unlike UIL, which permits "an internet-based weather station
+ * software or application" generically and is 'yes' for that broader reason.
+ * The stance field records what the association permits; it cannot record
+ * whether wbgtcheck is the thing permitted, and it must never be read as
+ * saying so. That gap is carried in copy instead — on the prompt a California
+ * reader sees before any flag, on the hint that replaces it, and on
+ * /california — and measurementLegality.test.tsx pins both halves: no device
+ * notice on a CIF card, and the source caveat on screen either way.
  */
+// `categoryNumber` is CIF's own column number, carried as data for the same
+// reason NYSPHSAA's three ladders carry theirs: every surface that names a
+// category — the picker labels, the prompt, the threshold grid's headers —
+// reads it off the object instead of counting array positions, so reordering
+// the list can never relabel a ladder.
 export const CIF_CATEGORY_1 = {
   id: 'cif-cat-1',
+  categoryNumber: 1,
   source: CIF_HEAT_SOURCE,
   remoteEstimatesAllowed: 'yes',
   bands: cifBands(76.1, 81.0, 84.0, 86.0, {
@@ -1297,6 +1390,7 @@ export const CIF_CATEGORY_1 = {
 }
 export const CIF_CATEGORY_2 = {
   id: 'cif-cat-2',
+  categoryNumber: 2,
   source: CIF_HEAT_SOURCE,
   remoteEstimatesAllowed: 'yes',
   bands: cifBands(79.7, 84.6, 87.6, 89.6, {
@@ -1305,6 +1399,7 @@ export const CIF_CATEGORY_2 = {
 }
 export const CIF_CATEGORY_3 = {
   id: 'cif-cat-3',
+  categoryNumber: 3,
   source: CIF_HEAT_SOURCE,
   remoteEstimatesAllowed: 'yes',
   bands: cifBands(82.0, 86.9, 90.0, 91.9, {
@@ -1334,6 +1429,20 @@ export const CIF_GAP_EXAMPLE_UPPER = CIF_GAP_BAND('orange').sourceLabel
 export const CIF_GAP_EXAMPLE_SKIPPED = `${(CIF_GAP_BAND('orange').minF + 0.1).toFixed(1)}\u00b0F`
 
 export const CIF_CATEGORIES = [CIF_CATEGORY_1, CIF_CATEGORY_2, CIF_CATEGORY_3]
+
+/**
+ * The reading the category prompt shows a reader to explain what the question
+ * costs: Category 1's printed black floor, which is still YELLOW in Category
+ * 3 — two flags and "stop everything" versus "use discretion".
+ *
+ * Read OFF the Category 1 black label rather than typed, and the flags it
+ * names are computed by classifyWbgt at render time, so the sentence cannot
+ * drift from the table it is arguing about. The equivalent hand-written claim
+ * lived in california.pickerExclusionBody and would have gone stale silently.
+ */
+export const CIF_SPREAD_EXAMPLE_F = Number(
+  CIF_CATEGORY_1.bands.find((band) => band.flag === 'black').sourceLabel.match(/\d+\.\d+/)[0],
+)
 
 // --- Florida statute constants -------------------------------------------
 // Fla. Stat. § 1006.165(2), "Well-being of students participating in
@@ -1707,6 +1816,39 @@ export const NYSPHSAA_WBGT_BLACK_QUOTE =
  */
 export const NYSPHSAA_WBGT_BLACK_MIN_F = { cat1: 86.2, cat2: 89.8, cat3: 92.1 }
 export const NYSPHSAA_CATEGORY_LOOKUP_URL = 'http://www.castlewilliams.com/wbgt-regions.html'
+/**
+ * The date the dead lookup was last checked, and the reason New York does NOT
+ * get the category prompt California now has.
+ *
+ * `www.castlewilliams.com` and the bare domain both SERVFAIL — no resolver
+ * reached an answer, checked again from 8.8.8.8 and 1.1.1.1 on this date. The
+ * host is not slow or blocked from here; it has no working nameservers.
+ *
+ * ⚠️ This asymmetry is the whole New York decision and must survive anyone who
+ * later notices that NYSPHSAA's chart is the same shape as CIF's. It is. What
+ * differs is that a Californian can ANSWER: CIF publishes a district-by-
+ * district roster that this repo fetched and read (CIF_CATEGORY_ROSTER_FILE_URL).
+ * A New Yorker cannot answer from anything NYSPHSAA publishes. A prompt whose
+ * "how do I find mine?" link is dead does not transfer the decision to the
+ * reader, it just moves the guess — and one category too warm moves a school's
+ * stop line from cat1 to cat2 above, 3.6 °F of permission invented here.
+ *
+ * So /new-york says the lookup is dead, says the site cannot determine the
+ * category, and names the strictest ladder as the only reading of the chart
+ * that cannot be too permissive. It publishes no category for anyone.
+ */
+export const NYSPHSAA_CATEGORY_LOOKUP_CHECKED_ON = '2026-08-11'
+/**
+ * Which of the three ladders a reader who cannot learn their category should
+ * fall back on: the one whose black band opens COOLEST, derived from the
+ * temperatures rather than asserted, so it cannot invert if the chart ever
+ * renumbers its columns.
+ */
+export const NYSPHSAA_STRICTEST_CATEGORY = Number(
+  Object.entries(NYSPHSAA_WBGT_BLACK_MIN_F)
+    .sort((a, b) => a[1] - b[1])[0][0]
+    .replace('cat', ''),
+)
 /**
  * Page 2 also reproduces a national "Heat safety regions" figure beside the
  * chart — a SECOND embedded image (748x427), which the commit that added the
@@ -2228,9 +2370,30 @@ export const NYSPHSAA_WBGT_ACTIONS = [
   },
 ]
 
+/**
+ * California's three ladders join the picker here, and they are the second
+ * case of the Texas shape rather than the ninth case of the Florida one.
+ *
+ * Florida could be auto-selected because Policy 41 asks the reader nothing:
+ * one state, one practice index. CIF assigns each school a region category, so
+ * selecting a ladder for an unasked Californian is a guess with a two-flag
+ * spread (CIF_SPREAD_EXAMPLE_F). The rule this file has followed since Texas
+ * is that such a guess must be STRICT and must announce itself above the
+ * verdict — see CifCategoryPrompt and defaultPolicyFor. Category 1 is the
+ * strict end, and it is also the assignment most of the roster's coastal
+ * districts actually carry, so the pre-answer state is conservative without
+ * being exotic.
+ *
+ * ⚠️ Never default California to a hotter category, and never to `generic`:
+ * the NATA fallback is more permissive than all three CIF ladders at every
+ * band, so "no answer yet" must not resolve to it.
+ */
 export const POLICIES = {
   'uil-class-2': UIL_CLASS_2,
   'uil-class-3': UIL_CLASS_3,
+  'cif-cat-1': CIF_CATEGORY_1,
+  'cif-cat-2': CIF_CATEGORY_2,
+  'cif-cat-3': CIF_CATEGORY_3,
   ghsa: GHSA,
   schsl: SCHSL,
   tssaa: TSSAA,
@@ -2373,6 +2536,10 @@ export const IOWA_BAND_ROWS = [
 // Anything replacing one of these must survive being read on its own.
 
 export const MEASUREMENT_STANCES = [
+  // Also a pickable ladder now, and the row still reads the oracle object, so
+  // this page and a California verdict card cannot disagree. All three CIF
+  // categories share one stance — they are one document — and Category 1 is
+  // named here because it is the one an unanswered California reader is on.
   { abbr: 'CA', subject: CIF_CATEGORY_1, source: CIF_HEAT_SOURCE, quote: CIF_NO_DEVICE_QUOTE },
   // The subject is the PICKABLE ladder now that Florida has one: this row has
   // to read the field the verdict card classifies against, or /forecast-or-device

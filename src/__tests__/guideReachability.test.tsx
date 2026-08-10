@@ -10,7 +10,7 @@ import States from '../pages/States'
 import California from '../pages/California'
 import ForecastOrDevice from '../pages/ForecastOrDevice'
 import MarchingBand from '../pages/MarchingBand'
-import { POLICIES, CIF_CATEGORY_ROSTER_URL, type PolicyId } from '../data/policyOracle'
+import { POLICIES, CIF_CATEGORY_ROSTER_FILE_URL, type PolicyId } from '../data/policyOracle'
 import {
   VHSL_CANCEL_WBGT_F,
   FHSAA_NO_OUTDOOR_WBGT_F,
@@ -399,14 +399,25 @@ describe('states outside the picker still reach their guide', () => {
 
   it('splits every guide state into exactly one of the two groups', () => {
     expect(PICKERLESS.length + IN_PICKER.length).toBe(STATE_GUIDES.length)
-    // Florida left this group when FHSAA §41.8 entered the picker. The five
-    // that remain each need a question this tool does not ask — CA and NY a
-    // regional category, KY and NC a different band family, VA six levels.
-    // Florida was the one that needed none: five bands onto five flags.
-    expect(PICKERLESS.map((g) => g.abbr).sort()).toEqual(['CA', 'KY', 'NC', 'NY', 'VA'])
+    // Florida left this group when FHSAA §41.8 entered the picker, then
+    // California when CIF's three ladders did. The four that remain each need
+    // a question this tool does not ask — KY and NC a different band family,
+    // VA six levels, and NY a regional category whose only published lookup
+    // has no working nameservers. That last one is the difference from
+    // California, which asks the same question and can point at a roster.
+    expect(PICKERLESS.map((g) => g.abbr).sort()).toEqual(['KY', 'NC', 'NY', 'VA'])
     // Tennessee belongs here: TSSAA is a picker option, it simply is not
     // auto-selected. That distinction is the whole bug.
-    expect(IN_PICKER.map((g) => g.abbr).sort()).toEqual(['FL', 'GA', 'IA', 'MA', 'SC', 'TN', 'TX'])
+    expect(IN_PICKER.map((g) => g.abbr).sort()).toEqual([
+      'CA',
+      'FL',
+      'GA',
+      'IA',
+      'MA',
+      'SC',
+      'TN',
+      'TX',
+    ])
     expect(defaultPolicyFor('TN')).toBe('generic')
     // …and Florida, unlike Tennessee, IS auto-selected.
     expect(defaultPolicyFor('FL')).toBe('fhsaa')
@@ -816,7 +827,10 @@ describe('California puts the action before the commentary', () => {
 
   it('links the category roster before it explains anything', () => {
     const { container } = renderCA()
-    const roster = container.querySelector(`a[href="${CIF_CATEGORY_ROSTER_URL}"]`)!
+    // The FILE, not cifstate.org's wrapper: the wrapper answers 403 to
+    // non-browser clients and serves an HTML shell to browsers, and the
+    // category question is now the first thing the tool asks a Californian.
+    const roster = container.querySelector(`a[href="${CIF_CATEGORY_ROSTER_FILE_URL}"]`)!
     const explanation = [...container.querySelectorAll('p')].find((el) =>
       el.textContent?.includes('splits the state'),
     )!
@@ -824,10 +838,10 @@ describe('California puts the action before the commentary', () => {
     expect(precedes(roster, explanation), 'the roster link is still buried').toBe(true)
   })
 
-  it('says why it is not in the picker before the tables, not after them', () => {
+  it('says how the picker treats the three categories before the tables', () => {
     const { container } = renderCA()
     const notice = [...container.querySelectorAll('h2')].find((h) =>
-      h.textContent?.includes(en.california.pickerExclusionHeading),
+      h.textContent?.includes(en.california.categoryPickerHeading),
     )!
     const firstTable = container.querySelector('table')!
     expect(precedes(notice, firstTable), 'the picker notice is below the tables').toBe(true)

@@ -36,6 +36,9 @@ import {
   CIF_CATEGORY_1,
   CIF_CATEGORY_2,
   CIF_CATEGORY_3,
+  CIF_NO_DEVICE_QUOTE,
+  CIF_WBGT_REQUIRED_QUOTE,
+  FL_ONSITE_MEASUREMENT_QUOTE,
   KY_FOOTBALL_ONSITE_QUOTE,
   KY_ONSITE_ONLY_QUOTE,
   NYSPHSAA_ZIP_QUOTE,
@@ -150,8 +153,11 @@ describe('the three measurement-stance gaps are filled from the documents', () =
  * with the wrong stance is caught here whatever it is called.
  */
 describe('nothing added here can change what a verdict card says', () => {
-  it('the pickable policies are exactly the nine, with their stances unmoved', () => {
+  it('the pickable policies are exactly the twelve, with their stances unmoved', () => {
     expect(Object.keys(POLICIES).sort()).toEqual([
+      'cif-cat-1',
+      'cif-cat-2',
+      'cif-cat-3',
       'fhsaa',
       'generic',
       'ghsa',
@@ -165,6 +171,28 @@ describe('nothing added here can change what a verdict card says', () => {
     const before: Record<string, RemoteEstimateStance> = {
       'uil-class-2': 'yes',
       'uil-class-3': 'yes',
+      /**
+       * California, RE-DERIVED at the moment the hazard comment warned about
+       * rather than carried across unexamined — and it lands on the opposite
+       * answer to Florida's, from the opposite kind of sentence.
+       *
+       * CIF requires the WBGT *scale* ("The CIF requires that schools use the
+       * WBGT for the most accurate measurement") and then plans for schools
+       * that own no instrument, sending them to an online NOAA reading. In
+       * five pages it never fixes where the reading is taken. 'device-required'
+       * would contradict the second sentence; 'device-recommended' asserts
+       * that a remote estimate must not stand in for the named method, which
+       * is the reverse of what CIF wrote. 'yes' is the definition met word for
+       * word — see the block comment on CIF_CATEGORY_1.
+       *
+       * ⚠️ 'yes' is a claim about CIF, never about this site. What keeps that
+       * from being a loophole is asserted below: the card carries no device
+       * notice (correct), and the CIF-names-one-NOAA-page caveat is on screen
+       * for a California reader whether or not the prompt is still up.
+       */
+      'cif-cat-1': 'yes',
+      'cif-cat-2': 'yes',
+      'cif-cat-3': 'yes',
       ghsa: 'device-required',
       schsl: 'device-required',
       tssaa: 'device-recommended',
@@ -196,7 +224,40 @@ describe('nothing added here can change what a verdict card says', () => {
     expect(FHSAA.remoteEstimatesAllowed).toBe(
       FHSAA_PRACTICE_REFERENCE.remoteEstimatesAllowed,
     )
+    // All three CIF ladders are one document, so they must never disagree
+    // about the field that decides whether a coach is warned.
+    for (const cat of [CIF_CATEGORY_1, CIF_CATEGORY_2, CIF_CATEGORY_3]) {
+      expect(cat.remoteEstimatesAllowed, `${cat.id} stance`).toBe('yes')
+    }
     expect(GENERIC_NATA.remoteEstimatesAllowed).toBe('unspecified')
+  })
+
+  /**
+   * The derivation itself, pinned to the sentences that carry it, so softening
+   * either one breaks this rather than quietly widening what California is
+   * told. This is the assertion the CIF hazard comment asked for by name.
+   */
+  it('California is "yes" because CIF wrote it, and only about CIF', () => {
+    // The sentence that earns it: an online route, offered outright.
+    expect(CIF_NO_DEVICE_QUOTE).toContain('Schools without a WBGT')
+    expect(CIF_NO_DEVICE_QUOTE).toContain('from the NOAA for a WBGT reading')
+    // …and the two sentences that would have earned the other answers, which
+    // CIF does not write. Florida's does — that is the whole difference.
+    for (const quote of [CIF_NO_DEVICE_QUOTE, CIF_WBGT_REQUIRED_QUOTE]) {
+      expect(quote).not.toMatch(/at the site|on the field|on-site|on site/i)
+    }
+    expect(FL_ONSITE_MEASUREMENT_QUOTE).toContain('at the site of the athletic activity')
+    expect(requiresOnSiteReading(CIF_CATEGORY_1)).toBe(false)
+    expect(requiresOnSiteReading(FHSAA)).toBe(true)
+    // The half the field cannot hold: CIF named ONE page, and it is not this
+    // one. Both surfaces a California reader can be on must say so, in both
+    // locales — the prompt before the answer, the hint after it.
+    for (const dict of [en, es]) {
+      for (const caveat of [dict.policies.categoryPrompt.sourceCaveat, dict.policies.caCategoryHint]) {
+        expect(caveat).toMatch(/NOAA/)
+        expect(caveat.length).toBeGreaterThan(0)
+      }
+    }
   })
 
   it('the five newly-stanced objects are not policies the picker can hand a card', () => {
@@ -217,10 +278,11 @@ describe('nothing added here can change what a verdict card says', () => {
     // verbatim §41.8 table above, which has rows and would be uncallable.
     expect(pickable.has(FHSAA)).toBe(true)
     expect(FHSAA.id).not.toBe(FHSAA_PRACTICE_REFERENCE.id)
-    // CIF's hazard, unchanged: three 'yes' ladders still outside the picker.
+    // CIF's three ladders ARE in the picker now, which is the second half of
+    // the hazard the comment described and the reason the stance above was
+    // re-read from the document instead of inherited.
     for (const cat of [CIF_CATEGORY_1, CIF_CATEGORY_2, CIF_CATEGORY_3]) {
-      expect(cat.remoteEstimatesAllowed).toBe('yes')
-      expect(pickable.has(cat)).toBe(false)
+      expect(pickable.has(cat)).toBe(true)
     }
   })
 
@@ -233,6 +295,18 @@ describe('nothing added here can change what a verdict card says', () => {
     const expected: Record<string, string | null> = {
       'uil-class-2': null,
       'uil-class-3': null,
+      // THE WARNING CALIFORNIA SHOULD SHOW, and it is none of these two —
+      // derived, not defaulted. CIF is the one association here that tells a
+      // meter-less school to read a WBGT online, so printing "your association
+      // requires an on-site instrument" on a California card would be a false
+      // statement about CIF in the direction of scaring a coach off the only
+      // route their own policy offers them. What California gets instead is
+      // the permanent strip every card carries (conservativeNotice,
+      // verifyOnsite, surfaceNotice) plus the CIF-specific caveat asserted
+      // above — CIF named one NOAA page, and this is not it.
+      'cif-cat-1': null,
+      'cif-cat-2': null,
+      'cif-cat-3': null,
       generic: null,
       ghsa: 'verdict.deviceOnlyNotice',
       schsl: 'verdict.deviceOnlyNotice',
@@ -266,6 +340,44 @@ describe('nothing added here can change what a verdict card says', () => {
         </MemoryRouter>,
       )
       expect(screen.getByText(rendered), `${id} compliance line`).toBeInTheDocument()
+      view.unmount()
+    }
+  })
+
+  /**
+   * The other half of the same claim, asserted positively rather than by the
+   * `continue` above.
+   *
+   * A `null` row means "renders neither device notice", which a loop that
+   * skips it cannot actually check — and California is the first `null` that
+   * was ARGUED rather than inherited, so it is the one that has to be seen.
+   * This mounts a real California card and demands the absence of both
+   * notices AND the presence of the strip that does the work instead.
+   */
+  it('a California card carries the permanent caveat and neither device notice', () => {
+    for (const policy of [CIF_CATEGORY_1, CIF_CATEGORY_2, CIF_CATEGORY_3]) {
+      const view = render(
+        <MemoryRouter initialEntries={['/en']}>
+          <VerdictCard
+            hour={hourAt(88)}
+            policy={policy}
+            locationLabel="Fresno, CA"
+            stateAbbr="CA"
+            timeZone="America/Los_Angeles"
+          />
+        </MemoryRouter>,
+      )
+      const body = policy.source.name.split(' ')[0]
+      for (const key of ['verdict.deviceOnlyNotice', 'verdict.deviceRecommendedNotice']) {
+        expect(
+          screen.queryByText(i18n.t(key, { body })),
+          `${policy.id} must not claim CIF requires an on-site instrument`,
+        ).not.toBeInTheDocument()
+      }
+      // …and the reader is still told, on every card, that the forecast is not
+      // the measurement. That sentence is frozen by legalCopy.test.tsx, which
+      // is why it can be relied on here.
+      expect(screen.getByText(en.verdict.verifyOnsite)).toBeInTheDocument()
       view.unmount()
     }
   })

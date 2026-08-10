@@ -325,24 +325,20 @@ describe('policy oracle — guideline facts vs primary sources', () => {
   })
 
   it('every state absent from the picker says so on its own page', () => {
-    // Otherwise "Massachusetts is in the picker and California is not" reads
-    // as arbitrary, and a CTA can promise a flag the tool will not produce.
-    // NC already had this; CA and KY match it.
+    // Otherwise "Massachusetts is in the picker and Kentucky is not" reads as
+    // arbitrary, and a CTA can promise a flag the tool will not produce.
     //
-    // Florida left this list by being ADDED to the picker, so the exclusion
-    // page it used to carry would now be a lie. The replacement obligation is
-    // asserted below rather than dropped: a state in the picker owes the
-    // reader which of its ladders the flag is.
+    // Florida and then California left this list by being ADDED to the picker,
+    // so the exclusion pages they carried would now be lies. The replacement
+    // obligation is asserted rather than dropped: a state in the picker owes
+    // the reader which of its ladders the flag is.
     for (const locale of [en, es]) {
-      for (const page of ['northCarolina', 'newYork', 'california', 'kentucky'] as const) {
+      for (const page of ['northCarolina', 'newYork', 'kentucky'] as const) {
         const body = (locale as unknown as Record<string, Record<string, string | undefined>>)[page]
         if (page === 'newYork') continue // NY explains its exclusion in wbgtChartNote
         expect(body.pickerExclusionHeading?.length, `${page} exclusion heading`).toBeGreaterThan(0)
         expect(body.pickerExclusionBody?.length, `${page} exclusion body`).toBeGreaterThan(0)
       }
-      // The California CTA must not promise "California flags" the picker
-      // cannot select.
-      expect(locale.california.ctaButton.toLowerCase()).not.toContain('california')
       // Florida's page must no longer claim the picker cannot carry it…
       const fl = locale.florida as unknown as Record<string, string | undefined>
       expect(fl.pickerExclusionHeading, 'florida still explains an exclusion').toBeUndefined()
@@ -351,17 +347,51 @@ describe('policy oracle — guideline facts vs primary sources', () => {
       expect(fl.pickerScopeHeading?.length, 'florida scope heading').toBeGreaterThan(0)
       expect(fl.pickerScopeBody).toContain('{{practice}}')
       expect(fl.pickerScopeBody).toContain('{{contest}}')
+
+      /**
+       * California left the list the same way, one day later, and inherits the
+       * same replacement obligation. Its old body named the NATA fallback as
+       * what a Californian gets — a sentence that stopped being true the
+       * moment the three CIF ladders entered POLICIES, and one that mattered:
+       * it was the reader's only warning that the flag was not theirs.
+       */
+      const ca = locale.california as unknown as Record<string, string | undefined>
+      expect(ca.pickerExclusionHeading, 'california still explains an exclusion').toBeUndefined()
+      expect(ca.pickerExclusionBody, 'california still explains an exclusion').toBeUndefined()
+      expect(ca.categoryPickerHeading?.length, 'california picker heading').toBeGreaterThan(0)
+      // The number the replacement turns on: which ladder is in force before
+      // the reader answers. Interpolated, so it cannot drift from the default.
+      expect(ca.categoryPickerBody).toContain('{{strictCategory}}')
     }
   })
 
-  it('California stays out of the picker — its category cannot be inferred', () => {
-    // CIF assigns the category by region from a separate 28-page roster.
-    // Auto-selecting one would emit a confidently wrong flag; adding these to
-    // the picker needs the Texas class-prompt treatment first.
+  it('California is in the picker, and only behind a question', () => {
+    // CIF assigns the category by region from a separate roster, so an unasked
+    // selection is a guess with a two-flag spread. The guess is allowed only
+    // because it is the STRICT end of that spread and because
+    // CifCategoryPrompt puts the question above the verdict — the Texas
+    // treatment this exclusion was waiting for.
     for (const policy of CIF_CATEGORIES) {
-      expect(Object.values(POLICIES)).not.toContain(policy)
+      expect(Object.values(POLICIES)).toContain(policy)
     }
-    expect(Object.keys(POLICIES)).not.toContain('cif-cat-1')
+    expect(Object.keys(POLICIES)).toContain('cif-cat-1')
+    // The strict end is the FIRST of the three, which is what every "until you
+    // answer" sentence and defaultPolicyFor both read.
+    const blackFloors = CIF_CATEGORIES.map(
+      (policy) => policy.bands.find((band) => band.flag === 'black')!.minF!,
+    )
+    expect([...blackFloors].sort((a, b) => a - b)).toEqual(blackFloors)
+    // …and it really is stricter than the NATA table it replaced, at every
+    // tenth of the published range. The old copy claimed the reverse of this
+    // as a reason to stay out; it is the reason to come in.
+    for (let tenth = 700; tenth <= 960; tenth += 1) {
+      const wbgtF = tenth / 10
+      const FLAGS = ['green', 'yellow', 'orange', 'red', 'black'] as const
+      expect(
+        FLAGS.indexOf(classifyWbgt(CIF_CATEGORIES[0], wbgtF).flag),
+        `${wbgtF.toFixed(1)} °F: CIF Category 1 is cooler than the NATA fallback`,
+      ).toBeGreaterThanOrEqual(FLAGS.indexOf(classifyWbgt(GENERIC_NATA, wbgtF).flag))
+    }
   })
 
   it("CIF's five-day acclimatization is quoted as a mandate, not a suggestion", () => {
@@ -920,6 +950,13 @@ describe('policy oracle — measurement/compliance stance', () => {
     // already pins its roster exactly; the heat axis now matches, so ANY new
     // entry has to be a deliberate edit here.
     expect(Object.keys(POLICIES).sort()).toEqual([
+      // California's three region ladders, added 2026-08-11 behind the same
+      // above-the-verdict question Texas asks. They are the only entries here
+      // that are not a single statewide answer: which one a Californian is on
+      // is the reader's to say, and CifCategoryPrompt is what asks.
+      'cif-cat-1',
+      'cif-cat-2',
+      'cif-cat-3',
       'fhsaa',
       'generic',
       'ghsa',

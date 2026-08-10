@@ -18,7 +18,8 @@ import {
   CIF_NO_DEVICE_QUOTE,
   CIF_NOAA_TOOL_URL,
   CIF_CANCEL_QUOTE,
-  CIF_CATEGORY_ROSTER_URL,
+  CIF_CATEGORY_ROSTER_FILE_URL,
+  CIF_NOAA_TOOL_UNREACHABLE_ON,
   CIF_ACCLIMATIZATION_DAYS_MIN,
   CIF_ACCLIMATIZATION_DAYS_MAX,
   CIF_FIVE_DAY_QUOTE,
@@ -49,9 +50,13 @@ export default function California() {
         {/* The roster is the only thing this section asks the reader to DO,
             and it used to sit 487px below the heading behind an aside about
             bylaw numbering. Action first, commentary in Source. */}
+        {/* The FILE, not cifstate.org's wrapper for it: that wrapper is the
+            HTML shell this repo has been caught by twice, and it answers 403
+            to anything but a browser. CIF's own printed address stays in the
+            Source section as the citation. */}
         <p className="mb-3">
           <a
-            href={CIF_CATEGORY_ROSTER_URL}
+            href={CIF_CATEGORY_ROSTER_FILE_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="font-semibold underline"
@@ -63,11 +68,21 @@ export default function California() {
         <p className="mt-2">{t('california.cancelBody', { quote: CIF_CANCEL_QUOTE })}</p>
       </section>
 
+      {/* This section used to explain why California was NOT in the picker.
+          It is, as of 2026-08-11, so the explanation became false the moment
+          the ladders landed — the same trap Florida's page fell into a day
+          earlier. What replaces it is the fact a reader arriving from the tool
+          actually needs: which of the three they are being flagged against
+          before they answer, and that it is the strict one. */}
       <section className="border-2 border-line bg-surface p-5">
         <h2 className="display-num mb-2 text-2xl uppercase">
-          {t('california.pickerExclusionHeading')}
+          {t('california.categoryPickerHeading')}
         </h2>
-        <p>{t('california.pickerExclusionBody')}</p>
+        <p>
+          {t('california.categoryPickerBody', {
+            strictCategory: CIF_CATEGORIES[0].categoryNumber,
+          })}
+        </p>
       </section>
 
       {/* One threshold grid, then one action table.
@@ -93,9 +108,9 @@ export default function California() {
                 <th className="py-2 pr-3 font-bold uppercase tracking-wide">
                   {t('california.colFlag')}
                 </th>
-                {CIF_CATEGORIES.map((_, i) => (
-                  <th key={i} className="py-2 pr-3 font-bold uppercase tracking-wide">
-                    {t('california.colCategory', { n: i + 1 })}
+                {CIF_CATEGORIES.map((policy) => (
+                  <th key={policy.id} className="py-2 pr-3 font-bold uppercase tracking-wide">
+                    {t('california.colCategory', { n: policy.categoryNumber })}
                   </th>
                 ))}
               </tr>
@@ -193,6 +208,13 @@ export default function California() {
             {t('california.noaaLink')}
           </a>
         </p>
+        {/* The link above is dead — the host has no DNS record at all. Saying
+            so beside it is the whole point: a reader who clicks and gets
+            nothing must not conclude they mistyped, and a school with no meter
+            deserves to know the one route its association named is gone. */}
+        <p className="mt-3">
+          {t('california.noaaUnreachableBody', { checkedOn: CIF_NOAA_TOOL_UNREACHABLE_ON })}
+        </p>
         <p className="mt-3 font-bold">{t('california.stillNotCompliance')}</p>
       </section>
 
@@ -223,10 +245,6 @@ export default function California() {
           {t('california.acclimatizationFootballBody', { football: CIF_FOOTBALL_EQUIPMENT_QUOTE })}
         </p>
       </section>
-
-      {/* Mirrors the North Carolina pattern: the page says why the picker
-          cannot carry this state, so "MA is in it and California is not" is
-          explained on screen rather than looking arbitrary. */}
 
       <section>
         <p className="text-sm">

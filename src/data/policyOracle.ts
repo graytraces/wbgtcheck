@@ -132,6 +132,9 @@ export {
   CIF_NOAA_TOOL_URL,
   CIF_CANCEL_QUOTE,
   CIF_CATEGORY_ROSTER_URL,
+  CIF_CATEGORY_ROSTER_FILE_URL,
+  CIF_NOAA_TOOL_UNREACHABLE_ON,
+  CIF_SPREAD_EXAMPLE_F,
   CIF_ACCLIMATIZATION_DAYS_MIN,
   CIF_ACCLIMATIZATION_DAYS_MAX,
   CIF_ACCLIMATIZATION_PERIOD_DAYS,
@@ -194,6 +197,8 @@ export {
   NYSPHSAA_WBGT_BLACK_MIN_F,
   NYSPHSAA_CATEGORY_LOOKUP_URL,
   NYSPHSAA_CATEGORY_LOOKUP_QUOTE,
+  NYSPHSAA_CATEGORY_LOOKUP_CHECKED_ON,
+  NYSPHSAA_STRICTEST_CATEGORY,
   NYSPHSAA_REGION_FIGURE_CAPTION,
   REMOTE_UNDERESTIMATE_MIN_C,
   REMOTE_UNDERESTIMATE_MAX_C,
@@ -220,6 +225,9 @@ export type FlagColor = 'green' | 'yellow' | 'orange' | 'red' | 'black'
 export type PolicyId =
   | 'uil-class-2'
   | 'uil-class-3'
+  | 'cif-cat-1'
+  | 'cif-cat-2'
+  | 'cif-cat-3'
   | 'ghsa'
   | 'schsl'
   | 'tssaa'
@@ -319,6 +327,13 @@ export interface HeatPolicy extends MeasurementSubject {
   source: PolicySource
   /** See ReferenceTable.remoteScale — TSSAA carries it for the same reason. */
   remoteScale?: string
+  /**
+   * The association's own number for this ladder when it publishes several —
+   * CIF's three region categories, and nothing else so far. Present so a
+   * surface naming a category reads the number off the object rather than off
+   * an array index; absent for every single-ladder policy.
+   */
+  categoryNumber?: number
 }
 
 /**
@@ -432,12 +447,18 @@ export const MIAA = MIAA_RAW as HeatPolicy
 export const FHSAA = FHSAA_RAW as HeatPolicy
 
 /**
- * California's three regional ladders. HeatPolicy objects, so they render
- * through the same table as every other state — but deliberately NOT in
- * POLICIES: CIF assigns a school's category by region from a separate roster,
- * and picking one for the user would be the confidently-wrong flag this site
- * exists to avoid. Wiring them into the picker needs the Texas class-prompt
- * treatment first. policyOracle.test.ts pins the exclusion.
+ * California's three regional ladders — in POLICIES since 2026-08-11, with the
+ * Texas class-prompt treatment the previous version of this comment named as
+ * the precondition.
+ *
+ * CIF still assigns the category by region and this site still cannot read
+ * that assignment for anyone, so nothing about the underlying ambiguity has
+ * changed. What changed is who resolves it: CifCategoryPrompt asks, above the
+ * verdict, and until it is answered the strictest ladder (Category 1) is in
+ * force. The roster CIF publishes is real, fetched and readable, which is what
+ * makes the question answerable — see CIF_CATEGORY_ROSTER_FILE_URL, and see
+ * NYSPHSAA_CATEGORY_LOOKUP_CHECKED_ON for the state where it is not and which
+ * therefore gets no prompt.
  */
 export const CIF_CATEGORY_1 = CIF_CATEGORY_1_RAW as HeatPolicy
 export const CIF_CATEGORY_2 = CIF_CATEGORY_2_RAW as HeatPolicy

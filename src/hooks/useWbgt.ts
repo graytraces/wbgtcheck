@@ -47,6 +47,24 @@ export function isStale(fetchedAt: number | null, now: number): boolean {
  */
 export function defaultPolicyFor(stateAbbr: string | null): PolicyId {
   if (stateAbbr === 'TX') return 'uil-class-2'
+  /**
+   * California is Texas's shape, not Florida's, and the default follows the
+   * Texas rule rather than the Florida one.
+   *
+   * CIF runs three ladders and assigns each school a region category this site
+   * cannot read, so any unasked selection is a guess — and the guess must be
+   * the STRICT end of the spread. Category 1 stops outdoor activity where
+   * Category 3 still says "use discretion" (CIF_SPREAD_EXAMPLE_F), so a
+   * Californian who never answers is never told they may do more than their
+   * own category allows. CifCategoryPrompt asks above the verdict so the guess
+   * announces itself rather than passing for a finding.
+   *
+   * ⚠️ Never relax this to Category 2 or 3, and never leave California on
+   * 'generic': the NATA fallback is more permissive than all three CIF ladders
+   * at every band, so falling back to it would make "we did not ask yet" the
+   * most permissive answer on the site.
+   */
+  if (stateAbbr === 'CA') return 'cif-cat-1'
   if (stateAbbr === 'GA') return 'ghsa'
   // Both verified safe to auto-select: SCHSL's thresholds equal the generic
   // NATA bands with warnings added on top; Iowa's are stricter than generic.
@@ -87,6 +105,10 @@ export function defaultPolicyFor(stateAbbr: string | null): PolicyId {
 /** True when `policyId` belongs to `stateAbbr` — explicit choices within a state survive re-location. */
 export function policyMatchesState(stateAbbr: string | null, policyId: PolicyId): boolean {
   if (stateAbbr === 'TX') return policyId.startsWith('uil')
+  // Any of the three CIF categories is a California choice, exactly as either
+  // UIL class is a Texas one: re-entering a California ZIP must not throw away
+  // the category the reader answered the prompt with.
+  if (stateAbbr === 'CA') return policyId.startsWith('cif-cat')
   if (stateAbbr === 'GA') return policyId === 'ghsa'
   if (stateAbbr === 'SC') return policyId === 'schsl'
   if (stateAbbr === 'IA') return policyId === 'iowa'
@@ -208,6 +230,28 @@ export function useWbgt() {
   const [uilClassChosen, setUilClassChosen] = useState<boolean>(
     () => loadSaved<PolicyId>(UIL_CLASS_KEY) !== null,
   )
+  /**
+   * California's answer, and it is deliberately NOT a stored key.
+   *
+   * Texas gets one (UIL_CLASS_KEY) because POLICY_KEY cannot tell "defaulted
+   * to Class 2" from "chose Class 2". California has the same ambiguity and a
+   * cheaper way out of most of it: the prompt only ever renders while the
+   * flags on screen really ARE the unanswered default, so anyone who picked
+   * Category 2 or 3 is recognised across visits by POLICY_KEY alone, and the
+   * "until you choose" sentence is true whenever the prompt is up.
+   *
+   * What that costs is one group: a school genuinely on Category 1 is asked
+   * again on the next visit, because choosing the default leaves no trace to
+   * distinguish it from not answering. Clicking the same button again is a
+   * no-op and the sentence beside it is still true, so the cost is repetition
+   * rather than a wrong flag.
+   *
+   * Closing it properly means a new localStorage key, and privacyDisclosure
+   * .test.tsx correctly refuses any storage key the privacy page does not
+   * describe — that page's copy is outside this change. Do not add the key
+   * without adding its sentence to privacy.storageContent in both locales.
+   */
+  const [cifCategoryChosenHere, setCifCategoryChosenHere] = useState(false)
   const [status, setStatus] = useState<WbgtStatus>(location ? 'loading' : 'idle')
   const [data, setData] = useState<WbgtApiResponse | null>(null)
   const [fetchedAt, setFetchedAt] = useState<number | null>(null)
@@ -394,6 +438,11 @@ export function useWbgt() {
       save(UIL_CLASS_KEY, id)
       setUilClassChosen(true)
     }
+    // Same contract for California's region category, including the strict
+    // default: choosing Category 1 from the prompt is a CHOICE, and must stop
+    // the question being asked again even though it selects what was already
+    // on screen. Session-scoped — see cifCategoryChosenHere above.
+    if (id.startsWith('cif-cat')) setCifCategoryChosenHere(true)
   }, [])
 
   const clearLocation = useCallback(() => {
@@ -429,11 +478,26 @@ export function useWbgt() {
 
   const policy = useMemo(() => POLICIES[policyId], [policyId])
 
+  /**
+   * Whether California's category question is settled — and therefore whether
+   * the prompt may be hidden.
+   *
+   * The second clause is what makes the first one unnecessary most of the
+   * time: anything other than the unanswered default IS an answer, whether it
+   * came from the prompt, the picker, or a previous visit through POLICY_KEY.
+   * Gating on this also guarantees the prompt's "until you choose, every flag
+   * uses the strictest ladder" line is never on screen beside a flag from some
+   * other ladder — including for a Californian who moved the picker to NATA.
+   */
+  const cifCategoryChosen =
+    cifCategoryChosenHere || policyId !== defaultPolicyFor('CA')
+
   return {
     location,
     policy,
     policyId,
     uilClassChosen,
+    cifCategoryChosen,
     status,
     data,
     fetchedAt,

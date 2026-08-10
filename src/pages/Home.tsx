@@ -6,6 +6,7 @@ import SEO from '../components/SEO'
 import LocationSetup from '../components/LocationSetup'
 import PolicyPicker from '../components/PolicyPicker'
 import UilClassPrompt from '../components/UilClassPrompt'
+import CifCategoryPrompt from '../components/CifCategoryPrompt'
 import VerdictCard from '../components/VerdictCard'
 import LogQuickAdd from '../components/LogQuickAdd'
 import TodayTimeline from '../components/TodayTimeline'
@@ -59,6 +60,7 @@ export default function Home() {
     policy,
     policyId,
     uilClassChosen,
+    cifCategoryChosen,
     status,
     data,
     fetchedAt,
@@ -303,6 +305,13 @@ export default function Home() {
         <UilClassPrompt onChoose={setPolicyId} />
       )}
 
+      {/* California, for the same reason and in the same place: until the
+          region category is answered, every flag below is the strictest CIF
+          ladder rather than a finding about this school. */}
+      {location?.stateAbbr === 'CA' && !cifCategoryChosen && (
+        <CifCategoryPrompt onChoose={setPolicyId} />
+      )}
+
       {location && status === 'error' && (
         <div className="border-2 border-flag-red bg-surface p-5">
           <p className="font-semibold">{t(errorKey ?? 'common.error')}</p>
@@ -505,6 +514,18 @@ export default function Home() {
           {location.stateAbbr === 'TX' && policyId.startsWith('uil') && uilClassChosen && (
             <p className="max-w-2xl border-l-4 border-flag-orange pl-3 text-sm font-semibold">
               {t('policies.txClassHint')}
+            </p>
+          )}
+          {/* California's equivalent, and it carries one thing Texas's does
+              not: the measurement caveat. CIF's stance is 'yes' — it names an
+              online WBGT reading for meter-less schools — so no device notice
+              appears on a California verdict card, and the reason that is
+              honest rather than convenient is that CIF named ONE NOAA page and
+              this is not it. The prompt says so before the choice; this says
+              it after, so the caveat does not leave with the question. */}
+          {location.stateAbbr === 'CA' && policyId.startsWith('cif-cat') && cifCategoryChosen && (
+            <p className="max-w-2xl border-l-4 border-flag-orange pl-3 text-sm font-semibold">
+              {t('policies.caCategoryHint')}
             </p>
           )}
           <p className="max-w-2xl text-sm text-ink-muted">{t('policies.districtNote')}</p>

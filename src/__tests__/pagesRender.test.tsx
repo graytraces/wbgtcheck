@@ -53,6 +53,7 @@ import {
   MIAA_NO_GAMES_FOOTNOTE_QUOTE,
   FL_ONSITE_MEASUREMENT_QUOTE,
   CIF_CATEGORIES,
+  CIF_NOAA_TOOL_UNREACHABLE_ON,
   GENERIC_NATA,
   KHSAA_WBGT_REFERENCE,
   KY_LOWEST_BAND_FLOOR,
@@ -248,7 +249,7 @@ describe('post-JS rendered DOM', () => {
     ).toBeInTheDocument()
   })
 
-  it('California renders all three category ladders and the picker-exclusion note', () => {
+  it('California renders all three category ladders and the picker note', () => {
     renderAt('/en/california', <California />)
     // Every threshold from every category must be on the page — a missing
     // column would silently show one region another region's numbers.
@@ -257,7 +258,22 @@ describe('post-JS rendered DOM', () => {
         expect(screen.getAllByText(band.sourceLabel).length).toBeGreaterThan(0)
       }
     }
-    expect(screen.getByText(en.california.pickerExclusionBody)).toBeInTheDocument()
+    // The note that replaced the exclusion note when California entered the
+    // picker. It has to name the strict default, because that is the flag a
+    // reader arriving from the tool has already seen.
+    expect(
+      screen.getByText(
+        i18n.t('california.categoryPickerBody', {
+          strictCategory: CIF_CATEGORIES[0].categoryNumber,
+        }),
+      ),
+    ).toBeInTheDocument()
+    // …and the dead NOAA link is disclosed beside the link itself.
+    expect(
+      screen.getByText(
+        i18n.t('california.noaaUnreachableBody', { checkedOn: CIF_NOAA_TOOL_UNREACHABLE_ON }),
+      ),
+    ).toBeInTheDocument()
   })
 
   it('Kentucky renders its four bands, the currency caveat and the football rule', () => {

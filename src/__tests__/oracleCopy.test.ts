@@ -440,8 +440,18 @@ describe('translated guidelines keep the source\'s force', () => {
    * English on a safety caveat.
    */
   it('the California picker caveat does not call the flag safe in Spanish', () => {
-    expect(en.california.pickerExclusionBody).toMatch(/confident flag/i)
-    expect(es.california.pickerExclusionBody).not.toMatch(/bandera segura/i)
+    // The sentence this was written for MOVED when California entered the
+    // picker: the caveat is no longer "we cannot flag you at all" but "the
+    // flag you are looking at is a strict placeholder until you answer". The
+    // Spanish failure mode is unchanged, so the assertion follows the caveat
+    // to its new home rather than being deleted with the old key.
+    for (const dict of [en, es]) {
+      expect(dict.california.categoryPickerBody.length).toBeGreaterThan(0)
+      expect(dict.policies.categoryPrompt.spread.length).toBeGreaterThan(0)
+    }
+    expect(es.california.categoryPickerBody).not.toMatch(/bandera segura/i)
+    expect(es.policies.categoryPrompt.spread).not.toMatch(/bandera segura/i)
+    expect(es.policies.categoryPrompt.pending).not.toMatch(/bandera segura/i)
   })
 })
 

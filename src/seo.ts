@@ -59,6 +59,16 @@ export const airPageKeyByPolicy: Record<string, string> = {
 export const statePageKeyByPolicy: Record<string, string> = {
   'uil-class-2': 'texas',
   'uil-class-3': 'texas',
+  // All three CIF categories are one document and one guide page, the way both
+  // UIL classes are. Adding them here also puts 'california' into
+  // pickerLadderPageKeys below, which is deliberate rather than incidental:
+  // the home page's "this state publishes its own ladder the picker cannot
+  // offer" notice becomes FALSE for California the moment these are
+  // selectable, so it must stop rendering. What replaces it is the ordinary
+  // not-selected notice, for a reader who moves the picker to NATA by hand.
+  'cif-cat-1': 'california',
+  'cif-cat-2': 'california',
+  'cif-cat-3': 'california',
   ghsa: 'georgia',
   schsl: 'southCarolina',
   tssaa: 'tennessee',

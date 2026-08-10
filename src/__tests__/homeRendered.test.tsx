@@ -107,12 +107,28 @@ describe('the fallback notice, as the page renders it', () => {
   })
 
   it('shows the ladder notice in a state the picker does not offer', async () => {
-    // California has a guide and no picker entry, so the flag above it really
+    // Kentucky has a guide and no picker entry, so the flag above it really
     // does come from the NATA fallback.
-    const view = await homeIn('CA', 'Los Angeles, CA')
-    expect(guideLink(STATE_GUIDES.find((g) => g.abbr === 'CA')!)).toBeTruthy()
+    //
+    // This case used to be California, and moving it is the point rather than
+    // a convenience: CIF's three ladders entered the picker, so the notice —
+    // "your state publishes its own thresholds, and they are not one of the
+    // picker's options" — stopped being true there and had to stop rendering.
+    // That it did is asserted in the next case; this keeps the notice itself
+    // covered by a state where it still says something true.
+    const view = await homeIn('KY', 'Louisville, KY')
+    expect(guideLink(STATE_GUIDES.find((g) => g.abbr === 'KY')!)).toBeTruthy()
     expect(screen.getByText(en.home.stateLadderHeading)).toBeInTheDocument()
     expect(screen.getByText(en.home.stateLadderBody)).toBeInTheDocument()
+    view.unmount()
+  })
+
+  it('and no longer shows it in California, whose ladders the picker now has', async () => {
+    const view = await homeIn('CA', 'Los Angeles, CA')
+    // The flag on screen IS California's own ladder, so there is nothing to
+    // warn about — the same silence a Texas or Georgia reader gets.
+    expect(shownLadderNotice(), 'a stale notice survived the picker change').toEqual([])
+    expect(shownNotSelected('CA'), 'a CIF ladder is auto-selected here').toBeNull()
     view.unmount()
   })
 
@@ -141,7 +157,7 @@ describe('the fallback notice, as the page renders it', () => {
   it('renders no un-interpolated placeholder in whichever variant it picks', async () => {
     // The helper in guideReachability drops the {{setBy}} interpolation Home
     // performs, so a variant needing it could ship reading "set by {{setBy}}".
-    const view = await homeIn('CA', 'Los Angeles, CA')
+    const view = await homeIn('KY', 'Louisville, KY')
     const notice = screen.getByText(en.home.stateLadderHeading).closest('section')!
     expect(notice.textContent).not.toMatch(/\{\{|\}\}/)
     view.unmount()
