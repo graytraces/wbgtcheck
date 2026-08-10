@@ -4,6 +4,12 @@ import './i18n'
 import './index.css'
 import App from './App.tsx'
 import { reloadOnceForStaleAssets } from './utils/staleRecovery'
+// Side effect only: Chrome fires `beforeinstallprompt` once, shortly after
+// load, and the component that wants it does not mount until a verdict has
+// rendered. Registering here rather than relying on the component's own import
+// keeps the listener in place before the first paint, whatever the bundler
+// later decides to split.
+import './utils/installPrompt'
 
 // A deploy while this tab sat open removes the hashed assets its HTML points
 // at. Three nets, all funneled through the same one-shot reload guard:

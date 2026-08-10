@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
+import {
+  clearDeferredInstallPrompt,
+  getDeferredInstallPrompt,
+  type BeforeInstallPromptEvent,
+} from '../utils/installPrompt'
 
 const DISMISS_KEY = 'wbgt-a2hs-dismissed'
-
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>
-}
 
 function isStandalone(): boolean {
   try {
@@ -32,6 +33,11 @@ function isDismissed(): boolean {
   }
 }
 
+/** A touch device — the only place a non-iOS install hint is not noise. */
+function isTouch(): boolean {
+  return window.matchMedia?.('(pointer: coarse)')?.matches ?? false
+}
+
 /**
  * One-time add-to-home-screen hint. iOS gets the Share-menu walkthrough
  * (no install API exists there); other mobile browsers show only when the
@@ -41,9 +47,21 @@ function isDismissed(): boolean {
  */
 export default function InstallHint() {
   const { t } = useTranslation()
-  const [visible, setVisible] = useState(false)
-  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null)
   const ios = isIos()
+  /**
+   * Seeded from what was captured at module scope, not awaited.
+   *
+   * Chrome fires `beforeinstallprompt` once, shortly after load. This
+   * component does not mount until a verdict has rendered — two NWS round
+   * trips — so its own listener below is installed far too late to hear it,
+   * and on Android that meant the hint could never appear at all. The
+   * subscription stays for the case where the event has not fired yet;
+   * `installPrompt.ts` covers the case where it already has.
+   */
+  const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(() =>
+    !ios && !isStandalone() && !isDismissed() && isTouch() ? getDeferredInstallPrompt() : null,
+  )
+  const [visible, setVisible] = useState(() => deferred !== null)
 
   useEffect(() => {
     if (isStandalone() || isDismissed()) return
@@ -53,7 +71,7 @@ export default function InstallHint() {
     }
     // Non-iOS: only where the browser signals installability, and only on
     // touch devices — a desktop install hint is noise.
-    if (!(window.matchMedia?.('(pointer: coarse)')?.matches ?? false)) return
+    if (!isTouch()) return
     const onPrompt = (event: Event) => {
       event.preventDefault()
       setDeferred(event as BeforeInstallPromptEvent)
@@ -84,6 +102,9 @@ export default function InstallHint() {
             className="ml-2 font-bold underline"
             onClick={() => {
               void deferred.prompt()
+              // The browser honours a given beforeinstallprompt once; a stored
+              // dead handle would offer a second "Add" that does nothing.
+              clearDeferredInstallPrompt()
               dismiss()
             }}
           >
