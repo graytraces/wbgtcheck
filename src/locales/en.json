@@ -54,7 +54,9 @@
     "footballNoEquipment": "Football: no protective equipment.",
     "noConditioning": "No conditioning activities.",
     "coolingZone": "Mandatory on-site rapid cooling zone (tub or tarp).",
-    "noOutdoor": "No outdoor workouts. Delay practice until a cooler WBGT is reached."
+    "noOutdoor": "No outdoor workouts. Delay practice until a cooler WBGT is reached.",
+    "miaaEquipmentSports": "Equipment-intensive sports: helmet, shoulder pads and shorts only during activity; all protective equipment must be removed for conditioning.",
+    "miaaNoEquipmentAnySport": "No protective equipment may be worn during activity, in any sport."
   },
   "policies": {
     "uil-class-2": "Texas UIL — Class 2",
@@ -63,6 +65,7 @@
     "schsl": "South Carolina SCHSL",
     "tssaa": "Tennessee TSSAA",
     "iowa": "Iowa (Category 2)",
+    "miaa": "Massachusetts MIAA",
     "generic": "General guideline (NATA)",
     "pickerLabel": "Policy",
     "pickerHelp": "Pick your state association.",
@@ -341,6 +344,11 @@
       "title": "California CIF Air Quality Bylaw: Outdoor Practice Threshold | WBGT Check",
       "description": "CIF's statewide air-quality bylaw for member schools, the readings it accepts, and the current AQI for your field — shown next to the heat flag.",
       "keywords": "CIF air quality bylaw, California high school AQI practice, California school smoke policy, CIF outdoor practice air quality"
+    },
+    "massachusetts": {
+      "title": "Massachusetts MIAA WBGT Heat Policy | WBGT Check",
+      "description": "MIAA heat modification thresholds in wet bulb globe temperature, the on-site instrument rule, and how games differ from practice in Massachusetts.",
+      "keywords": "MIAA heat policy, Massachusetts WBGT, MIAA heat modification, wet bulb globe temperature Massachusetts"
     }
   },
   "texas": {
@@ -452,7 +460,7 @@
       "nj": "Legislated heat participation rules since 2020.",
       "la": "Legislated WBGT-based rules.",
       "ca": "AB 1653 orders CIF to set a standard; details pending.",
-      "ma": "WBGT-based policy reported (~2020); year unverified."
+      "ma": "One statewide MIAA policy for every sport, with thresholds well below most states — outdoor activity stops in the 86s. An on-site WBGT instrument is required at each activity; games may continue where practice would stop."
     },
     "caveat": "This table is a navigation aid, not legal advice. Policies change midseason; the association's current document controls. Found an error? Tell your athletic trainer first, then us.",
     "guidesHeading": "State guides",
@@ -680,5 +688,22 @@
     "title": "Page not found",
     "body": "That page doesn't exist. Check the address, or head to the forecast.",
     "cta": "Go to forecast"
+  },
+  "massachusetts": {
+    "pageTitle": "Massachusetts MIAA WBGT Policy",
+    "intro": "The MIAA runs one statewide heat policy across every sport, and its thresholds sit lower than most: outdoor activity stops in the 86s, where Georgia's black flag does not begin until the 92s. Every activity needs a WBGT reading taken on site.",
+    "tableHeading": "Activity guidelines by WBGT (°F)",
+    "boundaryNote": "The printed table leaves a tenth of a degree unassigned at every boundary — it ends one band at {{low}} and starts the next at {{next}}. This site resolves each of those gaps upward, into the hotter band, so a reading that falls in one is never shown as the cooler flag.",
+    "deviceHeading": "Massachusetts is a device state",
+    "deviceBody": "The policy's wording: \"{{quote}}\"",
+    "indoorBody": "It reaches indoors as well: \"{{quote}}\"",
+    "deviceWarning": "App and web estimates — including this site — are not the reading the MIAA asks for. Plan tomorrow's schedule here; take the reading at the activity, with a scientifically approved instrument.",
+    "competitionHeading": "Games are treated differently from practice",
+    "competitionBody": "The policy lets competition continue where a practice would already have stopped, and says why: \"{{quote}}\" Note what that does not do — it does not raise the practice thresholds in the table above.",
+    "coolingHeading": "Cooling zone",
+    "coolingBody": "Above a WBGT of {{wbgt}} °F the policy calls for ice water and towels in the cooling zone, and for cold-water immersion tubs to be available for any player showing signs of heat illness.",
+    "sourceHeading": "Source",
+    "sourceBody": "All thresholds and modification text above derive from the MIAA Heat Modification Policy, cross-checked on {{verifiedOn}}.",
+    "ctaButton": "Plan around Massachusetts flags"
   }
 }

@@ -7,6 +7,10 @@ import {
   SCHSL,
   TSSAA,
   IOWA_CATEGORY_2,
+  MIAA,
+  MIAA_DEVICE_QUOTE,
+  MIAA_COMPETITION_QUOTE,
+  MIAA_COOLING_ZONE_WBGT_F,
   GENERIC_NATA,
   NCHSAA_REFERENCE,
   NYSPHSAA_HEAT_INDEX_REFERENCE,
@@ -179,6 +183,46 @@ describe('policy oracle — guideline facts vs primary sources', () => {
         UIL_CLASS_3.bands.find((b) => b.flag === flag)!.guideline,
       )
     }
+  })
+
+  it('MIAA boundaries match the MIAA Heat Modification Policy table', () => {
+    // Massachusetts sits a full flag lower than the southern states: black
+    // begins in the 86s where Georgia's begins in the 92s. These numbers came
+    // off the MIAA PDF on 2026-08-10 — do not infer any of them from another
+    // state's table.
+    expect(flagAt(MIAA, 75.9)).toBe('green')
+    expect(flagAt(MIAA, 76.1)).toBe('yellow')
+    expect(flagAt(MIAA, 81.0)).toBe('orange')
+    expect(flagAt(MIAA, 84.0)).toBe('red')
+    expect(flagAt(MIAA, 86.0)).toBe('red')
+    expect(flagAt(MIAA, 86.05)).toBe('black')
+    expect(flagAt(MIAA, 92.0)).toBe('black')
+  })
+
+  it('MIAA gap tenths resolve into the hotter band, never the cooler one', () => {
+    // The printed table ends a band at 81.0 and starts the next at 81.1, and
+    // does the same at 76, 84 and 86 — a tenth is unassigned at every
+    // boundary. Each gap resolves upward (the Iowa 79.7 treatment).
+    for (const [wbgt, flag] of [
+      [76.05, 'yellow'],
+      [81.05, 'orange'],
+      [84.05, 'red'],
+      [86.05, 'black'],
+    ] as const) {
+      expect(flagAt(MIAA, wbgt), `${wbgt} must resolve upward`).toBe(flag)
+    }
+  })
+
+  it('MIAA requires an on-site instrument and treats games separately', () => {
+    expect(MIAA.remoteEstimatesAllowed).toBe('device-required')
+    expect(requiresOnSiteReading(MIAA)).toBe(true)
+    expect(MIAA_DEVICE_QUOTE).toContain('must be utilized at each activity')
+    // The competition carve-out is the one place the policy permits activity a
+    // practice reading would stop — it must stay a quote, and must not be
+    // mistaken for a higher practice threshold.
+    expect(MIAA_COMPETITION_QUOTE).toContain('up to and including WBGT readings of 86.0')
+    expect(MIAA.bands.find((b) => b.flag === 'red')!.guideline.maxPracticeMinutes).toBe(60)
+    expect(MIAA_COOLING_ZONE_WBGT_F).toBe(84)
   })
 
   it('GHSA orange keeps conditioning stricter than practice', () => {

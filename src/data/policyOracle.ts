@@ -20,6 +20,7 @@ import {
   SCHSL as SCHSL_RAW,
   TSSAA as TSSAA_RAW,
   IOWA_CATEGORY_2 as IOWA_CATEGORY_2_RAW,
+  MIAA as MIAA_RAW,
   GENERIC_NATA as GENERIC_NATA_RAW,
   NCHSAA_REFERENCE as NCHSAA_REFERENCE_RAW,
   NYSPHSAA_HEAT_INDEX_REFERENCE as NYSPHSAA_HEAT_INDEX_REFERENCE_RAW,
@@ -86,6 +87,11 @@ export {
   NYSPHSAA_WARNING_BREAK_INTERVAL_MINUTES,
   NYSPHSAA_APP_QUOTE,
   NYSPHSAA_ZIP_QUOTE,
+  MIAA_DEVICE_QUOTE,
+  MIAA_INDOOR_QUOTE,
+  MIAA_COMPETITION_QUOTE,
+  MIAA_COOLING_ZONE_WBGT_F,
+  MIAA_SOURCE,
   VA_CODE_SECTION,
   VA_CODE_CITATION,
   VA_ICE_WBGT_F,
@@ -111,6 +117,7 @@ export type PolicyId =
   | 'schsl'
   | 'tssaa'
   | 'iowa'
+  | 'miaa'
   | 'generic'
 
 export interface BandGuideline {
@@ -217,6 +224,7 @@ export const GHSA = GHSA_RAW as HeatPolicy
 export const SCHSL = SCHSL_RAW as HeatPolicy
 export const TSSAA = TSSAA_RAW as HeatPolicy
 export const IOWA_CATEGORY_2 = IOWA_CATEGORY_2_RAW as HeatPolicy
+export const MIAA = MIAA_RAW as HeatPolicy
 export const GENERIC_NATA = GENERIC_NATA_RAW as HeatPolicy
 export const POLICIES = POLICIES_RAW as Record<PolicyId, HeatPolicy>
 

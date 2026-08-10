@@ -52,6 +52,9 @@ export function defaultPolicyFor(stateAbbr: string | null): PolicyId {
   // NATA bands with warnings added on top; Iowa's are stricter than generic.
   if (stateAbbr === 'SC') return 'schsl'
   if (stateAbbr === 'IA') return 'iowa'
+  // MIAA is one statewide policy with no sub-categories, and every one of its
+  // bands is stricter than the generic fallback — safe to select on arrival.
+  if (stateAbbr === 'MA') return 'miaa'
   return 'generic'
 }
 
@@ -61,6 +64,7 @@ export function policyMatchesState(stateAbbr: string | null, policyId: PolicyId)
   if (stateAbbr === 'GA') return policyId === 'ghsa'
   if (stateAbbr === 'SC') return policyId === 'schsl'
   if (stateAbbr === 'IA') return policyId === 'iowa'
+  if (stateAbbr === 'MA') return policyId === 'miaa'
   return false
 }
 

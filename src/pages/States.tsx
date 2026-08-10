@@ -28,6 +28,7 @@ const GUIDE_SLUGS: Record<string, string> = {
   NC: 'north-carolina',
   NY: 'new-york',
   VA: 'virginia',
+  MA: 'massachusetts',
 }
 
 const MEASUREMENT_STYLE: Record<MeasurementClass, { icon: typeof CircleCheck; cls: string }> = {

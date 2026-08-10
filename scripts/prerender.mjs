@@ -24,6 +24,11 @@ import {
   SCHSL,
   TSSAA,
   IOWA_CATEGORY_2,
+  MIAA,
+  MIAA_DEVICE_QUOTE,
+  MIAA_INDOOR_QUOTE,
+  MIAA_COMPETITION_QUOTE,
+  MIAA_COOLING_ZONE_WBGT_F,
   NCHSAA_REFERENCE,
   NYSPHSAA_HEAT_INDEX_REFERENCE,
   UIL_EFFECTIVE_DATE,
@@ -141,6 +146,7 @@ const pages = [
   { key: 'northCarolina', path: 'north-carolina', dateModified: today },
   { key: 'newYork', path: 'new-york', dateModified: today },
   { key: 'virginia', path: 'virginia', dateModified: today },
+  { key: 'massachusetts', path: 'massachusetts', dateModified: today },
   { key: 'wbgtVsHeatIndex', path: 'wbgt-vs-heat-index', dateModified: today },
   { key: 'states', path: 'states', dateModified: today },
   { key: 'washingtonAir', path: 'washington-air-quality', dateModified: today },
@@ -702,6 +708,36 @@ function generateBodyContent(lang, page) {
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
     push(correctionNoteHtml(t, 'new-york', lang))
+  } else if (page.key === 'massachusetts') {
+    push(`<h1>${escapeHtml(t('massachusetts.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('massachusetts.intro'))}</p>`)
+    push(`<h2>${escapeHtml(t('massachusetts.tableHeading'))}</h2>`)
+    push(policyTableHtml(MIAA, t))
+    push(
+      `<p>${escapeHtml(
+        t('massachusetts.boundaryNote', {
+          low: MIAA.bands[4].sourceLabel,
+          next: MIAA.bands[3].sourceLabel,
+        }),
+      )}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('massachusetts.deviceHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('massachusetts.deviceBody', { quote: MIAA_DEVICE_QUOTE }))}</p>`)
+    push(`<p>${escapeHtml(t('massachusetts.indoorBody', { quote: MIAA_INDOOR_QUOTE }))}</p>`)
+    push(`<p>${escapeHtml(t('massachusetts.deviceWarning'))}</p>`)
+    push(`<h2>${escapeHtml(t('massachusetts.competitionHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(t('massachusetts.competitionBody', { quote: MIAA_COMPETITION_QUOTE }))}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('massachusetts.coolingHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(t('massachusetts.coolingBody', { wbgt: MIAA_COOLING_ZONE_WBGT_F }))}</p>`,
+    )
+    push(
+      `<h2>${escapeHtml(t('massachusetts.sourceHeading'))}</h2><p>${escapeHtml(t('massachusetts.sourceBody', { verifiedOn: MIAA.source.verifiedOn }))} <a href="${MIAA.source.url}">${escapeHtml(MIAA.source.name)}</a></p>`,
+    )
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+    push(correctionNoteHtml(t, 'massachusetts', lang))
   } else if (page.key === 'virginia') {
     push(`<h1>${escapeHtml(t('virginia.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('virginia.intro'))}</p>`)
@@ -870,6 +906,7 @@ function generateBodyContent(lang, page) {
 const GUIDE_SLUGS = {
   TX: 'texas', GA: 'georgia', SC: 'south-carolina', TN: 'tennessee',
   IA: 'iowa', NC: 'north-carolina', NY: 'new-york', VA: 'virginia',
+  MA: 'massachusetts',
 }
 
 const SITEMAP_EXCLUDE_KEYS = new Set(['privacy', 'disclaimer'])

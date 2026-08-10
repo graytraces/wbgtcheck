@@ -38,6 +38,9 @@ describe('default policy per state', () => {
     expect(defaultPolicyFor('GA')).toBe('ghsa')
     expect(defaultPolicyFor('SC')).toBe('schsl')
     expect(defaultPolicyFor('IA')).toBe('iowa')
+    // MIAA: one statewide policy, no sub-categories, every band stricter than
+    // the generic fallback — safe to select without asking.
+    expect(defaultPolicyFor('MA')).toBe('miaa')
     expect(defaultPolicyFor('CO')).toBe('generic')
     expect(defaultPolicyFor(null)).toBe('generic')
     // NC and NY are deliberately absent from the picker (incompatible scales),
@@ -51,7 +54,7 @@ describe('default policy per state', () => {
   })
 
   it('every default is a policy the picker actually offers', () => {
-    for (const state of ['TX', 'GA', 'SC', 'IA', 'TN', 'NC', 'NY', null]) {
+    for (const state of ['TX', 'GA', 'SC', 'IA', 'MA', 'TN', 'NC', 'NY', null]) {
       expect(POLICIES[defaultPolicyFor(state)]).toBeDefined()
     }
   })
@@ -69,6 +72,8 @@ describe('policy ownership by state', () => {
     expect(policyMatchesState('GA', 'ghsa')).toBe(true)
     expect(policyMatchesState('SC', 'schsl')).toBe(true)
     expect(policyMatchesState('IA', 'iowa')).toBe(true)
+    expect(policyMatchesState('MA', 'miaa')).toBe(true)
+    expect(policyMatchesState('MA', 'ghsa')).toBe(false)
     expect(policyMatchesState('GA', 'uil-class-3')).toBe(false)
   })
 

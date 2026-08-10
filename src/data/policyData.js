@@ -865,6 +865,118 @@ export const NYSPHSAA_HEAT_INDEX_REFERENCE = {
   ],
 }
 
+// --- Massachusetts (MIAA) -------------------------------------------------
+// Source: "MIAA Heat Modification Policy", dated August 18, 2021, as linked
+// from MIAA's own Sports Medicine page (file name records an amendment of
+// 2022-09-01). PDF fetched and read 2026-08-10; the association's current
+// Sports Medicine page presents it as the operative policy, which is what
+// verifiedOn attests.
+//
+// Structurally this is the GHSA family — five bands, rest-break counts,
+// equipment restrictions — but every boundary is LOWER: black begins in the
+// 86s where Georgia's begins in the 92s. Do not assume a band edge here from
+// any other state's table.
+
+export const MIAA_DEVICE_QUOTE =
+  'A scientifically approved instrument that measures Wet Bulb Globe Temperature (WBGT) reading must be utilized at each activity to ensure that the written policy is being followed properly.'
+export const MIAA_INDOOR_QUOTE =
+  'For indoor events without climate control, a WBGT reading should be taken indoors. For climate-controlled indoor events, this measurement is unnecessary.'
+/**
+ * Competition is treated differently from practice, and the policy says why —
+ * pauses in play and changes of possession give work-to-rest ratios a
+ * continuous practice does not. Quoted rather than paraphrased because it is
+ * the one place the policy permits activity a practice-only reading would
+ * stop.
+ */
+export const MIAA_COMPETITION_QUOTE =
+  'Given the opportunity for pauses in play, breaks when changing possessions and valuable work to rest ratios, interscholastic competition can take place up to and including WBGT readings of 86.0°F.'
+/** Above this WBGT the policy calls for ice water, towels and immersion tubs. */
+export const MIAA_COOLING_ZONE_WBGT_F = 84
+export const MIAA_SOURCE = {
+  name: 'MIAA Heat Modification Policy (August 18, 2021; file amended 2022-09-01, as linked from MIAA Sports Medicine)',
+  url: 'https://miaa.net/sites/default/files/2024-06/miaa-heat-modification-policy-081821-amended-9-1-22cb.pdf',
+  verifiedOn: '2026-08-10',
+}
+
+const MIAA_GREEN = {
+  maxPracticeMinutes: null,
+  restBreaksPerHour: 3,
+  restBreakMinMinutes: 3,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: false,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: false,
+}
+
+const MIAA_YELLOW = {
+  maxPracticeMinutes: null,
+  restBreaksPerHour: 3,
+  restBreakMinMinutes: 4,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: false,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: false,
+}
+
+const MIAA_ORANGE = {
+  maxPracticeMinutes: 120,
+  restBreaksPerHour: 4,
+  restBreakMinMinutes: 4,
+  restMinutesPerHour: null,
+  // MIAA writes this for "equipment intensive sports", not for football
+  // specifically, so it rides an extraKey rather than footballEquipment —
+  // which renders a football-only sentence.
+  footballEquipment: null,
+  noConditioning: false,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: false,
+  extraKeys: ['guideline.miaaEquipmentSports'],
+}
+
+const MIAA_RED = {
+  maxPracticeMinutes: 60,
+  restBreaksPerHour: null,
+  restBreakMinMinutes: null,
+  restMinutesPerHour: 20,
+  footballEquipment: null,
+  noConditioning: true,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: false,
+  extraKeys: ['guideline.miaaNoEquipmentAnySport'],
+}
+
+const MIAA_BLACK = {
+  maxPracticeMinutes: 0,
+  restBreaksPerHour: null,
+  restBreakMinMinutes: null,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: true,
+  coolingZoneRequired: false,
+  noOutdoorWorkouts: true,
+}
+
+export const MIAA = {
+  id: 'miaa',
+  source: MIAA_SOURCE,
+  // "must be utilized at each activity" — an on-site instrument, in the same
+  // words GHSA uses.
+  remoteEstimatesAllowed: 'device-required',
+  bands: [
+    // The printed table leaves a tenth unassigned at every boundary: it ends a
+    // band at 81.0 and starts the next at 81.1, and so on at 76, 84 and 86.
+    // Each gap is resolved UPWARD into the hotter band (the Iowa 79.7
+    // treatment), so a reading of 86.05 is black rather than silently red.
+    { flag: 'black', minF: 86.0, minInclusive: false, sourceLabel: 'Above 86.1°F', guideline: MIAA_BLACK },
+    { flag: 'red', minF: 84.0, minInclusive: true, sourceLabel: '84.1-86.0°F', guideline: MIAA_RED },
+    { flag: 'orange', minF: 81.0, minInclusive: true, sourceLabel: '81.1-84.0°F', guideline: MIAA_ORANGE },
+    { flag: 'yellow', minF: 76.0, minInclusive: true, sourceLabel: '76.1-81.0°F', guideline: MIAA_YELLOW },
+    { flag: 'green', minF: null, minInclusive: true, sourceLabel: 'Below 76°F', guideline: MIAA_GREEN },
+  ],
+}
+
 // --- Virginia statute constants ------------------------------------------
 // Code of Virginia § 22.1-271.10 (2025, cc. 478, 493). The statute sets NO
 // activity thresholds — school boards do. The only number it fixes is the
@@ -892,5 +1004,6 @@ export const POLICIES = {
   schsl: SCHSL,
   tssaa: TSSAA,
   iowa: IOWA_CATEGORY_2,
+  miaa: MIAA,
   generic: GENERIC_NATA,
 }

@@ -13,6 +13,7 @@ export const VALID_TOOLS = new Set([
   'north-carolina',
   'new-york',
   'virginia',
+  'massachusetts',
   'wbgt-vs-heat-index',
   'states',
   'washington-air-quality',

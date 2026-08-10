@@ -19,6 +19,7 @@ export const pageSEO: Record<string, PageSEO> = {
   northCarolina: { path: 'north-carolina', key: 'northCarolina' },
   newYork: { path: 'new-york', key: 'newYork' },
   virginia: { path: 'virginia', key: 'virginia' },
+  massachusetts: { path: 'massachusetts', key: 'massachusetts' },
   wbgtVsHeatIndex: { path: 'wbgt-vs-heat-index', key: 'wbgtVsHeatIndex' },
   states: { path: 'states', key: 'states' },
   // Air-quality guides. Slug is "<state>-air-quality" rather than the bare
@@ -53,4 +54,5 @@ export const statePageKeyByPolicy: Record<string, string> = {
   schsl: 'southCarolina',
   tssaa: 'tennessee',
   iowa: 'iowa',
+  miaa: 'massachusetts',
 }
