@@ -57,14 +57,15 @@ npm run build    # tsc + vite build + prerender (40 HTML + sitemap)
 npm test         # tsc --noEmit + vitest (33파일 359테스트)
 npm run preview  # 빌드 결과 미리보기
 
-npm run check:browser   # 아래 4종 전부 (빌드 먼저 — dist를 서빙한다)
+npm run check:browser   # 아래 5종 전부 (빌드 먼저 — dist를 서빙한다)
 npm run check:hscroll   # 전 라우트 × EN/ES × 320/375/390/1280 가로 스크롤 0
 npm run check:sharecard # 공유 카드를 Chromium+WebKit에 실제로 그려 잉크 박스 겹침 검사
 npm run check:boot      # entry JS 차단 시 프리렌더 폴백 / 정상 경로 잔존·중복·깜빡임 0
 npm run check:print     # 판독 로그 인쇄 페이지 수(Letter PDF 실측)
+npm run check:localga   # localhost에서 gtag 요청 0건 / 프로덕션 호스트에서 1건 (실측)
 ```
 
-**브라우저 회귀 검증 4종은 vitest가 잡을 수 없는 결함 전용이다** (`scripts/checks/`).
+**브라우저 회귀 검증 5종은 vitest가 잡을 수 없는 결함 전용이다** (`scripts/checks/`).
 jsdom에는 캔버스가 없고, 실제로 나간 버그들이 **엔진별 차이**에서 나왔다 — 공유 카드
 겹침은 WebKit에서만 발생했고 Chromium만 보면 10px 여유로 통과했다. 레이아웃·프리렌더
 이음매·인쇄를 건드리면 `npm test`만으로 부족하니 해당 체크를 함께 돌릴 것.
@@ -78,6 +79,16 @@ GA4 설정에도 없다. 브라우저를 여는 컨텍스트마다 `blockAnalyti
 (`scripts/checks/blockAnalytics.mjs`)를 **첫 네비게이션 전에** 호출할 것 — 컨텍스트가 2개면
 2번이다. `checkScriptsBlockAnalytics.test.ts`가 이를 강제하며, 면제는 파일명과 사유를 그
 테스트에 명시해야 한다(누락으로 면제되지 않는다).
+
+⚠️ **두 번째 방어선은 사이트 자체에 있다.** `index.html`은 `location.hostname`이 로컬
+(`localhost`·`127.0.0.1`·`0.0.0.0`·`::1`·`*.local`)이면 **gtag 로더를 아예 삽입하지 않고
+`config`도 호출하지 않는다** — 요청이 시도조차 되지 않는다. 첫 번째 층은 모든 미래 스크립트가
+`blockAnalytics`를 기억해야 성립하지만, 이 층은 `npm run preview`·임시 정적 서버·다른
+에이전트의 도구가 열어도 성립한다. Consent Mode 기본값은 **의도적으로 가드 밖**이다 — 로더보다
+먼저 설정돼야 하므로 가드 안에 넣으면 "로더는 떴는데 기본값이 없는" 상태가 생긴다.
+`npm run check:localga`가 localhost 0건 / 프로덕션 호스트 1건을 **실측**한다(프로덕션까지
+꺼버리는 수정도 이 체크가 잡는다). 정적 `<script src=gtag>` 태그로 되돌리면 가드가 불가능해지므로
+`npm test`가 먼저 실패한다.
 
 ## VALID_TOOLS Slug / 라우트
 

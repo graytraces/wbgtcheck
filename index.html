@@ -30,10 +30,26 @@
         document.documentElement.classList.add('boot-failed')
       }, 10000)
     </script>
-    <link rel="preconnect" href="https://www.googletagmanager.com" />
-    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-NL5JKVRNS1"></script>
     <script>
+      // This file ships the production measurement ID, because it has to — the
+      // tag is real for real visitors. But the SAME built HTML is opened by the
+      // check scripts, `npm run preview`, and any throwaway static server a
+      // tool spins up, and at the GA4 end those loads were indistinguishable
+      // from visits. Nothing filters operator traffic on the property side, so
+      // they were simply counted.
+      //
+      // scripts/checks/blockAnalytics.mjs stops this at the network layer for
+      // our own checks. This is the site's own half of the pair, and it is the
+      // half that still holds when the page is opened by something that is not
+      // one of our checks. Two layers, because the first one depends on every
+      // future script remembering.
+      var GA_MEASUREMENT_ID = 'G-NL5JKVRNS1';
+      var GA_LOCAL_HOST = (function (h) {
+        // Browsers report the IPv6 loopback bracketed; accept both forms.
+        return /^(?:localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\]|::1)$/i.test(h)
+          || /\.(?:local|localhost)$/i.test(h);
+      })(location.hostname);
+
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
@@ -48,7 +64,33 @@
       // use and the policy says it does not want. Only analytics_storage is
       // granted here.
       gtag('consent', 'default', { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied', analytics_storage: 'granted' });
-      gtag('config', 'G-NL5JKVRNS1');
+
+      // The consent defaults above are deliberately OUTSIDE this guard. They
+      // only push onto dataLayer — an array nobody reads when no tag loads —
+      // so they transmit nothing on a local host anyway. And Consent Mode
+      // requires defaults to be in place BEFORE the tag runs: gating them too
+      // would make "loader ran, defaults missing" a reachable state, which is
+      // the one ordering that actually loses consent. Unconditional, this
+      // guard can only ever remove measurement, never weaken consent.
+      //
+      // The preconnect hints moved in here as well, so a local page makes no
+      // contact with Google at all — not even a TLS handshake. In production
+      // they are injected by the same inline script that used to sit directly
+      // below them and still precede the loader request, so the connection is
+      // warmed exactly as before.
+      if (!GA_LOCAL_HOST) {
+        ['preconnect', 'dns-prefetch'].forEach(function (rel) {
+          var link = document.createElement('link');
+          link.rel = rel;
+          link.href = 'https://www.googletagmanager.com';
+          document.head.appendChild(link);
+        });
+        var gaTag = document.createElement('script');
+        gaTag.async = true;
+        gaTag.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_MEASUREMENT_ID;
+        document.head.appendChild(gaTag);
+        gtag('config', GA_MEASUREMENT_ID);
+      }
     </script>
   </head>
   <body>

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { readdirSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 /**
@@ -73,5 +73,65 @@ describe('browser checks must not send analytics', () => {
     expect(source).toContain('googletagmanager.com')
     expect(source).toContain('google-analytics.com')
     expect(source.match(/route\.abort\(\)/g)?.length).toBe(2)
+  })
+})
+
+/**
+ * The site's own half of the defence. blockAnalytics() only protects scripts
+ * that call it; index.html has to hold when the page is opened by something
+ * that is not one of our checks — `npm run preview`, a throwaway static
+ * server, another agent's tooling. dist/ ships the production measurement ID
+ * by design, so the hostname is the only thing that can tell those apart.
+ *
+ * Behaviour is measured by scripts/checks/local-analytics-check.mjs (0
+ * requests on localhost, 1 on the production hostname). These are the cheap
+ * structural assertions that fail in `npm test` long before that runs.
+ */
+describe('the in-page analytics guard', () => {
+  const INDEX = readFileSync(join(process.cwd(), 'index.html'), 'utf-8')
+  const DIST = join(process.cwd(), 'dist')
+
+  it('gates the loader on the hostname instead of shipping a static tag', () => {
+    expect(INDEX).toContain('GA_LOCAL_HOST')
+    // A static <script src=gtag> cannot be gated — that is the shape this
+    // replaced, and its return would silently undo the guard.
+    expect(INDEX).not.toMatch(/<script[^>]+src=["']https:\/\/www\.googletagmanager\.com/)
+  })
+
+  it('recognises every local hostname form a dev server actually serves on', () => {
+    const guard = INDEX.slice(INDEX.indexOf('GA_LOCAL_HOST'))
+    for (const host of ['localhost', '127\\.0\\.0\\.1', '::1']) {
+      expect(guard, `${host} must be treated as local`).toContain(host)
+    }
+  })
+
+  /**
+   * Consent Mode requires defaults to be set BEFORE the tag loads. If they
+   * ever moved inside the guard, "loader ran, defaults missing" becomes
+   * reachable — the one ordering that actually loses consent. Unconditional,
+   * the guard can only ever remove measurement, never weaken consent.
+   */
+  it('leaves the consent defaults outside the guard', () => {
+    const guardAt = INDEX.indexOf('if (!GA_LOCAL_HOST)')
+    expect(guardAt).toBeGreaterThan(-1)
+    const defaultsBefore = [...INDEX.slice(0, guardAt).matchAll(/gtag\('consent',\s*'default'/g)]
+    expect(defaultsBefore.length).toBe(2)
+    expect(INDEX.slice(guardAt)).not.toContain("'consent'")
+  })
+
+  it.skipIf(!existsSync(DIST))('every built HTML carries the guard and no static tag', () => {
+    const walk = (dir: string): string[] =>
+      readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+        e.isDirectory() ? walk(join(dir, e.name)) : e.name.endsWith('.html') ? [join(dir, e.name)] : [],
+      )
+    const files = walk(DIST)
+    expect(files.length).toBeGreaterThan(30)
+    for (const file of files) {
+      const html = readFileSync(file, 'utf-8')
+      expect(html, `${file} lost the hostname guard`).toContain('GA_LOCAL_HOST')
+      expect(html, `${file} has an ungateable static gtag tag`).not.toMatch(
+        /<script[^>]+src=["']https:\/\/www\.googletagmanager\.com/,
+      )
+    }
   })
 })
