@@ -9,7 +9,12 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "tsc -b --noEmit && vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check:hscroll": "node scripts/checks/no-hscroll-sweep.mjs",
+    "check:sharecard": "node scripts/checks/share-card-engine-check.mjs",
+    "check:boot": "node scripts/checks/boot-failure-check.mjs",
+    "check:print": "node scripts/checks/print-check.mjs",
+    "check:browser": "npm run check:hscroll && npm run check:sharecard && npm run check:boot && npm run check:print"
   },
   "dependencies": {
     "@fontsource/anton": "^5.2.5",

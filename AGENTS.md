@@ -56,7 +56,20 @@ npm run dev      # 개발 서버 — 워커 없이 NWS 직접 호출 (dev 전용
 npm run build    # tsc + vite build + prerender (32 HTML + sitemap)
 npm test         # tsc --noEmit + vitest (33파일 349테스트)
 npm run preview  # 빌드 결과 미리보기
+
+npm run check:browser   # 아래 4종 전부 (빌드 먼저 — dist를 서빙한다)
+npm run check:hscroll   # 전 라우트 × EN/ES × 320/375/390/1280 가로 스크롤 0
+npm run check:sharecard # 공유 카드를 Chromium+WebKit에 실제로 그려 잉크 박스 겹침 검사
+npm run check:boot      # entry JS 차단 시 프리렌더 폴백 / 정상 경로 잔존·중복·깜빡임 0
+npm run check:print     # 판독 로그 인쇄 페이지 수(Letter PDF 실측)
 ```
+
+**브라우저 회귀 검증 4종은 vitest가 잡을 수 없는 결함 전용이다** (`scripts/checks/`).
+jsdom에는 캔버스가 없고, 실제로 나간 버그들이 **엔진별 차이**에서 나왔다 — 공유 카드
+겹침은 WebKit에서만 발생했고 Chromium만 보면 10px 여유로 통과했다. 레이아웃·프리렌더
+이음매·인쇄를 건드리면 `npm test`만으로 부족하니 해당 체크를 함께 돌릴 것.
+Playwright는 워크스페이스 루트 설치본을 쓴다(`../node_modules`) — 이 레포에는 devDependency로
+두지 않는다. 산출물(스크린샷·PDF)은 `.omc/screenshots/`에 떨어지며 git 추적 대상이 아니다.
 
 ## VALID_TOOLS Slug / 라우트
 
