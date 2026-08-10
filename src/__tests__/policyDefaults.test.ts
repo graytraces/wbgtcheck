@@ -82,3 +82,39 @@ describe('policy ownership by state', () => {
     expect(policyMatchesState(null, 'generic')).toBe(false)
   })
 })
+
+/**
+ * TSSAA is a picker option that is never auto-selected, and policyMatchesState
+ * did not know it. A Tennessee reader who chose TSSAA lost the choice the next
+ * time a ZIP was entered — it fell back to generic silently. The flags are
+ * identical between the two, so nothing on screen looked wrong; what went was
+ * the guideline wording and the policy name on the share card.
+ */
+describe('an explicit choice survives re-location', () => {
+  it('keeps TSSAA for a Tennessee reader', () => {
+    expect(policyMatchesState('TN', 'tssaa')).toBe(true)
+    expect(policyMatchesState('TN', 'generic')).toBe(false)
+  })
+
+  it('covers every state whose policy the picker can select', () => {
+    // Derived from the picker map: any state with a selectable ladder must be
+    // able to hold onto it, or the choice is lost on the next ZIP.
+    const selectable: Array<[string, string]> = [
+      ['TX', 'uil-class-2'],
+      ['GA', 'ghsa'],
+      ['SC', 'schsl'],
+      ['IA', 'iowa'],
+      ['MA', 'miaa'],
+      ['TN', 'tssaa'],
+    ]
+    for (const [abbr, id] of selectable) {
+      expect(policyMatchesState(abbr, id as never), `${abbr} loses ${id}`).toBe(true)
+    }
+  })
+
+  it('does not claim a match for a state with no policy of its own', () => {
+    for (const abbr of ['CA', 'KY', 'FL', 'NC', 'NY', 'VA', 'CO']) {
+      expect(policyMatchesState(abbr, 'generic')).toBe(false)
+    }
+  })
+})

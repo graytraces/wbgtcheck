@@ -73,7 +73,11 @@ export default function VerdictCard({
               <>
                 {' · '}
                 {t('verdict.asOf', {
+                  // Same zone as the reading beside it. Without this the card
+                  // showed two clock times two hours apart when the forecast
+                  // was for another state — the away-game case.
                   time: new Intl.DateTimeFormat(i18n.language, {
+                    timeZone,
                     hour: 'numeric',
                     minute: '2-digit',
                   }).format(new Date(fetchedAt)),

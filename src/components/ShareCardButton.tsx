@@ -136,7 +136,15 @@ export default function ShareCardButton({
         className="inline-flex items-center gap-2 bg-ink px-4 py-2.5 font-bold uppercase tracking-wide text-bg hover:opacity-90 disabled:opacity-50"
       >
         <Share2 className="h-4 w-4" aria-hidden="true" />
-        {t('verdict.shareButton')}
+        {/* The PNG title already followed the selected day; the button
+            offering it still said "today". */}
+        {isToday
+          ? t('verdict.shareButton')
+          : t('verdict.shareButtonDay', {
+              day: new Intl.DateTimeFormat(i18n.language, { weekday: 'long' }).format(
+                new Date(`${day.date}T12:00:00`),
+              ),
+            })}
       </button>
       <button
         type="button"

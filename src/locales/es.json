@@ -189,6 +189,7 @@
     "boundariesHeading": "Umbrales de bandera — {{policy}}",
     "boundariesNote": "Umbrales en °F WBGT, tal como los publica la fuente.",
     "shareButton": "Compartir las banderas de hoy",
+    "shareButtonDay": "Compartir las banderas del {{day}}",
     "measurementRules": "Reglas de medición",
     "dataResolutionNote": "Los valores del pronóstico son datos de cuadrícula del NWS — un valor para la celda alrededor de su punto, no una lectura en su campo exacto. Las horas marcadas EST se modelan a partir de temperatura, humedad, viento y nubosidad (método Liljegren) donde el NWS no publica WBGT."
   },

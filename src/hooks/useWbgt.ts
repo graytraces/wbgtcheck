@@ -65,6 +65,12 @@ export function policyMatchesState(stateAbbr: string | null, policyId: PolicyId)
   if (stateAbbr === 'SC') return policyId === 'schsl'
   if (stateAbbr === 'IA') return policyId === 'iowa'
   if (stateAbbr === 'MA') return policyId === 'miaa'
+  // TSSAA is a picker option that is never auto-selected, so it was missing
+  // here: a Tennessee reader who chose it lost the choice on the next ZIP
+  // entry and silently fell back to generic. The flags are identical, so
+  // nothing looked wrong — what goes is the guideline wording and the policy
+  // name on the share card.
+  if (stateAbbr === 'TN') return policyId === 'tssaa'
   return false
 }
 
