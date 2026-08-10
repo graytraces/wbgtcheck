@@ -45,6 +45,9 @@ import {
   IOWA_CATEGORY_2,
   NCHSAA_REFERENCE,
   NYSPHSAA_HEAT_INDEX_REFERENCE,
+  VHSL_REFERENCE,
+  FHSAA_PRACTICE_REFERENCE,
+  NYSPHSAA_WBGT_CATEGORIES,
   VA_ICE_WBGT_F,
   MIAA,
   MIAA_NO_GAMES_FOOTNOTE_QUOTE,
@@ -195,9 +198,23 @@ describe('post-JS rendered DOM', () => {
     expect(screen.getByText(en.newYork.appCaveat)).toBeInTheDocument()
   })
 
-  it('Virginia renders the no-threshold-table notice and the statutory ice level', () => {
+  it('New York renders all three WBGT category ladders', () => {
+    renderAt('/en/new-york', <NewYork />)
+    // Every threshold from every category must be on the page. A missing
+    // column would show one region another region's numbers — and here that is
+    // the difference between a black flag and a yellow one at the same reading.
+    for (const category of NYSPHSAA_WBGT_CATEGORIES) {
+      for (const band of category.bands) {
+        expect(screen.getAllByText(band.sourceLabel).length).toBeGreaterThan(0)
+      }
+    }
+  })
+
+  it('Virginia renders the VHSL levels and the statutory ice level', () => {
     renderAt('/en/virginia', <Virginia />)
-    expect(screen.getByText(en.virginia.noTableNotice)).toBeInTheDocument()
+    for (const row of VHSL_REFERENCE.rows) {
+      expect(screen.getAllByText(row.sourceLabel).length).toBeGreaterThan(0)
+    }
     expect(
       screen.getByText(i18n.t('virginia.iceBody', { ice: VA_ICE_WBGT_F })),
     ).toBeInTheDocument()
@@ -220,9 +237,11 @@ describe('post-JS rendered DOM', () => {
     ).toBeInTheDocument()
   })
 
-  it('Florida renders the on-site rule and says why it has no band table', () => {
+  it('Florida renders the §41.8 practice index and the on-site rule', () => {
     renderAt('/en/florida', <Florida />)
-    expect(screen.getByText(en.florida.noTableBody)).toBeInTheDocument()
+    for (const row of FHSAA_PRACTICE_REFERENCE.rows) {
+      expect(screen.getAllByText(row.sourceLabel).length).toBeGreaterThan(0)
+    }
     expect(screen.getByText(en.florida.deviceWarning)).toBeInTheDocument()
     expect(
       screen.getByText(i18n.t('florida.measurementBody', { quote: FL_ONSITE_MEASUREMENT_QUOTE })),

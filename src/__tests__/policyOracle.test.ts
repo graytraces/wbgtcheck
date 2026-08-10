@@ -363,11 +363,11 @@ describe('policy oracle — guideline facts vs primary sources', () => {
     }
   })
 
-  it('Florida is a statute page with no invented thresholds', () => {
+  it('Florida is a statute page whose thresholds come from the handbook', () => {
     // Fla. Stat. 1006.165(2) sets NO WBGT numbers — it directs the FHSAA to
-    // establish them. The FHSAA guideline document was not reachable, so no
-    // Florida band table exists here and the page says why. If a POLICIES
-    // entry for Florida ever appears without that document, this fails.
+    // establish them, and Policy 41 does. Florida still may not be a POLICIES
+    // entry: §41.8 governs practices and §41.9 contests, and the tool does not
+    // ask which one the reader is in.
     expect(Object.keys(POLICIES)).not.toContain('fhsaa')
     expect(Object.keys(POLICIES)).not.toContain('florida')
     // The measurement sentence is the load-bearing one: it rules this site
@@ -382,9 +382,10 @@ describe('policy oracle — guideline facts vs primary sources', () => {
     expect(FL_STATUTE_SOURCE.url).toContain('/2025/')
     expect(FL_STATUTE_SOURCE.name).toContain('(2025)')
     for (const locale of [en, es]) {
-      // The page must keep saying that the numbers are absent and why.
-      expect(locale.florida.noTableBody.length).toBeGreaterThan(0)
+      // The page must keep saying that a forecast is not the reading, and must
+      // no longer say the thresholds are unavailable — they are on the page.
       expect(locale.florida.deviceWarning.length).toBeGreaterThan(0)
+      expect(locale.florida.tableIntro).toContain('{{purpose}}')
     }
   })
 

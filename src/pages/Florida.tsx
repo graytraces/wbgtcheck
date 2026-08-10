@@ -13,11 +13,25 @@ import {
   FL_YEAR_ROUND_QUOTE,
   FL_TRAINING_QUOTE,
   FL_STATUTE_SOURCE,
+  FHSAA_PRACTICE_REFERENCE,
+  FHSAA_SECTION,
+  FHSAA_PURPOSE_QUOTE,
+  FHSAA_DEVICE_MANDATE_QUOTE,
+  FHSAA_TRIGGER_WBGT_F,
+  FHSAA_TRIGGER_QUOTE,
+  FHSAA_MONITOR_INTERVAL_MINUTES,
+  FHSAA_CONTEST_SECTION,
+  FHSAA_CONTEST_TOP_BAND_MIN_F,
+  FHSAA_CONTEST_SPORT_COUNT,
+  FHSAA_CONTEST_REFERENCE_QUOTE,
+  FHSAA_CONTEST_POSTPONE_QUOTE,
 } from '../data/policyOracle'
 
 export default function Florida() {
   const { t, i18n } = useTranslation()
   const lang = i18n.language
+  // Coolest row first, matching the band-table convention on the other guides.
+  const rows = [...FHSAA_PRACTICE_REFERENCE.rows].reverse()
 
   return (
     <article className="mx-auto max-w-3xl space-y-8">
@@ -62,11 +76,92 @@ export default function Florida() {
         <p className="mt-2">{t('florida.trainingBody', { quote: FL_TRAINING_QUOTE })}</p>
       </section>
 
-      {/* Saying plainly what is NOT on this page is the point — the numbers
-          live in an FHSAA document we could not open. */}
+      {/* FHSAA requires the instrument, which is what makes the statute's
+          on-site sentence above binding rather than aspirational. */}
+      <section>
+        <h2 className="display-num mb-2 text-2xl uppercase">{t('florida.mandateHeading')}</h2>
+        <p>{t('florida.mandateBody', { mandate: FHSAA_DEVICE_MANDATE_QUOTE })}</p>
+        <p className="mt-2">
+          {t('florida.triggerBody', {
+            trigger: FHSAA_TRIGGER_WBGT_F,
+            quote: FHSAA_TRIGGER_QUOTE,
+            interval: FHSAA_MONITOR_INTERVAL_MINUTES,
+          })}
+        </p>
+      </section>
+
+      {/* The table this page spent a day saying could not be opened. */}
+      <section>
+        <h2 id="fl-practice" className="display-num mb-2 text-2xl uppercase">
+          {t('florida.tableHeading', { section: FHSAA_SECTION })}
+        </h2>
+        <p className="mb-3 text-sm text-ink-muted">
+          {t('florida.tableIntro', { purpose: FHSAA_PURPOSE_QUOTE })}
+        </p>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm" aria-labelledby="fl-practice">
+            <thead>
+              <tr className="border-b-2 border-ink text-left">
+                <th className="py-2 pr-3 font-bold uppercase tracking-wide">
+                  {t('florida.colWbgt')}
+                </th>
+                <th className="py-2 font-bold uppercase tracking-wide">
+                  {t('florida.colActivity')}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.sourceLabel} className="border-b border-line align-top">
+                  <th scope="row" className="py-2 pr-3 text-left font-semibold">
+                    <span className="display-num whitespace-nowrap text-base">
+                      {row.sourceLabel}
+                    </span>
+                  </th>
+                  <td className="py-2">
+                    <ul className="list-inside list-disc space-y-0.5">
+                      {row.textKeys.map((key) => (
+                        <li key={key}>{t(key, row.vars)}</li>
+                      ))}
+                    </ul>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      {/* The correction, kept on the page rather than only in the history: the
+          document was always openable and the site said otherwise. */}
       <section className="border-l-4 border-flag-orange pl-4">
-        <h2 className="display-num mb-2 text-2xl uppercase">{t('florida.noTableHeading')}</h2>
-        <p>{t('florida.noTableBody')}</p>
+        <h2 className="display-num mb-2 text-2xl uppercase">{t('florida.openedHeading')}</h2>
+        <p>
+          {t('florida.openedBody', {
+            verifiedOn: FHSAA_PRACTICE_REFERENCE.source.verifiedOn,
+          })}
+        </p>
+      </section>
+
+      {/* The asymmetry a coach can be hurt by: the practice ladder's top row is
+          NOT Florida's stop line for a game. §41.9.5's hottest band prescribes
+          hydration breaks, and nothing in it forbids an outdoor contest. */}
+      <section className="border-2 border-flag-red bg-surface p-5">
+        <h2 className="display-num mb-2 flex items-center gap-2 text-2xl uppercase">
+          <TriangleAlert className="h-6 w-6 text-flag-red" aria-hidden="true" />
+          {t('florida.contestHeading')}
+        </h2>
+        <p>
+          {t('florida.contestBody', {
+            section: FHSAA_CONTEST_SECTION,
+            sports: FHSAA_CONTEST_SPORT_COUNT,
+            quote: FHSAA_CONTEST_REFERENCE_QUOTE,
+            top: FHSAA_CONTEST_TOP_BAND_MIN_F,
+          })}
+        </p>
+        <p className="mt-3">
+          {t('florida.contestPostponeBody', { quote: FHSAA_CONTEST_POSTPONE_QUOTE })}
+        </p>
       </section>
 
       {/* Mirrors the North Carolina pattern: the page says why the picker
@@ -90,6 +185,21 @@ export default function Florida() {
             className="underline"
           >
             {FL_STATUTE_SOURCE.name}
+          </a>
+        </p>
+        {/* Statute and handbook are two documents with two verification dates.
+            One source line would attribute one date to both. */}
+        <p className="mt-1">
+          {t('florida.tableSourceBody', {
+            verifiedOn: FHSAA_PRACTICE_REFERENCE.source.verifiedOn,
+          })}{' '}
+          <a
+            href={FHSAA_PRACTICE_REFERENCE.source.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline"
+          >
+            {FHSAA_PRACTICE_REFERENCE.source.name}
           </a>
         </p>
         <p className="mt-2 text-xs">{t('common.footer.affiliation')}</p>

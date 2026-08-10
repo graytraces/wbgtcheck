@@ -17,6 +17,9 @@ import {
   CIF_CATEGORIES,
   NCHSAA_REFERENCE,
   NYSPHSAA_HEAT_INDEX_REFERENCE,
+  VHSL_REFERENCE,
+  FHSAA_PRACTICE_REFERENCE,
+  NYSPHSAA_WBGT_CATEGORIES,
   requiresOnSiteReading,
   REMOTE_UNDERESTIMATE_MIN_C,
   REMOTE_UNDERESTIMATE_MAX_C,
@@ -77,8 +80,22 @@ describe('guideline copy derives from the oracle', () => {
     for (const policy of Object.values(POLICIES)) {
       for (const band of policy.bands) harvest(band.sourceLabel)
     }
-    for (const table of [NCHSAA_REFERENCE, NYSPHSAA_HEAT_INDEX_REFERENCE, KHSAA_WBGT_REFERENCE]) {
+    for (const table of [
+      NCHSAA_REFERENCE,
+      NYSPHSAA_HEAT_INDEX_REFERENCE,
+      KHSAA_WBGT_REFERENCE,
+      // Virginia and Florida's own tables. Both states were previously told
+      // their thresholds could not be published at all, so neither had a label
+      // for this guard to protect — and both now print six and five of them.
+      VHSL_REFERENCE,
+      FHSAA_PRACTICE_REFERENCE,
+    ]) {
       for (const row of table.rows) harvest(row.sourceLabel)
+    }
+    // NYSPHSAA's WBGT chart is three ladders and no policy id, the same shape
+    // as CIF below — fifteen more labels the POLICIES loop cannot see.
+    for (const category of NYSPHSAA_WBGT_CATEGORIES) {
+      for (const band of category.bands) harvest(band.sourceLabel)
     }
     // CIF's three ladders are not in POLICIES — they have no policy id, which
     // is the whole reason California is outside the picker — so the loop above
