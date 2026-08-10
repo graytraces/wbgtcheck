@@ -488,7 +488,7 @@
       "ky": "Four WBGT bands for contest alterations with a hard stop at the top, re-checked every 30 minutes. Football must measure at the competition site with no off-site measurement permitted; cross country, field hockey and soccer get the same rule as a strong recommendation, and the all-sports column sets no measurement-location rule at all. The document covers contest alterations only — a general duty to use WBGT was not found in it. Read from a web-archive capture; khsaa.org answers nothing, so currency is unconfirmed.",
       "sc": "Schools are required to own and use an on-site WBGT thermometer; \"phone apps are not scientifically approved\". Range-hold rule locks in restrictions — see the South Carolina guide.",
       "ia": "WBGT is recommended (not mandated) year-round above 80 °F, readings every 30 minutes; marching band and cheer have their own rows — see the Iowa guide.",
-      "fl": "The Zachary Martin Act requires heat-stress monitoring year-round and cooling zones, and requires the reading to be measured at the site of the activity. The thresholds themselves are FHSAA guidelines, which we have not been able to open.",
+      "fl": "The Zachary Martin Act requires heat-stress monitoring year-round and cooling zones, and requires the reading to be measured at the site of the activity. The thresholds are FHSAA's: Policy 41 publishes a practice ladder ending in no outdoor activity — see the Florida guide.",
       "nc": "Current handbook calls for a scientifically approved device, read hourly from 30 minutes before practice; §2.3.3(g) makes the containing policy mandatory. Stricter threshold family than most states — see the North Carolina guide.",
       "va": "Code §22.1-271.10 (2025) requires every school board to adopt WBGT-based policies with at least five tiers, but districts set the thresholds; measurement method not regulated — see the Virginia guide.",
       "tn": "Each school reads either WBGT or heat index; a phone app is permitted for heat index only, as a last resort. Marching band not covered — see the Tennessee guide.",
@@ -610,7 +610,7 @@
     "pageTitle": "New York NYSPHSAA Heat Rules",
     "intro": "New York is the state that shows WBGT is a choice, not a law of nature. Its procedure is written against heat index, and it tells schools to read that number from a phone app by ZIP code — the exact thing Georgia, South Carolina and Iowa warn against.",
     "notWbgtHeading": "This is a heat index policy",
-    "notWbgtBody": "The procedure checks \"Feels Like\" temperature — heat index — {{lead}} hour before the contest or practice whenever air temperature is {{trigger}} °F or higher. A WBGT indicator is offered as an alternative, but heat index is the ladder the thresholds are written for.",
+    "notWbgtBody": "The procedure checks \"Feels Like\" temperature — heat index — {{lead}} hour before the contest or practice whenever air temperature is {{trigger}} °F or higher. A WBGT indicator is offered as an alternative in the same sentence, and the document carries a full WBGT chart of its own — so New York writes against both scales, not against heat index alone.",
     "appHeading": "New York names an app",
     "appBody": "In writing: \"{{app}}\" and \"{{zip}}\" A remote, ZIP-code-level reading is not a workaround in New York — it is the documented procedure.",
     "appCaveat": "That does not make a remote reading physically accurate; it makes it permitted. Everything this site says about remote estimates reading low still applies, and a heat index number cannot be compared against a WBGT threshold in either direction.",
@@ -640,14 +640,14 @@
       "helmetsOnly": "For practices, football helmets only — no other protective equipment.",
       "noOutside": "No outside activity, practice or contest, should be held. Indoor activity only if air conditioned."
     },
-    "wbgtChartNote": "New York does publish a WBGT alternative chart, but its thresholds depend on a regional category looked up from an external map, and the chart itself was not machine-readable in the source document. This site does not reproduce New York WBGT numbers rather than risk printing the wrong region's.",
+    "wbgtChartNote": "New York publishes a WBGT chart in three regional categories, and this page previously said it was not machine-readable in the source. That was a description of how we read it — the chart is an embedded image — not of the document, and it read cleanly once extracted. What remains genuinely unresolvable is which category your school is in: the lookup NYSPHSAA links no longer exists. So the categories are shown side by side, the way California's three are, and none is chosen for you.",
     "sourceHeading": "Source",
     "sourceBody": "The thresholds and quotations above come from the NYSPHSAA Heat Index Procedures (approved {{approved}}, updated {{updated}}), cross-checked on {{verifiedOn}}.",
     "ctaButton": "Learn WBGT vs heat index"
   },
   "virginia": {
     "pageTitle": "Virginia's Heat Law: Your District Sets the Numbers",
-    "intro": "Virginia has a statute, not a threshold table. A 2025 law makes heat policy mandatory for every school board in the Commonwealth — and then leaves the actual WBGT levels to each district, which is why no honest page can tell you Virginia's cancellation number.",
+    "intro": "Virginia has both a statute and a statewide table, and this page said otherwise for a day. The 2025 law makes heat policy mandatory for every school board — and requires each policy to be consistent with the WBGT guidelines of the body that governs interscholastic athletics here. That body is the VHSL, and it publishes statewide participation levels with a top level that stops outdoor practices, scrimmages and competitions outright.",
     "statuteHeading": "What the statute requires",
     "statuteBody": "Code of Virginia {{section}} ({{citation}}) directs the Board of Education to develop and biennially review heat guidelines, and then requires each school board to adopt its own policies in line with them.",
     "districtHeading": "The thresholds are local",
@@ -770,12 +770,12 @@
     "eapBody": "And it reaches the emergency action plan: \"{{quote}}\"",
     "trainingBody": "Training is annual and personal: \"{{quote}}\"",
     "noTableHeading": "Why there is no threshold table here",
-    "noTableBody": "The statute sets no WBGT numbers — it directs the FHSAA to establish them, so Florida's activity thresholds live in an FHSAA document rather than in the law. We could not open that document when this page was written, so no Florida band table is shown. Publishing numbers we have not read from the source is the one thing this site does not do. Ask your athletic director for the FHSAA heat-stress guidelines, and use the flags here only for planning.",
+    "noTableBody": "The statute sets no WBGT numbers — it directs the FHSAA to establish them, so Florida's activity thresholds live in an FHSAA document rather than in the law. That document is Policy 41 of the FHSAA handbook, and its §41.8 index runs from normal activity up to a reading at which no outdoor activity is permitted at all. This page said for a day that the document could not be opened: fhsaa.com serves a web page in answer to its own PDF link, and we reported our fetch as the document's availability. The table itself is being read onto this page; until it is here, open Policy 41 directly and use the flags above for planning only.",
     "sourceHeading": "Source",
     "sourceBody": "Every quotation above was read from the Florida Senate's statute text on {{verifiedOn}}.",
     "ctaButton": "Plan with the forecast",
     "pickerExclusionHeading": "Why Florida is not in the policy picker",
-    "pickerExclusionBody": "There is nothing to put in it. The statute sets no WBGT thresholds — it directs the FHSAA to establish them — and we have not been able to open that document, so this site holds no Florida band table. The forecast tool falls back to the general NATA guideline, which carries no connection to whatever the FHSAA guidelines say. Ask your athletic director for those guidelines, and treat the flags here as planning only."
+    "pickerExclusionBody": "Not because Florida publishes nothing — it publishes Policy 41 — but because §41.8 is a practice index while §41.9 adds a separate per-sport index for contests, and choosing between them needs a question this tool does not yet ask. Until it does, the forecast falls back to the general NATA guideline, which carries no connection to what Policy 41 says. Read Policy 41 for the number that governs you, and treat the flags here as planning only."
   },
   "california": {
     "pageTitle": "California CIF WBGT Heat Policy",

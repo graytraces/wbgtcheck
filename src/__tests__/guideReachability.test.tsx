@@ -9,6 +9,11 @@ import Layout from '../components/Layout'
 import States from '../pages/States'
 import California from '../pages/California'
 import { POLICIES, CIF_CATEGORY_ROSTER_URL, type PolicyId } from '../data/policyOracle'
+import {
+  VHSL_CANCEL_WBGT_F,
+  FHSAA_NO_OUTDOOR_WBGT_F,
+  NYSPHSAA_WBGT_BLACK_MIN_F,
+} from '../data/policyData.js'
 import { pageSEO, statePageKeyByPolicy, pickerLadderPageKeys } from '../seo'
 import { STATE_GUIDES, AIR_GUIDES, GUIDE_SLUG_BY_ABBR } from '../data/guideRegistry'
 import { defaultPolicyFor } from '../hooks/useWbgt'
@@ -361,37 +366,68 @@ describe('the fallback notice is true of the state it appears on', () => {
     }
   })
 
+  /**
+   * Round 5 overturned three of these. All three were the same mistake in
+   * different clothes: a document we could not read was recorded as a document
+   * that does not exist.
+   *
+   *   NY  said 'heat-index'. NYSPHSAA's page 1 is the WeatherBug heat-index
+   *       procedure, but page 2 is a three-category WBGT chart — an embedded
+   *       image, which is why a text extract missed it. Its own first bullet
+   *       offers WBGT as the alternative to heat index, and the suspension
+   *       trigger names both scales at once.
+   *   FL  said 'no-state-numbers'. FHSAA Policy 41 §41.8 is a five-band
+   *       practice ladder. fhsaa.com serves an HTML shell for its own .pdf
+   *       link — the same trap policyData.js already documents for CIF — so
+   *       the file read as unopenable.
+   *   VA  said 'no-state-numbers'. The statute really does fix no thresholds,
+   *       but it requires division policy to be consistent with the VHSL's,
+   *       and VHSL publishes a statewide six-level table. The pointer in the
+   *       statute was never followed.
+   *
+   * Each is now pinned to the constant that only exists because someone read
+   * the document, so deleting the source deletes the assertion with it.
+   */
   it('matches each state against what its own oracle says it publishes', () => {
     const byAbbr = Object.fromEntries(STATE_GUIDES.map((g) => [g.abbr, g]))
-    // NYSPHSAA is a heat-index table, pinned as a ReferenceTable for that
-    // reason; NC and CA publish WBGT numbers; FL and VA publish none.
-    expect(byAbbr.NY.ladder).toBe('heat-index')
-    expect(byAbbr.CA.ladder).toBe('wbgt-own')
-    expect(byAbbr.NC.ladder).toBe('wbgt-own')
-    expect(byAbbr.KY.ladder).toBe('wbgt-own')
-    expect(byAbbr.FL.ladder).toBe('no-state-numbers')
-    expect(byAbbr.VA.ladder).toBe('no-state-numbers')
-  })
-
-  it('never tells a heat-index state its numbers compare to the WBGT flag', () => {
-    for (const dict of [en, es]) {
-      const { body } = noticeFor(STATE_GUIDES.find((g) => g.abbr === 'NY')!, dict)
-      expect(body).toMatch(/heat index|índice de calor/i)
-      expect(body).toMatch(/cannot be converted|no se pueden convertir/i)
-      // The claim that broke it: comparability at the same reading.
-      expect(body).not.toMatch(/at the same reading|con la misma lectura/i)
-      expect(body).not.toMatch(/stricter|estrictos/i)
+    for (const abbr of ['NY', 'CA', 'NC', 'KY', 'FL', 'VA']) {
+      expect(byAbbr[abbr].ladder, abbr).toBe('wbgt-own')
     }
+    expect(VHSL_CANCEL_WBGT_F).toBe(90.0)
+    expect(FHSAA_NO_OUTDOOR_WBGT_F).toBe(92.1)
+    expect(NYSPHSAA_WBGT_BLACK_MIN_F.cat1).toBe(86.2)
   })
 
-  it('never claims thresholds for a state that publishes none', () => {
+  /**
+   * The reason this is worth a test of its own: every one of the three false
+   * classifications sent the reader a sentence saying the number they wanted
+   * was unobtainable. Two of them said so about a number that decides whether
+   * practice happens at all.
+   */
+  it('no state is told its thresholds are unknowable', () => {
     for (const dict of [en, es]) {
-      for (const abbr of ['FL', 'VA']) {
-        const { body } = noticeFor(STATE_GUIDES.find((g) => g.abbr === abbr)!, dict)
-        expect(body).toMatch(/does not publish|no publica/i)
-        expect(body).not.toMatch(/publishes its own WBGT|publica sus propios umbrales/i)
+      for (const guide of STATE_GUIDES) {
+        const { body } = noticeFor(guide, dict)
+        expect(body, `${guide.abbr}`).not.toMatch(/no page can tell you|ninguna página puede decirte/i)
+        expect(body, `${guide.abbr}`).not.toMatch(/does not publish|no publica/i)
       }
     }
+  })
+
+  /**
+   * The two other variants keep their strings — a future state can still be
+   * heat-index-only or genuinely silent — but nothing may claim a state IS one
+   * of those without a source constant to back it, which is what let NY and
+   * FL/VA sit wrong for a day.
+   */
+  it('the unused variants stay distinct and stay unused', () => {
+    for (const dict of [en, es]) {
+      expect(dict.home.stateScaleBody).toMatch(/heat index|índice de calor/i)
+      expect(dict.home.stateNoNumbersBody).toMatch(/does not publish|no publica/i)
+      expect(dict.home.stateScaleHeading).not.toBe(dict.home.stateLadderHeading)
+      expect(dict.home.stateNoNumbersHeading).not.toBe(dict.home.stateLadderHeading)
+    }
+    expect(STATE_GUIDES.filter((g) => g.ladder !== 'wbgt-own')).toEqual([])
   })
 
   it('makes no directional strictness claim, because Kentucky is more permissive', () => {
@@ -402,15 +438,14 @@ describe('the fallback notice is true of the state it appears on', () => {
     }
   })
 
-  it('gives each variant its own heading, not the ladder heading for all three', () => {
+  it('the three variant headings are three different sentences', () => {
     for (const dict of [en, es]) {
-      const headings = new Set(
-        STATE_GUIDES.map((g) => noticeFor(g, dict).heading),
-      )
-      expect(headings.size).toBe(3)
-      expect(noticeFor(STATE_GUIDES.find((g) => g.abbr === 'NY')!, dict).heading).not.toBe(
+      const headings = new Set([
         dict.home.stateLadderHeading,
-      )
+        dict.home.stateScaleHeading,
+        dict.home.stateNoNumbersHeading,
+      ])
+      expect(headings.size).toBe(3)
     }
   })
 

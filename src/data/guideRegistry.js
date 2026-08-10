@@ -37,17 +37,26 @@
  */
 export const STATE_GUIDES = [
   { abbr: 'CA', slug: 'california', seoKey: 'california', labelKey: 'states.californiaLink', ladder: 'wbgt-own' },
-  { abbr: 'FL', slug: 'florida', seoKey: 'florida', labelKey: 'states.floridaLink', ladder: 'no-state-numbers', numbersSetBy: 'association' },
+  // FHSAA Policy 41 §41.8 publishes a statewide practice ladder. This said
+  // 'no-state-numbers' because fhsaa.com serves an HTML shell for its own .pdf
+  // link, so the document read as unopenable — the CIF trap, a second time.
+  { abbr: 'FL', slug: 'florida', seoKey: 'florida', labelKey: 'states.floridaLink', ladder: 'wbgt-own' },
   { abbr: 'GA', slug: 'georgia', seoKey: 'georgia', labelKey: 'states.georgiaLink', ladder: 'wbgt-own' },
   { abbr: 'IA', slug: 'iowa', seoKey: 'iowa', labelKey: 'states.iowaLink', ladder: 'wbgt-own' },
   { abbr: 'KY', slug: 'kentucky', seoKey: 'kentucky', labelKey: 'states.kentuckyLink', ladder: 'wbgt-own' },
   { abbr: 'MA', slug: 'massachusetts', seoKey: 'massachusetts', labelKey: 'states.massachusettsLink', ladder: 'wbgt-own' },
   { abbr: 'NC', slug: 'north-carolina', seoKey: 'northCarolina', labelKey: 'states.northCarolinaLink', ladder: 'wbgt-own' },
-  { abbr: 'NY', slug: 'new-york', seoKey: 'newYork', labelKey: 'states.newYorkLink', ladder: 'heat-index' },
+  // NYSPHSAA's document carries BOTH scales: the WeatherBug heat-index
+  // procedure on page 1 and a three-category WBGT chart on page 2. This said
+  // 'heat-index' because page 2 is an embedded image rather than text.
+  { abbr: 'NY', slug: 'new-york', seoKey: 'newYork', labelKey: 'states.newYorkLink', ladder: 'wbgt-own' },
   { abbr: 'SC', slug: 'south-carolina', seoKey: 'southCarolina', labelKey: 'states.southCarolinaLink', ladder: 'wbgt-own' },
   { abbr: 'TN', slug: 'tennessee', seoKey: 'tennessee', labelKey: 'states.tennesseeLink', ladder: 'wbgt-own' },
   { abbr: 'TX', slug: 'texas', seoKey: 'texas', labelKey: 'states.texasLink', ladder: 'wbgt-own' },
-  { abbr: 'VA', slug: 'virginia', seoKey: 'virginia', labelKey: 'states.virginiaLink', ladder: 'no-state-numbers', numbersSetBy: 'districts' },
+  // VHSL publishes a statewide six-level WBGT table. This said
+  // 'no-state-numbers' because the statute contains no numbers — true — and
+  // the statute's own pointer to VHSL was never followed.
+  { abbr: 'VA', slug: 'virginia', seoKey: 'virginia', labelKey: 'states.virginiaLink', ladder: 'wbgt-own' },
 ]
 
 /** Air-quality guides. Same shape; `abbr` is the state they cover. */

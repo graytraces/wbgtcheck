@@ -1405,6 +1405,121 @@ export const VA_STATUTE_SOURCE = {
   verifiedOn: '2026-08-09',
 }
 
+// --- VHSL (Virginia) participation table ----------------------------------
+// The document this site told Virginia coaches did not exist.
+//
+// § 22.1-271.10 requires every division's policy to "Be consistent with any
+// heat guidelines based on WBGT levels developed by an organization ... whose
+// purpose it is to regulate or govern interscholastic athletics programs in
+// the Commonwealth" — and in Virginia that organization is the VHSL, which
+// publishes a statewide six-level WBGT table. This site read the statute,
+// correctly found no numbers in it, and then concluded no statewide numbers
+// existed anywhere: it never followed the pointer the statute itself sets.
+//
+// Cross-check that this is the document the statute points at: the statute's
+// only hard number, ice available at WBGT 80 (VA_ICE_WBGT_F), is exactly where
+// VHSL Level 2 first says "ensure ice is available".
+//
+// Constants only for now, no band table. The six levels carry duration caps
+// and work/rest splits rather than this site's five flags, and Level 6 is a
+// cancel line rather than a band — rendering them needs the same per-row copy
+// work the NC and KY tables have, which is a separate change from removing a
+// false claim.
+
+export const VHSL_SOURCE = {
+  name: 'VHSL Heat Acclimatization Guidelines — Wet Bulb Globe Temperature (WBGT) Participation Recommendations (p.8)',
+  url: 'https://www.vhsl.org/sports-medicine/heat-hydration/',
+  /**
+   * The PDF prints no edition or effective date; its only date signal is a PDF
+   * /CreationDate of 2025-10-06. So this attests what it honestly can: on this
+   * day, the file vhsl.org/sports-medicine/heat-hydration links as its heat
+   * guidance is the one read here — 9 pages, sha256
+   * 3dd4bf78b5c74e977d2e47024823438aee1c1982017d22c599cc312ad3dd1415.
+   */
+  verifiedOn: '2026-08-10',
+}
+/** The level at which Virginia stops outdoor activity outright. */
+export const VHSL_CANCEL_WBGT_F = 90.0
+export const VHSL_LEVEL_COUNT = 6
+/** Level 6's practices cell, printed in caps in the source. */
+export const VHSL_CANCEL_QUOTE = 'NO OUTDOOR PRACTICES, SCRIMMAGES or COMPETITIONS'
+export const VHSL_TABLE_TITLE_QUOTE = 'WET BULB GLOBE TEMPERATURE (WBGT) PARTICIPATION RECOMMENDATIONS'
+
+// --- FHSAA (Florida) Policy 41 practice index -----------------------------
+// The second document this site said it could not open.
+//
+// fhsaa.com serves an HTML shell for its own `.pdf` link — the identical trap
+// this file already documents for CIF. The file itself is on S3 and opens
+// normally. "We have not been able to open that document" described a fetch
+// technique, and the page turned it into a claim about what Florida publishes.
+
+export const FHSAA_SOURCE = {
+  name: 'FHSAA 2026-27 Handbook, Policy 41 — Exertional Heat Illness (§41.8 WBGT Index for Practices, p.106)',
+  url: 'https://s3.amazonaws.com/fhsaa.org/documents/2026/7/22/2627_handbook_website_7_22.pdf',
+  /**
+   * 116 pages, PDF /CreationDate 2026-07-22, sha256
+   * d983d6cac131b4e1e4d8f7263c035824d992def73b7fc58cb9a198f78a9cc90c —
+   * published nineteen days before this site told Florida coaches its
+   * thresholds could not be read.
+   */
+  verifiedOn: '2026-08-10',
+}
+/** The reading at and above which FHSAA permits no outdoor activity. */
+export const FHSAA_NO_OUTDOOR_WBGT_F = 92.1
+export const FHSAA_SECTION = '§41.8'
+export const FHSAA_PURPOSE_QUOTE =
+  'The WBGT index provides standard modification requirements for preseason practices and for any in-season practices where environmental conditions are dangerous.'
+export const FHSAA_NO_OUTDOOR_QUOTE = 'No outdoor activities.'
+
+// --- NYSPHSAA (New York) WBGT chart ---------------------------------------
+// New York's document has TWO ladders and this site read only one of them.
+//
+// Page 1 is the WeatherBug heat-index procedure already carried above. Page 2
+// is a full WBGT chart in three regional categories — the same five-flag
+// structure this site renders. It was missed because it is an embedded image
+// rather than text, which the page then reported to readers as "the chart
+// itself was not machine-readable in the source document". It reads fine once
+// extracted.
+//
+// So "your state writes its policy against heat index instead" was false in
+// the direction that matters: NYSPHSAA's own first bullet offers WBGT as an
+// alternative, and its suspension trigger is defined in both scales at once.
+//
+// ⚠️ The three category ladders are numerically identical to CIF_CATEGORY_1/2/3
+// but must NOT reuse those objects: different bodies, different documents,
+// free to diverge at any revision, and sharing one object would attribute a
+// CIF verifiedOn to a NYSPHSAA claim.
+
+export const NYSPHSAA_WBGT_SOURCE = {
+  name: 'NYSPHSAA Heat Index Procedures (updated May 3, 2023), p.2 WBGT chart',
+  url: 'https://s3.amazonaws.com/nysphsaa.org/documents/2023/5/5/Heat_Index_Procedure_5_23.pdf',
+  /**
+   * 2 pages, sha256
+   * 1d6f8e64aede79c1acf20201f37a64bfceccb7ec7c6191e350149ea7910d5ae6. Page 2's
+   * chart is an embedded 1192x882 image; read by extracting it.
+   */
+  verifiedOn: '2026-08-10',
+}
+/** The first bullet, which offers WBGT as an alternative to the heat index. */
+export const NYSPHSAA_EITHER_SCALE_QUOTE =
+  'Feels Like Temperature (Heat index) or THI using a Wet Bulb Globe Temperature Indicator (see chart below) on the field will be checked 1 hour before the contest/practice by a certified athletic trainer, athletic director, or school designee when the air temperature is 80 degrees (Fahrenheit) or higher.'
+/** The suspension trigger, stated in both scales at once. */
+export const NYSPHSAA_SUSPEND_BOTH_SCALES_QUOTE =
+  'If the Feels Like temperature (heat index) or Wet Bulb Temperature Indicator is in the required range (red – WeatherBug or black – WBGT), the contest will be suspended.'
+/** The black row's entire activity cell. */
+export const NYSPHSAA_WBGT_BLACK_QUOTE =
+  'No outdoor workouts. Delay practice until a cooler WBGT is reached.'
+/**
+ * Where each category's black band begins, as the chart prints them.
+ *
+ * A New York school cannot be told which category it is in from here:
+ * NYSPHSAA's own lookup link no longer resolves (SERVFAIL). So the honest page
+ * shows all three and says which one applies is unresolvable from the source —
+ * the same treatment California's three CIF categories get.
+ */
+export const NYSPHSAA_WBGT_BLACK_MIN_F = { cat1: 86.2, cat2: 89.8, cat3: 92.1 }
+export const NYSPHSAA_CATEGORY_LOOKUP_URL = 'http://www.castlewilliams.com/wbgt-regions.html'
+
 export const POLICIES = {
   'uil-class-2': UIL_CLASS_2,
   'uil-class-3': UIL_CLASS_3,
