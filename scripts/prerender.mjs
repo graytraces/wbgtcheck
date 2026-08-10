@@ -767,6 +767,8 @@ function generateBodyContent(lang, page) {
     push(`<p>${escapeHtml(t('kentucky.invalidBody', { quote: KY_OFFSITE_INVALID_QUOTE }))}</p>`)
     push(`<p>${escapeHtml(t('kentucky.footballBody', { quote: KY_FOOTBALL_ONSITE_QUOTE }))}</p>`)
     push(`<p>${escapeHtml(t('kentucky.deviceWarning'))}</p>`)
+    push(`<h2>${escapeHtml(t('kentucky.pickerExclusionHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('kentucky.pickerExclusionBody'))}</p>`)
     push(
       `<h2>${escapeHtml(t('kentucky.sourceHeading'))}</h2><p>${escapeHtml(t('kentucky.sourceBody', { verifiedOn: KHSAA_WBGT_REFERENCE.source.verifiedOn }))} <a href="${KHSAA_WBGT_REFERENCE.source.url}">${escapeHtml(KHSAA_WBGT_REFERENCE.source.name)}</a></p>`,
     )
@@ -816,6 +818,8 @@ function generateBodyContent(lang, page) {
     push(
       `<p>${escapeHtml(t('california.acclimatizationFootballBody', { football: CIF_FOOTBALL_EQUIPMENT_QUOTE }))}</p>`,
     )
+    push(`<h2>${escapeHtml(t('california.pickerExclusionHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('california.pickerExclusionBody'))}</p>`)
     push(
       `<h2>${escapeHtml(t('california.sourceHeading'))}</h2><p>${escapeHtml(t('california.sourceBody', { verifiedOn: CIF_HEAT_SOURCE.verifiedOn }))} <a href="${CIF_HEAT_SOURCE.url}">${escapeHtml(CIF_HEAT_SOURCE.name)}</a></p>`,
     )
@@ -847,6 +851,8 @@ function generateBodyContent(lang, page) {
     push(`<p>${escapeHtml(t('florida.trainingBody', { quote: FL_TRAINING_QUOTE }))}</p>`)
     push(`<h2>${escapeHtml(t('florida.noTableHeading'))}</h2>`)
     push(`<p>${escapeHtml(t('florida.noTableBody'))}</p>`)
+    push(`<h2>${escapeHtml(t('florida.pickerExclusionHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('florida.pickerExclusionBody'))}</p>`)
     push(
       `<h2>${escapeHtml(t('florida.sourceHeading'))}</h2><p>${escapeHtml(t('florida.sourceBody', { verifiedOn: FL_STATUTE_SOURCE.verifiedOn }))} <a href="${FL_STATUTE_SOURCE.url}">${escapeHtml(FL_STATUTE_SOURCE.name)}</a></p>`,
     )

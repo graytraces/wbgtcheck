@@ -749,7 +749,9 @@
     "noTableBody": "The statute sets no WBGT numbers — it directs the FHSAA to establish them, so Florida's activity thresholds live in an FHSAA document rather than in the law. We could not open that document when this page was written, so no Florida band table is shown. Publishing numbers we have not read from the source is the one thing this site does not do. Ask your athletic director for the FHSAA heat-stress guidelines, and use the flags here only for planning.",
     "sourceHeading": "Source",
     "sourceBody": "Every quotation above was read from the Florida Senate's statute text on {{verifiedOn}}.",
-    "ctaButton": "Plan with the forecast"
+    "ctaButton": "Plan with the forecast",
+    "pickerExclusionHeading": "Why Florida is not in the policy picker",
+    "pickerExclusionBody": "There is nothing to put in it. The statute sets no WBGT thresholds — it directs the FHSAA to establish them — and we have not been able to open that document, so this site holds no Florida band table. The forecast tool falls back to the general NATA guideline, which carries no connection to whatever the FHSAA guidelines say. Ask your athletic director for those guidelines, and treat the flags here as planning only."
   },
   "california": {
     "pageTitle": "California CIF WBGT Heat Policy",
@@ -771,12 +773,14 @@
     "airLink": "California also has a separate air-quality policy — see the CIF air quality guide",
     "sourceHeading": "Source",
     "sourceBody": "All thresholds and quotations above were read from the CIF Constitution and Bylaws on {{verifiedOn}}.",
-    "ctaButton": "Plan around California flags",
+    "ctaButton": "Open the forecast tool",
     "acclimatizationMandateHeading": "The five-day period is not advisory",
     "acclimatizationMandateBody": "What follows that plan is written in \"shall\", and it governs the opening week of preseason — where heat illness actually concentrates: \"{{fiveDay}}\"",
     "acclimatizationLimitsBody": "Inside that period the limits are fixed: \"{{onePractice}}\"",
     "acclimatizationFootballBody": "And football adds a pad progression across the same days: \"{{football}}\"",
-    "coolingMethodBody": "The cooling requirement is separate from all of it and applies everywhere: \"{{cooling}}\""
+    "coolingMethodBody": "The cooling requirement is separate from all of it and applies everywhere: \"{{cooling}}\"",
+    "pickerExclusionHeading": "Why California is not in the policy picker",
+    "pickerExclusionBody": "CIF assigns each school a region category, and it publishes that assignment as a separate roster this site cannot read for you. The three ladders differ by a wide margin — a reading that is black in Category 1 is still yellow in Category 3 — so choosing one on your behalf would put a confident flag on the screen that your own category may contradict. Until the tool can ask you for your category, the forecast falls back to the general NATA guideline, which is more permissive than every CIF ladder. Read your category off the table above rather than off the flag."
   },
   "kentucky": {
     "pageTitle": "Kentucky KHSAA WBGT Contest Alterations",
@@ -802,6 +806,8 @@
     "sourceHeading": "Source",
     "sourceBody": "The bands and quotations above were read from the archived KHSAA document on {{verifiedOn}}.",
     "ctaButton": "Plan with the forecast",
-    "footballBody": "Football is the exception, and it is unconditional — \"must\", and nothing permitted in its place: \"{{quote}}\" It repeats in every band below the stop level."
+    "footballBody": "Football is the exception, and it is unconditional — \"must\", and nothing permitted in its place: \"{{quote}}\" It repeats in every band below the stop level.",
+    "pickerExclusionHeading": "Why Kentucky is not in the policy picker",
+    "pickerExclusionBody": "KHSAA publishes four contest-alteration bands, not a five-flag practice ladder, and its actions are written per sport rather than per band. Mapping four bands onto this site's five flags would invent a band KHSAA never published, so Kentucky renders as its own table and the forecast tool falls back to the general NATA guideline. Read the table above for Kentucky; use the flags only to plan."
   }
 }

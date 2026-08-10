@@ -749,7 +749,9 @@
     "noTableBody": "La ley no fija números WBGT — encarga a la FHSAA establecerlos, así que los umbrales de actividad de Florida están en un documento de la FHSAA y no en la ley. No pudimos abrir ese documento al escribir esta página, así que no se muestra ninguna tabla de bandas de Florida. Publicar números que no hemos leído en la fuente es justamente lo que este sitio no hace. Pida a su director atlético las pautas de estrés por calor de la FHSAA y use las banderas de aquí solo para planificar.",
     "sourceHeading": "Fuente",
     "sourceBody": "Todas las citas anteriores se leyeron del texto legal del Senado de Florida el {{verifiedOn}}.",
-    "ctaButton": "Planifique con el pronóstico"
+    "ctaButton": "Planifique con el pronóstico",
+    "pickerExclusionHeading": "Por qué Florida no está en el selector de políticas",
+    "pickerExclusionBody": "No hay nada que poner en él. La ley no fija umbrales WBGT — encarga a la FHSAA establecerlos — y no hemos podido abrir ese documento, así que este sitio no tiene una tabla de bandas de Florida. La herramienta recurre a la guía general de la NATA, que no guarda relación con lo que digan las pautas de la FHSAA. Pida esas pautas a su director atlético y trate las banderas de aquí como planificación únicamente."
   },
   "california": {
     "pageTitle": "Política de calor WBGT de la CIF de California",
@@ -771,12 +773,14 @@
     "airLink": "California también tiene una política de calidad del aire aparte — vea la guía de calidad del aire de la CIF",
     "sourceHeading": "Fuente",
     "sourceBody": "Todos los umbrales y citas anteriores se leyeron de la Constitución y Estatutos de la CIF el {{verifiedOn}}.",
-    "ctaButton": "Planifique con las banderas de California",
+    "ctaButton": "Abrir la herramienta de pronóstico",
     "acclimatizationMandateHeading": "El periodo de cinco días no es orientativo",
     "acclimatizationMandateBody": "Lo que sigue a ese plan está escrito con «shall» y rige la primera semana de pretemporada — donde la enfermedad por calor se concentra de verdad: «{{fiveDay}}»",
     "acclimatizationLimitsBody": "Dentro de ese periodo los límites son fijos: «{{onePractice}}»",
     "acclimatizationFootballBody": "Y el fútbol americano añade una progresión de protecciones a lo largo de esos mismos días: «{{football}}»",
-    "coolingMethodBody": "El requisito de enfriamiento es aparte de todo esto y aplica en todas partes: «{{cooling}}»"
+    "coolingMethodBody": "El requisito de enfriamiento es aparte de todo esto y aplica en todas partes: «{{cooling}}»",
+    "pickerExclusionHeading": "Por qué California no está en el selector de políticas",
+    "pickerExclusionBody": "La CIF asigna a cada escuela una categoría regional y publica esa asignación en una lista aparte que este sitio no puede leer por usted. Las tres escalas difieren mucho — una lectura que es negra en la Categoría 1 sigue siendo amarilla en la Categoría 3 — así que elegir una por usted pondría en pantalla una bandera segura que su propia categoría podría contradecir. Hasta que la herramienta pueda preguntarle su categoría, el pronóstico recurre a la guía general de la NATA, que es más permisiva que cualquiera de las escalas de la CIF. Lea su categoría en la tabla de arriba, no en la bandera."
   },
   "kentucky": {
     "pageTitle": "Alteraciones de competición por WBGT de la KHSAA de Kentucky",
@@ -802,6 +806,8 @@
     "sourceHeading": "Fuente",
     "sourceBody": "Las bandas y citas anteriores se leyeron del documento archivado de la KHSAA el {{verifiedOn}}.",
     "ctaButton": "Planifique con el pronóstico",
-    "footballBody": "El fútbol americano es la excepción, y es incondicional — «must», y nada permitido en su lugar: «{{quote}}» Se repite en todas las bandas por debajo del nivel de parada."
+    "footballBody": "El fútbol americano es la excepción, y es incondicional — «must», y nada permitido en su lugar: «{{quote}}» Se repite en todas las bandas por debajo del nivel de parada.",
+    "pickerExclusionHeading": "Por qué Kentucky no está en el selector de políticas",
+    "pickerExclusionBody": "La KHSAA publica cuatro bandas de alteración de competición, no una escala de práctica de cinco banderas, y sus acciones están escritas por deporte y no por banda. Mapear cuatro bandas sobre las cinco banderas de este sitio inventaría una banda que la KHSAA nunca publicó, así que Kentucky se muestra en su propia tabla y la herramienta recurre a la guía general de la NATA. Lea la tabla de arriba para Kentucky; use las banderas solo para planificar."
   }
 }

@@ -83,6 +83,16 @@ export default function Kentucky() {
         <p className="mt-3 font-bold">{t('kentucky.deviceWarning')}</p>
       </section>
 
+      {/* Mirrors the North Carolina pattern: the page says why the picker
+          cannot carry this state, so "MA is in it and Kentucky is not" is
+          explained on screen rather than looking arbitrary. */}
+      <section className="border-2 border-line bg-surface p-5">
+        <h2 className="display-num mb-2 text-2xl uppercase">
+          {t('kentucky.pickerExclusionHeading')}
+        </h2>
+        <p>{t('kentucky.pickerExclusionBody')}</p>
+      </section>
+
       <section className="text-sm text-ink-muted">
         <h2 className="font-bold uppercase tracking-wide">{t('kentucky.sourceHeading')}</h2>
         <p className="mt-1">

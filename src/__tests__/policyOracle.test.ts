@@ -294,6 +294,23 @@ describe('policy oracle — guideline facts vs primary sources', () => {
     expect(flagAt(CIF_CATEGORIES[2], 92.0)).toBe('black')
   })
 
+  it('every state absent from the picker says so on its own page', () => {
+    // Otherwise "Massachusetts is in the picker and California is not" reads
+    // as arbitrary, and a CTA can promise a flag the tool will not produce.
+    // NC already had this; CA, KY and FL now match it.
+    for (const locale of [en, es]) {
+      for (const page of ['northCarolina', 'newYork', 'california', 'kentucky', 'florida'] as const) {
+        const body = (locale as Record<string, any>)[page]
+        if (page === 'newYork') continue // NY explains its exclusion in wbgtChartNote
+        expect(body.pickerExclusionHeading?.length, `${page} exclusion heading`).toBeGreaterThan(0)
+        expect(body.pickerExclusionBody?.length, `${page} exclusion body`).toBeGreaterThan(0)
+      }
+      // The California CTA must not promise "California flags" the picker
+      // cannot select.
+      expect(locale.california.ctaButton.toLowerCase()).not.toContain('california')
+    }
+  })
+
   it('California stays out of the picker — its category cannot be inferred', () => {
     // CIF assigns the category by region from a separate 28-page roster.
     // Auto-selecting one would emit a confidently wrong flag; adding these to

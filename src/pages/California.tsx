@@ -121,6 +121,16 @@ export default function California() {
         </p>
       </section>
 
+      {/* Mirrors the North Carolina pattern: the page says why the picker
+          cannot carry this state, so "MA is in it and California is not" is
+          explained on screen rather than looking arbitrary. */}
+      <section className="border-2 border-line bg-surface p-5">
+        <h2 className="display-num mb-2 text-2xl uppercase">
+          {t('california.pickerExclusionHeading')}
+        </h2>
+        <p>{t('california.pickerExclusionBody')}</p>
+      </section>
+
       <section>
         <p className="text-sm">
           <Link to={`/${lang}/california-air-quality`} className="font-semibold underline">
