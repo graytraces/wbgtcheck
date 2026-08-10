@@ -2,6 +2,7 @@ import { describe, it, expect, beforeAll, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent, within } from '@testing-library/react'
 import i18n from '../i18n'
 import en from '../locales/en.json'
+import es from '../locales/es.json'
 import WbgtLog from '../components/WbgtLog'
 import LogQuickAdd from '../components/LogQuickAdd'
 import VerdictCard from '../components/VerdictCard'
@@ -304,5 +305,26 @@ describe('LogQuickAdd beside the verdict', () => {
     expect(screen.queryByRole('link')).not.toBeInTheDocument()
     fireEvent.click(screen.getByRole('button', { name: /log 88\.4/i }))
     expect(screen.getByRole('link')).toHaveAttribute('href', '#wbgt-log')
+  })
+})
+
+/**
+ * The log's first sentence and the note under the Print button disagreed.
+ *
+ * `intro` said the record is "for this session"; `storageNote` says it lives
+ * until site data is cleared, and the measured behaviour is the second one —
+ * an entry written on one day is still there in a new tab the next. `intro` is
+ * the sentence a coach actually reads, and it told them not to rely on the
+ * artefact the Print button exists to produce.
+ */
+describe('the log says how long it keeps things, and says it once', () => {
+  it('does not call a season-long record a session', () => {
+    for (const dict of [en, es]) {
+      expect(dict.wbgtLog.intro).not.toMatch(/this session|esta sesi[óo]n/i)
+      expect(dict.wbgtLog.intro).toMatch(/season|temporada/i)
+      // …and it agrees with the storage note rather than contradicting it.
+      expect(dict.wbgtLog.intro).toMatch(/until you clear|hasta que usted lo borre/i)
+      expect(dict.wbgtLog.storageNote).toMatch(/clearing site data|borrar los datos|elimina/i)
+    }
   })
 })

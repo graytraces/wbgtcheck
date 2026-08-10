@@ -280,6 +280,25 @@ describe('the guide registry is the single source for both renderers', () => {
  * row), so none of the assertions above covers them.
  */
 describe('the cross-state topic guides are reachable at all', () => {
+  /**
+   * Hub labels name the body whose document the page is built around — "Texas
+   * UIL guide", "New York NYSPHSAA guide". Virginia's and Florida's still said
+   * "heat law guide" from when this site believed neither state had an
+   * association table; both pages now have one as their centrepiece (VHSL's
+   * six levels, FHSAA §41.8), so the label pointed at the wrong document.
+   */
+  it('every guide label names the body its page is built around', () => {
+    for (const [key, body] of [
+      ['virginiaLink', 'VHSL'],
+      ['floridaLink', 'FHSAA'],
+      ['newYorkLink', 'NYSPHSAA'],
+    ] as const) {
+      for (const [lang, dict] of [['en', en], ['es', es]] as const) {
+        expect(dict.states[key], `${lang} ${key}`).toContain(body)
+      }
+    }
+  })
+
   it('every topic guide is worker-valid and registered for SEO', () => {
     expect(TOPIC_GUIDES.length).toBe(2)
     for (const { slug, seoKey } of TOPIC_GUIDES) {

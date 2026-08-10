@@ -573,6 +573,20 @@ describe('no locale tells these three states their thresholds are unknowable', (
     }
   })
 
+  /**
+   * /en/virginia is prerendered, so its first sentence is what Google indexes
+   * and what a coach reads first. It opened with a note about this site's own
+   * editing history — "and this page said otherwise for a day" — which is a
+   * changelog entry. The correction belongs in the commit message and in
+   * CorrectionNote, which the page already carries.
+   */
+  it('the indexed first sentence is about Virginia, not about this site', () => {
+    for (const dict of [en, es]) {
+      expect(dict.virginia.intro).not.toMatch(/said otherwise|dijo lo contrario/i)
+      expect(dict.virginia.intro).not.toMatch(/for a day|durante un día/i)
+    }
+  })
+
   it('each of the three says what its association actually publishes', () => {
     for (const [lang, dict] of [['en', en], ['es', es]] as const) {
       expect(dict.virginia.intro, `${lang} VA`).toMatch(/VHSL/)

@@ -209,6 +209,34 @@ describe('the /marching-band-heat-rules page', () => {
     }
   })
 
+  /**
+   * Polarity, not decoration. "No — athletics document" is the WORSE answer
+   * for a band director: no state threshold covers the rehearsal. Drawn in
+   * neutral grey with a CircleSlash it read as "not applicable", i.e. as
+   * nothing to act on, which is the opposite of what it means.
+   */
+  it('draws the worse answer as a caution, not as a shrug', () => {
+    const { container } = renderPage()
+    const cells = container.querySelectorAll(
+      'table[aria-labelledby="band-table-heading"] tbody tr td',
+    )
+    expect(cells).toHaveLength(BAND_COVERAGE.length)
+    for (const [i, cell] of [...cells].entries()) {
+      const badge = cell.querySelector('span')!
+      const named = BAND_COVERAGE[i].coverage === 'named'
+      expect(badge.className, `${BAND_COVERAGE[i].abbr} badge`).toContain(
+        named ? 'bg-tint-green' : 'bg-tint-orange',
+      )
+      // The neutral tint is what made it read as "not applicable"…
+      if (!named) expect(badge.className).not.toContain('bg-tint-black')
+      // …and colour is never the only carrier: icon + words travel with it.
+      expect(badge.querySelector('svg'), 'badge icon').not.toBeNull()
+      expect(badge.textContent).toContain(
+        named ? en.marchingBand.coverageNamed : en.marchingBand.coverageAthleticsOnly,
+      )
+    }
+  })
+
   it('shows the two states that name band with their own sentences', () => {
     const { container } = renderPage()
     const text = container.textContent ?? ''

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { CircleCheck, CircleSlash } from 'lucide-react'
+import { CircleCheck, TriangleAlert } from 'lucide-react'
 import SEO from '../components/SEO'
 import CorrectionNote from '../components/CorrectionNote'
 import FlagBadge from '../components/FlagBadge'
@@ -39,6 +39,16 @@ import { cn } from '../lib/utils'
  * oregonAir.belowRangeBody's: a silent document is not a clearance.
  */
 
+/**
+ * ⚠️ Polarity. 'athletics-only' is the WORSE answer for the reader this page
+ * is written for — it means no state threshold covers their rehearsal — and it
+ * was drawn neutral grey with a CircleSlash, which reads as "not applicable"
+ * rather than "this is the gap you have to fill". Orange and a warning
+ * triangle, the treatment /forecast-or-device gives its own middle answer.
+ *
+ * Not red: red is this site's colour for a prohibition, and a document that
+ * says nothing about band prohibits nothing. It is a caution.
+ */
 const COVERAGE_STYLE: Record<
   BandCoverageKind,
   { icon: typeof CircleCheck; cls: string; labelKey: string }
@@ -49,8 +59,8 @@ const COVERAGE_STYLE: Record<
     labelKey: 'marchingBand.coverageNamed',
   },
   'athletics-only': {
-    icon: CircleSlash,
-    cls: 'bg-tint-black text-ink',
+    icon: TriangleAlert,
+    cls: 'bg-tint-orange text-ink',
     labelKey: 'marchingBand.coverageAthleticsOnly',
   },
 }
