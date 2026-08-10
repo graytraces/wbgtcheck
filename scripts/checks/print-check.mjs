@@ -13,7 +13,7 @@ const REPO_SHOTS = __nodePath.join(REPO, ".omc/screenshots")
 // Seeds two log entries, applies the print class, and renders to PDF at Letter
 // size so the page count is the browser's own pagination, not a guess.
 import http from 'node:http'
-import { readFile, writeFile, mkdir } from 'node:fs/promises'
+import { readFile, mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import { createRequire } from 'node:module'
 import { blockAnalytics } from './blockAnalytics.mjs'
@@ -34,7 +34,9 @@ const server = http.createServer(async (req, res) => {
       const b = await readFile(path.join(DIST, rel))
       res.writeHead(200, { 'content-type': MIME[path.extname(rel)] ?? 'application/octet-stream' })
       res.end(b); return
-    } catch {}
+    } catch {
+      // Missing file: try the next candidate, then fall through to 404.
+    }
   }
   res.writeHead(404).end('x')
 })

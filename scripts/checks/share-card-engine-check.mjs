@@ -6,8 +6,6 @@ const __HERE = __nodePath.dirname(__fileURLToPath(import.meta.url))
 const REPO = __nodePath.resolve(__HERE, "../..")
 const WORKSPACE = __nodePath.resolve(REPO, "..")
 const WORKSPACE_PKG = __nodePath.join(WORKSPACE, "package.json")
-const REPO_DIST = __nodePath.join(REPO, "dist")
-const REPO_SHOTS = __nodePath.join(REPO, ".omc/screenshots")
 
 // share-card-engine-check.mjs — renders the REAL drawShareCard in Chromium and
 // WebKit and fails if the peak number's ink box overlaps the flag label's, or

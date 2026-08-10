@@ -17,7 +17,6 @@ import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 
 import {
-  POLICIES,
   UIL_CLASS_2,
   UIL_CLASS_3,
   GHSA,

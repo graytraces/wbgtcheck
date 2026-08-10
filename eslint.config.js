@@ -8,6 +8,26 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 export default defineConfig([
   globalIgnores(['dist']),
   {
+    /**
+     * The .js/.mjs half of the codebase was unchecked entirely: policyData.js
+     * and airPolicyData.js are the single source for every published
+     * threshold, stateDirectory.js and guideRegistry.js drive both renderers,
+     * and prerender.mjs plus scripts/checks/*.mjs are the build and the
+     * gates. An unused variable and a call to an undefined function both
+     * passed the budget from guideRegistry.js.
+     *
+     * Browser globals for the shared data modules (they are imported by React
+     * too), Node globals for the scripts.
+     */
+    files: ['**/*.{js,mjs}'],
+    extends: [js.configs.recommended],
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: { ...globals.browser, ...globals.node },
+    },
+  },
+  {
     files: ['**/*.{ts,tsx}'],
     extends: [
       js.configs.recommended,

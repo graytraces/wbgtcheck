@@ -7,7 +7,6 @@ const REPO = __nodePath.resolve(__HERE, "../..")
 const WORKSPACE = __nodePath.resolve(REPO, "..")
 const WORKSPACE_PKG = __nodePath.join(WORKSPACE, "package.json")
 const REPO_DIST = __nodePath.join(REPO, "dist")
-const REPO_SHOTS = __nodePath.join(REPO, ".omc/screenshots")
 
 // boot-failure-check.mjs — three questions about the prerender/hydration seam:
 //   1. entry JS blocked  → is there any readable text? (the blank-page bug)
@@ -38,7 +37,9 @@ const server = http.createServer(async (req, res) => {
       const b = await readFile(path.join(DIST, rel))
       res.writeHead(200, { 'content-type': MIME[path.extname(rel)] ?? 'application/octet-stream' })
       res.end(b); return
-    } catch {}
+    } catch {
+      // Missing file: try the next candidate, then fall through to 404.
+    }
   }
   res.writeHead(404).end('not found')
 })

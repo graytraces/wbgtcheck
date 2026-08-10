@@ -7,7 +7,6 @@ const REPO = __nodePath.resolve(__HERE, "../..")
 const WORKSPACE = __nodePath.resolve(REPO, "..")
 const WORKSPACE_PKG = __nodePath.join(WORKSPACE, "package.json")
 const REPO_DIST = __nodePath.join(REPO, "dist")
-const REPO_SHOTS = __nodePath.join(REPO, ".omc/screenshots")
 
 // no-hscroll-sweep.mjs — regression check: no page may scroll horizontally.
 // Serves dist/ statically (extensionless → .html), renders every route in
