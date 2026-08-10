@@ -474,6 +474,33 @@ describe('the states directory table is readable and reachable', () => {
     expect(cells[3]).toContain('CIF')
   })
 
+  /**
+   * The Notes column is prose, it starts off-screen at 390px, and it set the
+   * height of every row: Kentucky's was 375px tall while the columns a phone
+   * reader could actually see used a fraction of it. Measured after the split,
+   * data rows are ~57px and the note is readable full-width instead of
+   * clipped. Desktop is untouched — 1802px table either way.
+   */
+  it('gives each state a phone-only full-width note row', () => {
+    const { container } = renderStates()
+    const rows = [...container.querySelectorAll('tbody tr')]
+    expect(rows.length).toBe(STATE_DIRECTORY.length * 2)
+
+    const dataRows = rows.filter((r) => r.querySelector('th[scope="row"]'))
+    const noteRows = rows.filter((r) => !r.querySelector('th[scope="row"]'))
+    expect(dataRows.length).toBe(STATE_DIRECTORY.length)
+    expect(noteRows.length).toBe(STATE_DIRECTORY.length)
+
+    for (const noteRow of noteRows) {
+      expect(noteRow.className).toContain('sm:hidden')
+      const cell = noteRow.querySelector('td')!
+      expect(cell.getAttribute('colspan')).toBe('4')
+    }
+    // And the desktop copy is still in the data row, hidden on phones only.
+    const desktopNote = dataRows[0].querySelector('td.hidden.sm\\:table-cell')
+    expect(desktopNote, 'the desktop notes cell disappeared').toBeTruthy()
+  })
+
   it('gives the table a name and the scroll container a keyboard route in', () => {
     const { container } = renderStates()
     const table = container.querySelector('table')!

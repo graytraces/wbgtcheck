@@ -100,7 +100,7 @@ export default function States() {
       >
         <p className="sr-only">{t('states.tableScrollHint')}</p>
         <table
-          className="w-full min-w-[44rem] border-collapse text-sm"
+          className="w-full min-w-[26rem] border-collapse text-sm sm:min-w-[44rem]"
           aria-labelledby="states-table-heading"
         >
           <thead>
@@ -122,8 +122,24 @@ export default function States() {
             {STATE_DIRECTORY.map((row) => {
               const style = MEASUREMENT_STYLE[row.measurement]
               const Icon = style.icon
-              return (
-                <tr key={row.abbr} className="border-b border-line align-top">
+              const note = (
+                <>
+                  {t(`states.notes.${row.noteKey}`, { effectiveDate: UIL_EFFECTIVE_DATE })}{' '}
+                  {GUIDE_SLUG_BY_ABBR[row.abbr] && (
+                    <Link
+                      to={`/${lang}/${GUIDE_SLUG_BY_ABBR[row.abbr]}`}
+                      className="font-semibold underline"
+                    >
+                      {t('states.rowGuideLink')}
+                    </Link>
+                  )}
+                  <span className="mt-0.5 block text-xs">
+                    {row.verified === 'primary' ? t('states.verifiedBadge') : t('states.researchBadge')}
+                  </span>
+                </>
+              )
+              const mainRow = (
+                <tr key={row.abbr} className="border-b border-line align-top sm:border-b">
                   {/* Row header, not a plain cell: in a five-column prose
                       table a screen reader otherwise reads the mandate and the
                       note without ever saying which state they belong to. */}
@@ -138,22 +154,21 @@ export default function States() {
                   </td>
                   <td className="py-2 pr-3">{t(`states.mandate.${row.mandate}`)}</td>
                   <td className="py-2 pr-3">{row.body}</td>
-                  <td className="py-2 text-ink-muted">
-                    {t(`states.notes.${row.noteKey}`, { effectiveDate: UIL_EFFECTIVE_DATE })}{' '}
-                    {GUIDE_SLUG_BY_ABBR[row.abbr] && (
-                      <Link
-                        to={`/${lang}/${GUIDE_SLUG_BY_ABBR[row.abbr]}`}
-                        className="font-semibold underline"
-                      >
-                        {t('states.rowGuideLink')}
-                      </Link>
-                    )}
-                    <span className="mt-0.5 block text-xs">
-                      {row.verified === 'primary' ? t('states.verifiedBadge') : t('states.researchBadge')}
-                    </span>
-                  </td>
+                  {/* Hidden on phones and repeated full-width below: this
+                      column is prose, it starts off-screen, and it set the
+                      height of every row — 375px for Kentucky, of which the
+                      visible columns used a fraction. */}
+                  <td className="hidden py-2 text-ink-muted sm:table-cell">{note}</td>
                 </tr>
               )
+              return [
+                mainRow,
+                <tr key={`${row.abbr}-note`} className="border-b border-line sm:hidden">
+                  <td colSpan={4} className="pb-2 text-sm text-ink-muted">
+                    {note}
+                  </td>
+                </tr>,
+              ]
             })}
           </tbody>
         </table>
