@@ -772,7 +772,7 @@
     "intro": "California is the only state on this site with three different WBGT ladders. CIF assigns each school a region category, and the same reading means different things in San Diego and in the Sierra foothills — so the number alone tells you nothing until you know your category.",
     "categoryHeading": "Find your region category first",
     "categoryBody": "The policy runs under {{basis}}, and it splits the state into Category 1, 2 and 3 by climate. Most states fall into one category or two; California spans all three.",
-    "bylawNumberNote": "One caveat on the citation itself: CIF's numbering disagrees with CIF's. The sentence above cites 503.L for air quality, but the bylaws printed earlier in the same book put the Air Quality Index Protocol at {{actual}} and give 503.L to {{other}}. We quote CIF as written rather than renumber it, and this site's air-quality page cites {{actual}}.",
+    "bylawNumberNote": "One caveat on the citation itself: CIF's numbering disagrees with itself. The sentence above cites 503.L for air quality, but the bylaws printed earlier in the same book put the Air Quality Index Protocol at {{actual}} and give 503.L to {{other}}. We quote CIF as written rather than renumber it, and this site's air-quality page cites {{actual}}.",
     "cancelBody": "At the top of each ladder the language is not advisory — {{quote}}.",
     "rosterLink": "Look up your school's category on the CIF roster",
     "tableHeading": "Category {{category}} — activity guidelines by WBGT (°F)",

@@ -46,18 +46,10 @@ export default function California() {
           <MapPin className="h-6 w-6" aria-hidden="true" />
           {t('california.categoryHeading')}
         </h2>
-        <p>{t('california.categoryBody', { basis: CIF_LEGAL_BASIS })}</p>
-        {/* CIF's policy page and CIF's bylaws number the air-quality
-            protocol differently. Saying so is cheaper than letting a reader
-            look up 503.L and land on the AED bylaw. */}
-        <p className="mt-2 text-sm text-ink-muted">
-          {t('california.bylawNumberNote', {
-            actual: CIF_AIR_BYLAW_CITATION,
-            other: CIF_BYLAW_L_SUBJECT,
-          })}
-        </p>
-        <p className="mt-2">{t('california.cancelBody', { quote: CIF_CANCEL_QUOTE })}</p>
-        <p className="mt-3">
+        {/* The roster is the only thing this section asks the reader to DO,
+            and it used to sit 487px below the heading behind an aside about
+            bylaw numbering. Action first, commentary in Source. */}
+        <p className="mb-3">
           <a
             href={CIF_CATEGORY_ROSTER_URL}
             target="_blank"
@@ -67,6 +59,15 @@ export default function California() {
             {t('california.rosterLink')}
           </a>
         </p>
+        <p>{t('california.categoryBody', { basis: CIF_LEGAL_BASIS })}</p>
+        <p className="mt-2">{t('california.cancelBody', { quote: CIF_CANCEL_QUOTE })}</p>
+      </section>
+
+      <section className="border-2 border-line bg-surface p-5">
+        <h2 className="display-num mb-2 text-2xl uppercase">
+          {t('california.pickerExclusionHeading')}
+        </h2>
+        <p>{t('california.pickerExclusionBody')}</p>
       </section>
 
       {/* One threshold grid, then one action table.
@@ -226,12 +227,6 @@ export default function California() {
       {/* Mirrors the North Carolina pattern: the page says why the picker
           cannot carry this state, so "MA is in it and California is not" is
           explained on screen rather than looking arbitrary. */}
-      <section className="border-2 border-line bg-surface p-5">
-        <h2 className="display-num mb-2 text-2xl uppercase">
-          {t('california.pickerExclusionHeading')}
-        </h2>
-        <p>{t('california.pickerExclusionBody')}</p>
-      </section>
 
       <section>
         <p className="text-sm">
@@ -243,6 +238,15 @@ export default function California() {
 
       <section className="text-sm text-ink-muted">
         <h2 className="font-bold uppercase tracking-wide">{t('california.sourceHeading')}</h2>
+        {/* CIF's policy page and CIF's bylaws number the air-quality protocol
+            differently. It belongs with the citation, not between a reader and
+            the roster link. */}
+        <p className="mt-1">
+          {t('california.bylawNumberNote', {
+            actual: CIF_AIR_BYLAW_CITATION,
+            other: CIF_BYLAW_L_SUBJECT,
+          })}
+        </p>
         <p className="mt-1">
           {t('california.sourceBody', { verifiedOn: CIF_HEAT_SOURCE.verifiedOn })}{' '}
           <a

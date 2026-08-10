@@ -795,19 +795,13 @@ function generateBodyContent(lang, page) {
     push(`<h1>${escapeHtml(t('california.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('california.intro'))}</p>`)
     push(`<h2>${escapeHtml(t('california.categoryHeading'))}</h2>`)
-    push(`<p>${escapeHtml(t('california.categoryBody', { basis: CIF_LEGAL_BASIS }))}</p>`)
-    push(
-      `<p>${escapeHtml(
-        t('california.bylawNumberNote', {
-          actual: CIF_AIR_BYLAW_CITATION,
-          other: CIF_BYLAW_L_SUBJECT,
-        }),
-      )}</p>`,
-    )
-    push(`<p>${escapeHtml(t('california.cancelBody', { quote: CIF_CANCEL_QUOTE }))}</p>`)
     push(
       `<p><a href="${CIF_CATEGORY_ROSTER_URL}">${escapeHtml(t('california.rosterLink'))}</a></p>`,
     )
+    push(`<p>${escapeHtml(t('california.categoryBody', { basis: CIF_LEGAL_BASIS }))}</p>`)
+    push(`<p>${escapeHtml(t('california.cancelBody', { quote: CIF_CANCEL_QUOTE }))}</p>`)
+    push(`<h2>${escapeHtml(t('california.pickerExclusionHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('california.pickerExclusionBody'))}</p>`)
     // Threshold grid + one action table, mirroring California.tsx.
     push(`<h2>${escapeHtml(t('california.thresholdsHeading'))}</h2>`)
     push(`<p>${escapeHtml(t('california.thresholdsIntro'))}</p>`)
@@ -868,10 +862,16 @@ function generateBodyContent(lang, page) {
     push(
       `<p>${escapeHtml(t('california.acclimatizationFootballBody', { football: CIF_FOOTBALL_EQUIPMENT_QUOTE }))}</p>`,
     )
-    push(`<h2>${escapeHtml(t('california.pickerExclusionHeading'))}</h2>`)
-    push(`<p>${escapeHtml(t('california.pickerExclusionBody'))}</p>`)
     push(
       `<h2>${escapeHtml(t('california.sourceHeading'))}</h2><p>${escapeHtml(t('california.sourceBody', { verifiedOn: CIF_HEAT_SOURCE.verifiedOn }))} <a href="${CIF_HEAT_SOURCE.url}">${escapeHtml(CIF_HEAT_SOURCE.name)}</a></p>`,
+    )
+    push(
+      `<p>${escapeHtml(
+        t('california.bylawNumberNote', {
+          actual: CIF_AIR_BYLAW_CITATION,
+          other: CIF_BYLAW_L_SUBJECT,
+        }),
+      )}</p>`,
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
     push(correctionNoteHtml(t, 'california', lang))

@@ -8,7 +8,7 @@ import PolicyPicker from '../components/PolicyPicker'
 import Layout from '../components/Layout'
 import States from '../pages/States'
 import California from '../pages/California'
-import { POLICIES, type PolicyId } from '../data/policyOracle'
+import { POLICIES, CIF_CATEGORY_ROSTER_URL, type PolicyId } from '../data/policyOracle'
 import { pageSEO, statePageKeyByPolicy } from '../seo'
 import { STATE_GUIDES, AIR_GUIDES, GUIDE_SLUG_BY_ABBR } from '../data/guideRegistry'
 import { defaultPolicyFor } from '../hooks/useWbgt'
@@ -419,4 +419,64 @@ describe('the states directory table is readable and reachable', () => {
       }
     },
   )
+})
+
+/**
+ * /california asks the reader to do exactly one thing — look their school up
+ * in CIF's category roster — and the link to it sat 487px below the heading
+ * that says to, behind an aside about bylaw numbering. The notice explaining
+ * why California is not in the picker sat 79% of the way down, which is past
+ * where anyone reads.
+ */
+describe('California puts the action before the commentary', () => {
+  const renderCA = () => {
+    i18n.changeLanguage('en')
+    return render(
+      <MemoryRouter initialEntries={['/en/california']}>
+        <Routes>
+          <Route path="/:lang/*" element={<California />} />
+        </Routes>
+      </MemoryRouter>,
+    )
+  }
+  const precedes = (a: Element, b: Element) =>
+    !!(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING)
+
+  it('links the category roster before it explains anything', () => {
+    const { container } = renderCA()
+    const roster = container.querySelector(`a[href="${CIF_CATEGORY_ROSTER_URL}"]`)!
+    const explanation = [...container.querySelectorAll('p')].find((el) =>
+      el.textContent?.includes('splits the state'),
+    )!
+    expect(roster).toBeTruthy()
+    expect(precedes(roster, explanation), 'the roster link is still buried').toBe(true)
+  })
+
+  it('says why it is not in the picker before the tables, not after them', () => {
+    const { container } = renderCA()
+    const notice = [...container.querySelectorAll('h2')].find((h) =>
+      h.textContent?.includes(en.california.pickerExclusionHeading),
+    )!
+    const firstTable = container.querySelector('table')!
+    expect(precedes(notice, firstTable), 'the picker notice is below the tables').toBe(true)
+  })
+
+  it('keeps the bylaw-numbering aside with the citation', () => {
+    const { container } = renderCA()
+    const source = [...container.querySelectorAll('h2')].find((h) =>
+      h.textContent?.includes(en.california.sourceHeading),
+    )!
+    const aside = [...container.querySelectorAll('p')].find((el) =>
+      el.textContent?.includes('disagrees with itself'),
+    )!
+    expect(aside, 'the corrected sentence is missing').toBeTruthy()
+    expect(precedes(source, aside), 'the aside is not in the Source section').toBe(true)
+  })
+
+  it('does not say "CIF\'s numbering disagrees with CIF\'s"', () => {
+    // The sentence shipped with its own subject as its object.
+    expect(en.california.bylawNumberNote).not.toMatch(/disagrees with CIF's\./)
+    expect(en.california.bylawNumberNote).toMatch(/disagrees with itself/)
+    expect(es.california.bylawNumberNote).toMatch(/consigo misma/)
+  })
 })
