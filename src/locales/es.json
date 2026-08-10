@@ -276,12 +276,12 @@
     },
     "texas": {
       "title": "Reglas WBGT de la UIL de Texas: umbrales, clases y medición | WBGT Check",
-      "description": "Requisitos WBGT de la UIL para atletismo y banda de marcha en Texas: umbrales de Clase 2 y Clase 3, modificaciones de actividad, lecturas 15 minutos antes y reglas de medición por app.",
+      "description": "Reglas WBGT de la UIL para atletismo y banda de marcha en Texas: umbrales de Clase 2 y 3, modificaciones, lecturas 15 minutos antes y medición por app.",
       "keywords": "política WBGT UIL, reglas de calor Texas fútbol americano, plan de estrés por calor UIL, WBGT Clase 2 Clase 3, reglas de calor banda de marcha Texas"
     },
     "georgia": {
       "title": "Política WBGT de la GHSA de Georgia: umbrales y regla de instrumento | WBGT Check",
-      "description": "El estatuto 2.67 de la GHSA explicado: umbrales WBGT, descansos obligatorios y por qué Georgia exige un instrumento WBGT calibrado en el sitio — las apps y sitios web no cuentan.",
+      "description": "El estatuto 2.67 de la GHSA: umbrales WBGT, descansos obligatorios y por qué Georgia exige un instrumento calibrado en el sitio — las apps no cuentan.",
       "keywords": "política de calor GHSA, reglas WBGT Georgia, estatuto 2.67 GHSA, requisito de instrumento WBGT, reglas de calor fútbol americano Georgia"
     },
     "wbgtVsHeatIndex": {
@@ -291,37 +291,37 @@
     },
     "states": {
       "title": "Reglas WBGT por estado: apps permitidas vs solo instrumento | WBGT Check",
-      "description": "Qué estados exigen WBGT en deportes escolares, cuáles aceptan lecturas por app o web y cuáles requieren un instrumento en el sitio. Clasificación con fuentes y salvedades.",
+      "description": "Qué estados exigen WBGT en deportes escolares, cuáles aceptan lecturas por app o web y cuáles requieren un instrumento en el sitio. Con fuentes y salvedades.",
       "keywords": "reglas WBGT por estado, políticas de calor deportes escolares, estados requisito instrumento WBGT, reglas de aclimatación al calor"
     },
     "southCarolina": {
       "title": "Reglas WBGT de la SCHSL de Carolina del Sur: umbrales e instrumento | WBGT Check",
-      "description": "Guías de calor de la SCHSL explicadas: umbrales de actividad WBGT, el termómetro WBGT obligatorio en el sitio, la regla de permanencia de 15 minutos y por qué no se aceptan apps.",
+      "description": "Guías de calor de la SCHSL: umbrales de actividad WBGT, el termómetro obligatorio en el sitio, la regla de 15 minutos y por qué no valen las apps.",
       "keywords": "política de calor SCHSL, reglas WBGT Carolina del Sur, instrumento WBGT SCHSL, reglas de calor fútbol americano Carolina del Sur"
     },
     "iowa": {
       "title": "Reglas WBGT de Iowa para deportes y banda de marcha | WBGT Check",
-      "description": "Guía WBGT de IHSAA, IGHSAU, IHSMA e IHSSA de Iowa: umbrales de Categoría 2, el disparador de 80 °F, lecturas cada 30 minutos y las modificaciones para banda de marcha y porristas.",
+      "description": "Guía WBGT de IHSAA, IGHSAU, IHSMA e IHSSA: umbrales de Categoría 2, el disparador de 80 °F, lecturas cada 30 minutos y ajustes para banda y porristas.",
       "keywords": "política WBGT Iowa, reglas de calor IHSAA, banda de marcha IHSMA calor, WBGT Categoría 2 Iowa"
     },
     "tennessee": {
       "title": "Política de calor de la TSSAA de Tennessee: WBGT o índice de calor | WBGT Check",
-      "description": "La TSSAA deja que cada escuela lea WBGT o índice de calor. Los umbrales WBGT, la escala de índice de calor con la que se emparejan y cuándo se permite una app del clima.",
+      "description": "La TSSAA deja que cada escuela lea WBGT o índice de calor. Los umbrales, la escala de índice con la que se emparejan y cuándo se permite una app.",
       "keywords": "política de calor TSSAA, reglas WBGT Tennessee, índice de calor TSSAA, app del clima TSSAA"
     },
     "northCarolina": {
       "title": "Guías de calor de la NCHSAA de Carolina del Norte y su cuadro WBGT | WBGT Check",
-      "description": "El manual vigente de la NCHSAA: WBGT medido con un dispositivo científicamente aprobado, lecturas cada hora y un cuadro escalonado hasta la suspensión total — y por qué queda fuera del selector de políticas de este sitio.",
+      "description": "El manual vigente de la NCHSAA: WBGT con dispositivo aprobado, lecturas cada hora y un cuadro que llega a la suspensión total — y por qué queda fuera.",
       "keywords": "guías de calor NCHSAA, cuadro WBGT Carolina del Norte, política de calor NCHSAA"
     },
     "newYork": {
       "title": "Reglas de índice de calor de la NYSPHSAA de Nueva York (no WBGT) | WBGT Check",
-      "description": "Nueva York escribe su política sobre el índice de calor, no el WBGT, e indica leerlo desde una app por código ZIP. Los umbrales y qué implica para las herramientas WBGT.",
+      "description": "Nueva York escribe su política sobre el índice de calor, no el WBGT, e indica leerlo desde una app por código ZIP. Los umbrales y qué implican.",
       "keywords": "índice de calor NYSPHSAA, política de calor Nueva York, umbrales índice de calor Nueva York"
     },
     "virginia": {
       "title": "Ley de calor de Virginia § 22.1-271.10: los distritos fijan los niveles WBGT | WBGT Check",
-      "description": "La ley de 2025 de Virginia obliga a cada junta escolar a adoptar políticas de calor basadas en WBGT con al menos cinco niveles — pero los umbrales se fijan localmente, no a nivel estatal.",
+      "description": "La ley de 2025 de Virginia obliga a cada junta escolar a adoptar políticas de calor con WBGT y al menos cinco niveles — pero los umbrales son locales.",
       "keywords": "ley de calor Virginia atletas, 22.1-271.10, política de calor VHSL, política WBGT junta escolar Virginia"
     },
     "privacy": {
@@ -336,7 +336,7 @@
     },
     "washingtonAir": {
       "title": "Calidad del Aire Escolar en Washington: ¿Cancelar la Práctica? | WBGT Check",
-      "description": "Guía de calidad del aire del DOH de Washington para niños y jóvenes según la duración de la actividad — de menos de una hora a prácticas de varias horas — basada en PM2.5, con la lectura actual de AirNow para su campo.",
+      "description": "Guía de calidad del aire del DOH de Washington para niños y jóvenes según la duración de la actividad, basada en PM2.5, con la lectura de AirNow.",
       "keywords": "política calidad del aire escuelas Washington, humo incendios cancelar práctica Washington, guía DOH humo escuelas, ICA cancelar práctica Washington"
     },
     "oregonAir": {
@@ -351,7 +351,7 @@
     },
     "massachusetts": {
       "title": "Política de calor WBGT de la MIAA de Massachusetts | WBGT Check",
-      "description": "Umbrales de modificación por calor de la MIAA en temperatura de globo y bulbo húmedo, la regla del instrumento en el sitio y cómo difieren los partidos de las prácticas.",
+      "description": "Umbrales de modificación por calor de la MIAA, la regla del instrumento en el sitio y en qué se diferencian los partidos de las prácticas.",
       "keywords": "política de calor MIAA, WBGT Massachusetts, modificación por calor MIAA"
     },
     "florida": {
@@ -478,7 +478,7 @@
       "ny": "La NYSPHSAA trabaja con índice de calor, no WBGT, e indica leerlo desde una app del clima nombrada, por código ZIP — vea la guía de Nueva York.",
       "nj": "Reglas de participación en calor legisladas desde 2020.",
       "la": "Reglas basadas en WBGT legisladas.",
-      "ca": "Tres escalas WBGT regionales bajo AB 1653 y el estatuto 503.K de la CIF, cada una con un nivel de cancelación estricto. La CIF exige un WBGT y envía a las escuelas sin medidor a una lectura de la NOAA — uno de los pocos estados que nombra una fuente en línea.",
+      "ca": "Tres escalas WBGT regionales bajo AB 1653 y el estatuto 503.K de la CIF, cada una con un nivel de cancelación estricto. La CIF exige un WBGT y, para las escuelas sin medidor, nombra una página concreta de la NOAA — una sola fuente gubernamental, no las lecturas por app en general.",
       "ma": "Una sola política estatal de la MIAA que cubre práctica Y competición, con umbrales muy por debajo de la mayoría — la actividad al aire libre se detiene en los 86. Se exige un instrumento WBGT en el sitio en cada actividad, y una nota al pie detiene por completo los partidos en cualquier deporte cuyo equipo modifique la banda."
     },
     "caveat": "Esta tabla es una ayuda de navegación, no asesoría legal. Las políticas cambian a mitad de temporada; el documento vigente de la asociación manda. ¿Encontró un error? Avise primero a su preparador físico, luego a nosotros.",
@@ -763,11 +763,12 @@
     "intro": "California es el único estado de este sitio con tres escalas WBGT distintas. La CIF asigna a cada escuela una categoría regional, y la misma lectura significa cosas distintas en San Diego y en las estribaciones de la Sierra — así que el número por sí solo no dice nada hasta que sepa su categoría.",
     "categoryHeading": "Primero encuentre su categoría regional",
     "categoryBody": "La política se rige por {{basis}}, y divide el estado en Categoría 1, 2 y 3 según el clima. La mayoría de los estados cae en una o dos categorías; California abarca las tres.",
+    "bylawNumberNote": "Una salvedad sobre la cita misma: la numeración de la CIF no concuerda consigo misma. La frase anterior cita 503.L para calidad del aire, pero los estatutos impresos antes en el mismo libro sitúan el Protocolo de Índice de Calidad del Aire en {{actual}} y asignan 503.L a {{other}}. Citamos a la CIF tal como lo escribió en vez de renumerarla, y la página de calidad del aire de este sitio cita {{actual}}.",
     "cancelBody": "En lo alto de cada escala el lenguaje no es orientativo — {{quote}}.",
     "rosterLink": "Consulte la categoría de su escuela en la lista de la CIF",
     "tableHeading": "Categoría {{category}} — guía de actividad por WBGT (°F)",
     "boundaryHeading": "Dónde este sitio es más estricto que la tabla publicada",
-    "boundaryBody": "La política enuncia sus niveles de cancelación dos veces y ambos no coinciden: el texto de la primera página da un conjunto y la tabla de la siguiente imprime otro, y esa tabla además deja una décima de grado sin asignar entre el tope del rojo y el inicio del negro. Este sitio resuelve todos esos huecos hacia arriba — gana la bandera más caliente — para que una lectura en un rango en disputa nunca se muestre con la categoría más fresca. Rige la tabla de su asociación; la nuestra solo se equivoca hacia detenerse antes.",
+    "boundaryBody": "La política enuncia sus niveles de cancelación dos veces y ambos no coinciden: el texto de la primera página da un conjunto y la tabla de la siguiente imprime otro. Esa tabla además deja huecos en casi todos sus límites, no solo en uno — la Categoría 3 imprime el amarillo como {{lower}} y el naranja como {{upper}}, así que {{skipped}} no aparece en ninguno. Este sitio resuelve todos esos huecos hacia arriba — gana la bandera más caliente — para que una lectura en un rango en disputa nunca se muestre con la categoría más fresca. Rige la tabla de su asociación; la nuestra solo se equivoca hacia detenerse antes.",
     "measurementHeading": "California espera un WBGT — y envía a la NOAA a quien no tenga uno",
     "measurementBody": "La política es directa sobre el instrumento: «{{quote}}»",
     "noDeviceBody": "Y después hace algo que ninguna otra asociación de este sitio hace. Para las escuelas que no tienen medidor, nombra una fuente en línea: «{{quote}}» — enlazando el propio mapa WBGT de la NOAA.",
@@ -811,6 +812,7 @@
     },
     "recheckNote": "Todas las bandas por debajo del nivel de parada piden además volver a comprobar el WBGT cada {{interval}} minutos para detectar el paso a la banda siguiente.",
     "scopeNote": "La fuente añade alteraciones por deporte sobre estas — el fútbol americano lleva la regla de medición más estricta, el fútbol y el hockey sobre césped añaden descansos de hidratación arbitrales, y el campo traviesa añade estaciones de hidratación y una comprobación antes del primer llamado de cada carrera en días de varias carreras. Esta tabla recoge solo la columna de todos los deportes; consulte la fuente para su deporte.",
+    "belowBandsNote": "La tabla se detiene en {{floor}} °F y la KHSAA no imprime nada por debajo. Ese vacío no es una autorización: significa que el documento no ofrece alteraciones de contienda ahí, no que la asociación haya mirado más abajo y no hallara nada que decir. Por debajo de la tabla, recurra a la guía general de calor y a su propio criterio.",
     "measurementHeading": "Una lectura tomada en otro lugar no cuenta",
     "measurementBody": "En la mayoría de los deportes la regla es una recomendación firme, y está en las filas por deporte y no en la columna de todos los deportes: «{{quote}}»",
     "invalidBody": "Esas mismas filas van más lejos, aunque siguen en lenguaje de recomendación: «{{quote}}»",

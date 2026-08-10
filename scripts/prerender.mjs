@@ -28,11 +28,18 @@ import {
   KHSAA_WBGT_REFERENCE,
   KY_RECHECK_INTERVAL_MINUTES,
   KY_REVISION,
+  KY_REVISION_ISO,
+  KY_LOWEST_BAND_FLOOR,
   KY_ONSITE_ONLY_QUOTE,
   KY_OFFSITE_INVALID_QUOTE,
   KY_FOOTBALL_ONSITE_QUOTE,
   CIF_CATEGORIES,
   CIF_LEGAL_BASIS,
+  CIF_AIR_BYLAW_CITATION,
+  CIF_BYLAW_L_SUBJECT,
+  CIF_GAP_EXAMPLE_LOWER,
+  CIF_GAP_EXAMPLE_UPPER,
+  CIF_GAP_EXAMPLE_SKIPPED,
   CIF_WBGT_REQUIRED_QUOTE,
   CIF_NO_DEVICE_QUOTE,
   CIF_NOAA_TOOL_URL,
@@ -746,7 +753,13 @@ function generateBodyContent(lang, page) {
     push(`<h1>${escapeHtml(t('kentucky.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('kentucky.intro'))}</p>`)
     push(`<h2>${escapeHtml(t('kentucky.currencyHeading'))}</h2>`)
-    push(`<p>${escapeHtml(t('kentucky.currencyBody', { revision: KY_REVISION }))}</p>`)
+    push(
+      `<p>${escapeHtml(
+        t('kentucky.currencyBody', {
+          revision: lang === 'es' ? KY_REVISION_ISO : KY_REVISION,
+        }),
+      )}</p>`,
+    )
     push(`<h2>${escapeHtml(t('kentucky.tableHeading'))}</h2>`)
     push(
       `<table><thead><tr><th>${escapeHtml(t('kentucky.colRange'))}</th><th>${escapeHtml(t('kentucky.colActions'))}</th></tr></thead><tbody>${KHSAA_WBGT_REFERENCE.rows
@@ -762,6 +775,9 @@ function generateBodyContent(lang, page) {
       `<p>${escapeHtml(t('kentucky.recheckNote', { interval: KY_RECHECK_INTERVAL_MINUTES }))}</p>`,
     )
     push(`<p>${escapeHtml(t('kentucky.scopeNote'))}</p>`)
+    push(
+      `<p>${escapeHtml(t('kentucky.belowBandsNote', { floor: KY_LOWEST_BAND_FLOOR }))}</p>`,
+    )
     push(`<h2>${escapeHtml(t('kentucky.measurementHeading'))}</h2>`)
     push(`<p>${escapeHtml(t('kentucky.measurementBody', { quote: KY_ONSITE_ONLY_QUOTE }))}</p>`)
     push(`<p>${escapeHtml(t('kentucky.invalidBody', { quote: KY_OFFSITE_INVALID_QUOTE }))}</p>`)
@@ -779,6 +795,14 @@ function generateBodyContent(lang, page) {
     push(`<p>${escapeHtml(t('california.intro'))}</p>`)
     push(`<h2>${escapeHtml(t('california.categoryHeading'))}</h2>`)
     push(`<p>${escapeHtml(t('california.categoryBody', { basis: CIF_LEGAL_BASIS }))}</p>`)
+    push(
+      `<p>${escapeHtml(
+        t('california.bylawNumberNote', {
+          actual: CIF_AIR_BYLAW_CITATION,
+          other: CIF_BYLAW_L_SUBJECT,
+        }),
+      )}</p>`,
+    )
     push(`<p>${escapeHtml(t('california.cancelBody', { quote: CIF_CANCEL_QUOTE }))}</p>`)
     push(
       `<p><a href="${CIF_CATEGORY_ROSTER_URL}">${escapeHtml(t('california.rosterLink'))}</a></p>`,
@@ -805,7 +829,15 @@ function generateBodyContent(lang, page) {
     push(`<p>${escapeHtml(t('california.actionsIntro'))}</p>`)
     push(policyTableHtml(CIF_CATEGORIES[0], t))
     push(`<h2>${escapeHtml(t('california.boundaryHeading'))}</h2>`)
-    push(`<p>${escapeHtml(t('california.boundaryBody'))}</p>`)
+    push(
+      `<p>${escapeHtml(
+        t('california.boundaryBody', {
+          lower: CIF_GAP_EXAMPLE_LOWER,
+          upper: CIF_GAP_EXAMPLE_UPPER,
+          skipped: CIF_GAP_EXAMPLE_SKIPPED,
+        }),
+      )}</p>`,
+    )
     push(`<h2>${escapeHtml(t('california.measurementHeading'))}</h2>`)
     push(
       `<p>${escapeHtml(t('california.measurementBody', { quote: CIF_WBGT_REQUIRED_QUOTE }))}</p>`,

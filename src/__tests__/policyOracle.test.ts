@@ -19,6 +19,7 @@ import {
   KY_FOOTBALL_ONSITE_QUOTE,
   CIF_CATEGORIES,
   CIF_CATEGORY_1,
+  CIF_CATEGORY_2,
   CIF_CATEGORY_3,
   CIF_NO_DEVICE_QUOTE,
   CIF_FIVE_DAY_QUOTE,
@@ -32,6 +33,15 @@ import {
   GENERIC_NATA,
   NCHSAA_REFERENCE,
   NYSPHSAA_HEAT_INDEX_REFERENCE,
+  CIF_GAP_EXAMPLE_LOWER,
+  CIF_GAP_EXAMPLE_UPPER,
+  CIF_GAP_EXAMPLE_SKIPPED,
+  CIF_LEGAL_BASIS,
+  CIF_AIR_BYLAW_CITATION,
+  CIF_BYLAW_L_SUBJECT,
+  KY_LOWEST_BAND_FLOOR,
+  KY_REVISION,
+  KY_REVISION_ISO,
   classifyWbgt,
   isBorderline,
   nextBandBoundary,
@@ -75,6 +85,7 @@ import {
   GHSA_ESCALATE_QUOTE,
   SCHSL_CONTINUOUS_QUOTE,
 } from '../data/policyOracle'
+import { CA_AIR_POLICY } from '../data/airPolicyOracle'
 import type { FlagColor, HeatPolicy } from '../data/policyOracle'
 import { guidelineSentences } from '../lib/guidelineSentences.js'
 import { STATE_DIRECTORY } from '../data/stateDirectory'
@@ -817,5 +828,73 @@ describe('measurement legality quotes (re-verified 2026-08-09)', () => {
     expect(GHSA_MONITOR_EVERY_PRACTICE_QUOTE).toContain('to ensure compliance with GHSA policy')
     expect(GHSA_REMINDER_SOURCE.url).toContain('ghsa.net')
     expect(GHSA_REMINDER_SOURCE.verifiedOn).toBe('2026-08-09')
+  })
+})
+
+describe('the gaps in CIF\'s printed chart', () => {
+  /**
+   * The page tells a reader "Category 3 prints yellow as X and orange as Y, so
+   * Z is printed in neither". If any of those three drifts from the table the
+   * sentence becomes a lie a reader can catch by looking two inches up, so all
+   * three are checked against the bands themselves.
+   */
+  it('the worked example names a value that really is in neither printed band', () => {
+    const yellow = CIF_CATEGORY_3.bands.find((b) => b.flag === 'yellow')!
+    const orange = CIF_CATEGORY_3.bands.find((b) => b.flag === 'orange')!
+    expect(CIF_GAP_EXAMPLE_LOWER).toBe(yellow.sourceLabel)
+    expect(CIF_GAP_EXAMPLE_UPPER).toBe(orange.sourceLabel)
+
+    const skipped = Number.parseFloat(CIF_GAP_EXAMPLE_SKIPPED)
+    const [, yellowTop] = yellow.sourceLabel.match(/(\d+\.\d+)\s*°F$/)!
+    const [, orangeFloor] = orange.sourceLabel.match(/^(\d+\.\d+)/)!
+    expect(skipped).toBeGreaterThan(Number.parseFloat(yellowTop))
+    expect(skipped).toBeLessThan(Number.parseFloat(orangeFloor))
+  })
+
+  it('every gap resolves upward — the hotter flag, never the cooler one', () => {
+    for (const category of [CIF_CATEGORY_1, CIF_CATEGORY_2, CIF_CATEGORY_3]) {
+      for (let i = 0; i < category.bands.length - 1; i++) {
+        const hotter = category.bands[i]
+        const cooler = category.bands[i + 1]
+        const [, coolerTop] = cooler.sourceLabel.match(/(\d+\.\d+)\s*°F$/) ?? []
+        if (!coolerTop) continue
+        const [, hotterFloor] = hotter.sourceLabel.match(/(\d+\.\d+)/)!
+        // Walk the tenths the chart never assigns and demand the hotter band.
+        for (let v = Number.parseFloat(coolerTop) + 0.1; v < Number.parseFloat(hotterFloor); v += 0.1) {
+          const value = Number.parseFloat(v.toFixed(1))
+          expect(
+            classifyWbgt(category, value).flag,
+            `${value}°F fell to ${classifyWbgt(category, value).flag} in ${cooler.sourceLabel}/${hotter.sourceLabel}`,
+          ).toBe(hotter.flag)
+        }
+      }
+    }
+  })
+
+  /**
+   * CIF's policy page cites 503.L for air quality; CIF's own bylaws give 503.L
+   * to Emergency Action Plans and put air quality at 503.K(2). The air oracle
+   * follows the bylaws. Someone "fixing the inconsistency" from the policy
+   * page would move it the wrong way, so both ends are pinned.
+   */
+  it('the air-quality bylaw citation follows the bylaw text, not the policy page', () => {
+    expect(CIF_AIR_BYLAW_CITATION).toBe('503.K(2)')
+    expect(CIF_BYLAW_L_SUBJECT).toContain('Emergency Action Plans')
+    expect(CA_AIR_POLICY.source.name).toContain(CIF_AIR_BYLAW_CITATION)
+    expect(CA_AIR_POLICY.source.name).not.toContain('503.L')
+    expect(CIF_LEGAL_BASIS).toContain('503.L')
+  })
+})
+
+describe('Kentucky below the bottom of the table', () => {
+  it('the disclosed floor is the table\'s own lowest band', () => {
+    const lowest = KHSAA_WBGT_REFERENCE.rows[KHSAA_WBGT_REFERENCE.rows.length - 1]
+    expect(lowest.sourceLabel.startsWith(KY_LOWEST_BAND_FLOOR)).toBe(true)
+  })
+
+  it('the Spanish revision date cannot be read as a 22nd month', () => {
+    expect(KY_REVISION).toBe('8/22/24')
+    expect(KY_REVISION_ISO).toBe('2024-08-22')
+    expect(KY_REVISION_ISO).toMatch(/^\d{4}-\d{2}-\d{2}$/)
   })
 })

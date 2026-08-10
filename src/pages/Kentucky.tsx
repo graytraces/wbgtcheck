@@ -10,6 +10,8 @@ import {
   KY_FOOTBALL_ONSITE_QUOTE,
   KY_RECHECK_INTERVAL_MINUTES,
   KY_REVISION,
+  KY_REVISION_ISO,
+  KY_LOWEST_BAND_FLOOR,
 } from '../data/policyOracle'
 
 export default function Kentucky() {
@@ -33,7 +35,13 @@ export default function Kentucky() {
           <Archive className="h-6 w-6 text-flag-orange" aria-hidden="true" />
           {t('kentucky.currencyHeading')}
         </h2>
-        <p>{t('kentucky.currencyBody', { revision: KY_REVISION })}</p>
+        {/* `8/22/24` is a month-first date. Read the Spanish way it claims
+            a 22nd month, so the Spanish page gets the ISO form. */}
+        <p>
+          {t('kentucky.currencyBody', {
+            revision: lang === 'es' ? KY_REVISION_ISO : KY_REVISION,
+          })}
+        </p>
       </section>
 
       <section>
@@ -68,6 +76,9 @@ export default function Kentucky() {
           {t('kentucky.recheckNote', { interval: KY_RECHECK_INTERVAL_MINUTES })}
         </p>
         <p className="mt-2 text-sm text-ink-muted">{t('kentucky.scopeNote')}</p>
+        <p className="mt-2 text-sm text-ink-muted">
+          {t('kentucky.belowBandsNote', { floor: KY_LOWEST_BAND_FLOOR })}
+        </p>
       </section>
 
       <section className="border-2 border-flag-red bg-surface p-5">

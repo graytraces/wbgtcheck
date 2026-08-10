@@ -9,6 +9,11 @@ import { guidelineSentences } from '../utils/guidelineText'
 import {
   CIF_CATEGORIES,
   CIF_LEGAL_BASIS,
+  CIF_AIR_BYLAW_CITATION,
+  CIF_BYLAW_L_SUBJECT,
+  CIF_GAP_EXAMPLE_LOWER,
+  CIF_GAP_EXAMPLE_UPPER,
+  CIF_GAP_EXAMPLE_SKIPPED,
   CIF_WBGT_REQUIRED_QUOTE,
   CIF_NO_DEVICE_QUOTE,
   CIF_NOAA_TOOL_URL,
@@ -42,6 +47,15 @@ export default function California() {
           {t('california.categoryHeading')}
         </h2>
         <p>{t('california.categoryBody', { basis: CIF_LEGAL_BASIS })}</p>
+        {/* CIF's policy page and CIF's bylaws number the air-quality
+            protocol differently. Saying so is cheaper than letting a reader
+            look up 503.L and land on the AED bylaw. */}
+        <p className="mt-2 text-sm text-ink-muted">
+          {t('california.bylawNumberNote', {
+            actual: CIF_AIR_BYLAW_CITATION,
+            other: CIF_BYLAW_L_SUBJECT,
+          })}
+        </p>
         <p className="mt-2">{t('california.cancelBody', { quote: CIF_CANCEL_QUOTE })}</p>
         <p className="mt-3">
           <a
@@ -150,7 +164,13 @@ export default function California() {
         <h2 className="display-num mb-2 text-2xl uppercase">
           {t('california.boundaryHeading')}
         </h2>
-        <p>{t('california.boundaryBody')}</p>
+        <p>
+          {t('california.boundaryBody', {
+            lower: CIF_GAP_EXAMPLE_LOWER,
+            upper: CIF_GAP_EXAMPLE_UPPER,
+            skipped: CIF_GAP_EXAMPLE_SKIPPED,
+          })}
+        </p>
       </section>
 
       {/* The strongest statement in this whole oracle that a forecast belongs

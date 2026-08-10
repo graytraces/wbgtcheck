@@ -884,6 +884,12 @@ export const NYSPHSAA_HEAT_INDEX_REFERENCE = {
 export const KY_RECHECK_INTERVAL_MINUTES = 30
 export const KY_REVISION = '8/22/24'
 /**
+ * The same date the Spanish page can print. `8/22/24` is a US month-first
+ * form: read the Spanish way, day first, it claims a 22nd month. The document
+ * prints the US form, so the citation keeps it and the prose takes this.
+ */
+export const KY_REVISION_ISO = '2024-08-22'
+/**
  * Kentucky's on-site rule appears at three different strengths, and this site
  * initially quoted the two weaker ones while describing the second as
  * unhedged. It is not: it still says "should".
@@ -946,6 +952,16 @@ export const KHSAA_WBGT_REFERENCE = {
   ],
 }
 
+/**
+ * The lowest band KHSAA prints. Nothing appears below it, and the /kentucky
+ * page says so — a blank row is not a clearance, and a reader who sees the
+ * table stop should not infer that KHSAA looked below this and found nothing
+ * worth saying. Derived from the rows so it cannot drift from the table.
+ */
+export const KY_LOWEST_BAND_FLOOR = KHSAA_WBGT_REFERENCE.rows[
+  KHSAA_WBGT_REFERENCE.rows.length - 1
+].sourceLabel.split('-')[0].trim()
+
 // --- California (CIF) ----------------------------------------------------
 // "Extreme Heat and Air Quality Policy", pp.102-104 of the CIF 2026-27
 // Constitution and Bylaws. Fetched 2026-08-10 through the CloudFront address
@@ -959,7 +975,23 @@ export const KHSAA_WBGT_REFERENCE = {
 // one: the page shows all three and the picker carries none of them. Wiring
 // these into the picker needs the Texas class-prompt treatment first.
 
+/**
+ * Verbatim from p.102 — and CIF's own bylaws contradict it. The 500 series
+ * printed earlier in the SAME book lists 503.K as "Heat Illness/Air Quality
+ * Index Protocol", with heat at 503.K(1) and air quality at 503.K(2), and
+ * gives 503.L to "Emergency Action Plans and AED Protocols". So this
+ * sentence's "503.L. Air Quality" points readers at the AED bylaw.
+ *
+ * The quote stays as CIF wrote it and the page carries the cross-reference,
+ * because silently renumbering a quotation is how a citation stops being one.
+ *
+ * ⚠️ airPolicyData.js cites 503.K(2), which is what the bylaw text supports.
+ * Do NOT "reconcile" the two by moving the air page to 503.L — the direction
+ * of the error is the opposite of what it looks like from the policy page.
+ */
 export const CIF_LEGAL_BASIS = 'CA State Law AB 1653 and CIF Bylaw 503.K. Heat Illness and 503.L. Air Quality Index Protocols'
+export const CIF_AIR_BYLAW_CITATION = '503.K(2)'
+export const CIF_BYLAW_L_SUBJECT = 'Emergency Action Plans and AED Protocols'
 export const CIF_WBGT_REQUIRED_QUOTE =
   'The CIF requires that schools use the WBGT for the most accurate measurement.'
 /**
@@ -1128,6 +1160,22 @@ export const CIF_CATEGORY_3 = {
   }),
 }
 /** All three, coolest region first — the order the CIF chart prints. */
+/**
+ * The worked example the boundary note shows. CIF's printed ranges do not
+ * meet: at NINE of the chart's twelve boundaries a band's printed ceiling
+ * sits 0.2°F below the next band's printed floor, leaving one tenth in
+ * neither band. (The other three are contiguous.) The old copy described this
+ * as a single tenth between red and black, which understated both where the
+ * gaps are and how wide they are.
+ *
+ * Read off the labels rather than typed into copy, so the example a reader
+ * checks against the table above can never drift from it.
+ */
+const CIF_GAP_BAND = (flag) => CIF_CATEGORY_3.bands.find((b) => b.flag === flag)
+export const CIF_GAP_EXAMPLE_LOWER = CIF_GAP_BAND('yellow').sourceLabel
+export const CIF_GAP_EXAMPLE_UPPER = CIF_GAP_BAND('orange').sourceLabel
+export const CIF_GAP_EXAMPLE_SKIPPED = `${(CIF_GAP_BAND('orange').minF + 0.1).toFixed(1)}\u00b0F`
+
 export const CIF_CATEGORIES = [CIF_CATEGORY_1, CIF_CATEGORY_2, CIF_CATEGORY_3]
 
 // --- Florida statute constants -------------------------------------------

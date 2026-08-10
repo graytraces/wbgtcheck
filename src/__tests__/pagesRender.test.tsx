@@ -48,6 +48,13 @@ import {
   FL_ONSITE_MEASUREMENT_QUOTE,
   CIF_CATEGORIES,
   KHSAA_WBGT_REFERENCE,
+  KY_LOWEST_BAND_FLOOR,
+  KY_REVISION_ISO,
+  CIF_GAP_EXAMPLE_LOWER,
+  CIF_GAP_EXAMPLE_UPPER,
+  CIF_GAP_EXAMPLE_SKIPPED,
+  CIF_AIR_BYLAW_CITATION,
+  CIF_BYLAW_L_SUBJECT,
   KY_REVISION,
   KY_FOOTBALL_ONSITE_QUOTE,
   REMOTE_UNDERESTIMATE_MIN_C,
@@ -285,5 +292,56 @@ describe('post-JS rendered DOM', () => {
       screen.getByText(i18n.t('disclaimerPage.notMeasurement', BIAS_PARAMS)),
     ).toBeInTheDocument()
     expect(screen.getByText(en.disclaimerPage.notCompliance)).toBeInTheDocument()
+  })
+})
+
+/**
+ * Three corrections that are only visible in the rendered sentence: a
+ * threshold example that has to match the table beside it, a date that has to
+ * be readable in Spanish, and a citation that has to disagree with itself out
+ * loud. All are interpolated, so a locale-file diff alone cannot show them.
+ */
+describe('post-JS rendered DOM — interpolated corrections', () => {
+  it('California prints the gap example straight off its own table', () => {
+    renderAt('/en/california', <California />)
+    const expected = i18n.t('california.boundaryBody', {
+      lower: CIF_GAP_EXAMPLE_LOWER,
+      upper: CIF_GAP_EXAMPLE_UPPER,
+      skipped: CIF_GAP_EXAMPLE_SKIPPED,
+    })
+    expect(expected).toContain(CIF_GAP_EXAMPLE_SKIPPED)
+    expect(screen.getByText(expected)).toBeInTheDocument()
+  })
+
+  it('California says its own citation disagrees with CIF\'s bylaws', () => {
+    renderAt('/en/california', <California />)
+    const expected = i18n.t('california.bylawNumberNote', {
+      actual: CIF_AIR_BYLAW_CITATION,
+      other: CIF_BYLAW_L_SUBJECT,
+    })
+    expect(expected).toContain(CIF_BYLAW_L_SUBJECT)
+    expect(screen.getByText(expected)).toBeInTheDocument()
+  })
+
+  it('Kentucky discloses that the table stops rather than clears', () => {
+    renderAt('/en/kentucky', <Kentucky />)
+    expect(
+      screen.getByText(i18n.t('kentucky.belowBandsNote', { floor: KY_LOWEST_BAND_FLOOR })),
+    ).toBeInTheDocument()
+  })
+
+  it('the Spanish Kentucky page dates the revision unambiguously', async () => {
+    await i18n.changeLanguage('es')
+    try {
+      renderAt('/es/kentucky', <Kentucky />)
+      const caveat = screen.getByText(
+        i18n.t('kentucky.currencyBody', { revision: KY_REVISION_ISO }),
+      )
+      // 8/22/24 read day-first claims a 22nd month; it must not survive here.
+      expect(caveat.textContent).toContain(KY_REVISION_ISO)
+      expect(caveat.textContent).not.toContain('8/22/24')
+    } finally {
+      await i18n.changeLanguage('en')
+    }
   })
 })

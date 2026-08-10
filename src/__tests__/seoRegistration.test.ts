@@ -78,3 +78,23 @@ describe('SEO chain registration', () => {
     }
   })
 })
+
+/**
+ * Google truncates meta descriptions around 160 characters, and the cut lands
+ * mid-sentence — four English descriptions and eleven Spanish ones were over,
+ * the worst at 221. Length is the only property of a description a test can
+ * check, so it is the one that gets checked.
+ */
+describe('meta description length', () => {
+  const MAX = 160
+  for (const [lang, dict] of [['en', en], ['es', es]] as const) {
+    it(`every ${lang} seo description fits in ${MAX} characters`, () => {
+      const seo = dict.seo as Record<string, { description?: string }>
+      const over = Object.entries(seo)
+        .filter(([, v]) => (v?.description?.length ?? 0) > MAX)
+        .map(([k, v]) => `${k} (${v.description!.length})`)
+      expect(over, `${lang} descriptions over ${MAX}`).toEqual([])
+      expect(Object.keys(seo).length).toBeGreaterThan(15)
+    })
+  }
+})

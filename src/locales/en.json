@@ -276,12 +276,12 @@
     },
     "texas": {
       "title": "Texas UIL WBGT Rules: Thresholds, Classes & Measurement | WBGT Check",
-      "description": "UIL WBGT requirements for Texas athletics and marching band: Class 2 vs Class 3 thresholds, activity modifications, 15-minute pre-practice readings, and app-based measurement rules.",
+      "description": "UIL WBGT rules for Texas athletics and marching band: Class 2 vs Class 3 thresholds, activity modifications, 15-minute readings, and app measurement.",
       "keywords": "UIL WBGT policy, Texas heat rules football, UIL heat stress plan, UIL Class 2 Class 3 WBGT, Texas marching band heat rules"
     },
     "georgia": {
       "title": "Georgia GHSA WBGT Policy: Thresholds & Device Rules | WBGT Check",
-      "description": "GHSA By-law 2.67 explained: WBGT thresholds, rest break requirements, and why Georgia requires an on-site calibrated WBGT instrument — apps and websites do not count.",
+      "description": "GHSA By-law 2.67 explained: WBGT thresholds, rest break requirements, and why Georgia requires an on-site calibrated instrument — apps do not count.",
       "keywords": "GHSA heat policy, Georgia WBGT rules, GHSA By-law 2.67, GHSA WBGT device requirement, Georgia football heat rules"
     },
     "wbgtVsHeatIndex": {
@@ -291,17 +291,17 @@
     },
     "states": {
       "title": "WBGT Rules by State: App-Allowed vs Device-Only | WBGT Check",
-      "description": "Which states mandate WBGT for high school sports, which accept app or web readings, and which require an on-site instrument. Sourced classification with caveats.",
+      "description": "Which states mandate WBGT for high school sports, which accept app or web readings, and which require an on-site instrument. Sourced, with caveats.",
       "keywords": "WBGT rules by state, state heat policies high school sports, WBGT device requirement states, heat acclimatization rules"
     },
     "southCarolina": {
       "title": "South Carolina SCHSL WBGT Rules: Thresholds & Device Requirement | WBGT Check",
-      "description": "SCHSL heat guidelines explained: WBGT activity thresholds, the required on-site WBGT thermometer, the 15-minute range-hold rule, and why phone apps are not accepted in South Carolina.",
+      "description": "SCHSL heat guidelines: WBGT activity thresholds, the required on-site thermometer, the 15-minute range-hold rule, and why phone apps are not accepted.",
       "keywords": "SCHSL heat policy, South Carolina WBGT rules, SCHSL WBGT device, South Carolina football heat rules, SCHSL heat guidelines"
     },
     "iowa": {
       "title": "Iowa WBGT Heat Rules for Sports and Marching Band | WBGT Check",
-      "description": "Iowa's IHSAA, IGHSAU, IHSMA and IHSSA WBGT guidance: Category 2 thresholds, the 80°F trigger, 30-minute readings, and the marching band and cheerleading modifications.",
+      "description": "Iowa's IHSAA, IGHSAU, IHSMA and IHSSA WBGT guidance: Category 2 thresholds, the 80°F trigger, 30-minute readings, and marching band modifications.",
       "keywords": "Iowa WBGT policy, IHSAA heat rules, IHSMA marching band heat, Iowa Category 2 WBGT, Iowa high school heat guidance"
     },
     "tennessee": {
@@ -311,17 +311,17 @@
     },
     "northCarolina": {
       "title": "North Carolina NCHSAA Heat Guidelines & WBGT Chart | WBGT Check",
-      "description": "NCHSAA's current handbook chart: WBGT measured with a scientifically approved device, read hourly, stepping up to full suspension — and why it sits outside this site's policy picker.",
+      "description": "NCHSAA's handbook chart: WBGT read hourly on a scientifically approved device, stepping up to full suspension — and why it sits outside our picker.",
       "keywords": "NCHSAA heat guidelines, North Carolina WBGT chart, NCHSAA heat policy, North Carolina football heat rules"
     },
     "newYork": {
       "title": "New York NYSPHSAA Heat Index Rules (Not WBGT) | WBGT Check",
-      "description": "New York writes its policy against heat index, not WBGT, and tells schools to read it from a weather app by ZIP code. The thresholds and what that means for WBGT tools.",
+      "description": "New York writes its policy against heat index, not WBGT, and tells schools to read it from a weather app by ZIP code. The thresholds and what they mean.",
       "keywords": "NYSPHSAA heat index, New York high school heat policy, NYSPHSAA WeatherBug, New York heat index thresholds"
     },
     "virginia": {
       "title": "Virginia Heat Law § 22.1-271.10: Districts Set the WBGT Levels | WBGT Check",
-      "description": "Virginia's 2025 statute requires every school board to adopt WBGT-based heat policies with at least five tiers — but the thresholds are set locally, not statewide.",
+      "description": "Virginia's 2025 statute makes every school board adopt WBGT heat policies with at least five tiers — but the thresholds are set locally, not statewide.",
       "keywords": "Virginia heat law athletes, 22.1-271.10, VHSL heat policy, Virginia WBGT school board policy"
     },
     "privacy": {
@@ -336,7 +336,7 @@
     },
     "washingtonAir": {
       "title": "Washington School Air Quality: Cancel or Move Practice? | WBGT Check",
-      "description": "Washington DOH air-quality guidance for children and youth, keyed to activity duration — from under an hour to multi-hour practices — on the PM2.5 index, with the current AirNow reading for your field.",
+      "description": "Washington DOH air-quality guidance for children and youth, keyed to activity duration on the PM2.5 index, with the current AirNow reading for your field.",
       "keywords": "Washington school air quality policy, wildfire smoke practice cancellation Washington, WA DOH school smoke guidance, Washington AQI cancel practice"
     },
     "oregonAir": {
@@ -478,7 +478,7 @@
       "ny": "NYSPHSAA works from heat index, not WBGT, and directs schools to read it from a named weather app by ZIP code — see the New York guide.",
       "nj": "Legislated heat participation rules since 2020.",
       "la": "Legislated WBGT-based rules.",
-      "ca": "Three regional WBGT ladders under AB 1653 and CIF Bylaw 503.K, with a hard cancel level for each. CIF requires a WBGT and points schools without a meter to a NOAA reading — one of the few states to name an online source.",
+      "ca": "Three regional WBGT ladders under AB 1653 and CIF Bylaw 503.K, with a hard cancel level for each. CIF requires a WBGT and, for schools without a meter, names one specific NOAA page — a single government source, not app readings in general.",
       "ma": "One statewide MIAA policy covering practice AND competition, with thresholds well below most states — outdoor activity stops in the 86s. An on-site WBGT instrument is required at each activity, and a footnote stops games entirely in any sport whose equipment the band modifies."
     },
     "caveat": "This table is a navigation aid, not legal advice. Policies change midseason; the association's current document controls. Found an error? Tell your athletic trainer first, then us.",
@@ -763,11 +763,12 @@
     "intro": "California is the only state on this site with three different WBGT ladders. CIF assigns each school a region category, and the same reading means different things in San Diego and in the Sierra foothills — so the number alone tells you nothing until you know your category.",
     "categoryHeading": "Find your region category first",
     "categoryBody": "The policy runs under {{basis}}, and it splits the state into Category 1, 2 and 3 by climate. Most states fall into one category or two; California spans all three.",
+    "bylawNumberNote": "One caveat on the citation itself: CIF's numbering disagrees with CIF's. The sentence above cites 503.L for air quality, but the bylaws printed earlier in the same book put the Air Quality Index Protocol at {{actual}} and give 503.L to {{other}}. We quote CIF as written rather than renumber it, and this site's air-quality page cites {{actual}}.",
     "cancelBody": "At the top of each ladder the language is not advisory — {{quote}}.",
     "rosterLink": "Look up your school's category on the CIF roster",
     "tableHeading": "Category {{category}} — activity guidelines by WBGT (°F)",
     "boundaryHeading": "Where this site is stricter than the printed chart",
-    "boundaryBody": "The policy states its cancel levels twice and the two do not match: the text on the first page lists one set, the chart on the next prints another, and the chart also leaves a tenth of a degree unassigned between the top of red and the bottom of black. This site resolves every one of those gaps upward — the hotter flag wins — so a reading in a disputed range is never shown as the cooler category. Your association's own chart governs; ours only errs toward stopping sooner.",
+    "boundaryBody": "The policy states its cancel levels twice and the two do not match: the text on the first page lists one set, the chart on the next prints another. The chart also leaves gaps at most of its boundaries, not just one — Category 3 prints yellow as {{lower}} and orange as {{upper}}, so {{skipped}} is printed in neither. This site resolves every one of those gaps upward — the hotter flag wins — so a reading in a disputed range is never shown as the cooler category. Your association's own chart governs; ours only errs toward stopping sooner.",
     "measurementHeading": "California expects a WBGT — and points schools without one at NOAA",
     "measurementBody": "The policy is direct about the instrument: \"{{quote}}\"",
     "noDeviceBody": "And then it does something no other association on this site does. For schools that do not own a meter, it names an online source: \"{{quote}}\" — linking NOAA's own WBGT map.",
@@ -811,6 +812,7 @@
     },
     "recheckNote": "Every band below the stop level also calls for the WBGT to be re-checked every {{interval}} minutes to catch a move into the next band.",
     "scopeNote": "The source adds sport-specific alterations on top of these — football carries the strictest measurement rule, soccer and field hockey add referee hydration breaks, and cross country adds hydration stations plus a check before the first call of each race on multi-race days. This table carries only the all-sports column; read the source for your sport.",
+    "belowBandsNote": "The table stops at {{floor}}°F and KHSAA prints nothing below it. That blank is not a clearance — it means the document offers no contest alteration down there, not that the association looked lower and found nothing worth saying. Below the table, fall back to general heat guidance and your own judgment.",
     "measurementHeading": "A reading taken elsewhere does not count",
     "measurementBody": "In most sports the rule is a strong recommendation, and it sits in the sport-specific rows rather than the all-sports column: \"{{quote}}\"",
     "invalidBody": "The same rows go further, though still in the language of recommendation: \"{{quote}}\"",
