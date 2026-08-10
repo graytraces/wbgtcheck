@@ -368,7 +368,7 @@
     },
     "kentucky": {
       "title": "Alteraciones de competición por WBGT de la KHSAA | WBGT Check",
-      "description": "Las bandas WBGT de la KHSAA para alterar competiciones, la recomprobación cada 30 minutos y la regla de que una lectura fuera del recinto no es válida.",
+      "description": "Las bandas WBGT de la KHSAA para alterar competiciones, la recomprobación cada 30 minutos y la regla de medir en el sitio para fútbol americano.",
       "keywords": "WBGT KHSAA, política de calor Kentucky, alteración de competición KHSAA"
     }
   },
@@ -799,7 +799,7 @@
   },
   "kentucky": {
     "pageTitle": "Alteraciones de competición por WBGT de la KHSAA de Kentucky",
-    "intro": "La guía WBGT de la KHSAA está escrita para competiciones más que para prácticas: cuatro bandas, ajustes por deporte y una parada tajante. También contiene la regla de medición más rotunda de este sitio — una lectura tomada fuera de la propiedad no es válida.",
+    "intro": "La guía WBGT de la KHSAA está escrita para competiciones más que para prácticas: cuatro bandas, ajustes por deporte y una parada tajante. Su regla de medición es la más rotunda de este sitio, pero no es la misma para todos: en fútbol americano no se permite ninguna lectura fuera del sitio, y en los demás deportes la KHSAA lo recomienda en términos inusualmente firmes.",
     "currencyHeading": "Leído de un archivo, no de la KHSAA",
     "currencyBody": "khsaa.org no responde a ninguna solicitud nuestra — ni la raíz, ni la sección de medicina deportiva, ni el archivo mismo. Esta página se construyó a partir de una captura de archivo web del propio documento de la KHSAA, revisado el {{revision}}. No podemos confirmar que la KHSAA siga publicando esta revisión, solo que la publicó. Confirme con la KHSAA o con su director atlético antes de basarse en estos números.",
     "tableHeading": "Alteraciones de competición por WBGT (°F)",

@@ -286,3 +286,40 @@ describe('guideline copy derives from the oracle', () => {
     await i18n.changeLanguage('en')
   })
 })
+
+/**
+ * Kentucky's off-site measurement rule has two strengths and the page knows
+ * it: `footballBody` quotes the unconditional "must ... no off-site
+ * measurement permitted", while `invalidBody` says the other sports get it
+ * "still in the language of recommendation". The intro and the meta
+ * description asserted the strong version for every sport — and the meta is
+ * what search results show, so the overstatement travelled further than the
+ * page that corrects it.
+ *
+ * The commit that split those two strengths (8108676) left a Directive saying
+ * not to restate the weaker ones as unhedged. This is that Directive as a
+ * test, since prose two keys away had already broken it.
+ */
+describe('Kentucky does not promote a football rule to all sports', () => {
+  for (const [lang, dict] of [['en', en], ['es', es]] as const) {
+    it(`${lang} intro and meta scope the measurement rule to football`, () => {
+      for (const [name, copy] of [
+        ['kentucky.intro', dict.kentucky.intro],
+        ['seo.kentucky.description', dict.seo.kentucky.description],
+      ] as const) {
+        expect(copy, `${name} mentions the measurement rule`).toMatch(
+          /off-site|off the|fuera del sitio|en el sitio|competition site|sitio de competición/i,
+        )
+        expect(copy, `${name} must name football as the scope`).toMatch(/football|fútbol/i)
+      }
+    })
+  }
+
+  it('the page still carries both strengths, not just the narrow one', () => {
+    // Narrowing the intro must not quietly drop the other sports' rule.
+    for (const dict of [en, es]) {
+      expect(dict.kentucky.footballBody).toMatch(/\{\{quote\}\}/)
+      expect(dict.kentucky.invalidBody).toMatch(/recommendation|recomendación/i)
+    }
+  })
+})

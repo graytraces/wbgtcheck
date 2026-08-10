@@ -368,7 +368,7 @@
     },
     "kentucky": {
       "title": "Kentucky KHSAA WBGT Contest Alterations | WBGT Check",
-      "description": "KHSAA's WBGT bands for contest alterations, the 30-minute re-check, and the rule that a reading taken off the venue property is not valid.",
+      "description": "KHSAA's WBGT bands for contest alterations, the 30-minute re-check, and the football rule that the reading must be taken at the competition site.",
       "keywords": "KHSAA WBGT, Kentucky heat policy, KHSAA contest alteration, Kentucky wet bulb globe temperature"
     }
   },
@@ -799,7 +799,7 @@
   },
   "kentucky": {
     "pageTitle": "Kentucky KHSAA WBGT Contest Alterations",
-    "intro": "KHSAA's WBGT guidance is written for contests rather than practices: four bands, per-sport adjustments, and one hard stop. It also contains the bluntest measurement rule on this site — a reading taken off the property is not valid.",
+    "intro": "KHSAA's WBGT guidance is written for contests rather than practices: four bands, per-sport adjustments, and one hard stop. Its measurement rule is the bluntest on this site, but it is not one rule for everyone — in football no off-site reading is permitted at all, and for the other sports KHSAA recommends the same in unusually strong terms.",
     "currencyHeading": "Read from an archive, not from KHSAA",
     "currencyBody": "khsaa.org does not answer any request from us — not the root, not the sports-medicine section, not the file itself. This page was built from a web-archive capture of KHSAA's own document, revised {{revision}}. We cannot confirm that KHSAA still publishes this revision, only that it published it. Confirm with KHSAA or your athletic director before relying on these numbers.",
     "tableHeading": "Contest alterations by WBGT (°F)",
