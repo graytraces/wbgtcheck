@@ -13,6 +13,8 @@ import {
   IOWA_CATEGORY_2,
   GHSA_FAQ_WBGT_HI_COMPARISON,
   MIAA_COMPETITION_QUOTE,
+  KHSAA_WBGT_REFERENCE,
+  CIF_CATEGORIES,
   NCHSAA_REFERENCE,
   NYSPHSAA_HEAT_INDEX_REFERENCE,
   requiresOnSiteReading,
@@ -75,8 +77,15 @@ describe('guideline copy derives from the oracle', () => {
     for (const policy of Object.values(POLICIES)) {
       for (const band of policy.bands) harvest(band.sourceLabel)
     }
-    for (const table of [NCHSAA_REFERENCE, NYSPHSAA_HEAT_INDEX_REFERENCE]) {
+    for (const table of [NCHSAA_REFERENCE, NYSPHSAA_HEAT_INDEX_REFERENCE, KHSAA_WBGT_REFERENCE]) {
       for (const row of table.rows) harvest(row.sourceLabel)
+    }
+    // CIF's three ladders are not in POLICIES — they have no policy id, which
+    // is the whole reason California is outside the picker — so the loop above
+    // never saw their 15 labels. Nothing has leaked yet; the guard simply did
+    // not cover the state with the most threshold literals on the site.
+    for (const category of CIF_CATEGORIES) {
+      for (const band of category.bands) harvest(band.sourceLabel)
     }
     // The GHSA FAQ comparison reaches wbgtVsHi.hiBody by interpolation, so its
     // rendered form must not be pre-baked into copy either.
@@ -86,7 +95,7 @@ describe('guideline copy derives from the oracle', () => {
 
     // Guard the guard: an oracle refactor that renamed sourceLabel would make
     // this pass vacuously.
-    expect(literals.size).toBeGreaterThanOrEqual(15)
+    expect(literals.size).toBeGreaterThanOrEqual(30)
 
     const prose = JSON.stringify([en, es])
     for (const literal of literals) {
@@ -377,5 +386,72 @@ describe('the Massachusetts footnote note reads the way the footnote works', () 
     expect(es.states.notes.ma).toMatch(/equipo deba modificarse/i)
     // The inverted Spanish reading that shipped.
     expect(es.states.notes.ma).not.toMatch(/equipo modifique la banda/i)
+  })
+})
+
+/**
+ * Force parity between the locales, and between each locale and the document.
+ *
+ * MIAA writes "Players SHOULD BE RESTRICTED to a helmet, shoulder pads, and
+ * shorts ... all protective equipment MUST BE REMOVED for conditioning" — one
+ * sentence carrying both strengths. English had flattened the first half into
+ * a declarative ("helmet, shoulder pads and shorts only"), and Spanish had
+ * raised the cooling-zone line from "should be available" to "Debe haber",
+ * which is must. Neither locale may exceed the document, and they may not
+ * disagree with each other about how binding a line is.
+ */
+describe('translated guidelines keep the source\'s force', () => {
+  it('the equipment line stays a recommendation for the restriction, a requirement for removal', () => {
+    expect(en.guideline.miaaEquipmentSports).toMatch(/should be restricted/i)
+    expect(en.guideline.miaaEquipmentSports).toMatch(/must be removed/i)
+    expect(es.guideline.miaaEquipmentSports).toMatch(/deberían/i)
+    expect(es.guideline.miaaEquipmentSports).toMatch(/debe retirarse/i)
+  })
+
+  it('the cooling-zone line is not promoted to a requirement in Spanish', () => {
+    expect(en.guideline.miaaCoolingZone).toMatch(/should be available/i)
+    expect(es.guideline.miaaCoolingZone).toMatch(/^Debería/)
+    // "Debe haber" is must, and it shipped that way.
+    expect(es.guideline.miaaCoolingZone).not.toMatch(/^Debe haber/)
+  })
+
+  /**
+   * "una bandera segura" reads as a SAFE flag. The sentence is warning that
+   * the flag would be unreliable, so the Spanish said the opposite of the
+   * English on a safety caveat.
+   */
+  it('the California picker caveat does not call the flag safe in Spanish', () => {
+    expect(en.california.pickerExclusionBody).toMatch(/confident flag/i)
+    expect(es.california.pickerExclusionBody).not.toMatch(/bandera segura/i)
+  })
+})
+
+/**
+ * Meta descriptions are trimmed to fit 160 characters, and the trims had
+ * drifted apart: Spanish North Carolina ended "y por qué queda fuera." with
+ * nothing to say what it was outside of, Spanish Massachusetts had lost the
+ * WBGT term entirely while English kept it, and English Iowa had dropped
+ * cheerleading while Spanish kept it. Same page, different facts per language.
+ */
+describe('meta descriptions survive their trim in both languages', () => {
+  it('no description ends on a dangling preposition or article', () => {
+    for (const [lang, dict] of [['en', en], ['es', es]] as const) {
+      for (const [key, entry] of Object.entries(dict.seo)) {
+        const description = (entry as { description?: string }).description
+        if (!description) continue
+        expect(description.trim(), `${lang}/${key} ends mid-phrase`).not.toMatch(
+          /\b(de|del|la|el|los|las|y|en|con|por qué queda fuera|of|the|and|why it sits outside)\.$/i,
+        )
+      }
+    }
+  })
+
+  it('both locales keep the same load-bearing terms per page', () => {
+    expect(en.seo.massachusetts.description).toMatch(/wet bulb globe|WBGT/i)
+    expect(es.seo.massachusetts.description).toMatch(/bulbo húmedo|WBGT/i)
+    expect(en.seo.iowa.description).toMatch(/cheer/i)
+    expect(es.seo.iowa.description).toMatch(/porristas/i)
+    expect(es.seo.northCarolina.description).toMatch(/selector/i)
+    expect(en.seo.northCarolina.description).toMatch(/picker/i)
   })
 })

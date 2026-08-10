@@ -55,12 +55,12 @@
     "noConditioning": "Sin actividades de acondicionamiento.",
     "coolingZone": "Zona de enfriamiento rápido obligatoria en el sitio (tina o lona).",
     "noOutdoor": "Sin entrenamientos al aire libre. Posponga la práctica hasta un WBGT más fresco.",
-    "miaaEquipmentSports": "Deportes con equipo intensivo: solo casco, hombreras y shorts durante la actividad; todo el equipo de protección debe retirarse para el acondicionamiento.",
+    "miaaEquipmentSports": "Deportes con equipo intensivo: los jugadores deberían limitarse a casco, hombreras y shorts durante la actividad; todo el equipo de protección debe retirarse para el acondicionamiento.",
     "miaaNoEquipmentAnySport": "No puede usarse equipo de protección durante la actividad, en ningún deporte.",
     "cifContactSportsEquipment": "Fútbol americano y hockey sobre césped: solo casco, hombreras y shorts durante la práctica.",
     "cifRedContests": "Se permiten las competiciones con descansos de hidratación adicionales.",
     "cifRedNoEquipment": "No puede usarse equipo de protección durante la práctica.",
-    "miaaCoolingZone": "Debe haber agua helada y toallas en la zona de enfriamiento, y tinas de inmersión en agua fría disponibles para cualquier jugador con signos de enfermedad por calor."
+    "miaaCoolingZone": "Debería haber agua helada y toallas en la zona de enfriamiento, y tinas de inmersión en agua fría disponibles para cualquier jugador con signos de enfermedad por calor."
   },
   "policies": {
     "uil-class-2": "UIL de Texas — Clase 2",
@@ -314,7 +314,7 @@
     },
     "northCarolina": {
       "title": "Guías de calor de la NCHSAA de Carolina del Norte y su cuadro WBGT | WBGT Check",
-      "description": "El manual vigente de la NCHSAA: WBGT con dispositivo aprobado, lecturas cada hora y un cuadro que llega a la suspensión total — y por qué queda fuera.",
+      "description": "El manual de la NCHSAA: WBGT con dispositivo aprobado, lecturas cada hora y un cuadro que llega a la suspensión total — y por qué queda fuera del selector.",
       "keywords": "guías de calor NCHSAA, cuadro WBGT Carolina del Norte, política de calor NCHSAA"
     },
     "newYork": {
@@ -354,7 +354,7 @@
     },
     "massachusetts": {
       "title": "Política de calor WBGT de la MIAA de Massachusetts | WBGT Check",
-      "description": "Umbrales de modificación por calor de la MIAA, la regla del instrumento en el sitio y en qué se diferencian los partidos de las prácticas.",
+      "description": "Umbrales de la MIAA en temperatura de globo y bulbo húmedo (WBGT), la regla del instrumento en el sitio y en qué difieren partidos y prácticas.",
       "keywords": "política de calor MIAA, WBGT Massachusetts, modificación por calor MIAA"
     },
     "florida": {
@@ -796,7 +796,7 @@
     "acclimatizationFootballBody": "Y el fútbol americano añade una progresión de protecciones a lo largo de esos mismos días: «{{football}}»",
     "coolingMethodBody": "El requisito de enfriamiento es aparte de todo esto y aplica en todas partes: «{{cooling}}»",
     "pickerExclusionHeading": "Por qué California no está en el selector de políticas",
-    "pickerExclusionBody": "La CIF asigna a cada escuela una categoría regional y publica esa asignación en una lista aparte que este sitio no puede leer por usted. Las tres escalas difieren mucho — una lectura que es negra en la Categoría 1 sigue siendo amarilla en la Categoría 3 — así que elegir una por usted pondría en pantalla una bandera segura que su propia categoría podría contradecir. Hasta que la herramienta pueda preguntarle su categoría, el pronóstico recurre a la guía general de la NATA, que es más permisiva que cualquiera de las escalas de la CIF. Lea su categoría en la tabla de arriba, no en la bandera.",
+    "pickerExclusionBody": "La CIF asigna a cada escuela una categoría regional y publica esa asignación en una lista aparte que este sitio no puede leer por usted. Las tres escalas difieren mucho — una lectura que es negra en la Categoría 1 sigue siendo amarilla en la Categoría 3 — así que elegir una por usted pondría en pantalla una bandera rotunda que su propia categoría podría contradecir. Hasta que la herramienta pueda preguntarle su categoría, el pronóstico recurre a la guía general de la NATA, que es más permisiva que cualquiera de las escalas de la CIF. Lea su categoría en la tabla de arriba, no en la bandera.",
     "thresholdsHeading": "Umbrales por categoría regional",
     "thresholdsIntro": "Las tres categorías comparten un mismo conjunto de acciones y solo difieren en las temperaturas que las activan. Busque su categoría en los encabezados de columna y lea hacia abajo.",
     "actionsHeading": "Qué exige cada bandera",

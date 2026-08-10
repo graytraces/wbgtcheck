@@ -55,7 +55,7 @@
     "noConditioning": "No conditioning activities.",
     "coolingZone": "Mandatory on-site rapid cooling zone (tub or tarp).",
     "noOutdoor": "No outdoor workouts. Delay practice until a cooler WBGT is reached.",
-    "miaaEquipmentSports": "Equipment-intensive sports: helmet, shoulder pads and shorts only during activity; all protective equipment must be removed for conditioning.",
+    "miaaEquipmentSports": "Equipment-intensive sports: players should be restricted to a helmet, shoulder pads and shorts during activity; all protective equipment must be removed for conditioning.",
     "miaaNoEquipmentAnySport": "No protective equipment may be worn during activity, in any sport.",
     "cifContactSportsEquipment": "Football and field hockey: helmet, shoulder pads and shorts only during practice.",
     "cifRedContests": "Contests are permitted with additional hydration breaks.",
@@ -304,7 +304,7 @@
     },
     "iowa": {
       "title": "Iowa WBGT Heat Rules for Sports and Marching Band | WBGT Check",
-      "description": "Iowa's IHSAA, IGHSAU, IHSMA and IHSSA WBGT guidance: Category 2 thresholds, the 80°F trigger, 30-minute readings, and marching band modifications.",
+      "description": "Iowa's IHSAA, IGHSAU, IHSMA and IHSSA WBGT guidance: Category 2 thresholds, the 80°F trigger, 30-minute readings, marching band and cheer changes.",
       "keywords": "Iowa WBGT policy, IHSAA heat rules, IHSMA marching band heat, Iowa Category 2 WBGT, Iowa high school heat guidance"
     },
     "tennessee": {

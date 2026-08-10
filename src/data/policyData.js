@@ -1163,10 +1163,15 @@ export const CIF_CATEGORY_3 = {
 /**
  * The worked example the boundary note shows. CIF's printed ranges do not
  * meet: at NINE of the chart's twelve boundaries a band's printed ceiling
- * sits 0.2°F below the next band's printed floor, leaving one tenth in
- * neither band. (The other three are contiguous.) The old copy described this
- * as a single tenth between red and black, which understated both where the
- * gaps are and how wide they are.
+ * sits 0.2°F below the next band's printed floor. (The other three are
+ * contiguous.) How much that leaves unassigned depends on the boundary — at
+ * the six between coloured bands one tenth falls in neither, while at the
+ * three green/yellow boundaries green is printed as an open "<x" and yellow
+ * starts 0.2 above it, so TWO tenths are unassigned. Every one of them
+ * resolves upward; policyOracle.test.ts walks all of them.
+ *
+ * The old copy called this a single tenth between red and black, which
+ * understated both where the gaps are and how wide they are.
  *
  * Read off the labels rather than typed into copy, so the example a reader
  * checks against the table above can never drift from it.
