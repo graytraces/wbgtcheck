@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { MapPin } from 'lucide-react'
+import { Link2Off as LinkOff, MapPin } from 'lucide-react'
 import SEO from '../components/SEO'
 import CorrectionNote from '../components/CorrectionNote'
 import FlagBadge from '../components/FlagBadge'
@@ -19,6 +19,9 @@ import {
   NYSPHSAA_WBGT_ACTIONS,
   NYSPHSAA_WBGT_BLACK_MIN_F,
   NYSPHSAA_CATEGORY_LOOKUP_QUOTE,
+  NYSPHSAA_CATEGORY_LOOKUP_URL,
+  NYSPHSAA_CATEGORY_LOOKUP_CHECKED_ON,
+  NYSPHSAA_STRICTEST_CATEGORY,
   NYSPHSAA_REGION_FIGURE_CAPTION,
   NYSPHSAA_EITHER_SCALE_QUOTE,
   NYSPHSAA_SUSPEND_BOTH_SCALES_QUOTE,
@@ -127,6 +130,43 @@ export default function NewYork() {
             strict: NYSPHSAA_WBGT_BLACK_MIN_F.cat1,
             loose: NYSPHSAA_WBGT_BLACK_MIN_F.cat2,
           })}
+        </p>
+      </section>
+
+      {/* The page used to stop at "the link no longer resolves", which is true
+          and leaves the reader holding three columns and no way to choose.
+          These three sections are the rest of that sentence: the dead lookup
+          as a dated, checkable fact; what a reader can actually do; and why
+          California gets asked its category here and New York does not. */}
+      <section className="border-2 border-flag-orange bg-surface p-5">
+        <h2 className="display-num mb-2 flex items-center gap-2 text-2xl uppercase">
+          <LinkOff className="h-6 w-6 shrink-0" aria-hidden="true" />
+          {t('newYork.lookupDeadHeading')}
+        </h2>
+        {/* The URL is shown, not linked: an anchor invites a click that cannot
+            succeed, and the point is that the reader can check the claim. */}
+        <p>
+          {t('newYork.lookupDeadBody', {
+            url: NYSPHSAA_CATEGORY_LOOKUP_URL,
+            checkedOn: NYSPHSAA_CATEGORY_LOOKUP_CHECKED_ON,
+          })}
+        </p>
+      </section>
+
+      <section>
+        <h2 className="display-num mb-2 text-2xl uppercase">{t('newYork.whatToDoHeading')}</h2>
+        <p>
+          {t('newYork.whatToDoBody', {
+            strictest: NYSPHSAA_STRICTEST_CATEGORY,
+            strictestBlack: NYSPHSAA_WBGT_BLACK_MIN_F.cat1,
+            loosestBlack: NYSPHSAA_WBGT_BLACK_MIN_F.cat3,
+          })}
+        </p>
+        <p className="mt-3">{t('newYork.noPromptBody')}</p>
+        <p className="mt-3 text-sm">
+          <Link to={`/${lang}/california`} className="font-semibold underline">
+            {t('states.californiaLink')} →
+          </Link>
         </p>
       </section>
 
