@@ -24,6 +24,25 @@ export function installMemoryStorage(): Map<string, string> {
   return store
 }
 
+/**
+ * A time zone guaranteed to read differently from the machine running the
+ * tests — the away-game case, without pinning the suite to one CI locale.
+ *
+ * Kiritimati is UTC+14 and Midway is UTC-11: 25 hours apart, so no single
+ * device zone can agree with both. A test that hardcodes one zone instead
+ * silently goes vacuous on any runner that happens to sit in it, which is how
+ * "the log stamps the device's clock" survived a timezone fix.
+ */
+export function awayTimeZone(atMs = Date.now()): string {
+  const at = new Date(atMs)
+  const shown = (timeZone?: string) =>
+    new Intl.DateTimeFormat('en-US', { timeZone, hour: 'numeric', minute: '2-digit' }).format(at)
+  const device = shown()
+  const away = ['Pacific/Kiritimati', 'Pacific/Midway'].find((tz) => shown(tz) !== device)
+  if (!away) throw new Error('no away zone differs from the runner — check the ICU build')
+  return away
+}
+
 export const AUSTIN_TX = {
   lat: 30.27,
   lon: -97.74,
@@ -44,9 +63,18 @@ function hourly(startMs: number, hours: number, fn: (i: number) => number) {
  * Four days of hourly WBGT peaking each afternoon, warm enough that a Texas
  * forecast lands in the restricted bands — the conditions the tool exists for.
  */
-export function wbgtFixture(startMs: number, timeZone = 'America/Chicago') {
+export interface FixturePlace {
+  city: string
+  state: string
+}
+
+export function wbgtFixture(
+  startMs: number,
+  timeZone = 'America/Chicago',
+  place: FixturePlace = { city: 'Austin', state: 'TX' },
+) {
   return {
-    location: { lat: AUSTIN_TX.lat, lon: AUSTIN_TX.lon, city: 'Austin', state: 'TX', timeZone },
+    location: { lat: AUSTIN_TX.lat, lon: AUSTIN_TX.lon, city: place.city, state: place.state, timeZone },
     hasWbgt: true,
     wetBulbGlobeTemperature: {
       uom: 'wmoUnit:degC',
@@ -74,23 +102,41 @@ const GRID_URL = 'https://api.weather.gov/gridpoints/EWX/150,90'
  * AirNow is left failing by default: Texas has no verified state air policy,
  * so the gate's unavailable state is exactly what a Texas user sees.
  */
-export function stubForecastFetch(options: { aqi?: unknown } = {}) {
+export function stubForecastFetch(
+  options: {
+    aqi?: unknown
+    /** City/state NWS reports for the point — what the geolocation path adopts. */
+    place?: FixturePlace
+    /**
+     * Delays every forecast response by this many ms. With an instant stub
+     * React batches the commits around a re-fetch, so a spurious second round
+     * trip is invisible to the DOM; a delay makes the intermediate "Loading…"
+     * state observable, which is what the reader actually sees.
+     */
+    delayMs?: number
+  } = {},
+) {
   const start = Date.now() - 2 * 3_600_000
+  const place = options.place ?? { city: 'Austin', state: 'TX' }
   // Plain shapes rather than Response objects: jsdom ships no fetch, and the
   // callers only touch `.ok` and `.json()`.
-  const ok = (body: unknown) => Promise.resolve({ ok: true, status: 200, json: async () => body })
+  const ok = (body: unknown) => {
+    const res = { ok: true, status: 200, json: async () => body }
+    if (!options.delayMs) return Promise.resolve(res)
+    return new Promise<typeof res>((resolve) => setTimeout(() => resolve(res), options.delayMs))
+  }
   vi.stubGlobal(
     'fetch',
     vi.fn((input: RequestInfo | URL) => {
       const url = String(input)
-      const fixture = wbgtFixture(start)
+      const fixture = wbgtFixture(start, 'America/Chicago', place)
       if (url.includes('/api/wbgt')) return ok(fixture)
       if (url.includes('/points/')) {
         return ok({
           properties: {
             forecastGridData: GRID_URL,
             timeZone: fixture.location.timeZone,
-            relativeLocation: { properties: { city: 'Austin', state: 'TX' } },
+            relativeLocation: { properties: { city: place.city, state: place.state } },
           },
         })
       }
