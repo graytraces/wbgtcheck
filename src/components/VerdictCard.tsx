@@ -92,7 +92,21 @@ export default function VerdictCard({
    * icon, and its label spelled out in the sentence.
    */
   const showPeak = peakAhead !== null && peakAhead.time !== hour.time
-  const PeakIcon = peakAhead ? FLAG_ICON[peakAhead.flag] : null
+  // Same treatment the headline gets: the band comes from the digits the chip
+  // prints, not from the float behind them, so the chip cannot name one flag
+  // and colour another for a caller that skipped annotateHours.
+  const peakBand = peakAhead ? classifyWbgt(policy, displayedWbgtF(peakAhead.wbgtF)) : null
+  const PeakIcon = peakBand ? FLAG_ICON[peakBand.flag] : null
+  /**
+   * What that flag COSTS. The chip named a band — "BLACK at 2 PM" — and the
+   * sentences under it are the CURRENT hour's guidance, so learning what BLACK
+   * requires meant scrolling ~5.3 screens to the thresholds table. This is the
+   * peak band's first guideline sentence, assembled by the same function that
+   * writes the current hour's, so the two cannot drift.
+   */
+  const peakSentence = peakBand
+    ? (guidelineSentences(peakBand.flag, peakBand.guideline, t)[0] ?? null)
+    : null
   const peakTimeLabel = peakAhead
     ? new Intl.DateTimeFormat(i18n.language, { timeZone, hour: 'numeric' }).format(
         new Date(peakAhead.time),
@@ -186,22 +200,27 @@ export default function VerdictCard({
             number does not: the reader is standing on the field at 8am
             deciding about 4pm. The peak hour is 1.7-2.5 screens down inside a
             scroller that shows 5 of 14 hours on a phone. */}
-        {showPeak && peakAhead && PeakIcon && (
+        {showPeak && peakAhead && peakBand && PeakIcon && (
           <p className="mt-3">
             <a
               href="#hourly-view"
               className={cn(
-                'inline-flex items-center gap-2 px-3 py-2 text-base font-bold ring-1 ring-current sm:text-lg',
-                FLAG_SOLID[peakAhead.flag],
+                'inline-flex items-start gap-2 px-3 py-2 text-base font-bold ring-1 ring-current sm:text-lg',
+                FLAG_SOLID[peakBand.flag],
               )}
             >
-              <PeakIcon className="h-5 w-5 shrink-0" strokeWidth={2.5} aria-hidden="true" />
+              <PeakIcon className="mt-1 h-5 w-5 shrink-0" strokeWidth={2.5} aria-hidden="true" />
               <span>
                 {t('verdict.peakAhead', {
                   value: formatWbgtF(peakAhead.wbgtF),
-                  flag: t(`flags.${peakAhead.flag}.label`),
+                  flag: t(`flags.${peakBand.flag}.label`),
                   time: peakTimeLabel,
                 })}
+                {peakSentence && (
+                  <span className="mt-0.5 block text-sm font-medium sm:text-base">
+                    {peakSentence}
+                  </span>
+                )}
               </span>
             </a>
           </p>

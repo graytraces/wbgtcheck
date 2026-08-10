@@ -14,6 +14,7 @@ import {
   REMOTE_UNDERESTIMATE_MAX_C,
 } from '../data/policyOracle'
 import type { HourVerdict } from '../utils/verdict'
+import { guidelineSentences } from '../utils/guidelineText'
 import { isBorderline } from '../data/policyOracle'
 import { awayTimeZone } from '../test/homeFixture'
 
@@ -265,6 +266,23 @@ describe('the card says where the day is going, not only where it is', () => {
     // The flag it names is not the flag on the big number — which is the
     // entire finding.
     expect(classifyWbgt(UIL_CLASS_3, 93.2).flag).not.toBe(classifyWbgt(UIL_CLASS_3, 80).flag)
+  })
+
+  /**
+   * Naming a band is not telling a coach what it costs. The sentences under
+   * the chip are the CURRENT hour's guidance, so reading what BLACK requires
+   * meant scrolling ~5.3 screens to the thresholds table.
+   */
+  it('says what the peak band requires, not only what it is called', () => {
+    renderWithPeak(80, 93.2)
+    const peak = classifyWbgt(UIL_CLASS_3, 93.2)
+    const [peakFirst] = guidelineSentences(peak.flag, peak.guideline, i18n.t)
+    expect(peakFirst).toBeTruthy()
+    expect(screen.getByRole('link').textContent).toContain(peakFirst)
+    // …and it is the peak's guidance, not the one already on the card.
+    const now = classifyWbgt(UIL_CLASS_3, 80)
+    const [nowFirst] = guidelineSentences(now.flag, now.guideline, i18n.t)
+    expect(peakFirst).not.toBe(nowFirst)
   })
 
   it('is triple-coded and reaches the hourly view', () => {
