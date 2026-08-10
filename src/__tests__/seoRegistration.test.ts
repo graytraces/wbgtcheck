@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { pageSEO } from '../seo'
 import { VALID_TOOLS, VALID_PAGES } from '../utils/routeValidation'
+import { STATE_GUIDES } from '../data/guideRegistry'
 import en from '../locales/en.json'
 import es from '../locales/es.json'
 
@@ -75,6 +76,71 @@ describe('SEO chain registration', () => {
       for (const re of banned) {
         expect(re.test(text), `${label} matches ${re}`).toBe(false)
       }
+    }
+  })
+})
+
+/**
+ * The seo block is the page as Google prints it, and it is the last surface a
+ * correction reaches.
+ *
+ * 09c3145 overturned Virginia's and New York's ladder classifications — VHSL
+ * publishes a statewide six-level WBGT table, and NYSPHSAA's document carries
+ * a WBGT chart alongside its heat-index procedure — and rewrote the registry,
+ * the guide pages and the home-page notice. It did not touch seo.*, so the
+ * search result for /virginia still read "Districts Set the WBGT Levels" and
+ * the one for /new-york still read "(Not WBGT)". Two claims the site had
+ * spent the day retracting, printed where most readers meet the page.
+ *
+ * Derived from the registry rather than listed by hand: whatever the registry
+ * says a state publishes, its seo block may not deny.
+ */
+describe('the seo layer agrees with the registry about what a state publishes', () => {
+  // Phrases that assert a state has no WBGT ladder of its own, in both
+  // languages. Each one shipped in a title or description of a state that
+  // publishes one.
+  const DENIALS = [
+    /\(not WBGT\)/i,
+    /\(no WBGT\)/i,
+    /not WBGT,/i,
+    /no el WBGT,/i,
+    /districts set/i,
+    /distritos fijan/i,
+    /set locally, not statewide/i,
+    /umbrales son locales/i,
+    /publishes no/i,
+    /publica ninguno/i,
+  ]
+
+  it('no state with its own ladder is advertised as having none', () => {
+    const own = STATE_GUIDES.filter((g) => g.ladder === 'wbgt-own')
+    // Guard the guard: an empty list would make every assertion below vacuous.
+    expect(own.length).toBeGreaterThanOrEqual(12)
+    for (const guide of own) {
+      for (const [lang, dict] of [['en', en], ['es', es]] as const) {
+        const block = JSON.stringify(
+          (dict.seo as Record<string, unknown>)[guide.seoKey] ?? {},
+        )
+        for (const re of DENIALS) {
+          expect(re.test(block), `${lang} seo.${guide.seoKey} matches ${re}`).toBe(false)
+        }
+      }
+    }
+  })
+
+  it('names the document each of the two overturned states actually publishes', () => {
+    // VHSL's table and NYSPHSAA's chart are the documents the correction was
+    // about, so the search result has to name them.
+    expect(en.seo.virginia.title).toMatch(/VHSL/)
+    expect(es.seo.virginia.title).toMatch(/VHSL/)
+    expect(en.seo.virginia.description).toMatch(/statewide WBGT/i)
+    expect(es.seo.virginia.description).toMatch(/WBGT.*estatal/i)
+    for (const dict of [en, es]) {
+      // New York's is the both-scales claim: naming only one of them is how
+      // this went wrong in the first place.
+      expect(dict.seo.newYork.title).toMatch(/WBGT/)
+      expect(dict.seo.newYork.title).toMatch(/heat index|índice de calor/i)
+      expect(dict.seo.newYork.description).toMatch(/both scales|ambas escalas/i)
     }
   })
 })
