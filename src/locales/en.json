@@ -362,6 +362,11 @@
       "title": "California CIF WBGT Heat Policy (Categories 1-3) | WBGT Check",
       "description": "CIF's three regional WBGT ladders under AB 1653 and Bylaw 503.K, the cancel thresholds, and the NOAA reading CIF points schools to.",
       "keywords": "CIF heat policy, California WBGT, AB 1653, CIF Bylaw 503.K, California heat categories"
+    },
+    "kentucky": {
+      "title": "Kentucky KHSAA WBGT Contest Alterations | WBGT Check",
+      "description": "KHSAA's WBGT bands for contest alterations, the 30-minute re-check, and the rule that a reading taken off the venue property is not valid.",
+      "keywords": "KHSAA WBGT, Kentucky heat policy, KHSAA contest alteration, Kentucky wet bulb globe temperature"
     }
   },
   "texas": {
@@ -460,7 +465,7 @@
     "notes": {
       "tx": "Effective {{effectiveDate}}; covers athletics and marching band. Class 2/3 regional thresholds — see the Texas guide. Internet WBGT resources are explicitly allowed; no approval list is published.",
       "ga": "On-site calibrated instrument required at each practice — see the Georgia guide.",
-      "ky": "KHSAA moved to WBGT and is reported to rule out websites and phone apps as substitutes — we could not reach the KHSAA documents to confirm the wording or which record form governs. Confirm directly.",
+      "ky": "Four WBGT bands for contest alterations with a hard stop at the top, re-checked every 30 minutes. A reading taken off the venue property is explicitly not valid. Read from a web-archive capture — khsaa.org answers nothing, so currency is unconfirmed.",
       "sc": "Schools are required to own and use an on-site WBGT thermometer; \"phone apps are not scientifically approved\". Range-hold rule locks in restrictions — see the South Carolina guide.",
       "ia": "WBGT is recommended (not mandated) year-round above 80 °F, readings every 30 minutes; marching band and cheer have their own rows — see the Iowa guide.",
       "fl": "The Zachary Martin Act requires heat-stress monitoring year-round and cooling zones, and requires the reading to be measured at the site of the activity. The thresholds themselves are FHSAA guidelines, which we have not been able to open.",
@@ -487,7 +492,8 @@
     "virginiaLink": "Virginia heat law guide",
     "massachusettsLink": "Massachusetts MIAA guide",
     "floridaLink": "Florida heat law guide",
-    "californiaLink": "California CIF heat guide"
+    "californiaLink": "California CIF heat guide",
+    "kentuckyLink": "Kentucky KHSAA guide"
   },
   "southCarolina": {
     "pageTitle": "South Carolina SCHSL WBGT Rules",
@@ -764,5 +770,30 @@
     "sourceHeading": "Source",
     "sourceBody": "All thresholds and quotations above were read from the CIF Constitution and Bylaws on {{verifiedOn}}.",
     "ctaButton": "Plan around California flags"
+  },
+  "kentucky": {
+    "pageTitle": "Kentucky KHSAA WBGT Contest Alterations",
+    "intro": "KHSAA's WBGT guidance is written for contests rather than practices: four bands, per-sport adjustments, and one hard stop. It also contains the bluntest measurement rule on this site — a reading taken off the property is not valid.",
+    "currencyHeading": "Read from an archive, not from KHSAA",
+    "currencyBody": "khsaa.org does not answer any request from us — not the root, not the sports-medicine section, not the file itself. This page was built from a web-archive capture of KHSAA's own document, revised {{revision}}. We cannot confirm that KHSAA still publishes this revision, only that it published it. Confirm with KHSAA or your athletic director before relying on these numbers.",
+    "tableHeading": "Contest alterations by WBGT (°F)",
+    "colRange": "WBGT",
+    "colActions": "All outdoor sports",
+    "rows": {
+      "stopAll": "Stop all outside activity in practice and play.",
+      "coolingTub": "Cooling tub filled in advance, or TACO preparations complete.",
+      "water": "Water always available; athletes able to drink as much as they want.",
+      "iceTowels": "Towels with ice ready for cooling athletes as needed.",
+      "monitor": "Watch and monitor athletes carefully for necessary action."
+    },
+    "recheckNote": "Every band below the stop level also calls for the WBGT to be re-checked every {{interval}} minutes to catch a move into the next band.",
+    "scopeNote": "The source adds sport-specific alterations on top of these — extra hydration stations on cross-country courses, referee hydration breaks in field hockey, and a rule that on multi-race days the WBGT is checked before the first call for each race. This table carries only the all-sports column; read the source for your sport.",
+    "measurementHeading": "A reading taken elsewhere does not count",
+    "measurementBody": "Kentucky states the rule once as a strong recommendation: \"{{quote}}\"",
+    "invalidBody": "And then once more, without hedging: \"{{quote}}\"",
+    "deviceWarning": "That is as clear as this gets anywhere on this site. A forecast — including this one — cannot be your Kentucky reading, because it is by definition taken off the property. Plan with it; measure at the venue.",
+    "sourceHeading": "Source",
+    "sourceBody": "The bands and quotations above were read from the archived KHSAA document on {{verifiedOn}}.",
+    "ctaButton": "Plan with the forecast"
   }
 }

@@ -97,6 +97,7 @@ const ROUTES = [
   'massachusetts',
   'florida',
   'california',
+  'kentucky',
   'wbgt-vs-heat-index',
   'states',
   'washington-air-quality',

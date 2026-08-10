@@ -28,6 +28,7 @@ import {
   GENERIC_NATA as GENERIC_NATA_RAW,
   NCHSAA_REFERENCE as NCHSAA_REFERENCE_RAW,
   NYSPHSAA_HEAT_INDEX_REFERENCE as NYSPHSAA_HEAT_INDEX_REFERENCE_RAW,
+  KHSAA_WBGT_REFERENCE as KHSAA_WBGT_REFERENCE_RAW,
 } from './policyData.js'
 
 export {
@@ -96,6 +97,10 @@ export {
   MIAA_COMPETITION_QUOTE,
   MIAA_COOLING_ZONE_WBGT_F,
   MIAA_SOURCE,
+  KY_RECHECK_INTERVAL_MINUTES,
+  KY_REVISION,
+  KY_ONSITE_ONLY_QUOTE,
+  KY_OFFSITE_INVALID_QUOTE,
   CIF_LEGAL_BASIS,
   CIF_WBGT_REQUIRED_QUOTE,
   CIF_NO_DEVICE_QUOTE,
@@ -273,6 +278,12 @@ export const POLICIES = POLICIES_RAW as Record<PolicyId, HeatPolicy>
 export const NCHSAA_REFERENCE = NCHSAA_REFERENCE_RAW as ReferenceTable<NcReferenceRow>
 export const NYSPHSAA_HEAT_INDEX_REFERENCE =
   NYSPHSAA_HEAT_INDEX_REFERENCE_RAW as ReferenceTable<NyReferenceRow>
+/**
+ * Kentucky is a contest-alteration matrix, not a practice ladder — four bands
+ * and per-sport actions. Feeding it to classifyWbgt would dress four bands up
+ * as this site's five flags, so it renders only as its own table.
+ */
+export const KHSAA_WBGT_REFERENCE = KHSAA_WBGT_REFERENCE_RAW as ReferenceTable<ReferenceRow>
 
 export function classifyWbgt(policy: HeatPolicy, wbgtF: number): PolicyBand {
   for (const band of policy.bands) {

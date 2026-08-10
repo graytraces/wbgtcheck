@@ -865,6 +865,75 @@ export const NYSPHSAA_HEAT_INDEX_REFERENCE = {
   ],
 }
 
+// --- Kentucky (KHSAA) ----------------------------------------------------
+// "Sports Medicine Guidance - Contest Alteration Due to WBGT Readings",
+// revised 8/22/24. This is the document the README recorded as BLOCKED:
+// khsaa.org answers nothing to any direct fetch from here, and it still does
+// not. It was reached through a Wayback capture of KHSAA's own file.
+//
+// ⚠️ CURRENCY IS UNCONFIRMED, and that is a real limitation rather than a
+// formality. verifiedOn below attests the date the capture was read, NOT that
+// KHSAA still publishes this revision — we cannot reach khsaa.org to check.
+// The page says so. Treat this the way the OSAA air policy is treated.
+//
+// It is a CONTEST-ALTERATION matrix, not a practice-modification ladder: four
+// bands, per-sport actions, and no rest-break-per-hour structure. It is a
+// ReferenceTable for the same reason NC and NY are — feeding it to
+// classifyWbgt would dress four bands up as this site's five flags.
+
+export const KY_RECHECK_INTERVAL_MINUTES = 30
+export const KY_REVISION = '8/22/24'
+/**
+ * Kentucky states the on-site rule twice, and the second sentence is blunter
+ * than any other state's: a reading taken off the property is not merely
+ * discouraged, it is not valid. This is the clearest statement in the whole
+ * oracle that a remote forecast cannot be the compliance reading.
+ */
+export const KY_ONSITE_ONLY_QUOTE =
+  'It is strongly recommended that the WBGT be measured only at the competition or practice site.'
+export const KY_OFFSITE_INVALID_QUOTE =
+  'The measurement should not be considered valid if taken off of the main school campus if the venue is on the school campus, or off property from the competition venue for non-campus venues.'
+
+export const KHSAA_WBGT_REFERENCE = {
+  id: 'khsaa',
+  source: {
+    name: 'KHSAA Sports Medicine Guidance \u2014 Contest Alteration Due to WBGT Readings (revised 8/22/24, read from a Wayback capture)',
+    url: 'https://web.archive.org/web/2024/https://khsaa.org/common_documents/Sports%20Medicine/Adaptation%20of%20Contests%20for%20WBGT%20Adjustments%20FINAL%20per%2008-21-24%20Meeting.pdf',
+    verifiedOn: '2026-08-10',
+  },
+  /** Hottest first, matching every other table in this file. */
+  rows: [
+    { sourceLabel: '92.0 and above', textKeys: ['kentucky.rows.stopAll'] },
+    {
+      sourceLabel: '90.1 - 91.9',
+      textKeys: [
+        'kentucky.rows.coolingTub',
+        'kentucky.rows.water',
+        'kentucky.rows.iceTowels',
+        'kentucky.rows.monitor',
+      ],
+    },
+    {
+      sourceLabel: '87.1 - 90.0',
+      textKeys: [
+        'kentucky.rows.coolingTub',
+        'kentucky.rows.water',
+        'kentucky.rows.iceTowels',
+        'kentucky.rows.monitor',
+      ],
+    },
+    {
+      sourceLabel: '82.2 - 87.0',
+      textKeys: [
+        'kentucky.rows.coolingTub',
+        'kentucky.rows.water',
+        'kentucky.rows.iceTowels',
+        'kentucky.rows.monitor',
+      ],
+    },
+  ],
+}
+
 // --- California (CIF) ----------------------------------------------------
 // "Extreme Heat and Air Quality Policy", pp.102-104 of the CIF 2026-27
 // Constitution and Bylaws. Fetched 2026-08-10 through the CloudFront address

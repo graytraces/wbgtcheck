@@ -11,6 +11,8 @@ import {
   MIAA_DEVICE_QUOTE,
   MIAA_COMPETITION_QUOTE,
   MIAA_COOLING_ZONE_WBGT_F,
+  KHSAA_WBGT_REFERENCE,
+  KY_OFFSITE_INVALID_QUOTE,
   CIF_CATEGORIES,
   CIF_CATEGORY_1,
   CIF_CATEGORY_3,
@@ -190,6 +192,33 @@ describe('policy oracle — guideline facts vs primary sources', () => {
       expect(UIL_CLASS_2.bands.find((b) => b.flag === flag)!.guideline).toEqual(
         UIL_CLASS_3.bands.find((b) => b.flag === flag)!.guideline,
       )
+    }
+  })
+
+  it('Kentucky stays a reference table — four bands are not five flags', () => {
+    // KHSAA publishes a contest-alteration matrix, not a practice ladder.
+    // Feeding four bands to classifyWbgt would dress them up as this site's
+    // five flags, the same reason NC and NY are excluded.
+    expect(KHSAA_WBGT_REFERENCE.rows).toHaveLength(4)
+    expect(Object.keys(POLICIES)).not.toContain('khsaa')
+    expect(KHSAA_WBGT_REFERENCE.rows.map((r) => r.sourceLabel)).toEqual([
+      '92.0 and above',
+      '90.1 - 91.9',
+      '87.1 - 90.0',
+      '82.2 - 87.0',
+    ])
+    // The top band stops everything; it must not carry the ordinary actions.
+    expect(KHSAA_WBGT_REFERENCE.rows[0].textKeys).toEqual(['kentucky.rows.stopAll'])
+  })
+
+  it('Kentucky says an off-property reading is not valid, and the page says currency is unconfirmed', () => {
+    expect(KY_OFFSITE_INVALID_QUOTE).toContain('should not be considered valid')
+    // Read from an archive because khsaa.org answers nothing — the page has to
+    // carry that limitation, not bury it.
+    expect(KHSAA_WBGT_REFERENCE.source.url).toContain('web.archive.org')
+    for (const locale of [en, es]) {
+      expect(locale.kentucky.currencyBody.length).toBeGreaterThan(0)
+      expect(locale.kentucky.deviceWarning.length).toBeGreaterThan(0)
     }
   })
 

@@ -362,6 +362,11 @@
       "title": "Política de calor WBGT de la CIF de California (Categorías 1-3) | WBGT Check",
       "description": "Las tres escalas WBGT regionales de la CIF bajo AB 1653 y el estatuto 503.K, los umbrales de cancelación y la lectura de la NOAA que la CIF señala.",
       "keywords": "política de calor CIF, WBGT California, AB 1653, estatuto 503.K de la CIF"
+    },
+    "kentucky": {
+      "title": "Alteraciones de competición por WBGT de la KHSAA | WBGT Check",
+      "description": "Las bandas WBGT de la KHSAA para alterar competiciones, la recomprobación cada 30 minutos y la regla de que una lectura fuera del recinto no es válida.",
+      "keywords": "WBGT KHSAA, política de calor Kentucky, alteración de competición KHSAA"
     }
   },
   "texas": {
@@ -460,7 +465,7 @@
     "notes": {
       "tx": "Vigente desde el {{effectiveDate}}; cubre atletismo y banda de marcha. Umbrales regionales Clase 2/3 — vea la guía de Texas. Los recursos WBGT por internet están permitidos explícitamente; no se publica una lista de aprobación.",
       "ga": "Instrumento calibrado en el sitio requerido en cada práctica — vea la guía de Georgia.",
-      "ky": "La KHSAA pasó al WBGT y se reporta que descarta sitios web y apps como sustitutos — no pudimos acceder a los documentos de la KHSAA para confirmar la redacción ni cuál formulario de registro rige. Confirme directamente.",
+      "ky": "Cuatro bandas WBGT para alterar competiciones con una parada tajante en lo alto, recomprobadas cada 30 minutos. Una lectura tomada fuera del recinto explícitamente no es válida. Leído de una captura de archivo web — khsaa.org no responde, así que la vigencia no está confirmada.",
       "sc": "Se exige que las escuelas tengan y usen un termómetro WBGT en el sitio; «phone apps are not scientifically approved» (las apps del teléfono no están aprobadas científicamente). La regla de permanencia fija las restricciones — vea la guía de Carolina del Sur.",
       "ia": "El WBGT es recomendado (no obligatorio) todo el año sobre 80 °F, con lecturas cada 30 minutos; la banda de marcha y las porristas tienen filas propias — vea la guía de Iowa.",
       "fl": "La Zachary Martin Act exige monitoreo del estrés por calor todo el año y zonas de enfriamiento, y exige que la lectura se mida en el sitio de la actividad. Los umbrales en sí son pautas de la FHSAA, que no hemos podido abrir.",
@@ -487,7 +492,8 @@
     "virginiaLink": "Guía de la ley de calor de Virginia",
     "massachusettsLink": "Guía de la MIAA de Massachusetts",
     "floridaLink": "Guía de la ley de calor de Florida",
-    "californiaLink": "Guía de calor de la CIF de California"
+    "californiaLink": "Guía de calor de la CIF de California",
+    "kentuckyLink": "Guía de la KHSAA de Kentucky"
   },
   "southCarolina": {
     "pageTitle": "Reglas WBGT de la SCHSL de Carolina del Sur",
@@ -764,5 +770,30 @@
     "sourceHeading": "Fuente",
     "sourceBody": "Todos los umbrales y citas anteriores se leyeron de la Constitución y Estatutos de la CIF el {{verifiedOn}}.",
     "ctaButton": "Planifique con las banderas de California"
+  },
+  "kentucky": {
+    "pageTitle": "Alteraciones de competición por WBGT de la KHSAA de Kentucky",
+    "intro": "La guía WBGT de la KHSAA está escrita para competiciones más que para prácticas: cuatro bandas, ajustes por deporte y una parada tajante. También contiene la regla de medición más rotunda de este sitio — una lectura tomada fuera de la propiedad no es válida.",
+    "currencyHeading": "Leído de un archivo, no de la KHSAA",
+    "currencyBody": "khsaa.org no responde a ninguna solicitud nuestra — ni la raíz, ni la sección de medicina deportiva, ni el archivo mismo. Esta página se construyó a partir de una captura de archivo web del propio documento de la KHSAA, revisado el {{revision}}. No podemos confirmar que la KHSAA siga publicando esta revisión, solo que la publicó. Confirme con la KHSAA o con su director atlético antes de basarse en estos números.",
+    "tableHeading": "Alteraciones de competición por WBGT (°F)",
+    "colRange": "WBGT",
+    "colActions": "Todos los deportes al aire libre",
+    "rows": {
+      "stopAll": "Detener toda actividad al aire libre, en práctica y en juego.",
+      "coolingTub": "Tina de enfriamiento llena de antemano, o preparativos TACO completos.",
+      "water": "Agua siempre disponible; los atletas pueden beber cuanto quieran.",
+      "iceTowels": "Toallas con hielo listas para enfriar a los atletas según haga falta.",
+      "monitor": "Vigilar y monitorear a los atletas con atención para actuar si es necesario."
+    },
+    "recheckNote": "Todas las bandas por debajo del nivel de parada piden además volver a comprobar el WBGT cada {{interval}} minutos para detectar el paso a la banda siguiente.",
+    "scopeNote": "La fuente añade alteraciones por deporte sobre estas — estaciones de hidratación adicionales en los circuitos de campo traviesa, descansos de hidratación arbitrales en hockey sobre césped, y la regla de que en días de varias carreras el WBGT se comprueba antes del primer llamado de cada carrera. Esta tabla recoge solo la columna de todos los deportes; consulte la fuente para su deporte.",
+    "measurementHeading": "Una lectura tomada en otro lugar no cuenta",
+    "measurementBody": "Kentucky enuncia la regla una vez como recomendación firme: «{{quote}}»",
+    "invalidBody": "Y luego otra vez, sin matices: «{{quote}}»",
+    "deviceWarning": "Esto es lo más claro que se pone en todo este sitio. Un pronóstico — incluido este — no puede ser su lectura en Kentucky, porque por definición se toma fuera de la propiedad. Planifique con él; mida en el recinto.",
+    "sourceHeading": "Fuente",
+    "sourceBody": "Las bandas y citas anteriores se leyeron del documento archivado de la KHSAA el {{verifiedOn}}.",
+    "ctaButton": "Planifique con el pronóstico"
   }
 }

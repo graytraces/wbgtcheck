@@ -25,6 +25,11 @@ import {
   TSSAA,
   IOWA_CATEGORY_2,
   MIAA,
+  KHSAA_WBGT_REFERENCE,
+  KY_RECHECK_INTERVAL_MINUTES,
+  KY_REVISION,
+  KY_ONSITE_ONLY_QUOTE,
+  KY_OFFSITE_INVALID_QUOTE,
   CIF_CATEGORIES,
   CIF_LEGAL_BASIS,
   CIF_WBGT_REQUIRED_QUOTE,
@@ -168,6 +173,7 @@ const pages = [
   { key: 'massachusetts', path: 'massachusetts', dateModified: today },
   { key: 'florida', path: 'florida', dateModified: today },
   { key: 'california', path: 'california', dateModified: today },
+  { key: 'kentucky', path: 'kentucky', dateModified: today },
   { key: 'wbgtVsHeatIndex', path: 'wbgt-vs-heat-index', dateModified: today },
   { key: 'states', path: 'states', dateModified: today },
   { key: 'washingtonAir', path: 'washington-air-quality', dateModified: today },
@@ -729,6 +735,35 @@ function generateBodyContent(lang, page) {
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
     push(correctionNoteHtml(t, 'new-york', lang))
+  } else if (page.key === 'kentucky') {
+    push(`<h1>${escapeHtml(t('kentucky.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('kentucky.intro'))}</p>`)
+    push(`<h2>${escapeHtml(t('kentucky.currencyHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('kentucky.currencyBody', { revision: KY_REVISION }))}</p>`)
+    push(`<h2>${escapeHtml(t('kentucky.tableHeading'))}</h2>`)
+    push(
+      `<table><thead><tr><th>${escapeHtml(t('kentucky.colRange'))}</th><th>${escapeHtml(t('kentucky.colActions'))}</th></tr></thead><tbody>${KHSAA_WBGT_REFERENCE.rows
+        .map(
+          (row) =>
+            `<tr><th scope="row">${escapeHtml(row.sourceLabel)}</th><td><ul>${row.textKeys
+              .map((key) => `<li>${escapeHtml(t(key))}</li>`)
+              .join('')}</ul></td></tr>`,
+        )
+        .join('')}</tbody></table>`,
+    )
+    push(
+      `<p>${escapeHtml(t('kentucky.recheckNote', { interval: KY_RECHECK_INTERVAL_MINUTES }))}</p>`,
+    )
+    push(`<p>${escapeHtml(t('kentucky.scopeNote'))}</p>`)
+    push(`<h2>${escapeHtml(t('kentucky.measurementHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('kentucky.measurementBody', { quote: KY_ONSITE_ONLY_QUOTE }))}</p>`)
+    push(`<p>${escapeHtml(t('kentucky.invalidBody', { quote: KY_OFFSITE_INVALID_QUOTE }))}</p>`)
+    push(`<p>${escapeHtml(t('kentucky.deviceWarning'))}</p>`)
+    push(
+      `<h2>${escapeHtml(t('kentucky.sourceHeading'))}</h2><p>${escapeHtml(t('kentucky.sourceBody', { verifiedOn: KHSAA_WBGT_REFERENCE.source.verifiedOn }))} <a href="${KHSAA_WBGT_REFERENCE.source.url}">${escapeHtml(KHSAA_WBGT_REFERENCE.source.name)}</a></p>`,
+    )
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+    push(correctionNoteHtml(t, 'kentucky', lang))
   } else if (page.key === 'california') {
     push(`<h1>${escapeHtml(t('california.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('california.intro'))}</p>`)
@@ -994,7 +1029,7 @@ function generateBodyContent(lang, page) {
 const GUIDE_SLUGS = {
   TX: 'texas', GA: 'georgia', SC: 'south-carolina', TN: 'tennessee',
   IA: 'iowa', NC: 'north-carolina', NY: 'new-york', VA: 'virginia',
-  MA: 'massachusetts', FL: 'florida', CA: 'california',
+  MA: 'massachusetts', FL: 'florida', CA: 'california', KY: 'kentucky',
 }
 
 const SITEMAP_EXCLUDE_KEYS = new Set(['privacy', 'disclaimer'])
