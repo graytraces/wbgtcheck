@@ -15,6 +15,7 @@ import { pageSEO, statePageKeyByPolicy, pickerLadderPageKeys } from '../seo'
 import { defaultPolicyFor } from '../hooks/useWbgt'
 import { WBGT_LOG_KEY, type WbgtLogEntry } from '../hooks/useWbgtLog'
 import { UIL_CLASS_3, classifyWbgt } from '../data/policyOracle'
+import { feedbackMailto } from '../utils/feedback'
 
 /**
  * What the HOME PAGE renders — not what a test-local re-implementation of its
@@ -58,13 +59,19 @@ async function homeIn(abbr: string, label: string) {
   return view
 }
 
-const NOTICE_HEADINGS = [
+/** The three "your state publishes its own ladder and it is not on screen"
+    variants. Which of the three is chosen is guideReachability's business. */
+const LADDER_HEADINGS = [
   en.home.stateLadderHeading,
   en.home.stateScaleHeading,
   en.home.stateNoNumbersHeading,
 ]
 
-const shownNotice = () => NOTICE_HEADINGS.filter((h) => screen.queryByText(h) !== null)
+const shownLadderNotice = () => LADDER_HEADINGS.filter((h) => screen.queryByText(h) !== null)
+
+/** The fourth variant: the ladder IS pickable, the picker is just not on it. */
+const shownNotSelected = (abbr: string) =>
+  screen.queryByText(i18n.t('home.stateNotSelectedHeading', { state: abbr }))
 
 /**
  * The guide link the DETECTED STATE puts under the verdict.
@@ -85,14 +92,17 @@ function guideLink(guide: (typeof STATE_GUIDES)[number]): Element | null {
 }
 
 describe('the fallback notice, as the page renders it', () => {
-  it('says nothing about the picker in a state the picker DOES offer', async () => {
+  it('does not tell a state the picker offers that the picker does not', async () => {
     // Tennessee: TSSAA is a picker option that simply is not auto-selected, so
     // policyId is 'generic' here. Gating on that said, in as many words, that
     // Tennessee's own scale is not one of the picker's options.
     const view = await homeIn('TN', 'Nashville, TN')
     const tennessee = STATE_GUIDES.find((g) => g.abbr === 'TN')!
     expect(guideLink(tennessee), 'no route to the guide').toBeTruthy()
-    expect(shownNotice(), 'a false notice is on the Tennessee page').toEqual([])
+    expect(shownLadderNotice(), 'a false notice is on the Tennessee page').toEqual([])
+    // What IS true here, and what the page used to say nothing about: the flag
+    // on screen is the NATA fallback, and TSSAA's ladder is one tap away.
+    expect(shownNotSelected('TN')).toBeInTheDocument()
     view.unmount()
   })
 
@@ -103,6 +113,28 @@ describe('the fallback notice, as the page renders it', () => {
     expect(guideLink(STATE_GUIDES.find((g) => g.abbr === 'CA')!)).toBeTruthy()
     expect(screen.getByText(en.home.stateLadderHeading)).toBeInTheDocument()
     expect(screen.getByText(en.home.stateLadderBody)).toBeInTheDocument()
+    view.unmount()
+  })
+
+  it('warns a Texas reader who moves the picker to NATA by hand', async () => {
+    // The old gate asked "is this state's ladder pickable" — a fact about the
+    // picker. The reader's question is whether the flag ON SCREEN is their
+    // state's, and for a Texas or Georgia reader who switched to NATA the
+    // answer was no and the page said nothing.
+    const view = await homeIn('TX', 'Austin, TX')
+    expect(shownNotSelected('TX'), 'UIL is auto-selected here').toBeNull()
+    expect(shownLadderNotice()).toEqual([])
+
+    fireEvent.change(screen.getByLabelText(en.policies.pickerLabel), {
+      target: { value: 'generic' },
+    })
+
+    expect(shownNotSelected('TX')).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        i18n.t('home.stateNotSelectedBody', { state: 'TX', policy: en.policies.generic }),
+      ),
+    ).toBeInTheDocument()
     view.unmount()
   })
 
@@ -119,16 +151,75 @@ describe('the fallback notice, as the page renders it', () => {
     for (const guide of STATE_GUIDES) {
       const pickerKey = statePageKeyByPolicy[defaultPolicyFor(guide.abbr)]
       const pickerSlug = pickerKey ? pageSEO[pickerKey].path : null
-      const expectLink = guide.slug !== pickerSlug
-      // The notice claims this state's scale is not one of the picker's
-      // options — so it may appear exactly where that is true.
-      const expectNotice = expectLink && !pickerLadderPageKeys.has(guide.seoKey)
+      // The flag on screen is not this state's own ladder.
+      const flagIsNotTheirs = guide.slug !== pickerSlug
+      // …and WHY not: because the picker cannot offer it, or because it can
+      // and is not showing it. Two different sentences, and the second one
+      // used to be silence.
+      const expectLadder = flagIsNotTheirs && !pickerLadderPageKeys.has(guide.seoKey)
+      const expectNotSelected = flagIsNotTheirs && pickerLadderPageKeys.has(guide.seoKey)
 
       const view = await homeIn(guide.abbr, `Somewhere, ${guide.abbr}`)
-      expect(guideLink(guide) !== null, `${guide.abbr}: guide link presence`).toBe(expectLink)
-      expect(shownNotice().length > 0, `${guide.abbr}: notice presence`).toBe(expectNotice)
+      expect(guideLink(guide) !== null, `${guide.abbr}: guide link presence`).toBe(flagIsNotTheirs)
+      expect(shownLadderNotice().length > 0, `${guide.abbr}: ladder notice`).toBe(expectLadder)
+      expect(shownNotSelected(guide.abbr) !== null, `${guide.abbr}: not-selected notice`).toBe(
+        expectNotSelected,
+      )
       view.unmount()
     }
+  })
+})
+
+/**
+ * The 34 states this site does NOT cover got less warning than the 12 it does.
+ *
+ * A coach in Ohio or Alabama entered a ZIP and got a full-bleed NATA flag with
+ * no notice section at all — the same screen a Georgia coach gets from GHSA's
+ * own table — while Kentucky and California got an explicit orange-bordered
+ * warning that the flag is not theirs. /en/states lists 16 states; "Ohio" and
+ * "Alabama" appear on it zero times. The site was warning where it knew more
+ * and staying silent where it knew less, which is backwards.
+ */
+describe('a state with no verified policy is told so', () => {
+  it('names the state, disclaims the flag, and offers both ways out', async () => {
+    const view = await homeIn('OH', 'Columbus, OH')
+    expect(STATE_GUIDES.find((g) => g.abbr === 'OH'), 'Ohio grew a guide').toBeUndefined()
+
+    const heading = screen.getByText(en.home.stateUnverifiedHeading)
+    const notice = heading.closest('section')!
+    expect(notice.textContent).toContain('OH')
+    expect(notice.textContent).not.toMatch(/\{\{|\}\}/)
+    // It disclaims the flag rather than claiming anything about Ohio's rules.
+    expect(notice.textContent).toContain(
+      i18n.t('home.stateUnverifiedBody', { state: 'OH' }),
+    )
+    // Both routes out: the directory, and the one person who can close the gap.
+    expect(notice.querySelector('a[href="/en/states"]')).not.toBeNull()
+    const report = notice.querySelector<HTMLAnchorElement>('a[href^="mailto:"]')!
+    expect(report.getAttribute('href')).toBe(feedbackMailto('wbgtcheck state policy: OH'))
+    view.unmount()
+  })
+
+  it('claims nothing about a state it cannot name', async () => {
+    // The geolocation path sets stateAbbr null until NWS reports one. "We have
+    // not verified 's policy" is not a sentence, and neither is a claim about
+    // a state we have not identified.
+    store.clear()
+    store.set('wbgt-uil-class', JSON.stringify('uil-class-3'))
+    store.set(
+      'wbgt-location',
+      JSON.stringify({ lat: AUSTIN_TX.lat, lon: AUSTIN_TX.lon, label: 'Somewhere', stateAbbr: null }),
+    )
+    const view = renderHome()
+    await waitFor(() => expect(screen.getByText(en.verdict.todayHeading)).toBeInTheDocument())
+    expect(screen.queryByText(en.home.stateUnverifiedHeading)).not.toBeInTheDocument()
+    view.unmount()
+  })
+
+  it('says nothing about verification where the state IS verified', async () => {
+    const view = await homeIn('GA', 'Atlanta, GA')
+    expect(screen.queryByText(en.home.stateUnverifiedHeading)).not.toBeInTheDocument()
+    view.unmount()
   })
 })
 

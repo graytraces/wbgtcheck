@@ -98,6 +98,10 @@
     "stateNoNumbersBody": "The flag above comes from the general NATA guideline. Your state requires a heat policy but does not publish the thresholds itself — they are set by {{setBy}}. No page can tell you this state’s cancellation number, including ours. Read the guide for what the rule does require.",
     "stateNumbersSetByDistricts": "each school district",
     "stateNumbersSetByAssociation": "the state athletic association",
+    "stateUnverifiedHeading": "We have not verified this state's policy",
+    "stateUnverifiedBody": "The flag above is the general NATA guideline, not {{state}}'s own rule — we have not read a heat policy for {{state}} yet, so we cannot tell you where its lines fall. Check with your association before you plan around this flag.",
+    "stateNotSelectedHeading": "The flag above is not {{state}}'s ladder",
+    "stateNotSelectedBody": "The flag above comes from {{policy}}. {{state}}'s association publishes its own WBGT thresholds, and they do not have to agree with it at the same reading. Switch the policy below, or read the guide.",
     "intro": "One screen for the morning call: hourly wet bulb globe temperature for your field, translated into your state's activity flags — rest ratios, equipment limits, practice caps — with a card you can drop in the team chat. Built for coaches, athletic trainers and marching band directors.",
     "sections": [
       {

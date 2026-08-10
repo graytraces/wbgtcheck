@@ -25,6 +25,7 @@ import {
   pickerLadderPageKeys,
 } from '../seo'
 import { STATE_GUIDES } from '../data/guideRegistry'
+import { feedbackMailto } from '../utils/feedback'
 import { buildHourlySeries } from '../utils/nws'
 import {
   annotateHours,
@@ -193,7 +194,6 @@ export default function Home() {
    * the picker to NATA by hand. Both were false.
    */
   const ladderIsPickable = !!detectedGuide && pickerLadderPageKeys.has(detectedGuide.seoKey)
-  const showLadderNotice = !!detectedGuide && !ladderIsPickable
   /**
    * And WHICH notice comes from the oracle, not from one sentence stretched
    * over every state. The single version told New York — a heat-index state —
@@ -217,6 +217,48 @@ export default function Home() {
             }),
           }
         : { heading: t('home.stateLadderHeading'), body: t('home.stateLadderBody') }
+
+  const stateAbbr = location?.stateAbbr ?? null
+  /**
+   * Which caveat, if any, stands under the verdict.
+   *
+   * Two of these four branches were missing, and the shape of what was
+   * missing is the finding: the site warned where it knew MORE and stayed
+   * silent where it knew less.
+   *
+   *   no guide at all — 34 states. A coach in Ohio or Alabama got a full-bleed
+   *     NATA flag and no notice section whatsoever, while Kentucky and
+   *     California got an orange-bordered warning that the flag is not theirs.
+   *     Ohio and Alabama appear zero times on /states. The flag on an Ohio
+   *     screen is a fallback that looks exactly like a state-mandated verdict.
+   *   guide, and the picker is already on it — nothing to say.
+   *   guide whose ladder the picker cannot offer — the existing three variants.
+   *   guide whose ladder the picker CAN offer but is not showing — Tennessee,
+   *     where TSSAA is an option that is simply not auto-selected, and any
+   *     Georgia or Texas reader who moved the picker to NATA by hand. The old
+   *     gate asked "is this state's ladder pickable", which is a fact about
+   *     the picker; the reader's question is whether the flag ON SCREEN is
+   *     their state's, which is a different one.
+   */
+  const stateNotice = !detectedGuide
+    ? // Nothing may be claimed about a state we cannot name.
+      stateAbbr
+      ? {
+          heading: t('home.stateUnverifiedHeading'),
+          body: t('home.stateUnverifiedBody', { state: stateAbbr }),
+        }
+      : null
+    : !showStateGuide
+      ? null
+      : !ladderIsPickable
+        ? ladderNotice
+        : {
+            heading: t('home.stateNotSelectedHeading', { state: detectedGuide.abbr }),
+            body: t('home.stateNotSelectedBody', {
+              state: detectedGuide.abbr,
+              policy: t(`policies.${policyId}`),
+            }),
+          }
 
   const airPolicy = airPolicyForState(location?.stateAbbr ?? null)
   const airPageKey = airPolicy ? airPageKeyByPolicy[airPolicy.id] : undefined
@@ -321,19 +363,35 @@ export default function Home() {
       )}
 
       {/* Directly under the verdict: a reader who stops at the flag must
-          still have seen that their state has its own scale. */}
-      {location && status === 'ready' && current && showStateGuide && detectedGuide && (
+          still have seen whose rule produced it. */}
+      {location && status === 'ready' && current && (stateNotice || showStateGuide) && (
         <section className="border-2 border-flag-orange bg-surface p-5">
-          {showLadderNotice && ladderNotice && (
+          {stateNotice && (
             <>
-              <h2 className="display-num mb-2 text-xl uppercase">{ladderNotice.heading}</h2>
-              <p className="mb-3">{ladderNotice.body}</p>
+              <h2 className="display-num mb-2 text-xl uppercase">{stateNotice.heading}</h2>
+              <p className="mb-3">{stateNotice.body}</p>
             </>
           )}
-          <p>
-            <Link to={`/${lang}/${detectedGuide.slug}`} className="font-semibold underline">
-              {t(detectedGuide.labelKey)} →
-            </Link>
+          <p className="flex flex-wrap gap-x-6 gap-y-1">
+            {showStateGuide && detectedGuide ? (
+              <Link to={`/${lang}/${detectedGuide.slug}`} className="font-semibold underline">
+                {t(detectedGuide.labelKey)} →
+              </Link>
+            ) : (
+              <Link to={`/${lang}/states`} className="font-semibold underline">
+                {t('common.nav.states')} →
+              </Link>
+            )}
+            {/* The reader in an uncovered state is the one person who can
+                close the gap, and they are standing in it. */}
+            {!detectedGuide && stateAbbr && (
+              <a
+                href={feedbackMailto(`wbgtcheck state policy: ${stateAbbr}`)}
+                className="font-semibold underline"
+              >
+                {t('common.correctionCta')}
+              </a>
+            )}
           </p>
         </section>
       )}
