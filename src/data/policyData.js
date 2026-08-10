@@ -1095,6 +1095,14 @@ const cifBands = (yellowMin, orangeAfter, redAfter, blackAfter, labels) => [
 // start, so every unassigned tenth between them lands in the hotter band. The
 // green/yellow edge is the exception: green is printed as "<X", so X itself is
 // already the first unassigned value and yellow takes it inclusively.
+/**
+ * ⚠️ `remoteEstimatesAllowed: 'yes'` is correct for the source — CIF names an
+ * online NOAA reading for schools without a meter — but it is harmless ONLY
+ * while these stay out of POLICIES. If a future change adds them to the
+ * picker, 'yes' SUPPRESSES the device-required warning on the verdict and
+ * share cards, and no current test would notice. Re-derive this field at that
+ * point: CIF points at NOAA's map specifically, not at any forecast.
+ */
 export const CIF_CATEGORY_1 = {
   id: 'cif-cat-1',
   source: CIF_HEAT_SOURCE,

@@ -4,18 +4,21 @@
  * for the pattern rationale). Types live in stateDirectory.ts.
  *
  * Classification authority: the 2026-08-09 research verdict
- * (workspace/20260809_wbgt_research_verdict.md), plus a 2026-08-09 primary
- * -source pass that read the association or statutory document directly for
- * TX, GA, SC, TN, IA, NC, NY and VA. Those carry `verified: 'primary'`; only
- * they may have numeric thresholds published anywhere on this site, and each
- * one's numbers live in policyData.js with its source URL. Everything else is
- * `verified: 'research'` and renders with a "confirm with your association"
- * caveat. NO numeric thresholds may be added to this file.
+ * (workspace/20260809_wbgt_research_verdict.md), plus primary-source passes
+ * that read the association or statutory document directly — 2026-08-09 for
+ * TX, GA, SC, TN, IA, NC, NY and VA, then 2026-08-10 for MA, FL, CA and KY.
+ * Those twelve carry `verified: 'primary'`; only they may have numeric
+ * thresholds published anywhere on this site, and each one's numbers live in
+ * policyData.js with its source URL. Everything else is `verified: 'research'`
+ * and renders with a "confirm with your association" caveat. NO numeric
+ * thresholds may be added to this file.
  *
- * KY stays 'research' on purpose: khsaa.org was unreachable during the
- * 2026-08-09 pass, so neither its wording nor its record form could be
- * confirmed. Do not restate the old GE20 claim without reading the document —
- * a GE110 WBGT form also exists and may supersede it.
+ * KY is primary but carries a caveat the others do not: khsaa.org answers
+ * nothing from here, so its document was read from a web-archive capture
+ * (revised 8/22/24). That capture proves publication, not currency, and the
+ * /kentucky page leads with that. Its `mandate` is 'conditional' rather than
+ * 'wbgt-required' because the document is contest-alteration guidance and
+ * states no general duty to use WBGT — the same downgrade Iowa received.
  */
 
 export const STATE_DIRECTORY = [

@@ -13,6 +13,10 @@ import Iowa from '../pages/Iowa'
 import NorthCarolina from '../pages/NorthCarolina'
 import NewYork from '../pages/NewYork'
 import Virginia from '../pages/Virginia'
+import Massachusetts from '../pages/Massachusetts'
+import Florida from '../pages/Florida'
+import California from '../pages/California'
+import Kentucky from '../pages/Kentucky'
 import States from '../pages/States'
 import Disclaimer from '../pages/Disclaimer'
 import WashingtonAir from '../pages/WashingtonAir'
@@ -39,6 +43,13 @@ import {
   NCHSAA_REFERENCE,
   NYSPHSAA_HEAT_INDEX_REFERENCE,
   VA_ICE_WBGT_F,
+  MIAA,
+  MIAA_NO_GAMES_FOOTNOTE_QUOTE,
+  FL_ONSITE_MEASUREMENT_QUOTE,
+  CIF_CATEGORIES,
+  KHSAA_WBGT_REFERENCE,
+  KY_REVISION,
+  KY_FOOTBALL_ONSITE_QUOTE,
   REMOTE_UNDERESTIMATE_MIN_C,
   REMOTE_UNDERESTIMATE_MAX_C,
 } from '../data/policyOracle'
@@ -178,6 +189,58 @@ describe('post-JS rendered DOM', () => {
     expect(screen.getByText(en.virginia.noTableNotice)).toBeInTheDocument()
     expect(
       screen.getByText(i18n.t('virginia.iceBody', { ice: VA_ICE_WBGT_F })),
+    ).toBeInTheDocument()
+  })
+
+  it('Massachusetts renders every band label, the device rule and the games footnote', () => {
+    renderAt('/en/massachusetts', <Massachusetts />)
+    for (const band of MIAA.bands) {
+      expect(screen.getAllByText(band.sourceLabel).length).toBeGreaterThan(0)
+    }
+    // The two facts a Massachusetts reader most needs off this page.
+    expect(screen.getByText(i18n.t('massachusetts.deviceWarning'))).toBeInTheDocument()
+    expect(
+      screen.getByText(
+        i18n.t('massachusetts.noGamesBody', {
+          footnote: MIAA_NO_GAMES_FOOTNOTE_QUOTE,
+          band: MIAA.bands[2].sourceLabel,
+        }),
+      ),
+    ).toBeInTheDocument()
+  })
+
+  it('Florida renders the on-site rule and says why it has no band table', () => {
+    renderAt('/en/florida', <Florida />)
+    expect(screen.getByText(en.florida.noTableBody)).toBeInTheDocument()
+    expect(screen.getByText(en.florida.deviceWarning)).toBeInTheDocument()
+    expect(
+      screen.getByText(i18n.t('florida.measurementBody', { quote: FL_ONSITE_MEASUREMENT_QUOTE })),
+    ).toBeInTheDocument()
+  })
+
+  it('California renders all three category ladders and the picker-exclusion note', () => {
+    renderAt('/en/california', <California />)
+    // Every threshold from every category must be on the page — a missing
+    // column would silently show one region another region's numbers.
+    for (const policy of CIF_CATEGORIES) {
+      for (const band of policy.bands) {
+        expect(screen.getAllByText(band.sourceLabel).length).toBeGreaterThan(0)
+      }
+    }
+    expect(screen.getByText(en.california.pickerExclusionBody)).toBeInTheDocument()
+  })
+
+  it('Kentucky renders its four bands, the currency caveat and the football rule', () => {
+    renderAt('/en/kentucky', <Kentucky />)
+    for (const row of KHSAA_WBGT_REFERENCE.rows) {
+      expect(screen.getAllByText(row.sourceLabel).length).toBeGreaterThan(0)
+    }
+    // Archive-sourced numbers must always ship with the currency caveat.
+    expect(
+      screen.getByText(i18n.t('kentucky.currencyBody', { revision: KY_REVISION })),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(i18n.t('kentucky.footballBody', { quote: KY_FOOTBALL_ONSITE_QUOTE })),
     ).toBeInTheDocument()
   })
 

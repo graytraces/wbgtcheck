@@ -645,6 +645,45 @@ describe('policy oracle — measurement/compliance stance', () => {
     expect(UIL_CLASS_2.source).toBe(UIL_CLASS_3.source)
   })
 
+  it('every reference-table textKey actually resolves in BOTH locales', () => {
+    // The old assertion compared key STRINGS, so a typo like
+    // `kentucky.rows.iceTowel` passed while the page printed the literal key
+    // path as a bullet, in English and Spanish alike.
+    let checked = 0
+    for (const table of [NCHSAA_REFERENCE, NYSPHSAA_HEAT_INDEX_REFERENCE, KHSAA_WBGT_REFERENCE]) {
+      for (const row of table.rows) {
+        for (const key of row.textKeys) {
+          for (const [name, locale] of [['en', en], ['es', es]] as const) {
+            const leaf = key
+              .split('.')
+              .reduce<unknown>((o, k) => (o as Record<string, unknown>)?.[k], locale)
+            expect(typeof leaf, `${key} missing from ${name}.json`).toBe('string')
+            expect((leaf as string).length, `${key} empty in ${name}.json`).toBeGreaterThan(0)
+            checked++
+          }
+        }
+      }
+    }
+    // Guard the guard — a table losing its rows would pass vacuously.
+    expect(checked).toBeGreaterThan(40)
+  })
+
+  it('the picker roster is asserted exactly, not by name blacklist', () => {
+    // `not.toContain('khsaa')` let `POLICIES.kentucky` through. The air oracle
+    // already pins its roster exactly; the heat axis now matches, so ANY new
+    // entry has to be a deliberate edit here.
+    expect(Object.keys(POLICIES).sort()).toEqual([
+      'generic',
+      'ghsa',
+      'iowa',
+      'miaa',
+      'schsl',
+      'tssaa',
+      'uil-class-2',
+      'uil-class-3',
+    ])
+  })
+
   it('reference tables carry a primary-source URL and verification date', () => {
     for (const table of [NCHSAA_REFERENCE, NYSPHSAA_HEAT_INDEX_REFERENCE]) {
       expect(table.source.url).toMatch(/^https:\/\//)
