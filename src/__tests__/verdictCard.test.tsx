@@ -12,6 +12,7 @@ import {
 } from '../data/policyOracle'
 import type { HourVerdict } from '../utils/verdict'
 import { isBorderline } from '../data/policyOracle'
+import { awayTimeZone } from '../test/homeFixture'
 
 function hourAt(wbgtF: number, source: 'nws' | 'estimated' = 'nws'): HourVerdict {
   return {
@@ -104,6 +105,65 @@ describe('VerdictCard', () => {
     expect(
       screen.getByText((content) => content.includes('do NOT satisfy compliance')),
     ).toBeInTheDocument()
+  })
+})
+
+/**
+ * The "as of" line and the reading's own hour are two clocks on one line, so
+ * they have to be the same clock. Commit 4efe3c6 passed `timeZone` to the as-of
+ * formatter for the away-game case — a Texas team checking Atlanta's forecast
+ * saw times two hours apart on the same card — and nothing guarded it: the only
+ * two VerdictCard renders in the suite never passed `fetchedAt`, so the branch
+ * was never entered and deleting `timeZone` from it failed nothing.
+ */
+describe('the card keeps one clock', () => {
+  const AT = Date.parse('2026-08-10T20:00:00+00:00')
+  // Deliberately not the runner's zone — see awayTimeZone.
+  const TZ = awayTimeZone(AT)
+
+  it('stamps "as of" in the forecast zone, like the hour beside it', () => {
+    render(
+      <VerdictCard
+        hour={{ ...hourAt(88.4), time: AT }}
+        policy={UIL_CLASS_3}
+        locationLabel="Atlanta, GA"
+        stateAbbr="GA"
+        timeZone={TZ}
+        fetchedAt={AT}
+      />,
+    )
+    const inZone = new Intl.DateTimeFormat('en', {
+      timeZone: TZ,
+      hour: 'numeric',
+      minute: '2-digit',
+    }).format(new Date(AT))
+    const onDevice = new Intl.DateTimeFormat('en', { hour: 'numeric', minute: '2-digit' }).format(
+      new Date(AT),
+    )
+    expect(inZone, 'the chosen zone matches the runner, so this proves nothing').not.toBe(onDevice)
+
+    // Same instant, same line: the reading's hour and the load time must print
+    // identically.
+    const line = screen.getByText(en.verdict.nowHeading, { exact: false })
+    expect(line.textContent).toContain(i18n.t('verdict.atTime', { time: inZone }))
+    expect(line.textContent).toContain(i18n.t('verdict.asOf', { time: inZone }))
+    expect(line.textContent, 'the as-of stamp is on the device clock').not.toContain(
+      i18n.t('verdict.asOf', { time: onDevice }),
+    )
+  })
+
+  it('says nothing about load time when there is none to report', () => {
+    render(
+      <VerdictCard
+        hour={{ ...hourAt(88.4), time: AT }}
+        policy={UIL_CLASS_3}
+        locationLabel="Atlanta, GA"
+        stateAbbr="GA"
+        timeZone={TZ}
+      />,
+    )
+    const line = screen.getByText(en.verdict.nowHeading, { exact: false })
+    expect(line.textContent).not.toContain(en.verdict.asOf.replace('{{time}}', '').trim())
   })
 })
 
