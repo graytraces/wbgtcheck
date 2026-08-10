@@ -508,6 +508,40 @@ describe('the new row copy carries no numbers of its own', () => {
 })
 
 /**
+ * One standing rule, applied to every table instead of two of them.
+ *
+ * GHSA_ORANGE and CIF_ORANGE both document why the mid-practice equipment
+ * relaxation is not rendered: it governs a transition inside a practice
+ * already under way, which the on-site instrument decides, while every surface
+ * on this site is read before the practice starts. The two newest tables
+ * (FHSAA §41.8 and the NYSPHSAA chart) printed the identical sentence anyway,
+ * so the same rule ran two ways — and the inconsistency leaned permissive.
+ */
+describe('the mid-practice equipment relaxation is suppressed on every table', () => {
+  const RELAXATION = {
+    en: /continue to work ?out wearing (football pants|full pads)/i,
+    es: /seguir entrenando con pantal[oó]n/i,
+  }
+
+  it('no locale string offers to keep the pads on when the reading rises', () => {
+    expect(JSON.stringify(en)).not.toMatch(RELAXATION.en)
+    expect(JSON.stringify(es)).not.toMatch(RELAXATION.es)
+  })
+
+  it('and no rendered state table does either', () => {
+    for (const [path, element] of [
+      ['/en/florida', <Florida />],
+      ['/en/new-york', <NewYork />],
+      ['/en/virginia', <Virginia />],
+    ] as const) {
+      const { container, unmount } = renderAt(path, element)
+      expect(container.textContent ?? '', path).not.toMatch(RELAXATION.en)
+      unmount()
+    }
+  })
+})
+
+/**
  * The P0 itself: three states were told their own numbers were unobtainable.
  * English was corrected in 09c3145 and Spanish was not, so this guards BOTH
  * locales against the claim coming back in either one.

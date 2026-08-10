@@ -1879,11 +1879,20 @@ export const FHSAA_PRACTICE_REFERENCE = {
     },
     {
       sourceLabel: '87.1 - 90.0',
+      /**
+       * This band's cell ends "If WBGT reading rises to this level after
+       * practice has begun, student-athletes may continue to workout wearing
+       * football pants without changing into shorts." Deliberately NOT
+       * rendered, under the standing rule GHSA_ORANGE and CIF_ORANGE already
+       * document: it governs a transition inside a practice already under way,
+       * which the on-site instrument decides, and this page's table is read
+       * the night before. Rendering it here and suppressing it there applied
+       * one rule two ways, in the permissive direction.
+       */
       textKeys: [
         'florida.rows.maxHours',
         'florida.rows.breaksPerHour',
         'florida.rows.footballEquipment',
-        'florida.rows.footballPants',
       ],
       vars: { hours: 2, breaks: 4, minutes: 4 },
     },
@@ -2024,10 +2033,17 @@ export const NYSPHSAA_WBGT_ACTIONS = [
   },
   {
     flag: 'orange',
+    /**
+     * The chart's orange cell also carries the mid-practice pants relaxation
+     * ("If the WBGT rises to this level during practice…"). Suppressed here
+     * for the reason GHSA_ORANGE and CIF_ORANGE document: it governs a
+     * transition inside a practice already under way, decided by the
+     * instrument on the field, and every surface on this site is read before
+     * the practice starts.
+     */
     textKeys: [
       'newYork.wbgtRows.maxHours',
       'newYork.wbgtRows.footballEquipment',
-      'newYork.wbgtRows.footballPants',
       'newYork.wbgtRows.breaks',
     ],
     vars: { hours: 2, breaks: 4, minutes: 4 },

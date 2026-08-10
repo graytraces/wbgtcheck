@@ -765,7 +765,6 @@
       "breaks": "Provide at least {{breaks}} separate rest breaks each hour with a minimum duration of {{minutes}} minutes each.",
       "maxHours": "Maximum practice time is {{hours}} h.",
       "footballEquipment": "For football: players are restricted to helmet, shoulder pads and shorts during practice.",
-      "footballPants": "If the WBGT rises to this level during practice, players may continue to work out wearing football pants without changing to shorts.",
       "footballNoEquipment": "For football: no protective equipment may be worn during practice, and there may be no conditioning activities.",
       "restDistributed": "For all sports: there must be {{rest}} minutes of rest breaks distributed throughout the hour of practice.",
       "noOutdoor": "No outdoor workouts. Delay practice until a cooler WBGT is reached."
@@ -934,7 +933,6 @@
       "breaks": "{{breaks}} separate {{minutes}}-minute rest breaks.",
       "maxHours": "Maximum {{hours}}-hour activity time.",
       "footballEquipment": "For football, student-athletes are restricted to helmet, shoulder pads and shorts during activity.",
-      "footballPants": "If the reading rises to this level after practice has begun, student-athletes may continue to work out wearing football pants without changing into shorts.",
       "noEquipment": "No protective equipment permitted.",
       "noConditioning": "No conditioning activities permitted.",
       "noOutdoor": "No outdoor activities."

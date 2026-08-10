@@ -765,7 +765,6 @@
       "breaks": "Proporcione al menos {{breaks}} descansos separados por hora, de {{minutes}} minutos como mínimo cada uno.",
       "maxHours": "El tiempo máximo de práctica es de {{hours}} h.",
       "footballEquipment": "En fútbol americano: los jugadores quedan limitados a casco, hombreras y pantalón corto durante la práctica.",
-      "footballPants": "Si el WBGT sube a este nivel durante la práctica, los jugadores pueden seguir entrenando con pantalón de fútbol americano sin cambiarse a pantalón corto.",
       "footballNoEquipment": "En fútbol americano: no puede usarse equipo de protección durante la práctica, y no puede haber actividades de acondicionamiento.",
       "restDistributed": "En todos los deportes: debe haber {{rest}} minutos de descansos repartidos a lo largo de la hora de práctica.",
       "noOutdoor": "Sin sesiones al aire libre. Retrase la práctica hasta alcanzar un WBGT más fresco."
@@ -934,7 +933,6 @@
       "breaks": "{{breaks}} descansos separados de {{minutes}} minutos.",
       "maxHours": "Tiempo máximo de actividad: {{hours}} h.",
       "footballEquipment": "En fútbol americano, los estudiantes-atletas quedan limitados a casco, hombreras y pantalón corto durante la actividad.",
-      "footballPants": "Si la lectura sube a este nivel después de iniciada la práctica, los estudiantes-atletas pueden seguir entrenando con pantalón de fútbol americano sin cambiarse a pantalón corto.",
       "noEquipment": "No se permite equipo de protección.",
       "noConditioning": "No se permiten actividades de acondicionamiento.",
       "noOutdoor": "Sin actividades al aire libre."
