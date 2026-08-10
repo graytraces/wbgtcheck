@@ -348,6 +348,11 @@ describe('policy oracle — guideline facts vs primary sources', () => {
     expect(FL_ONSITE_MEASUREMENT_QUOTE).not.toMatch(/WBGT|wet bulb/i)
     expect(FL_YEAR_ROUND_QUOTE).toContain('year-round')
     expect(FL_STATUTE_SOURCE.url).toContain('flsenate.gov')
+    // The freshness clause: cite the CURRENT edition, not the one that
+    // happened to be read first. 2025 supersedes 2024; the heat paragraphs are
+    // byte-identical between them, so the quotes did not change.
+    expect(FL_STATUTE_SOURCE.url).toContain('/2025/')
+    expect(FL_STATUTE_SOURCE.name).toContain('(2025)')
     for (const locale of [en, es]) {
       // The page must keep saying that the numbers are absent and why.
       expect(locale.florida.noTableBody.length).toBeGreaterThan(0)

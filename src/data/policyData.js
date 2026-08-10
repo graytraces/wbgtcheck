@@ -1153,9 +1153,20 @@ export const FL_YEAR_ROUND_QUOTE = 'The requirements of this paragraph apply yea
 export const FL_TRAINING_QUOTE =
   'Each athletic coach and sponsor of extracurricular activities involving outdoor practices or events shall annually complete training in exertional heat illness identification, prevention, and response, including effective administration of cooling zones.'
 
+/**
+ * Re-verified against the 2025 edition on 2026-08-10. The site had been citing
+ * the 2024 URL, which is superseded — the freshness clause says verifiedOn
+ * must attest the CURRENT edition, not merely the day a copy was read.
+ *
+ * The six quotes above survive unchanged: paragraphs (2)(a)1-6 and (2)(b) are
+ * byte-identical between the two editions. What 2025 adds is a new subsection
+ * (3) on low-cost electrocardiograms — nothing to do with heat — and the
+ * History line gains `s. 4, ch. 2025-183` alongside the Zachary Martin Act's
+ * `s. 2, ch. 2020-91`.
+ */
 export const FL_STATUTE_SOURCE = {
-  name: 'Fla. Stat. \u00a7 1006.165 \u2014 Well-being of students participating in extracurricular activities; training',
-  url: 'https://www.flsenate.gov/Laws/Statutes/2024/1006.165',
+  name: 'Fla. Stat. \u00a7 1006.165 (2025) \u2014 Well-being of students participating in extracurricular activities; training',
+  url: 'https://www.flsenate.gov/Laws/Statutes/2025/1006.165',
   verifiedOn: '2026-08-10',
 }
 
