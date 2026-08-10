@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest'
-import { screen, fireEvent, waitFor } from '@testing-library/react'
+import { act, screen, fireEvent, waitFor } from '@testing-library/react'
 import i18n from '../i18n'
 import en from '../locales/en.json'
 import {
@@ -14,6 +14,7 @@ import { STATE_GUIDES } from '../data/guideRegistry'
 import { pageSEO, statePageKeyByPolicy, pickerLadderPageKeys } from '../seo'
 import { defaultPolicyFor } from '../hooks/useWbgt'
 import { WBGT_LOG_KEY, type WbgtLogEntry } from '../hooks/useWbgtLog'
+import { UIL_CLASS_3, classifyWbgt } from '../data/policyOracle'
 
 /**
  * What the HOME PAGE renders — not what a test-local re-implementation of its
@@ -137,6 +138,106 @@ describe('the fallback notice, as the page renders it', () => {
  * flow was guarded only by grepping Home.tsx for the string "scrollIntoView",
  * which cannot tell whether the editor opens, or where focus lands.
  */
+/**
+ * The fold, at the hour it is actually read.
+ *
+ * The audit measured this live at 8-9am local: Austin's headline said 80.0
+ * YELLOW "Use discretion" on a day peaking 93.2 BLACK "No outdoor workouts";
+ * Miami 83.0 YELLOW against 90.0 RED. The coach is deciding about 4pm, and the
+ * peak sat 1.7-2.5 screens down in a strip showing 5 of 14 hours on a phone.
+ *
+ * The clock is pinned so the fixture's sine lands somewhere known: at 08:00
+ * CDT the current hour is on the rising limb and the day's peak is four hours
+ * out, which is the shape the finding is about.
+ */
+describe('the fold answers the question the coach is asking', () => {
+  const AT_8AM_CDT = Date.parse('2026-08-10T13:00:00+00:00')
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  it('names the peak still ahead, its flag and its hour, under the big number', async () => {
+    vi.setSystemTime(AT_8AM_CDT)
+    store.clear()
+    store.set('wbgt-uil-class', JSON.stringify('uil-class-3'))
+    store.set('wbgt-policy', JSON.stringify('uil-class-3'))
+    store.set('wbgt-location', JSON.stringify(AUSTIN_TX))
+    vi.unstubAllGlobals()
+    stubForecastFetch({ aqi: aqiFixture() })
+
+    renderHome()
+    await waitFor(() => expect(screen.getByText(en.verdict.todayHeading)).toBeInTheDocument())
+
+    // What the fold showed before: the current hour, YELLOW. (The reading also
+    // appears on its own hourly chip and on the log button, hence getAllBy.)
+    expect(screen.getAllByText('86.7').length).toBeGreaterThan(0)
+    expect(classifyWbgt(UIL_CLASS_3, 86.7).flag).toBe('yellow')
+
+    // What it shows now, one line under it: the hour that decides practice.
+    const peakFlag = classifyWbgt(UIL_CLASS_3, 91.4).flag
+    expect(peakFlag, 'the fixture no longer crosses a band by the afternoon').not.toBe('yellow')
+    const line = screen.getByText(
+      i18n.t('verdict.peakAhead', {
+        value: '91.4',
+        flag: en.flags[peakFlag].label,
+        time: new Intl.DateTimeFormat('en', {
+          timeZone: 'America/Chicago',
+          hour: 'numeric',
+        }).format(new Date(AT_8AM_CDT + 4 * 3_600_000)),
+      }),
+    )
+    expect(line).toBeInTheDocument()
+
+    // It sits above the hourly strip it points at, and reaches it.
+    const link = line.closest('a')!
+    expect(link).toHaveAttribute('href', '#hourly-view')
+    const hourly = screen.getByText(en.verdict.todayHeading)
+    expect(link.compareDocumentPosition(hourly) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  /**
+   * The constraint that makes this line safe to ship.
+   *
+   * `days` is memoised on [data, policy, timeZone] and `buildHourlySeries`
+   * starts at the hour of the FETCH, so `days[0].peak` is "the peak still
+   * ahead" only at load. A tab left open — which is what a phone in a pocket
+   * between periods is — keeps that memo while the hours go by, and the line
+   * would go on naming an afternoon peak the reader has already stood through.
+   *
+   * So the anchor is the hour the card is showing, which tracks the minute
+   * tick. Five hours on, the fixture's afternoon has passed its peak and the
+   * only honest answer is silence.
+   */
+  it('stops naming the peak once it has been and gone', async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    vi.setSystemTime(AT_8AM_CDT)
+    store.clear()
+    store.set('wbgt-uil-class', JSON.stringify('uil-class-3'))
+    store.set('wbgt-policy', JSON.stringify('uil-class-3'))
+    store.set('wbgt-location', JSON.stringify(AUSTIN_TX))
+    vi.unstubAllGlobals()
+    stubForecastFetch({ aqi: aqiFixture() })
+
+    renderHome()
+    await waitFor(() => expect(screen.getByText(en.verdict.todayHeading)).toBeInTheDocument())
+    const peakLine = () => document.querySelector('a[href="#hourly-view"]')
+    expect(peakLine()?.textContent, 'the line is not there to begin with').toContain('91.4')
+
+    // Five hours later, same payload, no refetch: the minute tick moves the
+    // card's hour past the peak the line was naming.
+    await act(async () => {
+      vi.setSystemTime(AT_8AM_CDT + 5 * 3_600_000)
+      vi.advanceTimersByTime(60_000)
+    })
+
+    // The 12pm peak is still on the hourly strip, where it belongs as history.
+    expect(screen.getAllByText('91.4').length).toBeGreaterThan(0)
+    // It is no longer being announced as something the coach can plan around.
+    expect(peakLine()?.textContent ?? '', 'the peak line drifted').not.toContain('91.4')
+  })
+})
+
 /**
  * The log and the card have to be on one clock, and Home is where that is
  * decided.

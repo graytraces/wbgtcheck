@@ -94,6 +94,32 @@ export function currentVerdict(hours: HourVerdict[], nowMs: number): HourVerdict
   return hours.find((h) => h.time === hourStart) ?? hours.find((h) => h.time > nowMs) ?? null
 }
 
+/**
+ * The hottest hour still AHEAD on `from`'s local day, `from` included.
+ *
+ * The fold answers "what is it right now", and at 8am that is not the question
+ * being asked — measured live, Austin's fold said 80.0 YELLOW on a day peaking
+ * 93.2 BLACK, and the peak hour was 1.7 screens down inside a strip that shows
+ * 5 of 14 hours on a phone. The card's own share PNG has always headlined the
+ * peak, so this is the number the site already believes is the headline.
+ *
+ * Derived from an HOUR rather than from `days[0]`, deliberately. `days` is
+ * memoised on the payload and `buildHourlySeries` starts at the hour of the
+ * FETCH, so `days[0]` means "the rest of today" only at load: an hour later it
+ * still counts hours that have passed, and past local midnight it is yesterday
+ * wearing today's label. Anchoring on the hour the card is showing — which
+ * tracks the minute tick — makes both cases correct without a second clock.
+ */
+export function restOfDayPeak(hours: HourVerdict[], from: HourVerdict): HourVerdict | null {
+  let peak: HourVerdict | null = null
+  for (const h of hours) {
+    if (h.localDate !== from.localDate) continue
+    if (h.time < from.time) continue
+    if (!peak || h.wbgtF > peak.wbgtF) peak = h
+  }
+  return peak
+}
+
 /** Daytime window shown on the today timeline (planning hours, local time). */
 const TIMELINE_START_HOUR = 6
 const TIMELINE_END_HOUR = 21

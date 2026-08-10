@@ -32,6 +32,7 @@ import {
   currentVerdict,
   timelineHours,
   pickTimelineDay,
+  restOfDayPeak,
 } from '../utils/verdict'
 import {
   UIL_READING_BEFORE_PRACTICE_MAX_MINUTES,
@@ -138,6 +139,19 @@ export default function Home() {
       })
   const allHours = useMemo(() => days.flatMap((d) => d.hours), [days])
   const current = useMemo(() => currentVerdict(allHours, now), [allHours, now])
+  /**
+   * The hottest hour still ahead today, for the line under the big number.
+   *
+   * Anchored on `current` — which tracks the minute tick — rather than on
+   * `days[0]`. `days` is memoised on [data, policy, timeZone] and the series
+   * starts at the hour of the FETCH, so `days[0].peak` is "the rest of today"
+   * only at load: an hour later it still counts hours that have gone by, and
+   * past local midnight it is yesterday under today's name.
+   */
+  const peakAhead = useMemo(
+    () => (current ? restOfDayPeak(allHours, current) : null),
+    [allHours, current],
+  )
 
   const busy = status === 'locating' || status === 'loading'
   const lang = i18n.language
@@ -284,6 +298,7 @@ export default function Home() {
           timeZone={timeZone}
           fetchedAt={fetchedAt}
           onChangeLocation={() => setChangingLocation(true)}
+          peakAhead={peakAhead}
         />
       )}
 

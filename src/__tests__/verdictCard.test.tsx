@@ -167,6 +167,96 @@ describe('the card keeps one clock', () => {
   })
 })
 
+/**
+ * The fold answered a different question from the one being asked.
+ *
+ * Measured live at 8-9am local: Austin's headline said 80.0 YELLOW "Use
+ * discretion" on a day peaking 93.2 BLACK "No outdoor workouts"; Miami 83.0
+ * YELLOW against 90.0 RED; Birmingham 76.0 GREEN against 88.0 ORANGE. The
+ * coach reading it is deciding about 4pm. The peak sat 1.7-2.5 screens down
+ * inside a strip that needs 980px in a 390px scroller — 5 of 14 hours visible,
+ * and the peak hour not among them. The card's own share PNG has headlined the
+ * peak all along.
+ */
+describe('the card says where the day is going, not only where it is', () => {
+  const AT = Date.parse('2026-08-10T13:00:00+00:00')
+  const peakHour = (wbgtF: number, atMs: number): HourVerdict => ({
+    ...hourAt(wbgtF),
+    time: atMs,
+    localHour: new Date(atMs).getUTCHours() - 5,
+  })
+
+  const renderWithPeak = (nowF: number, peakF: number) =>
+    render(
+      <VerdictCard
+        hour={{ ...hourAt(nowF), time: AT }}
+        policy={UIL_CLASS_3}
+        locationLabel="Austin, TX"
+        stateAbbr="TX"
+        timeZone="America/Chicago"
+        peakAhead={peakHour(peakF, AT + 6 * 3600_000)}
+      />,
+    )
+
+  it('names the peak, its flag and its hour', () => {
+    // 80.0 YELLOW now, 93.2 BLACK at 2pm — the Austin case, verbatim.
+    renderWithPeak(80, 93.2)
+    const expected = i18n.t('verdict.peakAhead', {
+      value: '93.2',
+      flag: en.flags[classifyWbgt(UIL_CLASS_3, 93.2).flag].label,
+      time: new Intl.DateTimeFormat('en', {
+        timeZone: 'America/Chicago',
+        hour: 'numeric',
+      }).format(new Date(AT + 6 * 3600_000)),
+    })
+    expect(screen.getByText(expected)).toBeInTheDocument()
+    // The flag it names is not the flag on the big number — which is the
+    // entire finding.
+    expect(classifyWbgt(UIL_CLASS_3, 93.2).flag).not.toBe(classifyWbgt(UIL_CLASS_3, 80).flag)
+  })
+
+  it('is triple-coded and reaches the hourly view', () => {
+    renderWithPeak(80, 93.2)
+    const link = screen.getByRole('link')
+    expect(link).toHaveAttribute('href', '#hourly-view')
+    // Colour…
+    const flag = classifyWbgt(UIL_CLASS_3, 93.2).flag
+    expect(link.className).toContain(`bg-flag-${flag}`)
+    // …icon…
+    expect(link.querySelector('svg')).not.toBeNull()
+    // …and the word, which is what survives every colour-vision type.
+    expect(link.textContent).toContain(en.flags[flag].label)
+  })
+
+  it('says nothing when the hour on the card is already the peak', () => {
+    render(
+      <VerdictCard
+        hour={{ ...hourAt(93.2), time: AT }}
+        policy={UIL_CLASS_3}
+        locationLabel="Austin, TX"
+        stateAbbr="TX"
+        timeZone="America/Chicago"
+        peakAhead={{ ...hourAt(93.2), time: AT }}
+      />,
+    )
+    expect(screen.queryByRole('link')).not.toBeInTheDocument()
+    expect(screen.queryByText(/Rest of today peaks/)).not.toBeInTheDocument()
+  })
+
+  it('renders nothing extra for a caller that has no peak to give', () => {
+    render(
+      <VerdictCard
+        hour={{ ...hourAt(80), time: AT }}
+        policy={UIL_CLASS_3}
+        locationLabel="Austin, TX"
+        stateAbbr="TX"
+        timeZone="America/Chicago"
+      />,
+    )
+    expect(screen.queryByRole('link')).not.toBeInTheDocument()
+  })
+})
+
 describe('verdict card live region', () => {
   it('announces the reading and flag, not the safety strip', () => {
     const { container } = render(

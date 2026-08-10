@@ -28,6 +28,12 @@ interface VerdictCardProps {
   /** Opens the inline location editor. The label says WHERE this reading is;
       the way to change it belongs next to it, not 3.4 screens down. */
   onChangeLocation?: () => void
+  /**
+   * The hottest hour still ahead today (see restOfDayPeak). Rendered as one
+   * line under the big number, and only when it is a DIFFERENT hour — when the
+   * current hour is already the peak, the headline is the peak.
+   */
+  peakAhead?: HourVerdict | null
 }
 
 export default function VerdictCard({
@@ -38,6 +44,7 @@ export default function VerdictCard({
   timeZone,
   fetchedAt = null,
   onChangeLocation,
+  peakAhead = null,
 }: VerdictCardProps) {
   const { t, i18n } = useTranslation()
   // The flag comes from the number this card prints, not from the float behind
@@ -60,6 +67,22 @@ export default function VerdictCard({
     hour: 'numeric',
     minute: '2-digit',
   }).format(new Date(hour.time))
+
+  /**
+   * The peak line. Shown only when the hottest hour left today is a different
+   * hour from the one on the card — otherwise the big number already IS the
+   * peak and the line would repeat it.
+   *
+   * Triple-coded like every other flag surface: the peak band's colour, its
+   * icon, and its label spelled out in the sentence.
+   */
+  const showPeak = peakAhead !== null && peakAhead.time !== hour.time
+  const PeakIcon = peakAhead ? FLAG_ICON[peakAhead.flag] : null
+  const peakTimeLabel = peakAhead
+    ? new Intl.DateTimeFormat(i18n.language, { timeZone, hour: 'numeric' }).format(
+        new Date(peakAhead.time),
+      )
+    : ''
 
   // ring-line keeps the card's edge visible when the flag surface nearly
   // matches the page background (black flag on dark mode: CR ~1.1).
@@ -133,6 +156,31 @@ export default function VerdictCard({
             </span>
           </div>
         </div>
+
+        {/* Directly under the number, because it answers the question the
+            number does not: the reader is standing on the field at 8am
+            deciding about 4pm. The peak hour is 1.7-2.5 screens down inside a
+            scroller that shows 5 of 14 hours on a phone. */}
+        {showPeak && peakAhead && PeakIcon && (
+          <p className="mt-3">
+            <a
+              href="#hourly-view"
+              className={cn(
+                'inline-flex items-center gap-2 px-3 py-2 text-base font-bold ring-1 ring-current sm:text-lg',
+                FLAG_SOLID[peakAhead.flag],
+              )}
+            >
+              <PeakIcon className="h-5 w-5 shrink-0" strokeWidth={2.5} aria-hidden="true" />
+              <span>
+                {t('verdict.peakAhead', {
+                  value: formatWbgtF(peakAhead.wbgtF),
+                  flag: t(`flags.${peakAhead.flag}.label`),
+                  time: peakTimeLabel,
+                })}
+              </span>
+            </a>
+          </p>
+        )}
 
         <ul className="mt-4 max-w-2xl space-y-1 text-base font-medium sm:text-lg">
           {sentences.map((s) => (
