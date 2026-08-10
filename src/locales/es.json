@@ -162,7 +162,8 @@
     "zipNotFound": "No se encontró ese código ZIP.",
     "lookupFailed": "No se pudo buscar esa ubicación. Intente de nuevo.",
     "forecastFailed": "No se pudo cargar el pronóstico. Intente de nuevo.",
-    "change": "Cambiar ubicación"
+    "change": "Cambiar ubicación",
+    "cancelEdit": "Mantener esta ubicación"
   },
   "verdict": {
     "nowHeading": "Ahora mismo",

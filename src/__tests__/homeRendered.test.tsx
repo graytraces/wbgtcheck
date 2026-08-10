@@ -415,4 +415,52 @@ describe('the inline location editor', () => {
     ).toBeTruthy()
     view.unmount()
   })
+
+  /**
+   * And it could not be closed.
+   *
+   * `changingLocation` cleared only on a SUCCESSFUL onZip/onGeolocate — there
+   * was no cancel and no Escape handler — while the trigger is a
+   * dotted-underline link immediately after the city name at the top of the
+   * verdict, which is an easy mis-tap on a phone held one-handed on a field.
+   * The way out was to enter a ZIP you did not want.
+   */
+  it('closes on the × without changing anything', async () => {
+    const view = await homeIn('TX', 'Austin, TX')
+    fireEvent.click(screen.getAllByRole('button', { name: en.location.change })[0])
+    expect(document.getElementById('zip-input')).not.toBeNull()
+
+    fireEvent.click(screen.getByRole('button', { name: en.location.cancelEdit }))
+
+    expect(document.getElementById('zip-input'), 'the editor would not close').toBeNull()
+    // And the reader is where they were: same location, same verdict.
+    expect(screen.getByText('Austin, TX')).toBeInTheDocument()
+    view.unmount()
+  })
+
+  it('closes on Escape, which is what a reader tries first', async () => {
+    const view = await homeIn('TX', 'Austin, TX')
+    fireEvent.click(screen.getAllByRole('button', { name: en.location.change })[0])
+    expect(document.getElementById('zip-input')).not.toBeNull()
+
+    // From the field, where the editor puts focus.
+    fireEvent.keyDown(document.getElementById('zip-input')!, { key: 'Escape' })
+
+    expect(document.getElementById('zip-input'), 'Escape did nothing').toBeNull()
+    expect(screen.getByText('Austin, TX')).toBeInTheDocument()
+    view.unmount()
+  })
+
+  it('says what the panel is for', async () => {
+    // The compact variant dropped the heading, so what appeared under the
+    // verdict was an unlabeled ZIP field and a location button.
+    const view = await homeIn('TX', 'Austin, TX')
+    fireEvent.click(screen.getAllByRole('button', { name: en.location.change })[0])
+    const editor = document.getElementById('zip-input')!.closest('div.border-2')!
+    expect(
+      [...editor.querySelectorAll('h2')].some((h) => h.textContent === en.location.heading),
+      'the panel is unlabeled',
+    ).toBe(true)
+    view.unmount()
+  })
 })

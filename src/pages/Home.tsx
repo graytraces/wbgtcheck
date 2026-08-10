@@ -358,6 +358,7 @@ export default function Home() {
             }}
             busy={busy}
             errorKey={errorKey}
+            onCancel={() => setChangingLocation(false)}
           />
         </div>
       )}

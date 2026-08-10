@@ -1,6 +1,6 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { useTranslation } from 'react-i18next'
-import { LocateFixed, Search } from 'lucide-react'
+import { LocateFixed, Search, X } from 'lucide-react'
 
 interface LocationSetupProps {
   onZip: (zip: string) => void
@@ -8,11 +8,38 @@ interface LocationSetupProps {
   busy: boolean
   errorKey: string | null
   compact?: boolean
+  /**
+   * Closes the editor without changing anything. Its absence was the bug:
+   * `changingLocation` cleared only on a SUCCESSFUL lookup, so a reader who
+   * mis-tapped the dotted-underline link beside the city name — which sits
+   * immediately after it, at the top of the verdict — had opened a panel with
+   * no way out but entering a ZIP they did not want.
+   */
+  onCancel?: () => void
 }
 
-export default function LocationSetup({ onZip, onGeolocate, busy, errorKey, compact }: LocationSetupProps) {
+export default function LocationSetup({
+  onZip,
+  onGeolocate,
+  busy,
+  errorKey,
+  compact,
+  onCancel,
+}: LocationSetupProps) {
   const { t } = useTranslation()
   const [zip, setZip] = useState('')
+
+  // Escape closes it, which is what every reader tries first. On the document
+  // rather than the panel: focus starts in the ZIP field but does not stay
+  // there, and a keydown handler on the wrapper only hears its own subtree.
+  useEffect(() => {
+    if (!onCancel) return
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onCancel()
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [onCancel])
 
   function submit(e: FormEvent) {
     e.preventDefault()
@@ -21,9 +48,30 @@ export default function LocationSetup({ onZip, onGeolocate, busy, errorKey, comp
 
   return (
     <div className={compact ? '' : 'border-2 border-ink bg-surface p-5 sm:p-8'}>
-      {!compact && (
-        <h2 className="display-num mb-4 text-2xl uppercase sm:text-3xl">{t('location.heading')}</h2>
-      )}
+      {/* The compact variant dropped this heading, which left the panel
+          unlabeled: an unexplained ZIP field and a location button appearing
+          under the verdict, with nothing saying what they are for. */}
+      <div className="mb-3 flex items-start justify-between gap-3 sm:mb-4">
+        <h2
+          className={
+            compact
+              ? 'display-num text-xl uppercase'
+              : 'display-num text-2xl uppercase sm:text-3xl'
+          }
+        >
+          {t('location.heading')}
+        </h2>
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            aria-label={t('location.cancelEdit')}
+            className="-mr-2 -mt-2 flex h-11 w-11 shrink-0 items-center justify-center text-ink-muted hover:text-ink"
+          >
+            <X className="h-5 w-5" aria-hidden="true" />
+          </button>
+        )}
+      </div>
       <div className="flex flex-col gap-3 sm:flex-row sm:items-stretch">
         <button
           type="button"
