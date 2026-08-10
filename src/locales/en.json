@@ -785,7 +785,14 @@
     "acclimatizationFootballBody": "And football adds a pad progression across the same days: \"{{football}}\"",
     "coolingMethodBody": "The cooling requirement is separate from all of it and applies everywhere: \"{{cooling}}\"",
     "pickerExclusionHeading": "Why California is not in the policy picker",
-    "pickerExclusionBody": "CIF assigns each school a region category, and it publishes that assignment as a separate roster this site cannot read for you. The three ladders differ by a wide margin — a reading that is black in Category 1 is still yellow in Category 3 — so choosing one on your behalf would put a confident flag on the screen that your own category may contradict. Until the tool can ask you for your category, the forecast falls back to the general NATA guideline, which is more permissive than every CIF ladder. Read your category off the table above rather than off the flag."
+    "pickerExclusionBody": "CIF assigns each school a region category, and it publishes that assignment as a separate roster this site cannot read for you. The three ladders differ by a wide margin — a reading that is black in Category 1 is still yellow in Category 3 — so choosing one on your behalf would put a confident flag on the screen that your own category may contradict. Until the tool can ask you for your category, the forecast falls back to the general NATA guideline, which is more permissive than every CIF ladder. Read your category off the table above rather than off the flag.",
+    "thresholdsHeading": "Thresholds by region category",
+    "thresholdsIntro": "The three categories share one set of actions and differ only in the temperatures that trigger them. Find your category in the column headers, then read down.",
+    "actionsHeading": "What each flag requires",
+    "actionsIntro": "Identical across Category 1, 2 and 3 — only the trigger temperature above changes.",
+    "colFlag": "Flag",
+    "colCategory": "Category {{n}}",
+    "colActions": "Required modifications"
   },
   "kentucky": {
     "pageTitle": "Kentucky KHSAA WBGT Contest Alterations",

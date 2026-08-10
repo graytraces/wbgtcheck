@@ -7,6 +7,7 @@ import es from '../locales/es.json'
 import PolicyPicker from '../components/PolicyPicker'
 import Layout from '../components/Layout'
 import States from '../pages/States'
+import California from '../pages/California'
 import { POLICIES, type PolicyId } from '../data/policyOracle'
 import { pageSEO, statePageKeyByPolicy } from '../seo'
 
@@ -144,5 +145,42 @@ describe('the states hub is reachable', () => {
     const index = links.findIndex((l) => l.textContent === en.common.nav.states)
     // Second item, right after Home: at 390px the scroller shows roughly three.
     expect(index).toBe(1)
+  })
+})
+
+describe('California table structure', () => {
+  it('shows one threshold grid and one action table, not three identical ladders', () => {
+    // The three category ladders share byte-identical guideline objects, so
+    // the page rendered the same five rows three times. They were also
+    // visually indistinguishable, which on a page where the same reading is
+    // BLACK in Category 1 and YELLOW in Category 3 is a real hazard once a
+    // heading scrolls away.
+    render(
+      <MemoryRouter initialEntries={['/en/california']}>
+        <California />
+      </MemoryRouter>,
+    )
+    const tables = document.querySelectorAll('table')
+    expect(tables).toHaveLength(2)
+    // Every table has an accessible name — otherwise a screen reader
+    // announces "table, N columns" with nothing to tell them apart.
+    for (const table of tables) {
+      const id = table.getAttribute('aria-labelledby')
+      expect(id, 'table missing an accessible name').toBeTruthy()
+      expect(document.getElementById(id!)).not.toBeNull()
+    }
+  })
+
+  it('the threshold grid carries all three categories on one row per flag', () => {
+    render(
+      <MemoryRouter initialEntries={['/en/california']}>
+        <California />
+      </MemoryRouter>,
+    )
+    const grid = document.querySelector('table[aria-labelledby="ca-thresholds"]')!
+    // Flag column + three category columns.
+    expect(grid.querySelectorAll('thead th')).toHaveLength(4)
+    // Five flags, each a row header rather than a plain cell.
+    expect(grid.querySelectorAll('tbody th[scope="row"]')).toHaveLength(5)
   })
 })

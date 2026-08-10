@@ -785,7 +785,14 @@
     "acclimatizationFootballBody": "Y el fútbol americano añade una progresión de protecciones a lo largo de esos mismos días: «{{football}}»",
     "coolingMethodBody": "El requisito de enfriamiento es aparte de todo esto y aplica en todas partes: «{{cooling}}»",
     "pickerExclusionHeading": "Por qué California no está en el selector de políticas",
-    "pickerExclusionBody": "La CIF asigna a cada escuela una categoría regional y publica esa asignación en una lista aparte que este sitio no puede leer por usted. Las tres escalas difieren mucho — una lectura que es negra en la Categoría 1 sigue siendo amarilla en la Categoría 3 — así que elegir una por usted pondría en pantalla una bandera segura que su propia categoría podría contradecir. Hasta que la herramienta pueda preguntarle su categoría, el pronóstico recurre a la guía general de la NATA, que es más permisiva que cualquiera de las escalas de la CIF. Lea su categoría en la tabla de arriba, no en la bandera."
+    "pickerExclusionBody": "La CIF asigna a cada escuela una categoría regional y publica esa asignación en una lista aparte que este sitio no puede leer por usted. Las tres escalas difieren mucho — una lectura que es negra en la Categoría 1 sigue siendo amarilla en la Categoría 3 — así que elegir una por usted pondría en pantalla una bandera segura que su propia categoría podría contradecir. Hasta que la herramienta pueda preguntarle su categoría, el pronóstico recurre a la guía general de la NATA, que es más permisiva que cualquiera de las escalas de la CIF. Lea su categoría en la tabla de arriba, no en la bandera.",
+    "thresholdsHeading": "Umbrales por categoría regional",
+    "thresholdsIntro": "Las tres categorías comparten un mismo conjunto de acciones y solo difieren en las temperaturas que las activan. Busque su categoría en los encabezados de columna y lea hacia abajo.",
+    "actionsHeading": "Qué exige cada bandera",
+    "actionsIntro": "Idénticas en las Categorías 1, 2 y 3 — solo cambia la temperatura que las activa arriba.",
+    "colFlag": "Bandera",
+    "colCategory": "Categoría {{n}}",
+    "colActions": "Modificaciones requeridas"
   },
   "kentucky": {
     "pageTitle": "Alteraciones de competición por WBGT de la KHSAA de Kentucky",

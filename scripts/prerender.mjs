@@ -301,7 +301,7 @@ function policyTableHtml(policy, t) {
       const sentences = guidelineSentences(band.flag, band.guideline, t)
         .map((s) => `<li>${escapeHtml(s)}</li>`)
         .join('')
-      return `<tr><td>${escapeHtml(t(`flags.${band.flag}.label`))} ${escapeHtml(band.sourceLabel)}</td><td><ul>${sentences}</ul></td></tr>`
+      return `<tr><th scope="row">${escapeHtml(t(`flags.${band.flag}.label`))} ${escapeHtml(band.sourceLabel)}</th><td><ul>${sentences}</ul></td></tr>`
     })
     .join('')
   return `<table><thead><tr><th>${escapeHtml(t('verdict.wbgtLabel'))} (°F)</th><th>${escapeHtml(t('texas.tableGuidelines'))}</th></tr></thead><tbody>${rows}</tbody></table>`
@@ -783,10 +783,27 @@ function generateBodyContent(lang, page) {
     push(
       `<p><a href="${CIF_CATEGORY_ROSTER_URL}">${escapeHtml(t('california.rosterLink'))}</a></p>`,
     )
-    CIF_CATEGORIES.forEach((policy, index) => {
-      push(`<h2>${escapeHtml(t('california.tableHeading', { category: index + 1 }))}</h2>`)
-      push(policyTableHtml(policy, t))
-    })
+    // Threshold grid + one action table, mirroring California.tsx.
+    push(`<h2>${escapeHtml(t('california.thresholdsHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('california.thresholdsIntro'))}</p>`)
+    {
+      const head = `<tr><th>${escapeHtml(t('california.colFlag'))}</th>${CIF_CATEGORIES.map(
+        (_, i) => `<th>${escapeHtml(t('california.colCategory', { n: i + 1 }))}</th>`,
+      ).join('')}</tr>`
+      const rows = [...CIF_CATEGORIES[0].bands]
+        .reverse()
+        .map((band, rowIndex) => {
+          const cells = CIF_CATEGORIES.map(
+            (policy) => `<td>${escapeHtml([...policy.bands].reverse()[rowIndex].sourceLabel)}</td>`,
+          ).join('')
+          return `<tr><th scope="row">${escapeHtml(t(`flags.${band.flag}.label`))}</th>${cells}</tr>`
+        })
+        .join('')
+      push(`<table><thead>${head}</thead><tbody>${rows}</tbody></table>`)
+    }
+    push(`<h2>${escapeHtml(t('california.actionsHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('california.actionsIntro'))}</p>`)
+    push(policyTableHtml(CIF_CATEGORIES[0], t))
     push(`<h2>${escapeHtml(t('california.boundaryHeading'))}</h2>`)
     push(`<p>${escapeHtml(t('california.boundaryBody'))}</p>`)
     push(`<h2>${escapeHtml(t('california.measurementHeading'))}</h2>`)

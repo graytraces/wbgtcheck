@@ -3,7 +3,9 @@ import { useTranslation } from 'react-i18next'
 import { CircleCheck, MapPin } from 'lucide-react'
 import SEO from '../components/SEO'
 import CorrectionNote from '../components/CorrectionNote'
-import PolicyBandsTable from '../components/PolicyBandsTable'
+import FlagBadge from '../components/FlagBadge'
+import { FLAG_TINT } from '../utils/flagStyles'
+import { guidelineSentences } from '../utils/guidelineText'
 import {
   CIF_CATEGORIES,
   CIF_LEGAL_BASIS,
@@ -53,16 +55,96 @@ export default function California() {
         </p>
       </section>
 
-      {/* All three ladders, because this site cannot tell which one a school
-          is on and will not guess. */}
-      {CIF_CATEGORIES.map((policy, index) => (
-        <section key={policy.id}>
-          <h2 className="display-num mb-2 text-2xl uppercase">
-            {t('california.tableHeading', { category: index + 1 })}
-          </h2>
-          <PolicyBandsTable policy={policy} showSource={false} />
-        </section>
-      ))}
+      {/* One threshold grid, then one action table.
+          The three ladders shared byte-identical guideline objects, so this
+          page rendered the same five rows three times over ~4,000px. Worse,
+          the tables were visually indistinguishable, so once a heading
+          scrolled off there was nothing to tell you which category you were
+          reading — on a page where the same number is BLACK in Category 1 and
+          YELLOW in Category 3. */}
+      <section>
+        <h2 id="ca-thresholds" className="display-num mb-2 text-2xl uppercase">
+          {t('california.thresholdsHeading')}
+        </h2>
+        <p className="mb-2 text-sm text-ink-muted">{t('california.thresholdsIntro')}</p>
+        {/* Four columns of temperatures do not fit a 320px phone. scroll-x-fade
+            is this site's declared exception: it paints the edge shadows that
+            make the clipping visible, and marks the table for the no-hscroll
+            sweep. The action table below it needs no such exception. */}
+        <div className="scroll-x-fade">
+          <table className="w-full min-w-[26rem] border-collapse text-sm" aria-labelledby="ca-thresholds">
+            <thead>
+              <tr className="border-b-2 border-ink text-left">
+                <th className="py-2 pr-3 font-bold uppercase tracking-wide">
+                  {t('california.colFlag')}
+                </th>
+                {CIF_CATEGORIES.map((_, i) => (
+                  <th key={i} className="py-2 pr-3 font-bold uppercase tracking-wide">
+                    {t('california.colCategory', { n: i + 1 })}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {[...CIF_CATEGORIES[0].bands].reverse().map((band, rowIndex) => (
+                <tr
+                  key={band.flag}
+                  className={`border-b border-line align-top ${FLAG_TINT[band.flag]}`}
+                >
+                  <th scope="row" className="py-2 pl-2 pr-3 text-left font-normal">
+                    <FlagBadge flag={band.flag} />
+                  </th>
+                  {CIF_CATEGORIES.map((policy) => (
+                    <td key={policy.id} className="display-num whitespace-nowrap py-2 pr-3 text-base">
+                      {[...policy.bands].reverse()[rowIndex].sourceLabel}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section>
+        <h2 id="ca-actions" className="display-num mb-2 text-2xl uppercase">
+          {t('california.actionsHeading')}
+        </h2>
+        <p className="mb-2 text-sm text-ink-muted">{t('california.actionsIntro')}</p>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-sm" aria-labelledby="ca-actions">
+            <thead>
+              <tr className="border-b-2 border-ink text-left">
+                <th className="py-2 pr-3 font-bold uppercase tracking-wide">
+                  {t('california.colFlag')}
+                </th>
+                <th className="py-2 font-bold uppercase tracking-wide">
+                  {t('california.colActions')}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...CIF_CATEGORIES[0].bands].reverse().map((band) => (
+                <tr
+                  key={band.flag}
+                  className={`border-b border-line align-top ${FLAG_TINT[band.flag]}`}
+                >
+                  <th scope="row" className="py-2 pl-2 pr-3 text-left font-normal">
+                    <FlagBadge flag={band.flag} />
+                  </th>
+                  <td className="py-2 pr-2">
+                    <ul className="list-inside list-disc space-y-0.5">
+                      {guidelineSentences(band.flag, band.guideline, t).map((line) => (
+                        <li key={line}>{line}</li>
+                      ))}
+                    </ul>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
 
       <section className="border-l-4 border-flag-orange pl-4">
         <h2 className="display-num mb-2 text-2xl uppercase">
