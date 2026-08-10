@@ -90,12 +90,20 @@ describe('no unqualified data-prerender sweep anywhere in src', () => {
   it('every data-prerender selector excludes scripts', () => {
     // Production source only: the test files below legitimately talk about the
     // bare attribute, and so do comments. Only real selector CALLS matter.
+    //
+    // The attribute may appear ANYWHERE in the selector, not just at the
+    // start. The first version of this scan anchored on a literal beginning
+    // `[data-prerender]`, and every natural way to write the second sweep
+    // slipped past it — including `[data-prerender="true"]`, which is the form
+    // the prerender actually emits.
     const files = walk(join(process.cwd(), 'src')).filter((f) => !f.includes('__tests__'))
     expect(files.length).toBeGreaterThan(40)
     const offenders: string[] = []
     for (const file of files) {
       const src = readFileSync(file, 'utf8')
-      for (const match of src.matchAll(/querySelector(?:All)?\(\s*(['"`])(\[data-prerender\][^'"`]*)\1/g)) {
+      for (const match of src.matchAll(
+        /querySelector(?:All)?\(\s*(['"`])([^'"`]*\[data-prerender[^\]]*\][^'"`]*)\1/g,
+      )) {
         if (!match[2].includes(':not(script)')) {
           offenders.push(`${file.replace(process.cwd(), '.')}: ${match[2]}`)
         }
