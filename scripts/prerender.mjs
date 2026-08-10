@@ -25,6 +25,15 @@ import {
   TSSAA,
   IOWA_CATEGORY_2,
   MIAA,
+  FL_STATUTE_SECTION,
+  FL_STATUTE_CITATION,
+  FL_ONSITE_MEASUREMENT_QUOTE,
+  FL_MODIFY_QUOTE,
+  FL_COOLING_ZONE_QUOTE,
+  FL_EAP_QUOTE,
+  FL_YEAR_ROUND_QUOTE,
+  FL_TRAINING_QUOTE,
+  FL_STATUTE_SOURCE,
   MIAA_DEVICE_QUOTE,
   MIAA_INDOOR_QUOTE,
   MIAA_COMPETITION_QUOTE,
@@ -147,6 +156,7 @@ const pages = [
   { key: 'newYork', path: 'new-york', dateModified: today },
   { key: 'virginia', path: 'virginia', dateModified: today },
   { key: 'massachusetts', path: 'massachusetts', dateModified: today },
+  { key: 'florida', path: 'florida', dateModified: today },
   { key: 'wbgtVsHeatIndex', path: 'wbgt-vs-heat-index', dateModified: today },
   { key: 'states', path: 'states', dateModified: today },
   { key: 'washingtonAir', path: 'washington-air-quality', dateModified: today },
@@ -708,6 +718,37 @@ function generateBodyContent(lang, page) {
     )
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
     push(correctionNoteHtml(t, 'new-york', lang))
+  } else if (page.key === 'florida') {
+    push(`<h1>${escapeHtml(t('florida.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('florida.intro'))}</p>`)
+    push(`<h2>${escapeHtml(t('florida.statuteHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('florida.statuteBody', {
+          section: FL_STATUTE_SECTION,
+          citation: FL_STATUTE_CITATION,
+        }),
+      )}</p>`,
+    )
+    push(`<p>${escapeHtml(t('florida.modifyBody', { quote: FL_MODIFY_QUOTE }))}</p>`)
+    push(`<p>${escapeHtml(t('florida.yearRoundBody', { quote: FL_YEAR_ROUND_QUOTE }))}</p>`)
+    push(`<h2>${escapeHtml(t('florida.measurementHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(t('florida.measurementBody', { quote: FL_ONSITE_MEASUREMENT_QUOTE }))}</p>`,
+    )
+    push(`<p>${escapeHtml(t('florida.wbgtNamingBody'))}</p>`)
+    push(`<p>${escapeHtml(t('florida.deviceWarning'))}</p>`)
+    push(`<h2>${escapeHtml(t('florida.coolingHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('florida.coolingBody', { quote: FL_COOLING_ZONE_QUOTE }))}</p>`)
+    push(`<p>${escapeHtml(t('florida.eapBody', { quote: FL_EAP_QUOTE }))}</p>`)
+    push(`<p>${escapeHtml(t('florida.trainingBody', { quote: FL_TRAINING_QUOTE }))}</p>`)
+    push(`<h2>${escapeHtml(t('florida.noTableHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('florida.noTableBody'))}</p>`)
+    push(
+      `<h2>${escapeHtml(t('florida.sourceHeading'))}</h2><p>${escapeHtml(t('florida.sourceBody', { verifiedOn: FL_STATUTE_SOURCE.verifiedOn }))} <a href="${FL_STATUTE_SOURCE.url}">${escapeHtml(FL_STATUTE_SOURCE.name)}</a></p>`,
+    )
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+    push(correctionNoteHtml(t, 'florida', lang))
   } else if (page.key === 'massachusetts') {
     push(`<h1>${escapeHtml(t('massachusetts.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('massachusetts.intro'))}</p>`)
@@ -906,7 +947,7 @@ function generateBodyContent(lang, page) {
 const GUIDE_SLUGS = {
   TX: 'texas', GA: 'georgia', SC: 'south-carolina', TN: 'tennessee',
   IA: 'iowa', NC: 'north-carolina', NY: 'new-york', VA: 'virginia',
-  MA: 'massachusetts',
+  MA: 'massachusetts', FL: 'florida',
 }
 
 const SITEMAP_EXCLUDE_KEYS = new Set(['privacy', 'disclaimer'])

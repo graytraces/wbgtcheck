@@ -349,6 +349,11 @@
       "title": "Política de calor WBGT de la MIAA de Massachusetts | WBGT Check",
       "description": "Umbrales de modificación por calor de la MIAA en temperatura de globo y bulbo húmedo, la regla del instrumento en el sitio y cómo difieren los partidos de las prácticas.",
       "keywords": "política de calor MIAA, WBGT Massachusetts, modificación por calor MIAA"
+    },
+    "florida": {
+      "title": "Ley de seguridad ante el calor de Florida (Zachary Martin Act) | WBGT Check",
+      "description": "Qué exige la Zachary Martin Act de Florida sobre monitoreo del estrés por calor, zonas de enfriamiento y medición en el sitio.",
+      "keywords": "Zachary Martin Act, ley de calor Florida, FHSAA estrés por calor, WBGT Florida"
     }
   },
   "texas": {
@@ -450,7 +455,7 @@
       "ky": "La KHSAA pasó al WBGT y se reporta que descarta sitios web y apps como sustitutos — no pudimos acceder a los documentos de la KHSAA para confirmar la redacción ni cuál formulario de registro rige. Confirme directamente.",
       "sc": "Se exige que las escuelas tengan y usen un termómetro WBGT en el sitio; «phone apps are not scientifically approved» (las apps del teléfono no están aprobadas científicamente). La regla de permanencia fija las restricciones — vea la guía de Carolina del Sur.",
       "ia": "El WBGT es recomendado (no obligatorio) todo el año sobre 80 °F, con lecturas cada 30 minutos; la banda de marcha y las porristas tienen filas propias — vea la guía de Iowa.",
-      "fl": "La ley Zachary Martin legisla requisitos de seguridad basados en WBGT; la FHSAA opera con WBGT.",
+      "fl": "La Zachary Martin Act exige monitoreo del estrés por calor todo el año y zonas de enfriamiento, y exige que la lectura se mida en el sitio de la actividad. Los umbrales en sí son pautas de la FHSAA, que no hemos podido abrir.",
       "nc": "El manual vigente exige un dispositivo aprobado científicamente, leído cada hora desde 30 minutos antes de la práctica; el §2.3.3(g) hace obligatoria la política que lo contiene. Familia de umbrales más estricta que la mayoría — vea la guía de Carolina del Norte.",
       "va": "El código §22.1-271.10 (2025) exige a cada junta escolar adoptar políticas basadas en WBGT con al menos cinco niveles, pero los distritos fijan los umbrales; método de medición sin regular — vea la guía de Virginia.",
       "tn": "Cada escuela lee WBGT o índice de calor; se permite una app solo para el índice de calor y como último recurso. No cubre banda de marcha — vea la guía de Tennessee.",
@@ -471,7 +476,9 @@
     "iowaLink": "Guía de Iowa",
     "northCarolinaLink": "Guía NCHSAA de Carolina del Norte",
     "newYorkLink": "Guía NYSPHSAA de Nueva York",
-    "virginiaLink": "Guía de la ley de calor de Virginia"
+    "virginiaLink": "Guía de la ley de calor de Virginia",
+    "massachusettsLink": "Guía de la MIAA de Massachusetts",
+    "floridaLink": "Guía de la ley de calor de Florida"
   },
   "southCarolina": {
     "pageTitle": "Reglas WBGT de la SCHSL de Carolina del Sur",
@@ -705,5 +712,26 @@
     "sourceHeading": "Fuente",
     "sourceBody": "Todos los umbrales y textos de modificación anteriores derivan de la MIAA Heat Modification Policy, cotejados el {{verifiedOn}}.",
     "ctaButton": "Planifique con las banderas de Massachusetts"
+  },
+  "florida": {
+    "pageTitle": "Ley de seguridad ante el calor de Florida (Zachary Martin Act)",
+    "intro": "Las reglas de calor de Florida vienen de la legislatura, no solo de la asociación. La ley encarga a la FHSAA fijar los umbrales — y le dice a las escuelas exactamente cómo debe tomarse la lectura.",
+    "statuteHeading": "Qué exige la ley",
+    "statuteBody": "El estatuto de Florida {{section}} ({{citation}}) encarga a la FHSAA poner formación sobre estrés por calor a disposición de las escuelas miembro, establecer pautas para monitorearlo e identificar los niveles a partir de los cuales debe haber una zona de enfriamiento en cada competencia, práctica, entrenamiento o sesión de acondicionamiento al aire libre.",
+    "modifyBody": "También exige a la asociación: «{{quote}}»",
+    "yearRoundBody": "Y fija el alcance en una frase: «{{quote}}» No cabe leer esta ley como algo limitado al otoño o a la pretemporada.",
+    "measurementHeading": "La lectura debe tomarse en el campo",
+    "measurementBody": "Esta es la frase que decide si un pronóstico puede ser su lectura en Florida: «{{quote}}»",
+    "wbgtNamingBody": "Note lo que no dice. La ley nunca usa el término WBGT — nombra las cinco variables con las que se calcula un WBGT y exige medirlas donde ocurre la actividad.",
+    "deviceWarning": "Así que un pronóstico — incluido este sitio — no es una lectura conforme en Florida, por cerca que quede. Planifique aquí el horario de mañana; tome la lectura en el sitio, tal como lo dice la ley.",
+    "coolingHeading": "Zonas de enfriamiento y plan de emergencia",
+    "coolingBody": "Sobre las zonas de enfriamiento la ley es específica: «{{quote}}»",
+    "eapBody": "Y alcanza al plan de acción de emergencia: «{{quote}}»",
+    "trainingBody": "La formación es anual y personal: «{{quote}}»",
+    "noTableHeading": "Por qué aquí no hay tabla de umbrales",
+    "noTableBody": "La ley no fija números WBGT — encarga a la FHSAA establecerlos, así que los umbrales de actividad de Florida están en un documento de la FHSAA y no en la ley. No pudimos abrir ese documento al escribir esta página, así que no se muestra ninguna tabla de bandas de Florida. Publicar números que no hemos leído en la fuente es justamente lo que este sitio no hace. Pida a su director atlético las pautas de estrés por calor de la FHSAA y use las banderas de aquí solo para planificar.",
+    "sourceHeading": "Fuente",
+    "sourceBody": "Todas las citas anteriores se leyeron del texto legal del Senado de Florida el {{verifiedOn}}.",
+    "ctaButton": "Planifique con el pronóstico"
   }
 }

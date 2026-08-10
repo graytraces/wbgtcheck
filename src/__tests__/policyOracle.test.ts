@@ -11,6 +11,9 @@ import {
   MIAA_DEVICE_QUOTE,
   MIAA_COMPETITION_QUOTE,
   MIAA_COOLING_ZONE_WBGT_F,
+  FL_ONSITE_MEASUREMENT_QUOTE,
+  FL_YEAR_ROUND_QUOTE,
+  FL_STATUTE_SOURCE,
   GENERIC_NATA,
   NCHSAA_REFERENCE,
   NYSPHSAA_HEAT_INDEX_REFERENCE,
@@ -182,6 +185,26 @@ describe('policy oracle — guideline facts vs primary sources', () => {
       expect(UIL_CLASS_2.bands.find((b) => b.flag === flag)!.guideline).toEqual(
         UIL_CLASS_3.bands.find((b) => b.flag === flag)!.guideline,
       )
+    }
+  })
+
+  it('Florida is a statute page with no invented thresholds', () => {
+    // Fla. Stat. 1006.165(2) sets NO WBGT numbers — it directs the FHSAA to
+    // establish them. The FHSAA guideline document was not reachable, so no
+    // Florida band table exists here and the page says why. If a POLICIES
+    // entry for Florida ever appears without that document, this fails.
+    expect(Object.keys(POLICIES)).not.toContain('fhsaa')
+    expect(Object.keys(POLICIES)).not.toContain('florida')
+    // The measurement sentence is the load-bearing one: it rules this site
+    // out as the reading, and it names five variables rather than "WBGT".
+    expect(FL_ONSITE_MEASUREMENT_QUOTE).toContain('at the site of the athletic activity')
+    expect(FL_ONSITE_MEASUREMENT_QUOTE).not.toMatch(/WBGT|wet bulb/i)
+    expect(FL_YEAR_ROUND_QUOTE).toContain('year-round')
+    expect(FL_STATUTE_SOURCE.url).toContain('flsenate.gov')
+    for (const locale of [en, es]) {
+      // The page must keep saying that the numbers are absent and why.
+      expect(locale.florida.noTableBody.length).toBeGreaterThan(0)
+      expect(locale.florida.deviceWarning.length).toBeGreaterThan(0)
     }
   })
 

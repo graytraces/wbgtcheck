@@ -865,6 +865,43 @@ export const NYSPHSAA_HEAT_INDEX_REFERENCE = {
   ],
 }
 
+// --- Florida statute constants -------------------------------------------
+// Fla. Stat. § 1006.165(2), "Well-being of students participating in
+// extracurricular activities; training" — the heat-stress provisions added by
+// the Zachary Martin Act (s. 2, ch. 2020-91). Read from the Florida Senate's
+// own statute text 2026-08-10.
+//
+// The statute fixes NO activity thresholds. It directs the FHSAA to establish
+// them, so Florida's band table lives in an FHSAA document, not here. What the
+// statute DOES fix is how the reading is taken — and that is the part this
+// site has to be honest about, because it rules this site out as the reading.
+
+export const FL_STATUTE_SECTION = '§ 1006.165(2)'
+export const FL_STATUTE_CITATION = 's. 2, ch. 2020-91'
+/**
+ * The measurement sentence. Note what it does NOT say: the statute never uses
+ * the term "WBGT". It lists the five variables a WBGT is computed from, and
+ * requires them measured where the activity happens.
+ */
+export const FL_ONSITE_MEASUREMENT_QUOTE =
+  'Heat stress must be determined by measuring the ambient temperature, humidity, wind speed, sun angle, and cloud cover at the site of the athletic activity.'
+export const FL_MODIFY_QUOTE =
+  'Require member schools to monitor heat stress and modify athletic activities, including suspending or moving activities, based on the heat stress guidelines.'
+export const FL_COOLING_ZONE_QUOTE =
+  'Establish requirements for cooling zones, including, at a minimum, the immediate availability of cold-water immersion tubs or equivalent means to rapidly cool internal body temperature when a student exhibits symptoms of exertional heat stroke and the presence of an employee or volunteer trained to implement cold-water immersion.'
+export const FL_EAP_QUOTE =
+  'Require each school\u2019s emergency action plan, as required by the FHSAA, to include a procedure for onsite cooling using cold-water immersion or equivalent means before a student is transported to a hospital for exertional heat stroke.'
+/** The statute's own scope sentence, closing paragraph (2)(a). */
+export const FL_YEAR_ROUND_QUOTE = 'The requirements of this paragraph apply year-round.'
+export const FL_TRAINING_QUOTE =
+  'Each athletic coach and sponsor of extracurricular activities involving outdoor practices or events shall annually complete training in exertional heat illness identification, prevention, and response, including effective administration of cooling zones.'
+
+export const FL_STATUTE_SOURCE = {
+  name: 'Fla. Stat. \u00a7 1006.165 \u2014 Well-being of students participating in extracurricular activities; training',
+  url: 'https://www.flsenate.gov/Laws/Statutes/2024/1006.165',
+  verifiedOn: '2026-08-10',
+}
+
 // --- Massachusetts (MIAA) -------------------------------------------------
 // Source: "MIAA Heat Modification Policy", dated August 18, 2021, as linked
 // from MIAA's own Sports Medicine page (file name records an amendment of

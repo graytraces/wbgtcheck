@@ -27,7 +27,7 @@ export const STATE_DIRECTORY = [
   // 'wbgt-required' row overstated it. The same document tells schools phone
   // weather apps are not accurate for their venue, hence device-required.
   { abbr: 'IA', body: 'IHSAA/IGHSAU/IHSMA/IHSSA', mandate: 'conditional', measurement: 'device-required', verified: 'primary', noteKey: 'ia' },
-  { abbr: 'FL', body: 'FHSAA (Zachary Martin Act)', mandate: 'wbgt-required', measurement: 'unverified', verified: 'research', noteKey: 'fl' },
+  { abbr: 'FL', body: 'FHSAA (Zachary Martin Act)', mandate: 'conditional', measurement: 'device-required', verified: 'primary', noteKey: 'fl' },
   // 2025-26 handbook §2.3.5: "scientifically approved device". The earlier
   // weather-station/airport fallback clause is GONE from the current edition
   // — do not restore 'apps-allowed' from old copies of the guidance PDF.

@@ -349,6 +349,11 @@
       "title": "Massachusetts MIAA WBGT Heat Policy | WBGT Check",
       "description": "MIAA heat modification thresholds in wet bulb globe temperature, the on-site instrument rule, and how games differ from practice in Massachusetts.",
       "keywords": "MIAA heat policy, Massachusetts WBGT, MIAA heat modification, wet bulb globe temperature Massachusetts"
+    },
+    "florida": {
+      "title": "Florida Heat Safety Law for Athletics (Zachary Martin Act) | WBGT Check",
+      "description": "What Florida's Zachary Martin Act requires for heat stress monitoring, cooling zones and on-site measurement in high school athletics.",
+      "keywords": "Zachary Martin Act, Florida heat law athletics, FHSAA heat stress, Florida WBGT"
     }
   },
   "texas": {
@@ -450,7 +455,7 @@
       "ky": "KHSAA moved to WBGT and is reported to rule out websites and phone apps as substitutes — we could not reach the KHSAA documents to confirm the wording or which record form governs. Confirm directly.",
       "sc": "Schools are required to own and use an on-site WBGT thermometer; \"phone apps are not scientifically approved\". Range-hold rule locks in restrictions — see the South Carolina guide.",
       "ia": "WBGT is recommended (not mandated) year-round above 80 °F, readings every 30 minutes; marching band and cheer have their own rows — see the Iowa guide.",
-      "fl": "Zachary Martin Act legislates WBGT-based safety requirements; FHSAA operates on WBGT.",
+      "fl": "The Zachary Martin Act requires heat-stress monitoring year-round and cooling zones, and requires the reading to be measured at the site of the activity. The thresholds themselves are FHSAA guidelines, which we have not been able to open.",
       "nc": "Current handbook calls for a scientifically approved device, read hourly from 30 minutes before practice; §2.3.3(g) makes the containing policy mandatory. Stricter threshold family than most states — see the North Carolina guide.",
       "va": "Code §22.1-271.10 (2025) requires every school board to adopt WBGT-based policies with at least five tiers, but districts set the thresholds; measurement method not regulated — see the Virginia guide.",
       "tn": "Each school reads either WBGT or heat index; a phone app is permitted for heat index only, as a last resort. Marching band not covered — see the Tennessee guide.",
@@ -471,7 +476,9 @@
     "iowaLink": "Iowa guide",
     "northCarolinaLink": "North Carolina NCHSAA guide",
     "newYorkLink": "New York NYSPHSAA guide",
-    "virginiaLink": "Virginia heat law guide"
+    "virginiaLink": "Virginia heat law guide",
+    "massachusettsLink": "Massachusetts MIAA guide",
+    "floridaLink": "Florida heat law guide"
   },
   "southCarolina": {
     "pageTitle": "South Carolina SCHSL WBGT Rules",
@@ -705,5 +712,26 @@
     "sourceHeading": "Source",
     "sourceBody": "All thresholds and modification text above derive from the MIAA Heat Modification Policy, cross-checked on {{verifiedOn}}.",
     "ctaButton": "Plan around Massachusetts flags"
+  },
+  "florida": {
+    "pageTitle": "Florida Heat Safety Law (Zachary Martin Act)",
+    "intro": "Florida's heat rules come from the legislature, not only from the association. The statute tells the FHSAA to set the thresholds — and tells schools exactly how the reading has to be taken.",
+    "statuteHeading": "What the statute requires",
+    "statuteBody": "Fla. Stat. {{section}} ({{citation}}) directs the FHSAA to make heat-stress training available to member schools, to establish guidelines for monitoring heat stress, and to identify the levels at which a cooling zone must be available for every outdoor contest, practice, workout or conditioning session.",
+    "modifyBody": "It also requires the association to \"{{quote}}\"",
+    "yearRoundBody": "And it fixes the scope in one sentence: \"{{quote}}\" There is no fall-only or preseason-only reading of this law.",
+    "measurementHeading": "The reading must be taken at the field",
+    "measurementBody": "This is the sentence that decides whether a forecast can be your reading in Florida: \"{{quote}}\"",
+    "wbgtNamingBody": "Note what it does not say. The statute never uses the term WBGT — it names the five variables a WBGT is computed from, and requires them measured where the activity is happening.",
+    "deviceWarning": "So a forecast — including this site — is not a Florida-compliant reading, however close it lands. Plan tomorrow's schedule here; take the reading at the site, as the statute words it.",
+    "coolingHeading": "Cooling zones and emergency planning",
+    "coolingBody": "On cooling zones the statute is specific: \"{{quote}}\"",
+    "eapBody": "And it reaches the emergency action plan: \"{{quote}}\"",
+    "trainingBody": "Training is annual and personal: \"{{quote}}\"",
+    "noTableHeading": "Why there is no threshold table here",
+    "noTableBody": "The statute sets no WBGT numbers — it directs the FHSAA to establish them, so Florida's activity thresholds live in an FHSAA document rather than in the law. We could not open that document when this page was written, so no Florida band table is shown. Publishing numbers we have not read from the source is the one thing this site does not do. Ask your athletic director for the FHSAA heat-stress guidelines, and use the flags here only for planning.",
+    "sourceHeading": "Source",
+    "sourceBody": "Every quotation above was read from the Florida Senate's statute text on {{verifiedOn}}.",
+    "ctaButton": "Plan with the forecast"
   }
 }
