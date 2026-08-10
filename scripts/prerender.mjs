@@ -116,6 +116,22 @@ import {
   IOWA_READING_INTERVAL_MINUTES,
   IOWA_RECOMMENDED_QUOTE,
   NCHSAA_DEVICE_QUOTE,
+  NCHSAA_ALL_SPORTS_HEADING_QUOTE,
+  NCHSAA_CHEER_JURISDICTION_QUOTE,
+  NYSPHSAA_ONFIELD_WBGT_QUOTE,
+  KY_ONSITE_STRENGTHS,
+  VHSL_FORECAST_PLANNING_QUOTE,
+  VHSL_FORECAST_NOT_REPLACE_QUOTE,
+  VHSL_FORECAST_GENERALIZED_QUOTE,
+  MEASUREMENT_STANCES,
+  BAND_COVERAGE,
+  IOWA_BAND_ROWS,
+  IOWA_APPENDIX_C_SCOPE_QUOTE,
+  IOWA_BAND_ROW_HEADING_QUOTE,
+  IOWA_BAND_FOOTNOTE_SOURCE,
+  UIL_BAND_HEADING_QUOTE,
+  UIL_BAND_COOLING_ZONE_QUOTE,
+  UIL_BAND_PRACTICE_DEFINITION_QUOTE,
   NCHSAA_CADENCE_QUOTE,
   NCHSAA_MANDATE_QUOTE,
   NYSPHSAA_AMBIENT_TRIGGER_F,
@@ -137,7 +153,7 @@ import {
 } from '../src/data/policyData.js'
 import { guidelineSentences } from '../src/lib/guidelineSentences.js'
 import { STATE_DIRECTORY } from '../src/data/stateDirectory.js'
-import { STATE_GUIDES, AIR_GUIDES, GUIDE_SLUG_BY_ABBR } from '../src/data/guideRegistry.js'
+import { STATE_GUIDES, AIR_GUIDES, TOPIC_GUIDES, GUIDE_SLUG_BY_ABBR } from '../src/data/guideRegistry.js'
 import { feedbackMailto } from '../src/data/feedbackContact.js'
 import { MAX_LOG_ENTRIES } from '../src/data/logRetention.js'
 import {
@@ -189,6 +205,8 @@ const pages = [
   { key: 'california', path: 'california', dateModified: today },
   { key: 'kentucky', path: 'kentucky', dateModified: today },
   { key: 'wbgtVsHeatIndex', path: 'wbgt-vs-heat-index', dateModified: today },
+  { key: 'forecastOrDevice', path: 'forecast-or-device', dateModified: today },
+  { key: 'marchingBand', path: 'marching-band-heat-rules', dateModified: today },
   { key: 'states', path: 'states', dateModified: today },
   { key: 'washingtonAir', path: 'washington-air-quality', dateModified: today },
   { key: 'oregonAir', path: 'oregon-air-quality', dateModified: today },
@@ -994,6 +1012,188 @@ function generateBodyContent(lang, page) {
       )}</p>`,
     )
     push(`<p>${escapeHtml(t('wbgtVsHi.hiNote'))}</p>`)
+  } else if (page.key === 'forecastOrDevice') {
+    // Mirrors pages/ForecastOrDevice.tsx. Stances are read off the oracle
+    // objects here too, so the prerendered table cannot disagree with the
+    // hydrated one — the prerender↔client shared-module pattern.
+    const stanceLabel = (row) =>
+      t(
+        {
+          yes: 'forecastOrDevice.stanceYes',
+          'device-required': 'forecastOrDevice.stanceDeviceRequired',
+          'device-recommended': 'forecastOrDevice.stanceDeviceRecommended',
+          unspecified: 'forecastOrDevice.stanceUnspecified',
+        }[row.subject.remoteEstimatesAllowed],
+      )
+    push(`<h1>${escapeHtml(t('forecastOrDevice.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('forecastOrDevice.intro'))}</p>`)
+    push(`<h2>${escapeHtml(t('forecastOrDevice.planningHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('forecastOrDevice.planningBody', {
+          planning: VHSL_FORECAST_PLANNING_QUOTE,
+          notReplace: VHSL_FORECAST_NOT_REPLACE_QUOTE,
+          generalized: VHSL_FORECAST_GENERALIZED_QUOTE,
+        }),
+      )}</p>`,
+    )
+    push(`<p>${escapeHtml(t('forecastOrDevice.planningNote'))}</p>`)
+    push(`<h2>${escapeHtml(t('forecastOrDevice.stanceHeading'))}</h2>`)
+    push(
+      `<ul>${[
+        ['forecastOrDevice.stanceYes', 'forecastOrDevice.stanceYesBody'],
+        ['forecastOrDevice.stanceDeviceRequired', 'forecastOrDevice.stanceDeviceRequiredBody'],
+        ['forecastOrDevice.stanceDeviceRecommended', 'forecastOrDevice.stanceDeviceRecommendedBody'],
+        ['forecastOrDevice.stanceUnspecified', 'forecastOrDevice.stanceUnspecifiedBody'],
+      ]
+        .map(([label, body]) => `<li>${escapeHtml(t(label))} — ${escapeHtml(t(body))}</li>`)
+        .join('')}</ul>`,
+    )
+    push(`<h2 id="stance-table-heading">${escapeHtml(t('forecastOrDevice.tableHeading'))}</h2>`)
+    push(
+      `<table aria-labelledby="stance-table-heading"><thead><tr><th>${escapeHtml(
+        t('forecastOrDevice.colState'),
+      )}</th><th>${escapeHtml(t('forecastOrDevice.colStance'))}</th></tr></thead><tbody>${MEASUREMENT_STANCES.map(
+        (row) =>
+          `<tr><th scope="row">${GUIDE_SLUG_BY_ABBR[row.abbr] ? `<a href="/${lang}/${GUIDE_SLUG_BY_ABBR[row.abbr]}">${row.abbr}</a>` : row.abbr}</th><td>${escapeHtml(stanceLabel(row))}</td></tr>`,
+      ).join('')}</tbody></table>`,
+    )
+    push(`<h2>${escapeHtml(t('forecastOrDevice.yesHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('forecastOrDevice.yesBody', { texas: UIL_FAQ_FORECAST_QUOTE }))}</p>`)
+    push(
+      `<p>${escapeHtml(
+        t('forecastOrDevice.yesCaliforniaBody', { california: CIF_NO_DEVICE_QUOTE }),
+      )}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('forecastOrDevice.requiredHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('forecastOrDevice.requiredBody'))}</p>`)
+    push(`<h2>${escapeHtml(t('forecastOrDevice.recommendedHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('forecastOrDevice.recommendedBody'))}</p>`)
+    push(`<h2>${escapeHtml(t('forecastOrDevice.kentuckyHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('forecastOrDevice.kentuckyBody'))}</p>`)
+    // Kentucky's summary stance is the strictest of three; policyData.js
+    // requires the per-sport breakdown to travel with it, here as well.
+    push(
+      `<dl>${KY_ONSITE_STRENGTHS.map((entry) => {
+        const sport = entry.sportKey.charAt(0).toUpperCase() + entry.sportKey.slice(1)
+        const strength = entry.strength.charAt(0).toUpperCase() + entry.strength.slice(1)
+        const body = entry.quote ?? t('forecastOrDevice.kentuckyUnstatedBody')
+        return `<dt>${escapeHtml(t(`forecastOrDevice.kentuckySport${sport}`))} — ${escapeHtml(
+          t(`forecastOrDevice.kentuckyStrength${strength}`),
+        )}</dt><dd>${escapeHtml(body)}</dd>`
+      }).join('')}</dl>`,
+    )
+    push(`<p>${escapeHtml(t('forecastOrDevice.kentuckySummaryNote'))}</p>`)
+    push(`<h2>${escapeHtml(t('forecastOrDevice.newYorkHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('forecastOrDevice.newYorkBody', {
+          zip: NYSPHSAA_ZIP_QUOTE,
+          onField: NYSPHSAA_ONFIELD_WBGT_QUOTE,
+        }),
+      )}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('forecastOrDevice.elsewhereHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('forecastOrDevice.elsewhereBody'))}</p>`)
+    push(`<h2>${escapeHtml(t('forecastOrDevice.bottomLineHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('forecastOrDevice.bottomLineBody'))}</p>`)
+    push(`<h2>${escapeHtml(t('forecastOrDevice.sourcesHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('forecastOrDevice.sourcesBody'))}</p>`)
+    push(
+      `<ul>${MEASUREMENT_STANCES.map(
+        (row) =>
+          `<li>${row.abbr} <a href="${row.source.url}">${escapeHtml(row.source.name)}</a> (${escapeHtml(t('forecastOrDevice.verifiedOnLabel'))} ${row.source.verifiedOn})</li>`,
+      ).join('')}</ul>`,
+    )
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+    push(correctionNoteHtml(t, 'forecast-or-device', lang))
+  } else if (page.key === 'marchingBand') {
+    // Mirrors pages/MarchingBand.tsx.
+    push(`<h1>${escapeHtml(t('marchingBand.pageTitle'))}</h1>`)
+    push(`<p>${escapeHtml(t('marchingBand.intro'))}</p>`)
+    push(`<h2 id="band-table-heading">${escapeHtml(t('marchingBand.tableHeading'))}</h2>`)
+    push(
+      `<table aria-labelledby="band-table-heading"><thead><tr><th>${escapeHtml(
+        t('marchingBand.colState'),
+      )}</th><th>${escapeHtml(t('marchingBand.colCoverage'))}</th></tr></thead><tbody>${BAND_COVERAGE.map(
+        (row) =>
+          `<tr><th scope="row">${GUIDE_SLUG_BY_ABBR[row.abbr] ? `<a href="/${lang}/${GUIDE_SLUG_BY_ABBR[row.abbr]}">${row.abbr}</a>` : row.abbr}</th><td>${escapeHtml(
+            t(row.coverage === 'named' ? 'marchingBand.coverageNamed' : 'marchingBand.coverageAthleticsOnly'),
+          )}</td></tr>`,
+      ).join('')}</tbody></table>`,
+    )
+    push(`<h2>${escapeHtml(t('marchingBand.namedHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('marchingBand.namedBody'))}</p>`)
+    push(`<h2>${escapeHtml(t('marchingBand.texasHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('marchingBand.texasBody', {
+          mandate: UIL_MANDATE_2026_QUOTE,
+          heading: UIL_BAND_HEADING_QUOTE,
+        }),
+      )}</p>`,
+    )
+    push(
+      `<p>${escapeHtml(
+        t('marchingBand.texasCoolingBody', { cooling: UIL_BAND_COOLING_ZONE_QUOTE }),
+      )}</p>`,
+    )
+    push(
+      `<p>${escapeHtml(
+        t('marchingBand.texasDefinitionBody', { definition: UIL_BAND_PRACTICE_DEFINITION_QUOTE }),
+      )}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('marchingBand.iowaHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('marchingBand.iowaBody'))}</p>`)
+    push(
+      `<p>${escapeHtml(
+        t('marchingBand.iowaSameBandsBody', { scope: IOWA_APPENDIX_C_SCOPE_QUOTE }),
+      )}</p>`,
+    )
+    push(
+      `<h3 id="iowa-band-table-heading">${escapeHtml(
+        t('marchingBand.iowaRowsHeading', { heading: IOWA_BAND_ROW_HEADING_QUOTE }),
+      )}</h3>`,
+    )
+    push(
+      `<table aria-labelledby="iowa-band-table-heading"><thead><tr><th>${escapeHtml(
+        t('marchingBand.iowaColBand'),
+      )}</th><th>${escapeHtml(t('marchingBand.iowaColAction'))}</th></tr></thead><tbody>${IOWA_BAND_ROWS.map(
+        (row) =>
+          `<tr><th scope="row">${escapeHtml(t(`flags.${row.flag}.label`))} ${escapeHtml(row.sourceLabel)}</th><td>${escapeHtml(row.quote)}</td></tr>`,
+      ).join('')}</tbody></table>`,
+    )
+    push(`<p>${escapeHtml(t('marchingBand.iowaBelowBody'))}</p>`)
+    push(
+      `<p><a href="${IOWA_BAND_FOOTNOTE_SOURCE.url}">${escapeHtml(IOWA_BAND_FOOTNOTE_SOURCE.name)}</a></p>`,
+    )
+    push(`<h2>${escapeHtml(t('marchingBand.elsewhereHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('marchingBand.elsewhereBody'))}</p>`)
+    push(`<p>${escapeHtml(t('marchingBand.silenceNote'))}</p>`)
+    push(`<h2>${escapeHtml(t('marchingBand.northCarolinaHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(
+        t('marchingBand.northCarolinaBody', {
+          scope: NCHSAA_ALL_SPORTS_HEADING_QUOTE,
+          cheer: NCHSAA_CHEER_JURISDICTION_QUOTE,
+        }),
+      )}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('marchingBand.floridaHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('marchingBand.floridaBody', { training: FL_TRAINING_QUOTE }))}</p>`)
+    push(`<h2>${escapeHtml(t('marchingBand.districtHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('marchingBand.districtBody'))}</p>`)
+    push(`<p>${escapeHtml(t('marchingBand.districtNote'))}</p>`)
+    push(`<h2>${escapeHtml(t('marchingBand.sourcesHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('marchingBand.sourcesBody'))}</p>`)
+    push(
+      `<ul>${BAND_COVERAGE.map(
+        (row) =>
+          `<li>${row.abbr} <a href="${row.source.url}">${escapeHtml(row.source.name)}</a> (${escapeHtml(t('marchingBand.verifiedOnLabel'))} ${row.source.verifiedOn})</li>`,
+      ).join('')}</ul>`,
+    )
+    push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
+    push(correctionNoteHtml(t, 'marching-band', lang))
   } else if (page.key === 'states') {
     push(`<h1>${escapeHtml(t('states.pageTitle'))}</h1>`)
     push(`<p>${escapeHtml(t('states.intro'))}</p>`)
@@ -1020,6 +1220,8 @@ function generateBodyContent(lang, page) {
     push(
       guideLinks(STATE_GUIDES),
     )
+    push(`<h2>${escapeHtml(t('states.topicGuidesHeading'))}</h2>`)
+    push(guideLinks(TOPIC_GUIDES))
     push(`<h2>${escapeHtml(t('states.airGuidesHeading'))}</h2>`)
     push(`<p>${escapeHtml(t('states.airGuidesIntro'))}</p>`)
     push(

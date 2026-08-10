@@ -28,6 +28,8 @@ const Florida = lazy(() => import('./pages/Florida'))
 const California = lazy(() => import('./pages/California'))
 const Kentucky = lazy(() => import('./pages/Kentucky'))
 const WbgtVsHeatIndex = lazy(() => import('./pages/WbgtVsHeatIndex'))
+const ForecastOrDevice = lazy(() => import('./pages/ForecastOrDevice'))
+const MarchingBand = lazy(() => import('./pages/MarchingBand'))
 const States = lazy(() => import('./pages/States'))
 const WashingtonAir = lazy(() => import('./pages/WashingtonAir'))
 const OregonAir = lazy(() => import('./pages/OregonAir'))
@@ -71,6 +73,8 @@ const router = createBrowserRouter([
       { path: 'california', element: <Suspense fallback={<Loading />}><California /></Suspense> },
       { path: 'kentucky', element: <Suspense fallback={<Loading />}><Kentucky /></Suspense> },
       { path: 'wbgt-vs-heat-index', element: <Suspense fallback={<Loading />}><WbgtVsHeatIndex /></Suspense> },
+      { path: 'forecast-or-device', element: <Suspense fallback={<Loading />}><ForecastOrDevice /></Suspense> },
+      { path: 'marching-band-heat-rules', element: <Suspense fallback={<Loading />}><MarchingBand /></Suspense> },
       { path: 'states', element: <Suspense fallback={<Loading />}><States /></Suspense> },
       { path: 'washington-air-quality', element: <Suspense fallback={<Loading />}><WashingtonAir /></Suspense> },
       { path: 'oregon-air-quality', element: <Suspense fallback={<Loading />}><OregonAir /></Suspense> },

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { CircleCheck, MonitorX, CircleHelp } from 'lucide-react'
 import SEO from '../components/SEO'
 import { STATE_DIRECTORY, type MeasurementClass } from '../data/stateDirectory'
-import { STATE_GUIDES, AIR_GUIDES, GUIDE_SLUG_BY_ABBR } from '../data/guideRegistry'
+import { STATE_GUIDES, AIR_GUIDES, TOPIC_GUIDES, GUIDE_SLUG_BY_ABBR } from '../data/guideRegistry'
 import { UIL_EFFECTIVE_DATE } from '../data/policyOracle'
 import { cn } from '../lib/utils'
 
@@ -34,6 +34,20 @@ export default function States() {
         <h2 className="mb-2 font-bold uppercase tracking-wide">{t('states.guidesHeading')}</h2>
         <ul className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
           {STATE_GUIDES.map(({ slug, labelKey }) => (
+            <li key={slug}>
+              <Link to={`/${lang}/${slug}`} className="font-semibold underline">
+                {t(labelKey)}
+              </Link>
+            </li>
+          ))}
+        </ul>
+        {/* The two cross-state guides. Neither has a nav entry — the scroller
+            is full at five items — so this hub is their only route in. */}
+        <h2 className="mb-2 mt-4 font-bold uppercase tracking-wide">
+          {t('states.topicGuidesHeading')}
+        </h2>
+        <ul className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+          {TOPIC_GUIDES.map(({ slug, labelKey }) => (
             <li key={slug}>
               <Link to={`/${lang}/${slug}`} className="font-semibold underline">
                 {t(labelKey)}

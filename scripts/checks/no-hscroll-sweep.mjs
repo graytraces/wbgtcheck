@@ -99,6 +99,8 @@ const ROUTES = [
   'california',
   'kentucky',
   'wbgt-vs-heat-index',
+  'forecast-or-device',
+  'marching-band-heat-rules',
   'states',
   'washington-air-quality',
   'oregon-air-quality',

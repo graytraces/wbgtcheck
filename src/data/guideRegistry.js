@@ -59,6 +59,33 @@ export const STATE_GUIDES = [
   { abbr: 'VA', slug: 'virginia', seoKey: 'virginia', labelKey: 'states.virginiaLink', ladder: 'wbgt-own' },
 ]
 
+/**
+ * Cross-state topical guides — the questions a reader asks ACROSS the twelve
+ * state guides rather than inside one of them.
+ *
+ * Deliberately a third list rather than rows in STATE_GUIDES: they have no
+ * `abbr`, no directory row and no ladder, and STATE_GUIDES is joined to
+ * STATE_DIRECTORY on exactly those. They are listed here anyway for the same
+ * reason the air guides are — /states is the only hub, and a guide missing
+ * from the PRERENDERED hub does not exist for a reader whose JS failed.
+ *
+ * /wbgt-vs-heat-index is not in this list because it has a nav entry of its
+ * own; these two do not, and the nav is already three items past what a 390px
+ * scroller shows.
+ */
+export const TOPIC_GUIDES = [
+  {
+    slug: 'forecast-or-device',
+    seoKey: 'forecastOrDevice',
+    labelKey: 'states.forecastOrDeviceLink',
+  },
+  {
+    slug: 'marching-band-heat-rules',
+    seoKey: 'marchingBand',
+    labelKey: 'states.marchingBandLink',
+  },
+]
+
 /** Air-quality guides. Same shape; `abbr` is the state they cover. */
 export const AIR_GUIDES = [
   { abbr: 'CA', slug: 'california-air-quality', seoKey: 'californiaAir', labelKey: 'states.californiaAirLink' },

@@ -6,6 +6,7 @@
 import {
   STATE_GUIDES as RAW_STATE_GUIDES,
   AIR_GUIDES as RAW_AIR_GUIDES,
+  TOPIC_GUIDES as RAW_TOPIC_GUIDES,
   GUIDE_SLUG_BY_ABBR as RAW_SLUG_BY_ABBR,
 } from './guideRegistry.js'
 
@@ -30,6 +31,19 @@ export interface GuideEntry {
   numbersSetBy?: 'districts' | 'association'
 }
 
+/**
+ * A cross-state topical guide. No `abbr`, no `ladder`: it is not a state's
+ * page, so the joins GuideEntry carries to STATE_DIRECTORY and to the
+ * detected location would be meaningless on it. Keeping it a separate type is
+ * what stops one from being added to STATE_GUIDES by autocomplete.
+ */
+export interface TopicGuideEntry {
+  slug: string
+  seoKey: string
+  labelKey: string
+}
+
 export const STATE_GUIDES = RAW_STATE_GUIDES as GuideEntry[]
 export const AIR_GUIDES = RAW_AIR_GUIDES as GuideEntry[]
+export const TOPIC_GUIDES = RAW_TOPIC_GUIDES as TopicGuideEntry[]
 export const GUIDE_SLUG_BY_ABBR = RAW_SLUG_BY_ABBR as Record<string, string | undefined>

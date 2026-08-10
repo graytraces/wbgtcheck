@@ -24,6 +24,12 @@ export const pageSEO: Record<string, PageSEO> = {
   california: { path: 'california', key: 'california' },
   kentucky: { path: 'kentucky', key: 'kentucky' },
   wbgtVsHeatIndex: { path: 'wbgt-vs-heat-index', key: 'wbgtVsHeatIndex' },
+  // Cross-state topical guides. Neither belongs in STATE_GUIDES: they are not
+  // a state's ladder, they are the two questions a reader asks ACROSS the
+  // twelve — may a forecast be the reading, and does any of this cover the
+  // band. They reach readers from /states like the air guides do.
+  forecastOrDevice: { path: 'forecast-or-device', key: 'forecastOrDevice' },
+  marchingBand: { path: 'marching-band-heat-rules', key: 'marchingBand' },
   states: { path: 'states', key: 'states' },
   // Air-quality guides. Slug is "<state>-air-quality" rather than the bare
   // state name used by the heat guides (/texas, /georgia): the two axes will
