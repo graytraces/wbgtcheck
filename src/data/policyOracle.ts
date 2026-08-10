@@ -21,6 +21,7 @@ import {
   TSSAA as TSSAA_RAW,
   IOWA_CATEGORY_2 as IOWA_CATEGORY_2_RAW,
   MIAA as MIAA_RAW,
+  FHSAA as FHSAA_RAW,
   CIF_CATEGORY_1 as CIF_CATEGORY_1_RAW,
   CIF_CATEGORY_2 as CIF_CATEGORY_2_RAW,
   CIF_CATEGORY_3 as CIF_CATEGORY_3_RAW,
@@ -183,6 +184,8 @@ export {
   FHSAA_CONTEST_SPORT_COUNT,
   FHSAA_CONTEST_REFERENCE_QUOTE,
   FHSAA_CONTEST_POSTPONE_QUOTE,
+  FHSAA_COOLING_ZONE_QUOTE,
+  FHSAA_COOLING_ZONE_DEFINITION_QUOTE,
   NYSPHSAA_WBGT_SOURCE,
   NYSPHSAA_P1_SOURCE,
   NYSPHSAA_EITHER_SCALE_QUOTE,
@@ -222,6 +225,7 @@ export type PolicyId =
   | 'tssaa'
   | 'iowa'
   | 'miaa'
+  | 'fhsaa'
   | 'generic'
 
 export interface BandGuideline {
@@ -320,11 +324,15 @@ export interface HeatPolicy extends MeasurementSubject {
 /**
  * True when a remote estimate cannot substitute for the subject's own reading.
  *
- * Widened from HeatPolicy to MeasurementSubject so the six jurisdictions that
- * are reference tables rather than pickable policies — KY, NC, NY, FL, VA —
- * answer the same question through the same function. It cannot change any
- * verdict card by doing so: VerdictCard and ShareCardButton are only ever
- * handed a POLICIES entry, and none of those tables is one.
+ * Widened from HeatPolicy to MeasurementSubject so the jurisdictions that are
+ * reference tables rather than pickable policies — KY, NC, NY, VA — answer the
+ * same question through the same function. It cannot change any verdict card
+ * by doing so: VerdictCard and ShareCardButton are only ever handed a POLICIES
+ * entry, and none of those tables is one.
+ *
+ * Florida is now both. Its POLICIES entry answers 'device-required' here, so
+ * a Florida card DOES carry the compliance warning — the first time this
+ * function has changed what a verdict says for anyone.
  */
 export function requiresOnSiteReading(policy: MeasurementSubject): boolean {
   return (
@@ -412,6 +420,16 @@ export const SCHSL = SCHSL_RAW as HeatPolicy
 export const TSSAA = TSSAA_RAW as HeatPolicy
 export const IOWA_CATEGORY_2 = IOWA_CATEGORY_2_RAW as HeatPolicy
 export const MIAA = MIAA_RAW as HeatPolicy
+/**
+ * Florida's §41.8 practice ladder, and the first jurisdiction here to be both
+ * a pickable HeatPolicy and a ReferenceTable at once.
+ *
+ * The two are not duplicates of each other: FHSAA_PRACTICE_REFERENCE below
+ * prints §41.8's cells verbatim on /florida, while this object is what
+ * classifyWbgt reads. Their band labels come from the same array in
+ * policyData.js, so no threshold can move in one and not the other.
+ */
+export const FHSAA = FHSAA_RAW as HeatPolicy
 
 /**
  * California's three regional ladders. HeatPolicy objects, so they render
@@ -449,13 +467,19 @@ export const KHSAA_WBGT_REFERENCE = KHSAA_WBGT_REFERENCE_RAW as ReferenceTable<R
  * Virginia, Florida and New York's own tables — the three this site spent a
  * day telling readers did not exist.
  *
- * All three are ReferenceTables rather than POLICIES entries, each for its own
- * reason. VHSL prints six levels with duration caps and work/rest splits, not
- * five flags. FHSAA's §41.8 governs PRACTICES only, and §41.9 adds a separate
- * per-sport contest index the tool would have to ask about before choosing.
- * NYSPHSAA's ladder depends on a regional category this site cannot determine.
- * Feeding any of them to classifyWbgt would print a confident verdict its own
- * association contradicts.
+ * VHSL and NYSPHSAA are ReferenceTables rather than POLICIES entries, each for
+ * its own reason. VHSL prints six levels with duration caps and work/rest
+ * splits, not five flags. NYSPHSAA's ladder depends on a regional category
+ * this site cannot determine. Feeding either to classifyWbgt would print a
+ * confident verdict its own association contradicts.
+ *
+ * FHSAA_PRACTICE_REFERENCE is the exception, and the reason its exclusion note
+ * is gone: §41.8's five bands DO map onto the five flags, so Florida is now a
+ * pickable policy (FHSAA above) as well. This table stays because /florida
+ * prints §41.8's cells verbatim — including the one band whose break sentence
+ * drops "per hour of activity", which the shared guideline sentences cannot
+ * express — and because §41.9's contest index still needs a question the tool
+ * does not ask. It must never itself reach POLICIES: it has rows, not bands.
  */
 export const VHSL_REFERENCE = VHSL_REFERENCE_RAW as ReferenceTable<VhslReferenceRow>
 export const FHSAA_PRACTICE_REFERENCE =

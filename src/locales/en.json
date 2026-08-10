@@ -60,7 +60,8 @@
     "cifContactSportsEquipment": "Football and field hockey: helmet, shoulder pads and shorts only during practice.",
     "cifRedContests": "Contests are permitted with additional hydration breaks.",
     "cifRedNoEquipment": "No protective equipment may be worn during practice.",
-    "miaaCoolingZone": "Ice water and towels should be available in the cooling zone, and cold-water immersion tubs available for any player showing signs of heat illness."
+    "miaaCoolingZone": "Ice water and towels should be available in the cooling zone, and cold-water immersion tubs available for any player showing signs of heat illness.",
+    "fhsaaNoEquipmentAnySport": "No protective equipment permitted, in any sport."
   },
   "policies": {
     "uil-class-2": "Texas UIL — Class 2",
@@ -70,6 +71,7 @@
     "tssaa": "Tennessee TSSAA",
     "iowa": "Iowa (Category 2)",
     "miaa": "Massachusetts MIAA",
+    "fhsaa": "Florida FHSAA — practices",
     "generic": "General guideline (NATA)",
     "pickerLabel": "Policy",
     "pickerHelp": "Pick your state association.",
@@ -177,6 +179,7 @@
     "verifyOnsite": "Confirm on site before and during activity — this forecast is a planning aid, not a measurement.",
     "surfaceNotice": "Over dark tracks, hard courts, and sand, on-site readings can run higher than any remote estimate.",
     "genericRegionNotice": "The NATA example table was written for hot-climate regions. In northern states, New England, the Pacific coast, and high-altitude areas, lower thresholds may apply — local guidance takes precedence.",
+    "practiceIndexNotice": "This flag is FHSAA {{practice}}, the PRACTICE index. {{contest}} runs a separate per-sport index for interscholastic contests, and no band in it forbids a contest — so a practice flag is not a contest decision, and the practice table's top row is not the moment a game must be called.",
     "asOf": "forecast loaded {{time}}",
     "staleNotice": "This forecast was loaded at {{time}} and may be out of date — refresh before making decisions.",
     "refresh": "Refresh forecast",
@@ -949,8 +952,8 @@
     "sourceBody": "Every quotation above was read from the Florida Senate's statute text on {{verifiedOn}}.",
     "tableSourceBody": "The practice index was read from the FHSAA handbook on {{verifiedOn}}:",
     "ctaButton": "Plan with the forecast",
-    "pickerExclusionHeading": "Why Florida is not in the policy picker",
-    "pickerExclusionBody": "Not because Florida publishes nothing — it publishes Policy 41 — but because Policy 41 is two ladders. §41.8 governs practices and ends by forbidding outdoor activity; §41.9 governs contests, is written per sport, and contains no band that stops one. Choosing between them needs a question this tool does not ask. Until it does, the forecast falls back to the general NATA guideline, which carries no connection to either. Read Policy 41 for the number that governs you, and treat the flags here as planning only."
+    "pickerScopeHeading": "Which of Florida's two ladders the picker uses",
+    "pickerScopeBody": "The forecast tool now flags Florida readings against {{practice}}, the practice index above — not against the general NATA guideline it used to fall back to. That is one of Policy 41's two ladders, and the picker uses it because it is the stricter one: it is tighter than {{contest}} at every band and stops outdoor activity outright, where the contest index stops nothing. So a flag here never permits more than Florida does. It also never decides a contest. If the question is whether a game goes ahead, read {{contest}} and remember that the stop there is a principal's call rather than a number. And whichever ladder governs you, the flag is planning: the reading itself has to be taken at the site."
   },
   "california": {
     "pageTitle": "California CIF WBGT Heat Policy",

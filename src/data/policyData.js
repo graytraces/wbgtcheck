@@ -1951,6 +1951,174 @@ export const FHSAA_CONTEST_REFERENCE_QUOTE =
 export const FHSAA_CONTEST_POSTPONE_QUOTE =
   'In no case may a contest official deny any request by a school principal or his/her designee to delay, suspend, or postpone an outdoor contest due to inclement weather, including oppressive heat as demonstrated by an official WBGT reading, or imply that the contest will be forfeited because of such request.'
 
+/**
+ * §41.8.5 — the cooling-zone duty, and the reason it rides EVERY Florida band
+ * rather than opening at a threshold.
+ *
+ * Compare UIL_BAND_COOLING_ZONE_QUOTE, which gates its own duty on a reading
+ * ("that is held in wet bulb globe temperatures of 79.7 in Class 2 or 82 in
+ * Class 3 degrees or higher"). Florida's sentence has no such gate: the duty
+ * attaches to the SESSION, not to a number. Re-read from p.106 of the pinned
+ * handbook 2026-08-11.
+ */
+export const FHSAA_COOLING_ZONE_QUOTE =
+  'Cooling zones shall be available for each outdoor athletic contest, practice, workout, or conditioning session as designated by this policy.'
+/** §41.8.4 — what a cooling zone has to BE, in FHSAA's own words. */
+export const FHSAA_COOLING_ZONE_DEFINITION_QUOTE =
+  'Cooling zones are designated areas that shall include the immediate availability of cold-water immersion tubs or Tarp Assisted Cooling Oscillation (TACO) that can be filled with ice and wrapped around individuals to rapidly cool internal body temperature.'
+
+// --- FHSAA §41.8 as a pickable ladder -------------------------------------
+// The same five cells as FHSAA_PRACTICE_REFERENCE above, expressed as this
+// site's shared band guidelines so a Florida location gets Florida's flag
+// instead of the generic NATA fallback.
+//
+// TWO SHAPES, ONE TABLE, and they may not drift: the sourceLabels below are
+// READ OFF the reference rows rather than retyped, so a threshold cannot be
+// edited in one place and not the other. What legitimately differs is the
+// prose — /florida prints §41.8's cells verbatim (florida.rows.*), while the
+// verdict card and the bands table assemble this site's shared sentences from
+// the fields below. policyOracle.test.ts pins the two against each other.
+//
+// ⚠️ This is the PRACTICE index. §41.9.5's contest index is a per-sport matrix
+// whose hottest band is ≥ 90.1 with no band forbidding play at all (see
+// FHSAA_CONTEST_* above). Selecting §41.8 for a Florida reader is the
+// conservative of the two — the practice ladder is stricter at every band and
+// stops outright where the contest index never does — but a practice flag is
+// still not a contest decision, and every surface carrying it says so.
+
+/** The five labels, hottest first, so the two Florida shapes share one source. */
+const FHSAA_LABELS = FHSAA_PRACTICE_REFERENCE.rows.map((row) => row.sourceLabel)
+
+const FHSAA_GREEN = {
+  maxPracticeMinutes: null,
+  restBreaksPerHour: null,
+  restBreakMinMinutes: null,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: false,
+  // Not a threshold rule: §41.8.5 attaches the cooling zone to every outdoor
+  // session, so it is true at the coolest band as much as the hottest. Every
+  // other policy here opens its zone at a temperature; Florida's does not.
+  coolingZoneRequired: true,
+  noOutdoorWorkouts: false,
+}
+
+const FHSAA_YELLOW = {
+  maxPracticeMinutes: null,
+  restBreaksPerHour: 3,
+  restBreakMinMinutes: 4,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: false,
+  coolingZoneRequired: true,
+  noOutdoorWorkouts: false,
+}
+
+/**
+ * The 87.1-90.0 cell ends "If WBGT reading rises to this level after practice
+ * has begun, student-athletes may continue to workout wearing football pants
+ * without changing into shorts." Deliberately NOT rendered, under the standing
+ * rule GHSA_ORANGE, CIF_ORANGE and FHSAA_PRACTICE_REFERENCE already document:
+ * it governs a transition inside a practice already under way, which the
+ * on-site instrument decides, while every surface here is read beforehand.
+ */
+const FHSAA_ORANGE = {
+  maxPracticeMinutes: 120,
+  restBreaksPerHour: 4,
+  restBreakMinMinutes: 4,
+  restMinutesPerHour: null,
+  footballEquipment: 'helmet-shoulder-pads-shorts',
+  noConditioning: false,
+  coolingZoneRequired: true,
+  noOutdoorWorkouts: false,
+}
+
+/**
+ * Two cells that do not fit the shared fields as written, handled rather than
+ * rounded off.
+ *
+ * EQUIPMENT. This cell says "No protective equipment permitted." with NO "For
+ * football" qualifier — while the 87.1-90.0 cell directly above it says "For
+ * football" outright, so the omission is the source drawing a distinction
+ * rather than the source being terse. `footballEquipment: 'none'` renders a
+ * football-only sentence, which would narrow an all-sport prohibition to one
+ * sport on the band where equipment first comes off entirely: permissive, in
+ * the direction that hurts. It rides an extraKey, the treatment MIAA_RED
+ * already documents for the same sentence shape.
+ *
+ * BREAKS. The source prints "Five (5) separate four (4) minute rest breaks."
+ * with no per-hour clause, inside a one-hour cap — the one band in §41.8 that
+ * drops the qualifier. `restBreaksPerHour` renders "each hour", which inside a
+ * 60-minute cap asks for exactly those five breaks and for any longer session
+ * would ask for MORE, so the rounding errs strict. The verbatim form stays on
+ * /florida (florida.rows.breaks), and stateTables.test.ts pins the split.
+ */
+const FHSAA_RED = {
+  maxPracticeMinutes: 60,
+  restBreaksPerHour: 5,
+  restBreakMinMinutes: 4,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: true,
+  coolingZoneRequired: true,
+  noOutdoorWorkouts: false,
+  extraKeys: ['guideline.fhsaaNoEquipmentAnySport'],
+}
+
+const FHSAA_BLACK = {
+  maxPracticeMinutes: 0,
+  restBreaksPerHour: null,
+  restBreakMinMinutes: null,
+  restMinutesPerHour: null,
+  footballEquipment: null,
+  noConditioning: true,
+  // True because §41.8.5 is unconditional, not because this band renders it:
+  // noOutdoorWorkouts short-circuits guidelineSentences before it is read.
+  coolingZoneRequired: true,
+  noOutdoorWorkouts: true,
+}
+
+export const FHSAA = {
+  id: 'fhsaa',
+  source: FHSAA_SOURCE,
+  /**
+   * RE-DERIVED from the source, not inherited from any neighbouring object.
+   *
+   * The hazard comment on CIF_CATEGORY_1 warns that `remoteEstimatesAllowed`
+   * only starts mattering when an object enters POLICIES — 'yes' SUPPRESSES
+   * the compliance warning on the verdict and share cards — and Florida is the
+   * first object to make that move. So the field is read off the documents
+   * rather than copied from CIF, whose answer is the opposite one:
+   *
+   *   Fla. Stat. § 1006.165(2)(a)2 (FL_ONSITE_MEASUREMENT_QUOTE) fixes WHERE
+   *   the five variables are read — "at the site of the athletic activity".
+   *   §41.6.2 (FHSAA_DEVICE_MANDATE_QUOTE) mandates the instrument outright —
+   *   "Each member school shall monitor heat stress with a WBGT."
+   *
+   * A forecast is not measured at the site, so it cannot be Florida's reading,
+   * and the requirement is STATUTORY rather than advisory — there is no hedge
+   * to preserve. `device-required`, and measurementLegality.test.ts pins that
+   * the warning actually reaches a Florida verdict card.
+   */
+  remoteEstimatesAllowed: 'device-required',
+  bands: [
+    // FHSAA leaves one tenth unassigned at every seam (`< 82.0` then `82.1`,
+    // `87.0` then `87.1`, and so on). The standing rule, documented on
+    // cifBands and worked through band by band on MIAA: a temperature the
+    // table NAMES keeps the band its printed label gives it, and a tenth the
+    // table SKIPS resolves UPWARD into the hotter band. So 87.0 stays yellow
+    // and 87.05 is orange; 90.0 stays orange and 90.05 is red; 92.0 stays red
+    // and 92.05 is black. Green is the one inclusive bound, because it is
+    // printed as an open "< 82.0" — 82.0 itself is already unassigned, and
+    // resolving it upward puts it in yellow.
+    { flag: 'black', minF: 92.0, minInclusive: false, sourceLabel: FHSAA_LABELS[0], guideline: FHSAA_BLACK },
+    { flag: 'red', minF: 90.0, minInclusive: false, sourceLabel: FHSAA_LABELS[1], guideline: FHSAA_RED },
+    { flag: 'orange', minF: 87.0, minInclusive: false, sourceLabel: FHSAA_LABELS[2], guideline: FHSAA_ORANGE },
+    { flag: 'yellow', minF: 82.0, minInclusive: true, sourceLabel: FHSAA_LABELS[3], guideline: FHSAA_YELLOW },
+    { flag: 'green', minF: null, minInclusive: true, sourceLabel: FHSAA_LABELS[4], guideline: FHSAA_GREEN },
+  ],
+}
+
 // --- NYSPHSAA (New York) WBGT chart, p.2 ----------------------------------
 // Three regional ladders and one shared action column, read by extracting the
 // page-2 image (see NYSPHSAA_WBGT_SOURCE).
@@ -2068,6 +2236,7 @@ export const POLICIES = {
   tssaa: TSSAA,
   iowa: IOWA_CATEGORY_2,
   miaa: MIAA,
+  fhsaa: FHSAA,
   generic: GENERIC_NATA,
 }
 
@@ -2205,7 +2374,11 @@ export const IOWA_BAND_ROWS = [
 
 export const MEASUREMENT_STANCES = [
   { abbr: 'CA', subject: CIF_CATEGORY_1, source: CIF_HEAT_SOURCE, quote: CIF_NO_DEVICE_QUOTE },
-  { abbr: 'FL', subject: FHSAA_PRACTICE_REFERENCE, source: FL_STATUTE_SOURCE, quote: FL_ONSITE_MEASUREMENT_QUOTE },
+  // The subject is the PICKABLE ladder now that Florida has one: this row has
+  // to read the field the verdict card classifies against, or /forecast-or-device
+  // could describe a stance no card is using. FHSAA_PRACTICE_REFERENCE carries
+  // the same value and policyOracle.test.ts pins the two together.
+  { abbr: 'FL', subject: FHSAA, source: FL_STATUTE_SOURCE, quote: FL_ONSITE_MEASUREMENT_QUOTE },
   { abbr: 'GA', subject: GHSA, source: GHSA_REMINDER_SOURCE, quote: GHSA_NO_APPS_QUOTE },
   { abbr: 'IA', subject: IOWA_CATEGORY_2, source: IOWA_CATEGORY_2.source, quote: IOWA_APP_QUOTE },
   { abbr: 'KY', subject: KHSAA_WBGT_REFERENCE, source: KHSAA_WBGT_REFERENCE.source, quote: KY_FOOTBALL_ONSITE_QUOTE },

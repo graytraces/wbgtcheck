@@ -30,6 +30,10 @@ import {
   FL_ONSITE_MEASUREMENT_QUOTE,
   FL_YEAR_ROUND_QUOTE,
   FL_STATUTE_SOURCE,
+  FHSAA,
+  FHSAA_PRACTICE_REFERENCE,
+  FHSAA_COOLING_ZONE_QUOTE,
+  FHSAA_COOLING_ZONE_DEFINITION_QUOTE,
   GENERIC_NATA,
   NCHSAA_REFERENCE,
   NYSPHSAA_HEAT_INDEX_REFERENCE,
@@ -89,11 +93,26 @@ import { CA_AIR_POLICY } from '../data/airPolicyOracle'
 import type { FlagColor, HeatPolicy } from '../data/policyOracle'
 import { guidelineSentences } from '../lib/guidelineSentences.js'
 import { STATE_DIRECTORY } from '../data/stateDirectory'
+import { displayedWbgtF, formatWbgtF } from '../utils/units'
 import en from '../locales/en.json'
 import es from '../locales/es.json'
 
 function flagAt(policy: HeatPolicy, f: number): FlagColor {
   return classifyWbgt(policy, f).flag
+}
+
+/**
+ * A `t` that resolves against en.json and interpolates, without booting i18n —
+ * this file is a pure oracle test and has no i18n instance.
+ *
+ * It THROWS on a key that does not resolve, which is the point: a band's
+ * extraKey is a string nothing else type-checks, so a typo in one would
+ * otherwise render as a raw key path in a bullet on the verdict card.
+ */
+function enT(key: string, params?: Record<string, unknown>): string {
+  const leaf = key.split('.').reduce<unknown>((o, k) => (o as Record<string, unknown>)?.[k], en)
+  if (typeof leaf !== 'string') throw new Error(`missing en.json key: ${key}`)
+  return leaf.replace(/\{\{(\w+)\}\}/g, (_, name: string) => String((params ?? {})[name]))
 }
 
 describe('policy oracle — band boundaries vs primary sources', () => {
@@ -308,9 +327,14 @@ describe('policy oracle — guideline facts vs primary sources', () => {
   it('every state absent from the picker says so on its own page', () => {
     // Otherwise "Massachusetts is in the picker and California is not" reads
     // as arbitrary, and a CTA can promise a flag the tool will not produce.
-    // NC already had this; CA, KY and FL now match it.
+    // NC already had this; CA and KY match it.
+    //
+    // Florida left this list by being ADDED to the picker, so the exclusion
+    // page it used to carry would now be a lie. The replacement obligation is
+    // asserted below rather than dropped: a state in the picker owes the
+    // reader which of its ladders the flag is.
     for (const locale of [en, es]) {
-      for (const page of ['northCarolina', 'newYork', 'california', 'kentucky', 'florida'] as const) {
+      for (const page of ['northCarolina', 'newYork', 'california', 'kentucky'] as const) {
         const body = (locale as unknown as Record<string, Record<string, string | undefined>>)[page]
         if (page === 'newYork') continue // NY explains its exclusion in wbgtChartNote
         expect(body.pickerExclusionHeading?.length, `${page} exclusion heading`).toBeGreaterThan(0)
@@ -319,6 +343,14 @@ describe('policy oracle — guideline facts vs primary sources', () => {
       // The California CTA must not promise "California flags" the picker
       // cannot select.
       expect(locale.california.ctaButton.toLowerCase()).not.toContain('california')
+      // Florida's page must no longer claim the picker cannot carry it…
+      const fl = locale.florida as unknown as Record<string, string | undefined>
+      expect(fl.pickerExclusionHeading, 'florida still explains an exclusion').toBeUndefined()
+      expect(fl.pickerExclusionBody, 'florida still explains an exclusion').toBeUndefined()
+      // …and must say which of Policy 41's two ladders the flag actually is.
+      expect(fl.pickerScopeHeading?.length, 'florida scope heading').toBeGreaterThan(0)
+      expect(fl.pickerScopeBody).toContain('{{practice}}')
+      expect(fl.pickerScopeBody).toContain('{{contest}}')
     }
   })
 
@@ -365,10 +397,10 @@ describe('policy oracle — guideline facts vs primary sources', () => {
 
   it('Florida is a statute page whose thresholds come from the handbook', () => {
     // Fla. Stat. 1006.165(2) sets NO WBGT numbers — it directs the FHSAA to
-    // establish them, and Policy 41 does. Florida still may not be a POLICIES
-    // entry: §41.8 governs practices and §41.9 contests, and the tool does not
-    // ask which one the reader is in.
-    expect(Object.keys(POLICIES)).not.toContain('fhsaa')
+    // establish them, and Policy 41 does. So the picker entry is 'fhsaa', the
+    // association's §41.8, and never a "florida" statute ladder: the statute
+    // has no thresholds to be one.
+    expect(Object.keys(POLICIES)).toContain('fhsaa')
     expect(Object.keys(POLICIES)).not.toContain('florida')
     // The measurement sentence is the load-bearing one: it rules this site
     // out as the reading, and it names five variables rather than "WBGT".
@@ -387,6 +419,209 @@ describe('policy oracle — guideline facts vs primary sources', () => {
       expect(locale.florida.deviceWarning.length).toBeGreaterThan(0)
       expect(locale.florida.tableIntro).toContain('{{purpose}}')
     }
+  })
+
+  /**
+   * FHSAA Policy 41 §41.8, the ladder behind a Florida flag.
+   *
+   * Every expectation here is transcribed from p.106 of the 2026-27 handbook
+   * (116 pages, sha256 d983d6cac131b4e1d4e8f7263c035824d992def73b7fc58cb9a198f78a9cc90c
+   * — re-read 2026-08-11), NOT read back off the oracle. Asserting a band
+   * against its own sourceLabel would pass with any number in it.
+   *
+   *   < 82.0        Normal activities.
+   *   82.1 - 87.0   Three (3) separate four (4) minute rest breaks per hour of
+   *                 activity.
+   *   87.1 - 90.0   Maximum two (2) hour activity time. Four (4) separate four
+   *                 (4) minute rest breaks per hour of activity. For football,
+   *                 student-athletes are restricted to helmet, shoulder pads
+   *                 and shorts during activity.
+   *   90.1 - 92.0   Maximum one (1) hour activity time. Five (5) separate four
+   *                 (4) minute rest breaks. No protective equipment permitted.
+   *                 No conditioning activities permitted.
+   *   ≥ 92.1        No outdoor activities.
+   */
+  describe('FHSAA §41.8 as a pickable ladder', () => {
+    const DOCUMENT = ['< 82.0', '82.1 - 87.0', '87.1 - 90.0', '90.1 - 92.0', '≥ 92.1']
+
+    it('carries the five bands the section prints, hottest first', () => {
+      expect(FHSAA.bands.map((b) => b.flag)).toEqual([
+        'black',
+        'red',
+        'orange',
+        'yellow',
+        'green',
+      ])
+      expect(FHSAA.bands.map((b) => b.sourceLabel)).toEqual([...DOCUMENT].reverse())
+    })
+
+    it('the pickable ladder and the verbatim table cannot drift apart', () => {
+      // Florida is the only jurisdiction carrying both shapes. They render
+      // different prose on purpose, but a THRESHOLD may only exist once.
+      expect(FHSAA.bands.map((b) => b.sourceLabel)).toEqual(
+        FHSAA_PRACTICE_REFERENCE.rows.map((r) => r.sourceLabel),
+      )
+      expect(FHSAA.source).toBe(FHSAA_PRACTICE_REFERENCE.source)
+      expect(FHSAA.remoteEstimatesAllowed).toBe(
+        FHSAA_PRACTICE_REFERENCE.remoteEstimatesAllowed,
+      )
+    })
+
+    /**
+     * The boundary convention, applied to a table that leaves ONE TENTH
+     * unassigned at all four seams (`< 82.0` then `82.1`; `87.0` then `87.1`;
+     * `90.0` then `90.1`; `92.0` then `92.1`).
+     *
+     * The standing rule, documented on cifBands and worked through band by
+     * band on MIAA: a temperature the table NAMES keeps the band its printed
+     * label gives it, and a tenth the table SKIPS resolves UPWARD into the
+     * hotter band. Getting this backwards at 87.0 would print orange beside a
+     * row labelled "82.1 - 87.0" — the site disagreeing with the chart in the
+     * coach's hand, which is the failure MIAA's bands already shipped once.
+     */
+    it('a temperature the table names keeps the band the table gives it', () => {
+      expect(flagAt(FHSAA, 82.1)).toBe('yellow')
+      expect(flagAt(FHSAA, 87.0)).toBe('yellow')
+      expect(flagAt(FHSAA, 87.1)).toBe('orange')
+      expect(flagAt(FHSAA, 90.0)).toBe('orange')
+      expect(flagAt(FHSAA, 90.1)).toBe('red')
+      expect(flagAt(FHSAA, 92.0)).toBe('red')
+      expect(flagAt(FHSAA, 92.1)).toBe('black')
+    })
+
+    it('every tenth the table skips resolves upward, into the hotter band', () => {
+      // The unassigned half-tenths at each seam. Resolving any of them
+      // DOWNWARD would be permissive at exactly the reading a coach is most
+      // likely to be standing on.
+      expect(flagAt(FHSAA, 87.05)).toBe('orange')
+      expect(flagAt(FHSAA, 90.05)).toBe('red')
+      expect(flagAt(FHSAA, 92.05)).toBe('black')
+      // The green edge is the exception, and the reason it is inclusive:
+      // green is printed as an open "< 82.0", so 82.0 itself is already an
+      // unassigned value and resolving it upward puts it in yellow.
+      expect(flagAt(FHSAA, 81.9)).toBe('green')
+      expect(flagAt(FHSAA, 82.0)).toBe('yellow')
+      expect(FHSAA.bands.find((b) => b.flag === 'yellow')!.minInclusive).toBe(true)
+      for (const flag of ['black', 'red', 'orange'] as const) {
+        expect(
+          FHSAA.bands.find((b) => b.minF !== null && b.flag === flag)!.minInclusive,
+          `${flag} bound must be exclusive — its floor is a named edge below`,
+        ).toBe(false)
+      }
+    })
+
+    /**
+     * Every seam walked at ±0.10, ±0.05 and 0.00, in both the raw and the
+     * PRINTED reading — the site classifies the printed one (displayedWbgtF),
+     * so the flag a coach sees must be the band their chart gives the digits
+     * beside it. The expected column is looked up in the document's own bands,
+     * not in the oracle.
+     */
+    it('agrees with the printed chart at every seam, raw and as displayed', () => {
+      // The document, as a lookup: [floor, flag], hottest first. A reading
+      // takes the first band whose printed floor it reaches.
+      const CHART: Array<[number, FlagColor]> = [
+        [92.1, 'black'],
+        [90.1, 'red'],
+        [87.1, 'orange'],
+        [82.1, 'yellow'],
+      ]
+      /** What §41.8 says about a reading, from the printed labels alone. */
+      const perChart = (f: number): FlagColor => {
+        // Round to a tenth first: the chart is printed in tenths, so a value
+        // between two of them is not a row the document has.
+        const tenth = Number(f.toFixed(1))
+        for (const [floor, flag] of CHART) if (tenth >= floor) return flag
+        // Below 82.1 the chart prints "< 82.0" for green and nothing for the
+        // 82.0 tenth itself — which the upward rule puts in yellow.
+        return tenth >= 82.0 ? 'yellow' : 'green'
+      }
+
+      let checked = 0
+      for (const seam of [82.0, 87.0, 90.0, 92.0, 92.1]) {
+        for (const offset of [-0.1, -0.05, 0, 0.05, 0.1]) {
+          const raw = Number((seam + offset).toFixed(10))
+          const shown = displayedWbgtF(raw)
+          expect(
+            flagAt(FHSAA, shown),
+            `${raw} prints as ${formatWbgtF(shown)} and must carry the chart's band for it`,
+          ).toBe(perChart(shown))
+          checked += 1
+        }
+      }
+      // Guard the guard: a loop that stopped iterating would pass silently.
+      expect(checked).toBe(25)
+    })
+
+    it('the ladder never relaxes as the reading rises', () => {
+      // A ladder that gave more time or fewer breaks at a hotter band is the
+      // failure this ordering check exists to catch.
+      const by = (flag: FlagColor) => FHSAA.bands.find((b) => b.flag === flag)!.guideline
+      expect(by('orange').maxPracticeMinutes).toBe(120)
+      expect(by('red').maxPracticeMinutes).toBe(60)
+      expect(by('black').maxPracticeMinutes).toBe(0)
+      expect(by('yellow').restBreaksPerHour).toBe(3)
+      expect(by('orange').restBreaksPerHour).toBe(4)
+      expect(by('red').restBreaksPerHour).toBe(5)
+      for (const flag of ['yellow', 'orange', 'red'] as const) {
+        expect(by(flag).restBreakMinMinutes, `${flag} break length`).toBe(4)
+      }
+      expect(by('red').noConditioning).toBe(true)
+      expect(by('orange').noConditioning).toBe(false)
+      expect(by('black').noOutdoorWorkouts).toBe(true)
+      expect(by('red').noOutdoorWorkouts).toBe(false)
+    })
+
+    it("the red band's equipment ban is all-sport, as the cell prints it", () => {
+      // §41.8 says "For football" in the 87.1-90.0 cell and does NOT in the
+      // 90.1-92.0 one, so the omission is a distinction the source draws.
+      // `footballEquipment: 'none'` renders a football-only sentence, which
+      // would narrow an all-sport prohibition to one sport on the band where
+      // equipment first comes off entirely — permissive, in the direction
+      // that hurts every athlete who is not a football player.
+      const red = FHSAA.bands.find((b) => b.flag === 'red')!.guideline
+      expect(red.footballEquipment).toBeNull()
+      expect(red.extraKeys).toContain('guideline.fhsaaNoEquipmentAnySport')
+      const sentences = guidelineSentences('red', red, enT)
+      expect(sentences.join(' ')).toContain(en.guideline.fhsaaNoEquipmentAnySport)
+      expect(sentences.join(' ')).not.toContain(en.guideline.footballNoEquipment)
+      // The orange band DOES say "For football", and must keep saying it.
+      const orange = FHSAA.bands.find((b) => b.flag === 'orange')!.guideline
+      expect(orange.footballEquipment).toBe('helmet-shoulder-pads-shorts')
+    })
+
+    it('the cooling zone rides every band, because §41.8.5 has no gate', () => {
+      // Florida is the only policy here whose cooling-zone duty attaches to
+      // the SESSION rather than to a temperature: "for each outdoor athletic
+      // contest, practice, workout, or conditioning session". Compare UIL,
+      // whose own sentence names the readings it starts at. Opening Florida's
+      // at a threshold would drop the requirement below that threshold.
+      expect(FHSAA_COOLING_ZONE_QUOTE).toContain('each outdoor athletic contest')
+      expect(FHSAA_COOLING_ZONE_QUOTE).not.toMatch(/\d/)
+      expect(FHSAA_COOLING_ZONE_DEFINITION_QUOTE).toContain('cold-water immersion tubs')
+      for (const band of FHSAA.bands) {
+        expect(band.guideline.coolingZoneRequired, `${band.flag} cooling zone`).toBe(true)
+      }
+      // …and the coolest band really does render it, which is the whole point.
+      const green = FHSAA.bands.find((b) => b.flag === 'green')!
+      const sentences = guidelineSentences('green', green.guideline, enT)
+      expect(sentences).toContain(en.guideline.normal)
+      expect(sentences).toContain(en.guideline.coolingZone)
+    })
+
+    /**
+     * The standing rule GHSA_ORANGE, CIF_ORANGE and the NYSPHSAA chart already
+     * document, now that §41.8 has a second surface to leak through.
+     * stateTables.test.tsx guards the locale files and the rendered state
+     * pages; this guards the sentences the VERDICT CARD assembles, which is a
+     * different code path and the one a Florida coach actually reads.
+     */
+    it('no band offers to keep the football pants on when the reading rises', () => {
+      for (const band of FHSAA.bands) {
+        const text = guidelineSentences(band.flag, band.guideline, enT).join(' ')
+        expect(text, `${band.flag}`).not.toMatch(/football pants|without changing into shorts/i)
+      }
+    })
   })
 
   it('MIAA boundaries match the MIAA Heat Modification Policy table', () => {
@@ -685,6 +920,7 @@ describe('policy oracle — measurement/compliance stance', () => {
     // already pins its roster exactly; the heat axis now matches, so ANY new
     // entry has to be a deliberate edit here.
     expect(Object.keys(POLICIES).sort()).toEqual([
+      'fhsaa',
       'generic',
       'ghsa',
       'iowa',

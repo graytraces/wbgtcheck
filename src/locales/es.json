@@ -60,7 +60,8 @@
     "cifContactSportsEquipment": "Fútbol americano y hockey sobre césped: solo casco, hombreras y shorts durante la práctica.",
     "cifRedContests": "Se permiten las competiciones con descansos de hidratación adicionales.",
     "cifRedNoEquipment": "No puede usarse equipo de protección durante la práctica.",
-    "miaaCoolingZone": "Debería haber agua helada y toallas en la zona de enfriamiento, y tinas de inmersión en agua fría disponibles para cualquier jugador con signos de enfermedad por calor."
+    "miaaCoolingZone": "Debería haber agua helada y toallas en la zona de enfriamiento, y tinas de inmersión en agua fría disponibles para cualquier jugador con signos de enfermedad por calor.",
+    "fhsaaNoEquipmentAnySport": "No se permite ningún equipo de protección, en ningún deporte."
   },
   "policies": {
     "uil-class-2": "UIL de Texas — Clase 2",
@@ -70,6 +71,7 @@
     "tssaa": "TSSAA de Tennessee",
     "iowa": "Iowa (Categoría 2)",
     "miaa": "MIAA de Massachusetts",
+    "fhsaa": "FHSAA de Florida — prácticas",
     "generic": "Guía general (NATA)",
     "pickerLabel": "Política",
     "pickerHelp": "Elija su asociación estatal.",
@@ -177,6 +179,7 @@
     "verifyOnsite": "Confirme en el sitio antes y durante la actividad — este pronóstico es una ayuda de planificación, no una medición.",
     "surfaceNotice": "Sobre pistas oscuras, canchas duras y arena, las lecturas en el sitio pueden resultar más altas que cualquier estimación remota.",
     "genericRegionNotice": "La tabla de ejemplo de la NATA se escribió para regiones de clima caluroso. En los estados del norte, Nueva Inglaterra, la costa del Pacífico y zonas de gran altitud pueden aplicar umbrales más bajos — la guía local tiene prioridad.",
+    "practiceIndexNotice": "Esta bandera es el {{practice}} de la FHSAA, el índice de PRÁCTICAS. El {{contest}} aplica un índice aparte, por deporte, para las competencias, y ninguna de sus bandas prohíbe una competencia — así que una bandera de práctica no es una decisión sobre una competencia, y la fila superior de la tabla de prácticas no es el momento en que hay que suspender un partido.",
     "asOf": "pronóstico cargado {{time}}",
     "staleNotice": "Este pronóstico se cargó a las {{time}} y puede estar desactualizado — actualícelo antes de decidir.",
     "refresh": "Actualizar pronóstico",
@@ -949,8 +952,8 @@
     "sourceBody": "Todas las citas anteriores se leyeron del texto legal del Senado de Florida el {{verifiedOn}}.",
     "tableSourceBody": "El índice de prácticas se leyó del manual de la FHSAA el {{verifiedOn}}:",
     "ctaButton": "Planifique con el pronóstico",
-    "pickerExclusionHeading": "Por qué Florida no está en el selector de políticas",
-    "pickerExclusionBody": "No porque Florida no publique nada — publica la Policy 41 — sino porque la Policy 41 son dos escalas. El §41.8 rige las prácticas y termina prohibiendo la actividad al aire libre; el §41.9 rige las competencias, está escrito por deporte y no contiene ninguna banda que detenga una. Elegir entre ambas exige una pregunta que esta herramienta no hace. Mientras tanto, el pronóstico recurre a la guía general de la NATA, que no guarda relación con ninguna de las dos. Lea la Policy 41 para el número que le rige, y trate las banderas de aquí como planificación únicamente."
+    "pickerScopeHeading": "Cuál de las dos escalas de Florida usa el selector",
+    "pickerScopeBody": "La herramienta de pronóstico ahora marca las lecturas de Florida con el {{practice}}, el índice de prácticas de arriba — y no con la guía general de la NATA a la que antes recurría. Esa es una de las dos escalas de la Policy 41, y el selector la usa porque es la más estricta: es más exigente que el {{contest}} en todas las bandas y prohíbe la actividad al aire libre por completo, donde el índice de competencias no detiene nada. Así que una bandera de aquí nunca permite más de lo que permite Florida. Tampoco decide nunca una competencia. Si la pregunta es si se juega un partido, lea el {{contest}} y recuerde que allí quien detiene es el director de la escuela, no un número. Y sea cual sea la escala que le rige, la bandera es planificación: la lectura hay que tomarla en el sitio."
   },
   "california": {
     "pageTitle": "Política de calor WBGT de la CIF de California",

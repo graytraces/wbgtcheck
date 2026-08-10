@@ -31,6 +31,7 @@ import {
   TSSAA,
   IOWA_CATEGORY_2,
   MIAA,
+  FHSAA,
   GENERIC_NATA,
   CIF_CATEGORY_1,
   CIF_CATEGORY_2,
@@ -149,8 +150,9 @@ describe('the three measurement-stance gaps are filled from the documents', () =
  * with the wrong stance is caught here whatever it is called.
  */
 describe('nothing added here can change what a verdict card says', () => {
-  it('the pickable policies are exactly the eight, with their stances unmoved', () => {
+  it('the pickable policies are exactly the nine, with their stances unmoved', () => {
     expect(Object.keys(POLICIES).sort()).toEqual([
+      'fhsaa',
       'generic',
       'ghsa',
       'iowa',
@@ -168,6 +170,13 @@ describe('nothing added here can change what a verdict card says', () => {
       tssaa: 'device-recommended',
       iowa: 'device-recommended',
       miaa: 'device-required',
+      // Florida is the first object ever to move INTO this map, which is the
+      // move the CIF hazard comment warns about: 'yes' would have suppressed
+      // the compliance warning silently. It is 'device-required', re-derived
+      // from the statute rather than copied from a neighbour — Fla. Stat.
+      // § 1006.165(2)(a)2 fixes the reading "at the site of the athletic
+      // activity" and §41.6.2 mandates the instrument.
+      fhsaa: 'device-required',
       generic: 'unspecified',
     }
     for (const [id, policy] of Object.entries(POLICIES)) {
@@ -181,6 +190,12 @@ describe('nothing added here can change what a verdict card says', () => {
     expect(TSSAA.remoteEstimatesAllowed).toBe('device-recommended')
     expect(IOWA_CATEGORY_2.remoteEstimatesAllowed).toBe('device-recommended')
     expect(MIAA.remoteEstimatesAllowed).toBe('device-required')
+    expect(FHSAA.remoteEstimatesAllowed).toBe('device-required')
+    // Florida's two shapes must never disagree about the one field that
+    // decides whether a coach is warned.
+    expect(FHSAA.remoteEstimatesAllowed).toBe(
+      FHSAA_PRACTICE_REFERENCE.remoteEstimatesAllowed,
+    )
     expect(GENERIC_NATA.remoteEstimatesAllowed).toBe('unspecified')
   })
 
@@ -197,6 +212,11 @@ describe('nothing added here can change what a verdict card says', () => {
       // A reference table has rows, not bands: classifyWbgt cannot take one.
       expect((table as unknown as { bands?: unknown }).bands).toBeUndefined()
     }
+    // Florida is now in the picker, and this is still the right assertion for
+    // it: what entered POLICIES is the separate FHSAA HeatPolicy, not the
+    // verbatim §41.8 table above, which has rows and would be uncallable.
+    expect(pickable.has(FHSAA)).toBe(true)
+    expect(FHSAA.id).not.toBe(FHSAA_PRACTICE_REFERENCE.id)
     // CIF's hazard, unchanged: three 'yes' ladders still outside the picker.
     for (const cat of [CIF_CATEGORY_1, CIF_CATEGORY_2, CIF_CATEGORY_3]) {
       expect(cat.remoteEstimatesAllowed).toBe('yes')
@@ -219,7 +239,16 @@ describe('nothing added here can change what a verdict card says', () => {
       miaa: 'verdict.deviceOnlyNotice',
       tssaa: 'verdict.deviceRecommendedNotice',
       iowa: 'verdict.deviceRecommendedNotice',
+      // The one this change adds. Florida's statute fixes the reading at the
+      // site, so a Florida card must carry the strongest of the two notices —
+      // this is the assertion the brief asked for by name.
+      fhsaa: 'verdict.deviceOnlyNotice',
     }
+    // Without this, a new policy id renders `expected[id] === undefined`,
+    // which is `!== null`, so the loop would assert it requires on-site
+    // reading and then look up `t(undefined)`. A roster addition has to be a
+    // deliberate edit here, not a silent pass.
+    expect(Object.keys(expected).sort()).toEqual(Object.keys(POLICIES).sort())
     for (const [id, policy] of Object.entries(POLICIES)) {
       const key = expected[id]
       expect(requiresOnSiteReading(policy), `${id} on-site requirement`).toBe(key !== null)
