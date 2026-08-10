@@ -482,7 +482,7 @@
       "ma": "One statewide MIAA policy covering practice AND competition, with thresholds well below most states — outdoor activity stops in the 86s. An on-site WBGT instrument is required at each activity, and a footnote stops games entirely in any sport whose equipment the band modifies."
     },
     "caveat": "This table is a navigation aid, not legal advice. Policies change midseason; the association's current document controls. Found an error? Tell your athletic trainer first, then us.",
-    "guidesHeading": "State guides",
+    "guidesHeading": "State guides on this site",
     "texasLink": "Texas UIL guide",
     "georgiaLink": "Georgia GHSA guide",
     "southCarolinaLink": "South Carolina SCHSL guide",
@@ -494,7 +494,12 @@
     "massachusettsLink": "Massachusetts MIAA guide",
     "floridaLink": "Florida heat law guide",
     "californiaLink": "California CIF heat guide",
-    "kentuckyLink": "Kentucky KHSAA guide"
+    "kentuckyLink": "Kentucky KHSAA guide",
+    "airGuidesHeading": "Air-quality guides",
+    "airGuidesIntro": "Wildfire smoke is a separate axis from heat, with its own state policies. Three are verified so far.",
+    "washingtonAirLink": "Washington air-quality guide",
+    "oregonAirLink": "Oregon air-quality guide",
+    "californiaAirLink": "California air-quality guide"
   },
   "southCarolina": {
     "pageTitle": "South Carolina SCHSL WBGT Rules",

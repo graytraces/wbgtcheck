@@ -22,6 +22,17 @@ const STATE_GUIDES = [
   { slug: 'kentucky', labelKey: 'states.kentuckyLink' },
 ] as const
 
+/**
+ * The air axis. These three had NO working route in: they sat past the right
+ * edge of the nav scroller on a phone and were absent from this hub, leaving
+ * the home AQI card as the only way to reach them.
+ */
+const AIR_GUIDES = [
+  { slug: 'washington-air-quality', labelKey: 'states.washingtonAirLink' },
+  { slug: 'oregon-air-quality', labelKey: 'states.oregonAirLink' },
+  { slug: 'california-air-quality', labelKey: 'states.californiaAirLink' },
+] as const
+
 /** State guides that exist on this site — rendered as a per-row link. */
 const GUIDE_SLUGS: Record<string, string> = {
   TX: 'texas',
@@ -57,6 +68,35 @@ export default function States() {
         <p className="mt-3 max-w-3xl text-lg">{t('states.intro')}</p>
       </header>
 
+
+      {/* The hub list IS this page's job, so it goes above the table rather
+          than 86% of the way down it. */}
+      <section>
+        <h2 className="mb-2 font-bold uppercase tracking-wide">{t('states.guidesHeading')}</h2>
+        <ul className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+          {STATE_GUIDES.map(({ slug, labelKey }) => (
+            <li key={slug}>
+              <Link to={`/${lang}/${slug}`} className="font-semibold underline">
+                {t(labelKey)}
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <h2 className="mb-2 mt-4 font-bold uppercase tracking-wide">
+          {t('states.airGuidesHeading')}
+        </h2>
+        <p className="mb-1 text-sm text-ink-muted">{t('states.airGuidesIntro')}</p>
+        <ul className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+          {AIR_GUIDES.map(({ slug, labelKey }) => (
+            <li key={slug}>
+              <Link to={`/${lang}/${slug}`} className="font-semibold underline">
+                {t(labelKey)}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <section className="border-2 border-line bg-surface p-4 text-sm">
         <h2 className="mb-2 font-bold uppercase tracking-wide">{t('states.legendHeading')}</h2>
         <ul className="space-y-1">
@@ -83,9 +123,12 @@ export default function States() {
           <thead>
             <tr className="border-b-2 border-ink text-left">
               <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('states.colState')}</th>
+              {/* Measurement sits second on purpose: it is the column this
+                  page is titled after, and at 390px it previously started at
+                  x=363 — past the edge, behind a horizontal scroll. */}
+              <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('states.colMeasurement')}</th>
               <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('states.colBody')}</th>
               <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('states.colMandate')}</th>
-              <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('states.colMeasurement')}</th>
               <th className="py-2 font-bold uppercase tracking-wide">{t('states.colNote')}</th>
             </tr>
           </thead>
@@ -101,14 +144,14 @@ export default function States() {
                   <th scope="row" className="display-num py-2 pr-3 text-left text-xl font-normal">
                     {row.abbr}
                   </th>
-                  <td className="py-2 pr-3">{row.body}</td>
-                  <td className="py-2 pr-3">{t(`states.mandate.${row.mandate}`)}</td>
                   <td className="py-2 pr-3">
                     <span className={cn('inline-flex items-center gap-1.5 px-2 py-0.5 text-xs font-bold uppercase', style.cls)}>
                       <Icon className="h-3.5 w-3.5" aria-hidden="true" />
                       {t(`states.measurement.${row.measurement}`)}
                     </span>
                   </td>
+                  <td className="py-2 pr-3">{row.body}</td>
+                  <td className="py-2 pr-3">{t(`states.mandate.${row.mandate}`)}</td>
                   <td className="py-2 text-ink-muted">
                     {t(`states.notes.${row.noteKey}`, { effectiveDate: UIL_EFFECTIVE_DATE })}{' '}
                     {GUIDE_SLUGS[row.abbr] && (
@@ -133,18 +176,6 @@ export default function States() {
       <p className="max-w-3xl text-sm text-ink-muted">{t('states.caveat')}</p>
       <p className="max-w-3xl text-xs text-ink-muted">{t('common.footer.affiliation')}</p>
 
-      <section>
-        <h2 className="mb-2 font-bold uppercase tracking-wide">{t('states.guidesHeading')}</h2>
-        <ul className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
-          {STATE_GUIDES.map(({ slug, labelKey }) => (
-            <li key={slug}>
-              <Link to={`/${lang}/${slug}`} className="font-semibold underline">
-                {t(labelKey)}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
     </article>
   )
 }

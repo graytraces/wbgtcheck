@@ -482,7 +482,7 @@
       "ma": "Una sola política estatal de la MIAA que cubre práctica Y competición, con umbrales muy por debajo de la mayoría — la actividad al aire libre se detiene en los 86. Se exige un instrumento WBGT en el sitio en cada actividad, y una nota al pie detiene por completo los partidos en cualquier deporte cuyo equipo modifique la banda."
     },
     "caveat": "Esta tabla es una ayuda de navegación, no asesoría legal. Las políticas cambian a mitad de temporada; el documento vigente de la asociación manda. ¿Encontró un error? Avise primero a su preparador físico, luego a nosotros.",
-    "guidesHeading": "Guías por estado",
+    "guidesHeading": "Guías estatales en este sitio",
     "texasLink": "Guía UIL de Texas",
     "georgiaLink": "Guía GHSA de Georgia",
     "southCarolinaLink": "Guía SCHSL de Carolina del Sur",
@@ -494,7 +494,12 @@
     "massachusettsLink": "Guía de la MIAA de Massachusetts",
     "floridaLink": "Guía de la ley de calor de Florida",
     "californiaLink": "Guía de calor de la CIF de California",
-    "kentuckyLink": "Guía de la KHSAA de Kentucky"
+    "kentuckyLink": "Guía de la KHSAA de Kentucky",
+    "airGuidesHeading": "Guías de calidad del aire",
+    "airGuidesIntro": "El humo de incendios forestales es un eje aparte del calor, con sus propias políticas estatales. Hasta ahora hay tres verificadas.",
+    "washingtonAirLink": "Guía de calidad del aire de Washington",
+    "oregonAirLink": "Guía de calidad del aire de Oregón",
+    "californiaAirLink": "Guía de calidad del aire de California"
   },
   "southCarolina": {
     "pageTitle": "Reglas WBGT de la SCHSL de Carolina del Sur",

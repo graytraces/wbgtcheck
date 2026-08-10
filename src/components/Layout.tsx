@@ -22,19 +22,20 @@ export default function Layout() {
   const otherLang: SupportedLanguage = currentLang === 'en' ? 'es' : 'en'
   const pathAfterLang = location.pathname.replace(new RegExp(`^/${currentLang}`), '') || ''
 
-  // "All states" is the hub for the six guides with no nav entry of their own
-  // (SC, TN, IA, NC, NY, VA), so it comes second. At 390px the nav scroller
-  // shows about three items and this sat fifth, at x=572 — off-screen, with
-  // nothing to suggest it was there.
+  // "All states" is the hub for every guide without its own nav entry — ten
+  // heat guides plus all three air-quality guides — so it comes second. At
+  // 390px the nav scroller shows about three items.
+  //
+  // The air-quality links used to live here and were never visible: they sat
+  // past the right edge AND were absent from the hub, so the home AQI card was
+  // their only route in. Moving them into /states gives them a real path and
+  // takes three items out of a scroller that was already overflowing.
   const nav = [
     { to: `/${currentLang}`, label: t('common.nav.home') },
     { to: `/${currentLang}/states`, label: t('common.nav.states') },
     { to: `/${currentLang}/texas`, label: t('common.nav.texas') },
     { to: `/${currentLang}/georgia`, label: t('common.nav.georgia') },
     { to: `/${currentLang}/wbgt-vs-heat-index`, label: t('common.nav.wbgtVsHeatIndex') },
-    { to: `/${currentLang}/washington-air-quality`, label: t('common.nav.washingtonAir') },
-    { to: `/${currentLang}/oregon-air-quality`, label: t('common.nav.oregonAir') },
-    { to: `/${currentLang}/california-air-quality`, label: t('common.nav.californiaAir') },
   ]
 
   return (

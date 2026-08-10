@@ -6,6 +6,7 @@ import en from '../locales/en.json'
 import es from '../locales/es.json'
 import PolicyPicker from '../components/PolicyPicker'
 import Layout from '../components/Layout'
+import States from '../pages/States'
 import { POLICIES, type PolicyId } from '../data/policyOracle'
 import { pageSEO, statePageKeyByPolicy } from '../seo'
 
@@ -78,6 +79,52 @@ describe('guide reachability from the picker', () => {
       // The shared help line must no longer name Texas.
       expect(locale.policies.pickerHelp).not.toMatch(/Texas/i)
     }
+  })
+})
+
+describe('the air-quality guides are reachable at all', () => {
+  it('every air guide is linked from the states hub', () => {
+    // These three had no working route in: past the right edge of the nav
+    // scroller at 390px AND absent from the hub, leaving the home AQI card as
+    // the only way to reach them.
+    render(
+      <MemoryRouter initialEntries={['/en/states']}>
+        <States />
+      </MemoryRouter>,
+    )
+    for (const slug of [
+      'washington-air-quality',
+      'oregon-air-quality',
+      'california-air-quality',
+    ]) {
+      expect(
+        document.querySelector(`a[href="/en/${slug}"]`),
+        `${slug} missing from the hub`,
+      ).not.toBeNull()
+    }
+  })
+
+  it('the hub list comes before the table it is a hub for', () => {
+    render(
+      <MemoryRouter initialEntries={['/en/states']}>
+        <States />
+      </MemoryRouter>,
+    )
+    const hub = document.querySelector('a[href="/en/texas"]')!
+    const table = document.querySelector('table')!
+    expect(hub.compareDocumentPosition(table) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('measurement is the second column, not the fourth', () => {
+    // The page is titled after this distinction; at 390px the column used to
+    // start at x=363, past the viewport edge behind a horizontal scroll.
+    render(
+      <MemoryRouter initialEntries={['/en/states']}>
+        <States />
+      </MemoryRouter>,
+    )
+    const heads = [...document.querySelectorAll('thead th')].map((h) => h.textContent?.trim())
+    expect(heads[1]).toBe(en.states.colMeasurement)
   })
 })
 

@@ -951,18 +951,55 @@ function generateBodyContent(lang, page) {
     push(
       `<ul><li>${escapeHtml(t('states.legendApps'))}</li><li>${escapeHtml(t('states.legendDevice'))}</li><li>${escapeHtml(t('states.legendUnverified'))}</li></ul>`,
     )
+    // Hub lists first — mirrors States.tsx, where they moved above the table.
+    const guideLinks = (items) =>
+      `<ul>${items
+        .map(
+          ([slug, key]) =>
+            `<li><a href="/${lang}/${slug}">${escapeHtml(t(key))}</a></li>`,
+        )
+        .join('')}</ul>`
+    push(`<h2>${escapeHtml(t('states.guidesHeading'))}</h2>`)
+    push(
+      guideLinks([
+        ['texas', 'states.texasLink'],
+        ['georgia', 'states.georgiaLink'],
+        ['south-carolina', 'states.southCarolinaLink'],
+        ['tennessee', 'states.tennesseeLink'],
+        ['iowa', 'states.iowaLink'],
+        ['north-carolina', 'states.northCarolinaLink'],
+        ['new-york', 'states.newYorkLink'],
+        ['virginia', 'states.virginiaLink'],
+        ['massachusetts', 'states.massachusettsLink'],
+        ['florida', 'states.floridaLink'],
+        ['california', 'states.californiaLink'],
+        ['kentucky', 'states.kentuckyLink'],
+      ]),
+    )
+    push(`<h2>${escapeHtml(t('states.airGuidesHeading'))}</h2>`)
+    push(`<p>${escapeHtml(t('states.airGuidesIntro'))}</p>`)
+    push(
+      guideLinks([
+        ['washington-air-quality', 'states.washingtonAirLink'],
+        ['oregon-air-quality', 'states.oregonAirLink'],
+        ['california-air-quality', 'states.californiaAirLink'],
+      ]),
+    )
     const rows = STATE_DIRECTORY.map((row) => {
       const note = t(`states.notes.${row.noteKey}`, { effectiveDate: UIL_EFFECTIVE_DATE })
       const badge =
         row.verified === 'primary' ? t('states.verifiedBadge') : t('states.researchBadge')
       // th scope=row, mirroring States.tsx — the state name is the row's
       // header, not one of its values.
-      return `<tr><th scope="row">${row.abbr}</th><td>${escapeHtml(row.body)}</td><td>${escapeHtml(
+      // Column order mirrors States.tsx: Measurement second.
+      return `<tr><th scope="row">${row.abbr}</th><td>${escapeHtml(
+        t(`states.measurement.${row.measurement}`),
+      )}</td><td>${escapeHtml(row.body)}</td><td>${escapeHtml(
         t(`states.mandate.${row.mandate}`),
-      )}</td><td>${escapeHtml(t(`states.measurement.${row.measurement}`))}</td><td>${escapeHtml(note)} ${GUIDE_SLUGS[row.abbr] ? `<a href="/${lang}/${GUIDE_SLUGS[row.abbr]}">${escapeHtml(t('states.rowGuideLink'))}</a> ` : ''}${escapeHtml(badge)}</td></tr>`
+      )}</td><td>${escapeHtml(note)} ${GUIDE_SLUGS[row.abbr] ? `<a href="/${lang}/${GUIDE_SLUGS[row.abbr]}">${escapeHtml(t('states.rowGuideLink'))}</a> ` : ''}${escapeHtml(badge)}</td></tr>`
     }).join('')
     push(
-      `<table><thead><tr><th>${escapeHtml(t('states.colState'))}</th><th>${escapeHtml(t('states.colBody'))}</th><th>${escapeHtml(t('states.colMandate'))}</th><th>${escapeHtml(t('states.colMeasurement'))}</th><th>${escapeHtml(t('states.colNote'))}</th></tr></thead><tbody>${rows}</tbody></table>`,
+      `<table><thead><tr><th>${escapeHtml(t('states.colState'))}</th><th>${escapeHtml(t('states.colMeasurement'))}</th><th>${escapeHtml(t('states.colBody'))}</th><th>${escapeHtml(t('states.colMandate'))}</th><th>${escapeHtml(t('states.colNote'))}</th></tr></thead><tbody>${rows}</tbody></table>`,
     )
     push(`<p>${escapeHtml(t('states.caveat'))}</p>`)
     push(`<p>${escapeHtml(t('common.footer.affiliation'))}</p>`)
