@@ -840,10 +840,7 @@ function generateBodyContent(lang, page) {
     push(policyTableHtml(MIAA, t))
     push(
       `<p>${escapeHtml(
-        t('massachusetts.boundaryNote', {
-          low: MIAA.bands[4].sourceLabel,
-          next: MIAA.bands[3].sourceLabel,
-        }),
+        t('massachusetts.boundaryNote', { edge: MIAA.bands[2].minF.toFixed(1) }),
       )}</p>`,
     )
     push(`<h2>${escapeHtml(t('massachusetts.deviceHeading'))}</h2>`)

@@ -1239,13 +1239,23 @@ export const MIAA = {
   // words GHSA uses.
   remoteEstimatesAllowed: 'device-required',
   bands: [
-    // The printed table leaves a tenth unassigned at every boundary: it ends a
-    // band at 81.0 and starts the next at 81.1, and so on at 76, 84 and 86.
-    // Each gap is resolved UPWARD into the hotter band (the Iowa 79.7
-    // treatment), so a reading of 86.05 is black rather than silently red.
+    // Two different situations at these edges, and they get different answers.
+    //
+    // A temperature the table NAMES keeps the band the table gives it: the
+    // yellow row ends at 81.0, so 81.0 is yellow. Those bounds are therefore
+    // exclusive. Orange and red were inclusive here, which put 81.0 and 84.0
+    // one band too high — the page printed "81.1-84.0" while flagging 81.0 as
+    // that band, and black on the next line already did it the faithful way,
+    // so the file disagreed with itself.
+    //
+    // A tenth the table SKIPS between two rows is genuinely unassigned and
+    // resolves UPWARD into the hotter band (the Iowa 79.7 treatment): 81.05,
+    // 84.05 and 86.05 are orange, red and black respectively. The green edge
+    // is the one inclusive bound, because green is printed "Below 76" and so
+    // 76.0 itself is already an unassigned value.
     { flag: 'black', minF: 86.0, minInclusive: false, sourceLabel: 'Above 86.1°F', guideline: MIAA_BLACK },
-    { flag: 'red', minF: 84.0, minInclusive: true, sourceLabel: '84.1-86.0°F', guideline: MIAA_RED },
-    { flag: 'orange', minF: 81.0, minInclusive: true, sourceLabel: '81.1-84.0°F', guideline: MIAA_ORANGE },
+    { flag: 'red', minF: 84.0, minInclusive: false, sourceLabel: '84.1-86.0°F', guideline: MIAA_RED },
+    { flag: 'orange', minF: 81.0, minInclusive: false, sourceLabel: '81.1-84.0°F', guideline: MIAA_ORANGE },
     { flag: 'yellow', minF: 76.0, minInclusive: true, sourceLabel: '76.1-81.0°F', guideline: MIAA_YELLOW },
     { flag: 'green', minF: null, minInclusive: true, sourceLabel: 'Below 76°F', guideline: MIAA_GREEN },
   ],

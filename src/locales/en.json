@@ -716,7 +716,7 @@
     "pageTitle": "Massachusetts MIAA WBGT Policy",
     "intro": "The MIAA runs one statewide heat policy across every sport, and its thresholds sit lower than most: outdoor activity stops in the 86s, where Georgia's black flag does not begin until the 92s. Every activity needs a WBGT reading taken on site.",
     "tableHeading": "Activity guidelines by WBGT (°F)",
-    "boundaryNote": "The printed table leaves a tenth of a degree unassigned at every boundary — it ends one band at {{low}} and starts the next at {{next}}. This site resolves each of those gaps upward, into the hotter band, so a reading that falls in one is never shown as the cooler flag.",
+    "boundaryNote": "Two things happen at the edges of this table. Where it names a temperature, this site gives that reading the band the table gives it — exactly {{edge}} °F is yellow, because that is where the yellow row ends. Where the table skips a tenth between two rows, that tenth is unassigned and takes the hotter band, so a reading falling in a gap is never shown as the cooler flag.",
     "deviceHeading": "Massachusetts is a device state",
     "deviceBody": "The policy's wording: \"{{quote}}\"",
     "indoorBody": "It reaches indoors as well: \"{{quote}}\"",

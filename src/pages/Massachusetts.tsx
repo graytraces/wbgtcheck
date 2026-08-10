@@ -36,8 +36,8 @@ export default function Massachusetts() {
         <PolicyBandsTable policy={MIAA} showSource={false} />
         <p className="mt-3 text-sm text-ink-muted">
           {t('massachusetts.boundaryNote', {
-            low: MIAA.bands[4].sourceLabel,
-            next: MIAA.bands[3].sourceLabel,
+            // The yellow row's upper edge, straight from the oracle.
+            edge: MIAA.bands[2].minF?.toFixed(1),
           })}
         </p>
       </section>

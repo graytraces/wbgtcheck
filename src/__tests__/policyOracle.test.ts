@@ -306,11 +306,26 @@ describe('policy oracle — guideline facts vs primary sources', () => {
     // state's table.
     expect(flagAt(MIAA, 75.9)).toBe('green')
     expect(flagAt(MIAA, 76.1)).toBe('yellow')
-    expect(flagAt(MIAA, 81.0)).toBe('orange')
-    expect(flagAt(MIAA, 84.0)).toBe('red')
+    // A temperature the table NAMES keeps the band the table gives it. These
+    // two previously came back one band hot, contradicting the row labels
+    // printed beside them.
+    expect(flagAt(MIAA, 81.0)).toBe('yellow')
+    expect(flagAt(MIAA, 84.0)).toBe('orange')
     expect(flagAt(MIAA, 86.0)).toBe('red')
     expect(flagAt(MIAA, 86.05)).toBe('black')
     expect(flagAt(MIAA, 92.0)).toBe('black')
+  })
+
+  it('every MIAA row label agrees with the flag that reading produces', () => {
+    // The guard that would have caught this class of bug: parse each printed
+    // row range and check both its ends classify into that row's own flag.
+    for (const band of MIAA.bands) {
+      const range = /^(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)/.exec(band.sourceLabel)
+      if (!range) continue
+      const [, low, high] = range
+      expect(flagAt(MIAA, Number(low)), `${band.sourceLabel} low end`).toBe(band.flag)
+      expect(flagAt(MIAA, Number(high)), `${band.sourceLabel} high end`).toBe(band.flag)
+    }
   })
 
   it('MIAA gap tenths resolve into the hotter band, never the cooler one', () => {

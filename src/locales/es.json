@@ -716,7 +716,7 @@
     "pageTitle": "Política WBGT de la MIAA de Massachusetts",
     "intro": "La MIAA aplica una única política estatal de calor a todos los deportes, y sus umbrales son más bajos que la mayoría: la actividad al aire libre se detiene en los 86, mientras que la bandera negra de Georgia no empieza hasta los 92. Cada actividad necesita una lectura WBGT tomada en el sitio.",
     "tableHeading": "Guía de actividad por WBGT (°F)",
-    "boundaryNote": "La tabla publicada deja una décima de grado sin asignar en cada límite — termina una banda en {{low}} y empieza la siguiente en {{next}}. Este sitio resuelve cada uno de esos huecos hacia arriba, hacia la banda más calurosa, para que una lectura que caiga en uno nunca se muestre con la bandera más fresca.",
+    "boundaryNote": "En los bordes de esta tabla pasan dos cosas. Donde la tabla nombra una temperatura, este sitio le da a esa lectura la banda que le da la tabla — exactamente {{edge}} °F es amarilla, porque ahí termina la fila amarilla. Donde la tabla se salta una décima entre dos filas, esa décima queda sin asignar y toma la banda más caliente, así que una lectura que caiga en un hueco nunca se muestra con la bandera más fresca.",
     "deviceHeading": "Massachusetts exige instrumento en el sitio",
     "deviceBody": "Texto de la política: «{{quote}}»",
     "indoorBody": "También alcanza a los espacios interiores: «{{quote}}»",
