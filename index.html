@@ -10,6 +10,27 @@
     <title>WBGT Check — Heat Safety Planner for Coaches</title>
     <meta name="description" content="Free WBGT forecast with state heat-policy activity flags. Plan practice around wet bulb globe temperature for UIL, GHSA, and more." />
 
+    <!--
+      Share card. Every unfurl of every page — Slack, iMessage, WhatsApp,
+      Discord, Facebook — rendered as a bare link until this existed, on a
+      site whose one distribution mechanic is a coach pasting a verdict into
+      a team chat.
+
+      These three lines are the ENGLISH default and are the ones a dev-server
+      or preview load sees. scripts/prerender.mjs strips them exactly as it
+      strips the title and description above, and re-emits the locale's own
+      card, so the Spanish pages do not ship an English image; <SEO> re-emits
+      again after hydration. Absolute URL: an unfurler has no base to resolve
+      a relative one against.
+
+      Regenerate with `node scripts/gen-og-image.mjs` after changing the copy
+      in seo.ogCard or the flag palette.
+    -->
+    <meta property="og:image" content="https://wbgtcheck.com/og-en.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+
     <style>[data-prerender]{display:none}
       html.boot-failed [data-prerender]{display:block}
       html.boot-failed [data-prerender] table{display:block;overflow-x:auto}</style>

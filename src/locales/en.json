@@ -290,6 +290,10 @@
     "dataSourcesBody": "Readings come from the EPA AirNow program, which republishes hourly observations from state, local and tribal air agencies. Credit belongs to those agencies first. Category colors follow the RGB values EPA specifies for the AQI, unaltered."
   },
   "seo": {
+    "ogCard": {
+      "headline": "Your state's heat policy, flagged by the hour",
+      "subhead": "Free WBGT forecast for coaches and band directors."
+    },
     "home": {
       "title": "WBGT Forecast with State Heat Policy Flags | WBGT Check",
       "description": "Free wet bulb globe temperature forecast with UIL and GHSA activity flags — hourly WBGT and a shareable heat flag card for coaches and marching band directors.",

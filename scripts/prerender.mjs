@@ -251,6 +251,9 @@ function generateMetaTags(lang, page) {
   const keywords = seoData.keywords ?? ''
   const canonicalUrl = getPageUrl(lang, page.path)
   const ogLocale = localeMap[lang]
+  // One card per locale (public/og-{lang}.png, drawn by scripts/gen-og-image.mjs).
+  const ogImage = `${SITE_URL}/og-${lang}.png`
+  const ogImageAlt = (locales[lang].seo.ogCard ?? locales.en.seo.ogCard).headline
 
   const hreflangTags = SUPPORTED_LANGS.map(
     (l) =>
@@ -294,9 +297,14 @@ function generateMetaTags(lang, page) {
     <meta data-prerender="true" property="og:description" content="${escapeAttr(description)}" />
     <meta data-prerender="true" property="og:url" content="${canonicalUrl}" />
     <meta data-prerender="true" property="og:locale" content="${ogLocale}" />
-    <meta data-prerender="true" name="twitter:card" content="summary" />
+    <meta data-prerender="true" property="og:image" content="${ogImage}" />
+    <meta data-prerender="true" property="og:image:width" content="1200" />
+    <meta data-prerender="true" property="og:image:height" content="630" />
+    <meta data-prerender="true" property="og:image:alt" content="${escapeAttr(ogImageAlt)}" />
+    <meta data-prerender="true" name="twitter:card" content="summary_large_image" />
     <meta data-prerender="true" name="twitter:title" content="${escapeAttr(title)}" />
     <meta data-prerender="true" name="twitter:description" content="${escapeAttr(description)}" />
+    <meta data-prerender="true" name="twitter:image" content="${ogImage}" />
     <link data-prerender="true" rel="canonical" href="${canonicalUrl}" />
 ${hreflangTags}${xDefaultTag}
     <script data-prerender="true" type="application/ld+json">${JSON.stringify(jsonLd)}</script>`
@@ -1368,6 +1376,15 @@ ${urls.join('\n')}
 const templateHtml = readFileSync(join(distDir, 'index.html'), 'utf-8')
 const titleRegex = /<title>[^<]*<\/title>/
 const descRegex = /<meta name="description"[^>]*\/?>/
+// index.html carries an ENGLISH og:image trio and a twitter:card so a dev
+// server and `npm run preview` unfurl at all. They are removed here for the
+// same reason the title and description above are: whatever the template says
+// is the English answer, and a Spanish page that kept it would advertise the
+// English card. Locale versions are re-emitted by generateMetaTags.
+const templateShareRegexes = [
+  /<meta property="og:image(?::(?:width|height|alt))?"[^>]*\/?>\s*/g,
+  /<meta name="twitter:card"[^>]*\/?>\s*/g,
+]
 
 for (const lang of SUPPORTED_LANGS) {
   for (const page of pages) {
@@ -1375,6 +1392,7 @@ for (const lang of SUPPORTED_LANGS) {
     html = html.replace('<html lang="en">', `<html lang="${lang}">`)
     html = html.replace(titleRegex, '')
     html = html.replace(descRegex, '')
+    for (const re of templateShareRegexes) html = html.replace(re, '')
 
     html = html.replace('</head>', `${generateMetaTags(lang, page)}\n  </head>`)
 

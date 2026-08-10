@@ -29,6 +29,14 @@ export default function SEO({ pageKey }: SEOProps) {
   const description = t(`seo.${pageKey}.description`)
   const keywords = t(`seo.${pageKey}.keywords`)
 
+  // One card per locale, drawn by scripts/gen-og-image.mjs. Absolute, because
+  // a relative og:image is resolved by nobody — every unfurler wants a URL it
+  // can fetch without a base. Falls back to the English card for a language
+  // that has no card yet rather than emitting a 404 that renders as no image
+  // at all.
+  const ogLang = lang in supportedLanguages ? lang : 'en'
+  const ogImage = `${SITE_URL}/og-${ogLang}.png`
+
   return (
     <>
       <title>{title}</title>
@@ -41,8 +49,16 @@ export default function SEO({ pageKey }: SEOProps) {
       <meta property="og:url" content={canonicalUrl} />
       <meta property="og:site_name" content={siteName} />
       <meta property="og:locale" content={locale} />
+      <meta property="og:image" content={ogImage} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
+      <meta property="og:image:alt" content={t('seo.ogCard.headline')} />
 
-      <meta name="twitter:card" content="summary" />
+      {/* summary_large_image, not summary: with a 1200×630 card a `summary`
+          crops it to a small square and throws away the flag strip, which is
+          the half of the card that says what the site does. */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:image" content={ogImage} />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
 

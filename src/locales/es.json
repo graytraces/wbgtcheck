@@ -290,6 +290,10 @@
     "dataSourcesBody": "Las lecturas provienen del programa AirNow de la EPA, que republica observaciones horarias de agencias estatales, locales y tribales. El crédito corresponde primero a esas agencias. Los colores de categoría siguen los valores RGB que la EPA especifica para el ICA, sin alterarlos."
   },
   "seo": {
+    "ogCard": {
+      "headline": "La política de calor de su estado, hora por hora",
+      "subhead": "Pronóstico WBGT gratuito para entrenadores y directores de banda."
+    },
     "home": {
       "title": "Pronóstico WBGT y banderas de política estatal | WBGT Check",
       "description": "Pronóstico gratuito de WBGT con banderas de actividad UIL y GHSA — WBGT por hora y tarjeta compartible para entrenadores y directores de banda de marcha.",
