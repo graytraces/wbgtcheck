@@ -65,3 +65,38 @@ describe('which day the hourly strip shows', () => {
     expect(src).toContain('autoAdvancedToNextDay')
   })
 })
+
+/**
+ * The other half of the same hole. The default view falls forward to tomorrow
+ * once today has nothing left to draw — but the week strip still offered
+ * today as a button, and tapping it landed back on "TODAY BY HOUR" above "No
+ * forecast data for this period", with the cell's own screen-reader label
+ * promising the hours were "shown hour by hour above".
+ */
+describe('the week strip does not offer a day it cannot show', () => {
+  it('today stops being a control once its drawable hours are gone', () => {
+    const spent = day('2026-08-14', [22, 23])
+    expect(timelineHours(spent)).toHaveLength(0)
+    // Same predicate WeekStrip renders on.
+    expect(timelineHours(spent).length > 0).toBe(false)
+  })
+
+  it('a day with hours in the window stays a control', () => {
+    expect(timelineHours(day('2026-08-15', [7, 15])).length > 0).toBe(true)
+  })
+
+  it('says why the cell is inert, and labels a partial day honestly', () => {
+    for (const dict of [en, es]) {
+      expect(dict.verdict.dayNoHoursLeft).toBeTruthy()
+      // Today's figure is the peak of what REMAINS, not of the whole day.
+      expect(dict.verdict.peakRestLabel).toBeTruthy()
+      expect(dict.verdict.peakRestLabel).not.toBe(dict.verdict.peakLabel)
+    }
+  })
+
+  it('WeekStrip gates the button on drawable hours, not on the day existing', () => {
+    const src = readFileSync(join(process.cwd(), 'src/components/WeekStrip.tsx'), 'utf8')
+    expect(src).toContain('const drillable = timelineHours(d).length > 0')
+    expect(src).toContain('{onSelect && drillable ? (')
+  })
+})

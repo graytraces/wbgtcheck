@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import type { DaySummary } from '../utils/verdict'
+import { timelineHours, type DaySummary } from '../utils/verdict'
 import FlagBadge from './FlagBadge'
 import { cn } from '../lib/utils'
 import { formatWbgtF } from '../utils/units'
@@ -31,7 +31,16 @@ export default function WeekStrip({ days, selectedDate, onSelect, controls }: We
       className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7"
       aria-label={t('verdict.weekHeading')}
     >
-      {days.map((d) => {
+      {days.map((d, index) => {
+        /**
+         * Today's cell stops being a control once the strip has nothing left
+         * to draw. The default view already falls forward to tomorrow at that
+         * hour, but tapping "today" walked straight back into the empty panel
+         * — the cell advertised hours it could not show, and its own sr-only
+         * label promised they were "shown hour by hour above".
+         */
+        const isToday = index === 0
+        const drillable = timelineHours(d).length > 0
         // Noon anchor keeps the weekday label immune to UTC/local drift.
         const weekday = new Intl.DateTimeFormat(i18n.language, { weekday: 'short' }).format(
           new Date(`${d.date}T12:00:00`),
@@ -49,7 +58,7 @@ export default function WeekStrip({ days, selectedDate, onSelect, controls }: We
                 <div className="flex items-baseline gap-1">
                   <span className="display-num text-3xl">{formatWbgtF(d.peak.wbgtF)}</span>
                   <span className="text-xs font-semibold text-ink-muted">
-                    °F {t('verdict.peakLabel').toLowerCase()}
+                    °F {isToday ? t('verdict.peakRestLabel') : t('verdict.peakLabel').toLowerCase()}
                     {d.peak.source === 'estimated' ? ' · EST' : ''}
                   </span>
                 </div>
@@ -68,7 +77,7 @@ export default function WeekStrip({ days, selectedDate, onSelect, controls }: We
               selected && onSelect ? 'border-ink ring-2 ring-ink' : 'border-line',
             )}
           >
-            {onSelect ? (
+            {onSelect && drillable ? (
               <button
                 type="button"
                 onClick={() => onSelect(d.date)}
@@ -82,7 +91,12 @@ export default function WeekStrip({ days, selectedDate, onSelect, controls }: We
                 </span>
               </button>
             ) : (
-              <div className="p-2">{inner}</div>
+              <div className="p-2">
+                {inner}
+                {onSelect && !drillable && (
+                  <p className="mt-1 text-xs text-ink-muted">{t('verdict.dayNoHoursLeft')}</p>
+                )}
+              </div>
             )}
           </li>
         )

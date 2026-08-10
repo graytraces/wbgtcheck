@@ -185,6 +185,8 @@
     "dayShown": "Mostrado hora por hora arriba",
     "dayShowHours": "Ver este día hora por hora",
     "peakLabel": "Máximo",
+    "dayNoHoursLeft": "No quedan horas por mostrar hoy",
+    "peakRestLabel": "máximo, resto del día",
     "noData": "Sin datos de pronóstico para este período.",
     "boundariesHeading": "Umbrales de bandera — {{policy}}",
     "boundariesNote": "Umbrales en °F WBGT, tal como los publica la fuente.",

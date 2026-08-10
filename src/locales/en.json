@@ -185,6 +185,8 @@
     "dayShown": "Shown hour by hour above",
     "dayShowHours": "Show this day hour by hour",
     "peakLabel": "Peak",
+    "dayNoHoursLeft": "No hours left to show today",
+    "peakRestLabel": "peak, rest of today",
     "noData": "No forecast data for this period.",
     "boundariesHeading": "Flag thresholds — {{policy}}",
     "boundariesNote": "Thresholds in °F WBGT, exactly as published by the source.",
