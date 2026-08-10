@@ -1,5 +1,7 @@
 import { describe, it, expect, beforeAll } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import type { ReactElement } from 'react'
+import { render as renderBare, screen } from '@testing-library/react'
+import { MemoryRouter } from 'react-router-dom'
 import i18n from '../i18n'
 import en from '../locales/en.json'
 import VerdictCard from '../components/VerdictCard'
@@ -27,6 +29,15 @@ function hourAt(wbgtF: number, source: 'nws' | 'estimated' = 'nws'): HourVerdict
     localDate: '2026-08-10',
   }
 }
+
+/**
+ * The card links /forecast-or-device from its device notice, so every render
+ * needs a router — on the site it always has one (Home is inside the app's).
+ * Wrapping here rather than at each call site keeps the existing tests reading
+ * as they did.
+ */
+const render = (ui: ReactElement) =>
+  renderBare(<MemoryRouter initialEntries={['/en']}>{ui}</MemoryRouter>)
 
 beforeAll(async () => {
   await i18n.changeLanguage('en')
@@ -106,6 +117,46 @@ describe('VerdictCard', () => {
     expect(
       screen.getByText((content) => content.includes('do NOT satisfy compliance')),
     ).toBeInTheDocument()
+  })
+
+  /**
+   * That sentence IS the question /forecast-or-device answers, state by
+   * state, and the only route to that page was two small labels 1.35 screens
+   * down /states. So the sentence is the link.
+   */
+  it('routes the device notice to the page that answers it', () => {
+    const hour: HourVerdict = {
+      ...hourAt(84),
+      flag: classifyWbgt(GHSA, 84).flag,
+      borderline: isBorderline(GHSA, 84),
+    }
+    const { container } = render(
+      <VerdictCard
+        hour={hour}
+        policy={GHSA}
+        locationLabel="Atlanta, GA"
+        stateAbbr="GA"
+        timeZone="America/New_York"
+      />,
+    )
+    const link = container.querySelector('a[href="/en/forecast-or-device"]')
+    expect(link, 'the device notice is not a link').not.toBeNull()
+    expect(link!.textContent).toContain('do NOT satisfy compliance')
+  })
+
+  it('does not raise the question where the state has answered yes', () => {
+    // Texas names an internet reading, so there is no compliance notice and
+    // nothing for the link to be attached to.
+    const { container } = render(
+      <VerdictCard
+        hour={hourAt(84)}
+        policy={UIL_CLASS_3}
+        locationLabel="Austin, TX"
+        stateAbbr="TX"
+        timeZone="America/Chicago"
+      />,
+    )
+    expect(container.querySelector('a[href="/en/forecast-or-device"]')).toBeNull()
   })
 })
 

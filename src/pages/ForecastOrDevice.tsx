@@ -92,6 +92,17 @@ export default function ForecastOrDevice() {
           {t('forecastOrDevice.pageTitle')}
         </h1>
         <p className="mt-3 text-lg">{t('forecastOrDevice.intro')}</p>
+        {/* The only route back into the tool was the button 8.8 screens down.
+            The reader who arrives here from a search for their state's rule
+            has no reason to scroll a policy page to the end to find the
+            forecast it is about, so the first screen carries one too. The
+            bottom button stays: they are different readers. */}
+        <Link
+          to={`/${lang}`}
+          className="mt-3 inline-block font-bold uppercase tracking-wide underline underline-offset-4 hover:no-underline"
+        >
+          {t('forecastOrDevice.ctaButton')}
+        </Link>
       </header>
 
       {/* Virginia states the split better than this site can, so it leads —

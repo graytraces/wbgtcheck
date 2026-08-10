@@ -86,6 +86,15 @@ export default function MarchingBand() {
           {t('marchingBand.pageTitle')}
         </h1>
         <p className="mt-3 text-lg">{t('marchingBand.intro')}</p>
+        {/* Same reason as /forecast-or-device: the only CTA into the tool was
+            8.3 screens down, past twelve rows and five prose sections. The
+            bottom button stays. */}
+        <Link
+          to={`/${lang}`}
+          className="mt-3 inline-block font-bold uppercase tracking-wide underline underline-offset-4 hover:no-underline"
+        >
+          {t('marchingBand.ctaButton')}
+        </Link>
       </header>
 
       <section>

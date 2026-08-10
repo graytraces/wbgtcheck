@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { MapPin } from 'lucide-react'
+import { TOPIC_GUIDES } from '../data/guideRegistry'
 import type { HeatPolicy } from '../data/policyOracle'
 import {
   classifyWbgt,
@@ -16,6 +18,19 @@ import { FLAG_ICON, FLAG_SOLID } from '../utils/flagStyles'
 import { trackVerdictView } from '../utils/analytics'
 import { cn } from '../lib/utils'
 import { displayedWbgtF, formatWbgtF } from '../utils/units'
+
+/**
+ * The page that answers the question this card's device notice raises.
+ *
+ * "This site's readings do NOT satisfy compliance — use them for planning
+ * only" IS the question /forecast-or-device exists to answer, state by state,
+ * and until now the only route to that page was two small labels 1.35 screens
+ * down /states. Read off the registry rather than hardcoded so the slug cannot
+ * drift from the route and the prerender.
+ */
+const MEASUREMENT_GUIDE_SLUG = TOPIC_GUIDES.find(
+  (guide) => guide.seoKey === 'forecastOrDevice',
+)?.slug
 
 interface VerdictCardProps {
   hour: HourVerdict
@@ -224,16 +239,33 @@ export default function VerdictCard({
         <p>{t('verdict.verifyOnsite')}</p>
         <p>{t('verdict.surfaceNotice')}</p>
         {policy.id === 'generic' && <p>{t('verdict.genericRegionNotice')}</p>}
-        {requiresOnSiteReading(policy) && (
-          <p className="font-bold">
-            {t(
+        {requiresOnSiteReading(policy) &&
+          (() => {
+            const notice = t(
               policy.remoteEstimatesAllowed === 'device-required'
                 ? 'verdict.deviceOnlyNotice'
                 : 'verdict.deviceRecommendedNotice',
               { body: policy.source.name.split(' ')[0] },
-            )}
-          </p>
-        )}
+            )
+            // The sentence itself is the link: it is the exact question
+            // /forecast-or-device answers, and a separate "learn more" beside
+            // it would be a second thing to read rather than a route out of
+            // the one already read. Copy unchanged either way.
+            return (
+              <p className="font-bold">
+                {MEASUREMENT_GUIDE_SLUG ? (
+                  <Link
+                    to={`/${i18n.language}/${MEASUREMENT_GUIDE_SLUG}`}
+                    className="underline underline-offset-2 hover:no-underline"
+                  >
+                    {notice}
+                  </Link>
+                ) : (
+                  notice
+                )}
+              </p>
+            )
+          })()}
       </div>
     </section>
   )

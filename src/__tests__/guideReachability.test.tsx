@@ -8,6 +8,8 @@ import PolicyPicker from '../components/PolicyPicker'
 import Layout from '../components/Layout'
 import States from '../pages/States'
 import California from '../pages/California'
+import ForecastOrDevice from '../pages/ForecastOrDevice'
+import MarchingBand from '../pages/MarchingBand'
 import { POLICIES, CIF_CATEGORY_ROSTER_URL, type PolicyId } from '../data/policyOracle'
 import {
   VHSL_CANCEL_WBGT_F,
@@ -317,6 +319,38 @@ describe('the cross-state topic guides are reachable at all', () => {
       for (const { slug } of TOPIC_GUIDES) {
         expect(html, `${lang}/states.html does not link ${slug}`).toContain(`/${lang}/${slug}`)
       }
+    }
+  })
+
+  /**
+   * Reachability runs both ways. Each of these pages carried exactly one route
+   * into the tool, 8.8 and 8.3 screens down — past twelve table rows and five
+   * prose sections. A reader who arrives from a search for their state's rule
+   * has no reason to scroll a policy page to its end to find the forecast the
+   * page is about.
+   */
+  it('each topic guide offers a route into the tool before its first table', () => {
+    for (const [name, Page] of [
+      ['ForecastOrDevice', ForecastOrDevice],
+      ['MarchingBand', MarchingBand],
+    ] as const) {
+      const { container, unmount } = render(
+        <MemoryRouter initialEntries={['/en/x']}>
+          <Routes>
+            <Route path="/:lang/*" element={<Page />} />
+          </Routes>
+        </MemoryRouter>,
+      )
+      const toTool = container.querySelectorAll('a[href="/en"]')
+      // Both: the new one on the first screen and the button at the bottom.
+      expect(toTool.length, `${name} routes into the tool`).toBeGreaterThanOrEqual(2)
+      const table = container.querySelector('table')
+      expect(table, `${name} has a table`).toBeTruthy()
+      expect(
+        toTool[0].compareDocumentPosition(table!) & Node.DOCUMENT_POSITION_FOLLOWING,
+        `${name}'s first route into the tool is below its table`,
+      ).toBeTruthy()
+      unmount()
     }
   })
 })
