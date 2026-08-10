@@ -16,6 +16,15 @@ interface WbgtLogProps {
   policy: HeatPolicy
   policyId: PolicyId
   locationLabel: string
+  /**
+   * The FORECAST's time zone — the same one the verdict card stamps its hour
+   * and its "as of" line with. Omitted, entries fall back to the device clock,
+   * and the log then contradicts the card that created it: an Atlanta forecast
+   * read from a phone set to UTC+9 had the card saying "RIGHT NOW · AT 9:00 AM"
+   * above a row saying "Aug 10, 2026 at 10:05 PM". This is the artifact with a
+   * Print button, i.e. the one that gets handed to an administrator.
+   */
+  timeZone?: string
 }
 
 /** Sanity bounds for the manual field — input validation, not policy data. */
@@ -34,12 +43,21 @@ function useKeyResolver() {
   }
 }
 
-function LogRow({ entry, onRemove }: { entry: WbgtLogEntry; onRemove: (id: string) => void }) {
+function LogRow({
+  entry,
+  onRemove,
+  timeZone,
+}: {
+  entry: WbgtLogEntry
+  onRemove: (id: string) => void
+  timeZone?: string
+}) {
   const { t, i18n } = useTranslation()
   const resolve = useKeyResolver()
   const when = new Date(entry.timestamp).toLocaleString(i18n.language, {
     dateStyle: 'medium',
     timeStyle: 'short',
+    timeZone,
   })
   const flagLabel = resolve(entry.flagKey)
   const policyLabel = resolve(entry.policyKey)
@@ -79,7 +97,13 @@ function LogRow({ entry, onRemove }: { entry: WbgtLogEntry; onRemove: (id: strin
  * in the record. Print goes through a body class so @media print in
  * index.css can isolate this section for a paper submission.
  */
-export default function WbgtLog({ currentWbgtF, policy, policyId, locationLabel }: WbgtLogProps) {
+export default function WbgtLog({
+  currentWbgtF,
+  policy,
+  policyId,
+  locationLabel,
+  timeZone,
+}: WbgtLogProps) {
   const { t, i18n } = useTranslation()
   const { entries, addEntry, removeEntry, clearAll } = useWbgtLog()
   const [onsiteRaw, setOnsiteRaw] = useState('')
@@ -116,7 +140,7 @@ export default function WbgtLog({ currentWbgtF, policy, policyId, locationLabel 
   // Oldest→newest span of what is on the sheet. Entries are newest-first.
   const printRange = (() => {
     if (entries.length === 0) return ''
-    const fmt = new Intl.DateTimeFormat(i18n.language, { dateStyle: 'medium' })
+    const fmt = new Intl.DateTimeFormat(i18n.language, { dateStyle: 'medium', timeZone })
     const newest = fmt.format(new Date(entries[0].timestamp))
     const oldest = fmt.format(new Date(entries[entries.length - 1].timestamp))
     return oldest === newest ? newest : `${oldest} – ${newest}`
@@ -226,7 +250,7 @@ export default function WbgtLog({ currentWbgtF, policy, policyId, locationLabel 
           </div>
           <ul className="mt-2" aria-label={t('wbgtLog.historyTitle')}>
             {entries.map((entry) => (
-              <LogRow key={entry.id} entry={entry} onRemove={removeEntry} />
+              <LogRow key={entry.id} entry={entry} onRemove={removeEntry} timeZone={timeZone} />
             ))}
           </ul>
           <p className="mt-2 text-xs text-ink-muted">{t('wbgtLog.storageNote')}</p>

@@ -1,11 +1,14 @@
 import { describe, it, expect, beforeAll, beforeEach, vi } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
+import { render, screen, fireEvent, within } from '@testing-library/react'
 import i18n from '../i18n'
 import en from '../locales/en.json'
 import WbgtLog from '../components/WbgtLog'
 import LogQuickAdd from '../components/LogQuickAdd'
-import { readWbgtLog } from '../hooks/useWbgtLog'
-import { GENERIC_NATA } from '../data/policyOracle'
+import VerdictCard from '../components/VerdictCard'
+import { readWbgtLog, WBGT_LOG_KEY, type WbgtLogEntry } from '../hooks/useWbgtLog'
+import { GENERIC_NATA, classifyWbgt } from '../data/policyOracle'
+import type { HourVerdict } from '../utils/verdict'
+import { awayTimeZone } from '../test/homeFixture'
 
 /**
  * The honesty contract of the reading log: every rendered entry names its
@@ -126,6 +129,138 @@ describe('WbgtLog when the write fails', () => {
     renderLog(88.4)
     fireEvent.click(screen.getByRole('button', { name: /log current estimate/i }))
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+})
+
+/**
+ * The log is stamped in the FIELD's time zone, the same one the verdict card
+ * above it uses.
+ *
+ * Same session, Atlanta GA, phone on UTC+9: the card said "RIGHT NOW · AT 9:00
+ * AM" and the log entry that card had just created said "Aug 10, 2026 at 10:05
+ * PM". Commit 4efe3c6 fixed exactly this in VerdictCard — passing `timeZone`
+ * to the "as of" formatter, with a comment citing the away game — and did not
+ * carry it into the log, which is the artifact with a Print button, i.e. the
+ * one that gets handed to an athletic director.
+ */
+describe('the log and the card keep the same clock', () => {
+  const STAMP = Date.parse('2026-08-10T13:05:00Z')
+  const TZ = awayTimeZone(STAMP)
+
+  const entry: WbgtLogEntry = {
+    id: 'row-1',
+    timestamp: STAMP,
+    wbgtF: 88.4,
+    source: 'forecast',
+    flagKey: `flags.${classifyWbgt(GENERIC_NATA, 88.4).flag}.label`,
+    policyKey: 'policies.generic',
+    locationLabel: 'Atlanta, GA',
+  }
+
+  const hour: HourVerdict = {
+    time: STAMP,
+    wbgtF: 88.4,
+    source: 'nws',
+    tempF: null,
+    flag: classifyWbgt(GENERIC_NATA, 88.4).flag,
+    borderline: false,
+    localHour: 9,
+    localDate: '2026-08-10',
+  }
+
+  const inZone = (opts: Intl.DateTimeFormatOptions) =>
+    new Intl.DateTimeFormat('en', { ...opts, timeZone: TZ }).format(new Date(STAMP))
+
+  beforeEach(() => {
+    installMemoryStorage()
+    window.localStorage.setItem(WBGT_LOG_KEY, JSON.stringify([entry]))
+  })
+
+  it('stamps the row in the forecast zone, not the device zone', () => {
+    render(
+      <WbgtLog
+        currentWbgtF={88.4}
+        policy={GENERIC_NATA}
+        policyId="generic"
+        locationLabel="Atlanta, GA"
+        timeZone={TZ}
+      />,
+    )
+    const row = screen.getByLabelText(en.wbgtLog.historyTitle).querySelector('li')!
+    const expected = new Date(STAMP).toLocaleString('en', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+      timeZone: TZ,
+    })
+    expect(row.textContent).toContain(expected)
+    // And not the reading of the same instant on the machine running this.
+    const deviceStamp = new Date(STAMP).toLocaleString('en', {
+      dateStyle: 'medium',
+      timeStyle: 'short',
+    })
+    expect(deviceStamp).not.toBe(expected)
+    expect(row.textContent).not.toContain(deviceStamp)
+  })
+
+  it('shows the same clock time as the card that created the row', () => {
+    render(
+      <>
+        <VerdictCard
+          hour={hour}
+          policy={GENERIC_NATA}
+          locationLabel="Atlanta, GA"
+          stateAbbr="GA"
+          timeZone={TZ}
+          fetchedAt={STAMP}
+        />
+        <WbgtLog
+          currentWbgtF={88.4}
+          policy={GENERIC_NATA}
+          policyId="generic"
+          locationLabel="Atlanta, GA"
+          timeZone={TZ}
+        />
+      </>,
+    )
+    const clock = inZone({ hour: 'numeric', minute: '2-digit' })
+    expect(screen.getByText(en.verdict.nowHeading, { exact: false }).textContent).toContain(clock)
+    const row = screen.getByLabelText(en.wbgtLog.historyTitle).querySelector('li')!
+    expect(row.textContent, 'the log disagrees with the card above it').toContain(clock)
+  })
+
+  it('dates the printed sheet in the same zone', () => {
+    render(
+      <WbgtLog
+        currentWbgtF={88.4}
+        policy={GENERIC_NATA}
+        policyId="generic"
+        locationLabel="Atlanta, GA"
+        timeZone={TZ}
+      />,
+    )
+    // The print header is the identification line on the page handed over.
+    const header = screen.getByText(
+      i18n.t('wbgtLog.printHeader', {
+        location: 'Atlanta, GA',
+        range: inZone({ dateStyle: 'medium' }),
+      }),
+    )
+    expect(header).toBeInTheDocument()
+  })
+
+  it('still renders without a zone, on the device clock', () => {
+    // The prop is optional so a caller that has no forecast zone yet still
+    // gets a readable row rather than a crash.
+    render(
+      <WbgtLog
+        currentWbgtF={88.4}
+        policy={GENERIC_NATA}
+        policyId="generic"
+        locationLabel="Atlanta, GA"
+      />,
+    )
+    const row = screen.getByLabelText(en.wbgtLog.historyTitle).querySelector('li')!
+    expect(within(row).getByText('88.4')).toBeInTheDocument()
   })
 })
 
