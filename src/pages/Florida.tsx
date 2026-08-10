@@ -164,14 +164,20 @@ export default function Florida() {
         </p>
       </section>
 
-      {/* Mirrors the North Carolina pattern: the page says why the picker
-          cannot carry this state, so "MA is in it and Florida is not" is
-          explained on screen rather than looking arbitrary. */}
+      {/* This section used to explain why Florida was NOT in the picker. It is
+          now in it, on §41.8 — so the section says which of Policy 41's two
+          ladders a flag on this site is, and that it is the stricter one. The
+          asymmetry warning above is what it points back at. */}
       <section className="border-2 border-line bg-surface p-5">
         <h2 className="display-num mb-2 text-2xl uppercase">
-          {t('florida.pickerExclusionHeading')}
+          {t('florida.pickerScopeHeading')}
         </h2>
-        <p>{t('florida.pickerExclusionBody')}</p>
+        <p>
+          {t('florida.pickerScopeBody', {
+            practice: FHSAA_SECTION,
+            contest: FHSAA_CONTEST_SECTION,
+          })}
+        </p>
       </section>
 
       <section className="text-sm text-ink-muted">

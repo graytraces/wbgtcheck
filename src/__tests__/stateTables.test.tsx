@@ -19,6 +19,7 @@ import {
   FHSAA_PRACTICE_REFERENCE,
   FHSAA_NO_OUTDOOR_WBGT_F,
   FHSAA_NO_OUTDOOR_QUOTE,
+  FHSAA_SECTION,
   FHSAA_CONTEST_SECTION,
   FHSAA_CONTEST_SPORT_COUNT,
   FHSAA_CONTEST_REFERENCE_QUOTE,
@@ -336,6 +337,47 @@ describe('FHSAA §41.8 practice index matches the handbook', () => {
       screen.getAllByText((c) => c.includes(String(FHSAA_CONTEST_TOP_BAND_MIN_F))).length,
     ).toBeGreaterThan(0)
   })
+
+  /**
+   * §41.8 is now behind the picker's Florida flag, which makes the contest
+   * asymmetry MORE likely to be misread, not less: a coach who has seen a
+   * black flag on the home page has been given a number, and §41.9.5 has no
+   * equivalent number to give.
+   *
+   * The section that used to sit here explained why Florida was NOT in the
+   * picker. That sentence became false the moment §41.8 landed in POLICIES,
+   * so the obligation moved rather than lapsing — the page now has to say
+   * WHICH of Policy 41's two ladders the flag is, and that it does not decide
+   * a contest.
+   */
+  it('says which ladder the picker uses, and still keeps the two apart', () => {
+    renderAt('/en/florida', <Florida />)
+    expect(screen.getByText(en.florida.pickerScopeHeading)).toBeInTheDocument()
+    const scope = i18n.t('florida.pickerScopeBody', {
+      practice: FHSAA_SECTION,
+      contest: FHSAA_CONTEST_SECTION,
+    })
+    expect(scope).not.toContain('{{')
+    expect(screen.getByText(scope)).toBeInTheDocument()
+    // The warning section it points back at is still on the page.
+    expect(screen.getByText(en.florida.contestHeading)).toBeInTheDocument()
+  })
+
+  it('no longer tells a Florida reader their state is absent from the picker', () => {
+    // The exact claim that stopped being true. It is checked as PROSE in both
+    // locales rather than as a missing key, so re-wording it back in under
+    // another key still fails.
+    for (const [lang, dict] of [['en', en], ['es', es]] as const) {
+      const prose = JSON.stringify(dict.florida)
+      expect(prose, `${lang} FL`).not.toMatch(
+        /Florida is not in the policy picker|Florida no está en el selector/i,
+      )
+      // …and the old fallback claim with it: the flags are Florida's now.
+      expect(prose, `${lang} FL`).not.toMatch(
+        /falls back to the general NATA|recurre a la guía general de la NATA/i,
+      )
+    }
+  })
 })
 
 describe('NYSPHSAA WBGT chart matches the page-2 image', () => {
@@ -590,8 +632,16 @@ describe('no locale tells these three states their thresholds are unknowable', (
   it('each of the three says what its association actually publishes', () => {
     for (const [lang, dict] of [['en', en], ['es', es]] as const) {
       expect(dict.virginia.intro, `${lang} VA`).toMatch(/VHSL/)
-      expect(dict.florida.pickerExclusionBody, `${lang} FL`).toMatch(/41\.8/)
-      expect(dict.florida.pickerExclusionBody, `${lang} FL`).toMatch(/41\.9/)
+      // Florida's section numbers moved into interpolation when §41.8 entered
+      // the picker — locale files carry no numeric literals — so the claim is
+      // checked on the RENDERED sentence, which is the form a reader sees.
+      const scope = i18n.t('florida.pickerScopeBody', {
+        practice: FHSAA_SECTION,
+        contest: FHSAA_CONTEST_SECTION,
+        lng: lang,
+      })
+      expect(scope, `${lang} FL`).toMatch(/41\.8/)
+      expect(scope, `${lang} FL`).toMatch(/41\.9/)
       expect(dict.newYork.notWbgtBody, `${lang} NY`).toMatch(/WBGT/)
       // The chart note may recount the old claim, but only as a past error —
       // it has to end by pointing at the table that is now on the page.

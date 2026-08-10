@@ -11,6 +11,8 @@ import {
   BORDERLINE_MARGIN_F,
   REMOTE_UNDERESTIMATE_MIN_C,
   REMOTE_UNDERESTIMATE_MAX_C,
+  FHSAA_SECTION,
+  FHSAA_CONTEST_SECTION,
 } from '../data/policyOracle'
 import type { HourVerdict } from '../utils/verdict'
 import { guidelineSentences } from '../utils/guidelineText'
@@ -258,6 +260,20 @@ export default function VerdictCard({
         <p>{t('verdict.verifyOnsite')}</p>
         <p>{t('verdict.surfaceNotice')}</p>
         {policy.id === 'generic' && <p>{t('verdict.genericRegionNotice')}</p>}
+        {/* Florida is the only jurisdiction here whose association publishes
+            TWO ladders, and the picker can only be on one of them. The flag is
+            §41.8, the practice index — stricter than §41.9.5 at every band,
+            which is why it is the safe one to select unasked, and still not an
+            answer about a game. /florida says the same thing at length; this
+            is the sentence a reader who never leaves the home page gets. */}
+        {policy.id === 'fhsaa' && (
+          <p>
+            {t('verdict.practiceIndexNotice', {
+              practice: FHSAA_SECTION,
+              contest: FHSAA_CONTEST_SECTION,
+            })}
+          </p>
+        )}
         {requiresOnSiteReading(policy) &&
           (() => {
             const notice = t(

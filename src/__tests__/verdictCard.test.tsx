@@ -9,6 +9,9 @@ import {
   UIL_CLASS_3,
   GHSA,
   GENERIC_NATA,
+  FHSAA,
+  FHSAA_SECTION,
+  FHSAA_CONTEST_SECTION,
   classifyWbgt,
   REMOTE_UNDERESTIMATE_MIN_C,
   REMOTE_UNDERESTIMATE_MAX_C,
@@ -394,5 +397,90 @@ describe('verdict card live region', () => {
     expect(region.textContent).toContain(en.flags[flag].label)
     // What does not: the permanent notices that ride along on every render.
     expect(region.textContent).not.toContain(en.verdict.verifyOnsite)
+  })
+})
+
+/**
+ * Florida is the only jurisdiction in the picker whose association publishes
+ * TWO ladders, and the picker can only ever be on one of them.
+ *
+ * The flag a Florida coach sees is §41.8, the PRACTICE index. §41.9.5 is a
+ * per-sport contest matrix whose hottest band begins at 90.1 and prescribes
+ * hydration breaks — no band in it forbids an outdoor contest at all. So the
+ * practice ladder's top row is NOT the moment a game must be called, and a
+ * card that shows a black flag without saying so invites exactly that reading.
+ *
+ * The /florida page has carried this warning since the table landed. This is
+ * the same fact on the surface a reader who never leaves the home page sees.
+ */
+describe('the Florida card says which of Policy 41 two ladders it is', () => {
+  const notice = () =>
+    i18n.t('verdict.practiceIndexNotice', {
+      practice: FHSAA_SECTION,
+      contest: FHSAA_CONTEST_SECTION,
+    })
+
+  it('names the practice index, and names the contest index as separate', () => {
+    render(
+      <VerdictCard
+        hour={hourAt(93)}
+        policy={FHSAA}
+        locationLabel="Tampa, FL"
+        stateAbbr="FL"
+        timeZone="America/New_York"
+      />,
+    )
+    // The black flag is on screen — the row a reader is most likely to
+    // mistake for "Florida stops everything at this reading".
+    expect(screen.getAllByText(en.flags.black.label).length).toBeGreaterThan(0)
+    expect(screen.getByText(notice())).toBeInTheDocument()
+    // Both section numbers reach the DOM, by interpolation from the oracle.
+    expect(notice()).toContain(FHSAA_SECTION)
+    expect(notice()).toContain(FHSAA_CONTEST_SECTION)
+    // And the compliance line: Florida's statute puts the reading at the site,
+    // so this site's number cannot be it.
+    expect(
+      screen.getByText(
+        i18n.t('verdict.deviceOnlyNotice', { body: FHSAA.source.name.split(' ')[0] }),
+      ),
+    ).toBeInTheDocument()
+  })
+
+  it('says it in Spanish too, with both sections interpolated', async () => {
+    await i18n.changeLanguage('es')
+    render(
+      <VerdictCard
+        hour={hourAt(93)}
+        policy={FHSAA}
+        locationLabel="Tampa, FL"
+        stateAbbr="FL"
+        timeZone="America/New_York"
+      />,
+    )
+    const es = i18n.t('verdict.practiceIndexNotice', {
+      practice: FHSAA_SECTION,
+      contest: FHSAA_CONTEST_SECTION,
+    })
+    expect(es).not.toContain('{{')
+    expect(screen.getByText(es)).toBeInTheDocument()
+    await i18n.changeLanguage('en')
+  })
+
+  it('appears for nobody else — it is a claim about FHSAA, not about heat', () => {
+    // Rendered under another policy it would assert that THAT association
+    // publishes a separate contest index, which none of the others does.
+    for (const policy of [UIL_CLASS_3, GHSA, GENERIC_NATA]) {
+      const view = render(
+        <VerdictCard
+          hour={hourAt(93)}
+          policy={policy}
+          locationLabel="Austin, TX"
+          stateAbbr="TX"
+          timeZone="America/Chicago"
+        />,
+      )
+      expect(screen.queryByText(notice()), `${policy.id} shows Florida's notice`).toBeNull()
+      view.unmount()
+    }
   })
 })
