@@ -54,7 +54,7 @@ wbgtcheck/
 ```bash
 npm run dev      # 개발 서버 — 워커 없이 NWS 직접 호출 (dev 전용 폴백)
 npm run build    # tsc + vite build + prerender (40 HTML + sitemap)
-npm test         # tsc --noEmit + vitest (33파일 359테스트)
+npm test         # tsc --noEmit + lint 예산 + vitest (36파일 442테스트)
 npm run preview  # 빌드 결과 미리보기
 
 npm run check:browser   # 아래 5종 전부 (빌드 먼저 — dist를 서빙한다)
@@ -63,7 +63,15 @@ npm run check:sharecard # 공유 카드를 Chromium+WebKit에 실제로 그려 �
 npm run check:boot      # entry JS 차단 시 프리렌더 폴백 / 정상 경로 잔존·중복·깜빡임 0
 npm run check:print     # 판독 로그 인쇄 페이지 수(Letter PDF 실측)
 npm run check:localga   # localhost에서 gtag 요청 0건 / 프로덕션 호스트에서 1건 (실측)
+npm run lint:budget     # eslint 오류 수가 예산(현재 6)을 넘지 않는지 — npm test에 포함
 ```
+
+⚠️ **lint는 예산(ratchet) 방식이다.** `eslint .`가 어떤 게이트에도 없어서 오류 11건이 쌓여 있었다.
+그냥 `npm test`에 붙이면 즉시 실패하니 다시 떼어질 것이 뻔해서, `scripts/lint-budget.mjs`가
+**현재 오류 수를 상한으로 고정**한다. 새 오류는 즉시 실패하고, 하나를 고치면 예산도 같이
+낮춰야 통과한다(예산은 오직 내려갈 수만 있다). 남은 6건은 전부
+`react-hooks/set-state-in-effect`로, 판정·로그·공기 카드를 구동하는 훅의 **동작 변경**이
+필요해 별도 배치 대상이다 — 카피·레이아웃 배치에서 손댈 것이 아니다.
 
 **브라우저 회귀 검증 5종은 vitest가 잡을 수 없는 결함 전용이다** (`scripts/checks/`).
 jsdom에는 캔버스가 없고, 실제로 나간 버그들이 **엔진별 차이**에서 나왔다 — 공유 카드

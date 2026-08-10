@@ -311,7 +311,7 @@ describe('policy oracle — guideline facts vs primary sources', () => {
     // NC already had this; CA, KY and FL now match it.
     for (const locale of [en, es]) {
       for (const page of ['northCarolina', 'newYork', 'california', 'kentucky', 'florida'] as const) {
-        const body = (locale as Record<string, any>)[page]
+        const body = (locale as unknown as Record<string, Record<string, string | undefined>>)[page]
         if (page === 'newYork') continue // NY explains its exclusion in wbgtChartNote
         expect(body.pickerExclusionHeading?.length, `${page} exclusion heading`).toBeGreaterThan(0)
         expect(body.pickerExclusionBody?.length, `${page} exclusion body`).toBeGreaterThan(0)

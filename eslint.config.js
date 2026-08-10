@@ -19,5 +19,15 @@ export default defineConfig([
       ecmaVersion: 2020,
       globals: globals.browser,
     },
+    rules: {
+      // A mock's parameters can be load-bearing for typing while never being
+      // read: the fetch stubs here exist to fix the call signature so
+      // `mock.calls[0][1]` types, and deleting them turns the tuple into `[]`.
+      // Underscore-prefixed is the documented way to say "declared on purpose".
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' },
+      ],
+    },
   },
 ])

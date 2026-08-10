@@ -225,8 +225,15 @@ for (const [engineName, engine] of [
       const slack = Math.round((BUDGET - fitted.widest) * 100) / 100
       const bad = !fitted.fits || fitted.widest > BUDGET
       if (bad) failures++
+      // Under a pixel of slack is passing, but only just: the Spanish safety
+      // notice sits there, and the next word added to that string overflows
+      // the card with no warning other than this line. Not a failure — the
+      // card is correct today — but the next person to edit that copy needs
+      // to see the margin they are spending.
+      const TIGHT = 3
+      const tight = !bad && slack < TIGHT
       console.log(
-        `  ${''.padEnd(16)} ${which.padEnd(10)} ${fitted.lines} line(s) @${fitted.px}px widest ${fitted.widest} / ${BUDGET} (slack ${slack}) ${bad ? 'FAIL — notice does not fit its budget' : 'OK'}`,
+        `  ${''.padEnd(16)} ${which.padEnd(10)} ${fitted.lines} line(s) @${fitted.px}px widest ${fitted.widest} / ${BUDGET} (slack ${slack}) ${bad ? 'FAIL — notice does not fit its budget' : tight ? `OK — TIGHT, under ${TIGHT}px of room for longer copy` : 'OK'}`,
       )
     }
     console.log(
