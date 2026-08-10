@@ -91,7 +91,13 @@
     "pageTitle": "Pronóstico WBGT con banderas de política estatal",
     "heroBadge": "Gratis · Sin cuenta · Nada que instalar",
     "stateLadderHeading": "Este estado publica su propia escala",
-    "stateLadderBody": "La bandera de arriba viene de la guía general de la NATA, a la que este sitio recurre cuando la escala propia de un estado no está entre las opciones del selector. Su estado publica sus propios umbrales WBGT y pueden ser bastante más estrictos que ese respaldo con la misma lectura. Lea la guía antes de planificar según la bandera.",
+    "stateLadderBody": "La bandera de arriba viene de la guía general de la NATA, a la que este sitio recurre cuando la escala propia de un estado no está entre las opciones del selector. Su estado publica sus propios umbrales WBGT y no tienen por qué coincidir con ese respaldo con la misma lectura. Lea la guía antes de planificar según la bandera.",
+    "stateScaleHeading": "La escala de este estado no es WBGT",
+    "stateScaleBody": "La bandera de arriba es una lectura WBGT. Su estado redacta su política sobre el índice de calor, y ambos no se pueden convertir entre sí en ninguna dirección: buscar un número WBGT en esa escala lo sitúa en una banda mucho más fresca de lo que realmente son las condiciones. Lea la guía para conocer la escala que aplica donde usted está.",
+    "stateNoNumbersHeading": "Este estado no fija números estatales",
+    "stateNoNumbersBody": "La bandera de arriba viene de la guía general de la NATA. Su estado exige una política de calor pero no publica los umbrales: los fija {{setBy}}. Ninguna página puede decirle el número de cancelación de este estado, tampoco la nuestra. Lea la guía para saber qué sí exige la norma.",
+    "stateNumbersSetByDistricts": "cada distrito escolar",
+    "stateNumbersSetByAssociation": "la asociación atlética estatal",
     "intro": "Una sola pantalla para la decisión de la mañana: WBGT por hora para su campo, traducido a las banderas de actividad de su estado — proporciones de descanso, límites de equipo, topes de práctica — con una tarjeta lista para el chat del equipo. Hecho para entrenadores, preparadores físicos y directores de banda de marcha.",
     "sections": [
       {

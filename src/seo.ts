@@ -59,3 +59,17 @@ export const statePageKeyByPolicy: Record<string, string> = {
   iowa: 'iowa',
   miaa: 'massachusetts',
 }
+
+/**
+ * The guide pages whose ladder a reader can actually SELECT in the picker,
+ * derived from the map above rather than listed by hand.
+ *
+ * This is the gate for the home page's fallback notice, which says the state's
+ * own scale is not one of the picker's options. Gating on
+ * `policyId === 'generic'` said that in Tennessee, where TSSAA IS an option
+ * and simply is not auto-selected — and said it to a Texas reader who switched
+ * the picker to NATA by hand. Both are false, and both close here.
+ */
+export const pickerLadderPageKeys: ReadonlySet<string> = new Set(
+  Object.values(statePageKeyByPolicy),
+)

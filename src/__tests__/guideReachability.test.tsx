@@ -9,7 +9,7 @@ import Layout from '../components/Layout'
 import States from '../pages/States'
 import California from '../pages/California'
 import { POLICIES, CIF_CATEGORY_ROSTER_URL, type PolicyId } from '../data/policyOracle'
-import { pageSEO, statePageKeyByPolicy } from '../seo'
+import { pageSEO, statePageKeyByPolicy, pickerLadderPageKeys } from '../seo'
 import { STATE_GUIDES, AIR_GUIDES, GUIDE_SLUG_BY_ABBR } from '../data/guideRegistry'
 import { defaultPolicyFor } from '../hooks/useWbgt'
 import { STATE_DIRECTORY } from '../data/stateDirectory'
@@ -275,22 +275,27 @@ describe('the guide registry is the single source for both renderers', () => {
  * 86.5°F the fallback shows yellow where CIF Category 1 shows black.
  */
 describe('states outside the picker still reach their guide', () => {
-  const PICKERLESS = ['CA', 'KY', 'FL', 'NC', 'NY', 'VA']
+  /**
+   * Derived, never listed. The previous version of this file kept two
+   * hand-written arrays — six "pickerless" states and five with a policy —
+   * and Tennessee was in NEITHER, so the bug that put a false notice on the
+   * Tennessee home page passed both of them.
+   */
+  const pickable = (guide: (typeof STATE_GUIDES)[number]) =>
+    pickerLadderPageKeys.has(guide.seoKey)
+  const PICKERLESS = STATE_GUIDES.filter((g) => !pickable(g))
+  const IN_PICKER = STATE_GUIDES.filter(pickable)
 
-  it('every pickerless state has a guide page but no policy of its own', () => {
-    for (const abbr of PICKERLESS) {
-      expect(GUIDE_SLUG_BY_ABBR[abbr], `${abbr} has no guide page`).toBeTruthy()
-      // If one of these ever enters the picker this test should be revisited
-      // deliberately, not silently satisfied.
-      expect(defaultPolicyFor(abbr), `${abbr} now auto-selects a policy`).toBe('generic')
-    }
+  it('splits every guide state into exactly one of the two groups', () => {
+    expect(PICKERLESS.length + IN_PICKER.length).toBe(STATE_GUIDES.length)
+    expect(PICKERLESS.map((g) => g.abbr).sort()).toEqual(['CA', 'FL', 'KY', 'NC', 'NY', 'VA'])
+    // Tennessee belongs here: TSSAA is a picker option, it simply is not
+    // auto-selected. That distinction is the whole bug.
+    expect(IN_PICKER.map((g) => g.abbr).sort()).toEqual(['GA', 'IA', 'MA', 'SC', 'TN', 'TX'])
+    expect(defaultPolicyFor('TN')).toBe('generic')
   })
 
-  /**
-   * The condition Home.tsx renders on, kept here so the rule is checked
-   * rather than merely written: show the guide whenever the detected state
-   * has one AND the picker is not already pointing at it.
-   */
+  /** The condition Home.tsx renders the LINK on. */
   const wouldShowGuide = (abbr: string) => {
     const detected = STATE_GUIDES.find((g) => g.abbr === abbr)
     const pickerKey = statePageKeyByPolicy[defaultPolicyFor(abbr)]
@@ -298,15 +303,16 @@ describe('states outside the picker still reach their guide', () => {
     return !!detected && detected.slug !== pickerSlug
   }
 
-  it('shows the guide for every pickerless state', () => {
-    for (const abbr of PICKERLESS) {
-      expect(wouldShowGuide(abbr), `${abbr} would still get no guide link`).toBe(true)
+  it('shows the guide link for every state the picker does not already link', () => {
+    for (const { abbr } of PICKERLESS) {
+      expect(wouldShowGuide(abbr), `${abbr} would get no guide link`).toBe(true)
     }
+    // TN has a picker option but no auto-selection, so the link is still the
+    // only route to its guide from a located home page.
+    expect(wouldShowGuide('TN')).toBe(true)
   })
 
   it('does not duplicate the link where the picker already carries it', () => {
-    // TX/GA/SC/IA/MA auto-select their own policy, and PolicyPicker renders
-    // that guide link itself — a second copy under the verdict would be noise.
     for (const abbr of ['TX', 'GA', 'SC', 'IA', 'MA']) {
       expect(wouldShowGuide(abbr), `${abbr} would show the link twice`).toBe(false)
     }
@@ -316,11 +322,108 @@ describe('states outside the picker still reach their guide', () => {
     expect(STATE_GUIDES.find((g) => g.abbr === 'CO')).toBeUndefined()
     expect(wouldShowGuide('CO')).toBe(false)
   })
+})
 
-  it('carries the fallback notice in both locales', () => {
+/**
+ * The notice was one sentence for every state, and it was FALSE in four of the
+ * six it appeared on:
+ *
+ *   NY  told a heat-index state its thresholds compared to the WBGT flag —
+ *       and policyData.js says in capitals never to feed those numbers to
+ *       classifyWbgt. Wrong in the permissive direction: WBGT 88 looked up on
+ *       the NY ladder lands in "Watch" while the real heat index for those
+ *       conditions is a no-outdoor-activity number.
+ *   FL  told a reader thresholds exist that the statute does not contain —
+ *       the word WBGT is not in it.
+ *   VA  same, where /virginia says no honest page can name the number.
+ *   KY  claimed "considerably stricter" when KHSAA's lower boundaries are a
+ *       tenth or two MORE permissive than the fallback.
+ *
+ * So the wording is now chosen from the registry, and this checks the choice
+ * against the oracle for every state that shows it — the old assertions were
+ * `toBeTruthy()` and a /NATA/ match, neither of which asks whether the
+ * sentence is true of the state it appears on.
+ */
+describe('the fallback notice is true of the state it appears on', () => {
+  const noticeFor = (guide: (typeof STATE_GUIDES)[number], dict: typeof en) =>
+    guide.ladder === 'heat-index'
+      ? { heading: dict.home.stateScaleHeading, body: dict.home.stateScaleBody }
+      : guide.ladder === 'no-state-numbers'
+        ? { heading: dict.home.stateNoNumbersHeading, body: dict.home.stateNoNumbersBody }
+        : { heading: dict.home.stateLadderHeading, body: dict.home.stateLadderBody }
+
+  it('every guide state declares a ladder kind', () => {
+    for (const guide of STATE_GUIDES) {
+      expect(['wbgt-own', 'heat-index', 'no-state-numbers'], `${guide.abbr}`).toContain(guide.ladder)
+      if (guide.ladder === 'no-state-numbers') {
+        expect(['districts', 'association'], `${guide.abbr} setBy`).toContain(guide.numbersSetBy)
+      }
+    }
+  })
+
+  it('matches each state against what its own oracle says it publishes', () => {
+    const byAbbr = Object.fromEntries(STATE_GUIDES.map((g) => [g.abbr, g]))
+    // NYSPHSAA is a heat-index table, pinned as a ReferenceTable for that
+    // reason; NC and CA publish WBGT numbers; FL and VA publish none.
+    expect(byAbbr.NY.ladder).toBe('heat-index')
+    expect(byAbbr.CA.ladder).toBe('wbgt-own')
+    expect(byAbbr.NC.ladder).toBe('wbgt-own')
+    expect(byAbbr.KY.ladder).toBe('wbgt-own')
+    expect(byAbbr.FL.ladder).toBe('no-state-numbers')
+    expect(byAbbr.VA.ladder).toBe('no-state-numbers')
+  })
+
+  it('never tells a heat-index state its numbers compare to the WBGT flag', () => {
     for (const dict of [en, es]) {
-      expect(dict.home.stateLadderHeading).toBeTruthy()
-      expect(dict.home.stateLadderBody).toMatch(/NATA/)
+      const { body } = noticeFor(STATE_GUIDES.find((g) => g.abbr === 'NY')!, dict)
+      expect(body).toMatch(/heat index|índice de calor/i)
+      expect(body).toMatch(/cannot be converted|no se pueden convertir/i)
+      // The claim that broke it: comparability at the same reading.
+      expect(body).not.toMatch(/at the same reading|con la misma lectura/i)
+      expect(body).not.toMatch(/stricter|estrictos/i)
+    }
+  })
+
+  it('never claims thresholds for a state that publishes none', () => {
+    for (const dict of [en, es]) {
+      for (const abbr of ['FL', 'VA']) {
+        const { body } = noticeFor(STATE_GUIDES.find((g) => g.abbr === abbr)!, dict)
+        expect(body).toMatch(/does not publish|no publica/i)
+        expect(body).not.toMatch(/publishes its own WBGT|publica sus propios umbrales/i)
+      }
+    }
+  })
+
+  it('makes no directional strictness claim, because Kentucky is more permissive', () => {
+    for (const dict of [en, es]) {
+      const { body } = noticeFor(STATE_GUIDES.find((g) => g.abbr === 'KY')!, dict)
+      expect(body).not.toMatch(/stricter|estrict/i)
+      expect(body).toMatch(/do not have to agree|no tienen por qué coincidir/i)
+    }
+  })
+
+  it('gives each variant its own heading, not the ladder heading for all three', () => {
+    for (const dict of [en, es]) {
+      const headings = new Set(
+        STATE_GUIDES.map((g) => noticeFor(g, dict).heading),
+      )
+      expect(headings.size).toBe(3)
+      expect(noticeFor(STATE_GUIDES.find((g) => g.abbr === 'NY')!, dict).heading).not.toBe(
+        dict.home.stateLadderHeading,
+      )
+    }
+  })
+
+  it('is present in both locales for every variant', () => {
+    for (const dict of [en, es]) {
+      for (const key of [
+        'stateLadderHeading', 'stateLadderBody',
+        'stateScaleHeading', 'stateScaleBody',
+        'stateNoNumbersHeading', 'stateNoNumbersBody',
+        'stateNumbersSetByDistricts', 'stateNumbersSetByAssociation',
+      ] as const) {
+        expect(dict.home[key], key).toBeTruthy()
+      }
     }
   })
 })

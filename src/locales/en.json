@@ -91,7 +91,13 @@
     "pageTitle": "WBGT Forecast with State Heat Policy Flags",
     "heroBadge": "Free · No account · Nothing to install",
     "stateLadderHeading": "This state publishes its own ladder",
-    "stateLadderBody": "The flag above comes from the general NATA guideline — what this site falls back to when a state's own scale is not one of the picker's options. Your state publishes its own WBGT thresholds, and they can be considerably stricter than the fallback at the same reading. Read the guide before you plan around the flag.",
+    "stateLadderBody": "The flag above comes from the general NATA guideline — what this site falls back to when a state's own scale is not one of the picker's options. Your state publishes its own WBGT thresholds, and they do not have to agree with the fallback at the same reading. Read the guide before you plan around the flag.",
+    "stateScaleHeading": "This state's scale is not WBGT",
+    "stateScaleBody": "The flag above is a WBGT reading. Your state writes its policy against heat index instead, and the two cannot be converted into each other in either direction — looking a WBGT number up on that scale lands it in a far cooler band than the conditions actually are. Read the guide for the scale that applies where you are.",
+    "stateNoNumbersHeading": "This state sets no statewide numbers",
+    "stateNoNumbersBody": "The flag above comes from the general NATA guideline. Your state requires a heat policy but does not publish the thresholds itself — they are set by {{setBy}}. No page can tell you this state’s cancellation number, including ours. Read the guide for what the rule does require.",
+    "stateNumbersSetByDistricts": "each school district",
+    "stateNumbersSetByAssociation": "the state athletic association",
     "intro": "One screen for the morning call: hourly wet bulb globe temperature for your field, translated into your state's activity flags — rest ratios, equipment limits, practice caps — with a card you can drop in the team chat. Built for coaches, athletic trainers and marching band directors.",
     "sections": [
       {

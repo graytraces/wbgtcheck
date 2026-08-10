@@ -9,6 +9,13 @@ import {
   GUIDE_SLUG_BY_ABBR as RAW_SLUG_BY_ABBR,
 } from './guideRegistry.js'
 
+/**
+ * What the state publishes. The home page's fallback notice is written from
+ * this, because one sentence for every state was false in four of the six it
+ * appeared on. See guideRegistry.js.
+ */
+export type LadderKind = 'wbgt-own' | 'heat-index' | 'no-state-numbers'
+
 export interface GuideEntry {
   /** State abbreviation — joins to STATE_DIRECTORY and to the detected location. */
   abbr: string
@@ -18,6 +25,9 @@ export interface GuideEntry {
   seoKey: string
   /** i18n key for the link label. */
   labelKey: string
+  ladder: LadderKind
+  /** Only on 'no-state-numbers': who publishes the thresholds instead. */
+  numbersSetBy?: 'districts' | 'association'
 }
 
 export const STATE_GUIDES = RAW_STATE_GUIDES as GuideEntry[]

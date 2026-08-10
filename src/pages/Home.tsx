@@ -18,7 +18,12 @@ import InstallHint from '../components/InstallHint'
 import { useWbgt, isStale } from '../hooks/useWbgt'
 import { useAirQuality } from '../hooks/useAirQuality'
 import { airPolicyForState } from '../data/airPolicyOracle'
-import { airPageKeyByPolicy, pageSEO, statePageKeyByPolicy } from '../seo'
+import {
+  airPageKeyByPolicy,
+  pageSEO,
+  statePageKeyByPolicy,
+  pickerLadderPageKeys,
+} from '../seo'
 import { STATE_GUIDES } from '../data/guideRegistry'
 import { buildHourlySeries } from '../utils/nws'
 import {
@@ -145,9 +150,38 @@ export default function Home() {
   const pickerGuideSlug = pickerGuideKey ? pageSEO[pickerGuideKey].path : null
   // Only when the picker is not already pointing at this state's guide.
   const showStateGuide = !!detectedGuide && detectedGuide.slug !== pickerGuideSlug
-  // The flag on screen is the generic ladder, not this state's — the case the
-  // /california page describes as "more permissive than every CIF ladder".
-  const flagIsFallback = policyId === 'generic'
+  /**
+   * The notice claims this state's own scale is not one of the picker's
+   * options, so that is what it must be gated on. Gating on
+   * `policyId === 'generic'` said it in Tennessee, where TSSAA IS an option
+   * and merely is not auto-selected, and said it to a Texas reader who moved
+   * the picker to NATA by hand. Both were false.
+   */
+  const ladderIsPickable = !!detectedGuide && pickerLadderPageKeys.has(detectedGuide.seoKey)
+  const showLadderNotice = !!detectedGuide && !ladderIsPickable
+  /**
+   * And WHICH notice comes from the oracle, not from one sentence stretched
+   * over every state. The single version told New York — a heat-index state —
+   * that its thresholds were comparable to the WBGT flag above, and told
+   * Florida and Virginia they publish thresholds that neither of them
+   * publishes.
+   */
+  const ladderNotice = !detectedGuide
+    ? null
+    : detectedGuide.ladder === 'heat-index'
+      ? { heading: t('home.stateScaleHeading'), body: t('home.stateScaleBody') }
+      : detectedGuide.ladder === 'no-state-numbers'
+        ? {
+            heading: t('home.stateNoNumbersHeading'),
+            body: t('home.stateNoNumbersBody', {
+              setBy: t(
+                detectedGuide.numbersSetBy === 'districts'
+                  ? 'home.stateNumbersSetByDistricts'
+                  : 'home.stateNumbersSetByAssociation',
+              ),
+            }),
+          }
+        : { heading: t('home.stateLadderHeading'), body: t('home.stateLadderBody') }
 
   const airPolicy = airPolicyForState(location?.stateAbbr ?? null)
   const airPageKey = airPolicy ? airPageKeyByPolicy[airPolicy.id] : undefined
@@ -235,12 +269,10 @@ export default function Home() {
           still have seen that their state has its own scale. */}
       {location && status === 'ready' && current && showStateGuide && detectedGuide && (
         <section className="border-2 border-flag-orange bg-surface p-5">
-          {flagIsFallback && (
+          {showLadderNotice && ladderNotice && (
             <>
-              <h2 className="display-num mb-2 text-xl uppercase">
-                {t('home.stateLadderHeading')}
-              </h2>
-              <p className="mb-3">{t('home.stateLadderBody')}</p>
+              <h2 className="display-num mb-2 text-xl uppercase">{ladderNotice.heading}</h2>
+              <p className="mb-3">{ladderNotice.body}</p>
             </>
           )}
           <p>

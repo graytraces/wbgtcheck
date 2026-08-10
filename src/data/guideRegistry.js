@@ -21,20 +21,33 @@
 /**
  * A state guide. `abbr` joins to STATE_DIRECTORY and to the detected location;
  * `seoKey` joins to pageSEO; `slug` is the URL.
+ *
+ * `ladder` is what the state actually publishes, and the home page's fallback
+ * notice is written FROM it rather than around it. One sentence used to serve
+ * every state, and it was false in four of the six it appeared on:
+ *
+ *   'wbgt-own'         the state publishes WBGT thresholds of its own
+ *   'heat-index'       the scale is heat index — NOT comparable to a WBGT
+ *                      reading in either direction
+ *   'no-state-numbers' a policy exists but the thresholds are set elsewhere
+ *
+ * `numbersSetBy` only applies to 'no-state-numbers' and says who sets them:
+ * 'districts' (Virginia, by school board) or 'association' (Florida, where the
+ * statute mandates monitoring and leaves FHSAA to publish the numbers).
  */
 export const STATE_GUIDES = [
-  { abbr: 'CA', slug: 'california', seoKey: 'california', labelKey: 'states.californiaLink' },
-  { abbr: 'FL', slug: 'florida', seoKey: 'florida', labelKey: 'states.floridaLink' },
-  { abbr: 'GA', slug: 'georgia', seoKey: 'georgia', labelKey: 'states.georgiaLink' },
-  { abbr: 'IA', slug: 'iowa', seoKey: 'iowa', labelKey: 'states.iowaLink' },
-  { abbr: 'KY', slug: 'kentucky', seoKey: 'kentucky', labelKey: 'states.kentuckyLink' },
-  { abbr: 'MA', slug: 'massachusetts', seoKey: 'massachusetts', labelKey: 'states.massachusettsLink' },
-  { abbr: 'NC', slug: 'north-carolina', seoKey: 'northCarolina', labelKey: 'states.northCarolinaLink' },
-  { abbr: 'NY', slug: 'new-york', seoKey: 'newYork', labelKey: 'states.newYorkLink' },
-  { abbr: 'SC', slug: 'south-carolina', seoKey: 'southCarolina', labelKey: 'states.southCarolinaLink' },
-  { abbr: 'TN', slug: 'tennessee', seoKey: 'tennessee', labelKey: 'states.tennesseeLink' },
-  { abbr: 'TX', slug: 'texas', seoKey: 'texas', labelKey: 'states.texasLink' },
-  { abbr: 'VA', slug: 'virginia', seoKey: 'virginia', labelKey: 'states.virginiaLink' },
+  { abbr: 'CA', slug: 'california', seoKey: 'california', labelKey: 'states.californiaLink', ladder: 'wbgt-own' },
+  { abbr: 'FL', slug: 'florida', seoKey: 'florida', labelKey: 'states.floridaLink', ladder: 'no-state-numbers', numbersSetBy: 'association' },
+  { abbr: 'GA', slug: 'georgia', seoKey: 'georgia', labelKey: 'states.georgiaLink', ladder: 'wbgt-own' },
+  { abbr: 'IA', slug: 'iowa', seoKey: 'iowa', labelKey: 'states.iowaLink', ladder: 'wbgt-own' },
+  { abbr: 'KY', slug: 'kentucky', seoKey: 'kentucky', labelKey: 'states.kentuckyLink', ladder: 'wbgt-own' },
+  { abbr: 'MA', slug: 'massachusetts', seoKey: 'massachusetts', labelKey: 'states.massachusettsLink', ladder: 'wbgt-own' },
+  { abbr: 'NC', slug: 'north-carolina', seoKey: 'northCarolina', labelKey: 'states.northCarolinaLink', ladder: 'wbgt-own' },
+  { abbr: 'NY', slug: 'new-york', seoKey: 'newYork', labelKey: 'states.newYorkLink', ladder: 'heat-index' },
+  { abbr: 'SC', slug: 'south-carolina', seoKey: 'southCarolina', labelKey: 'states.southCarolinaLink', ladder: 'wbgt-own' },
+  { abbr: 'TN', slug: 'tennessee', seoKey: 'tennessee', labelKey: 'states.tennesseeLink', ladder: 'wbgt-own' },
+  { abbr: 'TX', slug: 'texas', seoKey: 'texas', labelKey: 'states.texasLink', ladder: 'wbgt-own' },
+  { abbr: 'VA', slug: 'virginia', seoKey: 'virginia', labelKey: 'states.virginiaLink', ladder: 'no-state-numbers', numbersSetBy: 'districts' },
 ]
 
 /** Air-quality guides. Same shape; `abbr` is the state they cover. */
