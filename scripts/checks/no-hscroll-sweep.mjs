@@ -189,7 +189,8 @@ for (const width of WIDTHS) {
       const url = `http://localhost:${PORT}/${lang}${route ? `/${route}` : ''}`
       await page.goto(url, { waitUntil: 'networkidle' })
       // Post-hydration DOM: the prerender block is removed on App mount.
-      await page.waitForFunction(() => !document.querySelector('[data-prerender]'))
+      // Body prerender only — JSON-LD keeps its marker (see App.tsx).
+      await page.waitForFunction(() => !document.querySelector('[data-prerender]:not(script)'))
       await check(page, width, `/${lang}/${route || '(home)'}`)
     }
   }

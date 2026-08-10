@@ -77,7 +77,8 @@ await page.addInitScript((entries) => {
   localStorage.setItem('wbgt:log:v1', JSON.stringify(entries))
 }, ENTRIES)
 await page.goto(`http://localhost:${PORT}/en`, { waitUntil: 'networkidle' })
-await page.waitForFunction(() => !document.querySelector('[data-prerender]'))
+// Body prerender only — JSON-LD keeps its marker (see App.tsx).
+await page.waitForFunction(() => !document.querySelector('[data-prerender]:not(script)'))
 await page.waitForSelector('#wbgt-log', { timeout: 15000 })
 await page.evaluate(() => document.body.classList.add('print-wbgt-log'))
 await page.emulateMedia({ media: 'print' })

@@ -43,7 +43,20 @@ const server = http.createServer(async (req, res) => {
 })
 await new Promise((r) => server.listen(PORT, r))
 
-const ROUTES = ['/en', '/en/texas', '/en/georgia', '/es/texas', '/en/states']
+// Sampled rather than exhaustive (each route costs a 12s blocked-boot wait),
+// but every page SHAPE is represented: home, a picker state, a reference-table
+// state, a statute state, the multi-table state, the hub, and both locales.
+const ROUTES = [
+  '/en',
+  '/en/texas',
+  '/en/georgia',
+  '/es/texas',
+  '/en/states',
+  '/en/massachusetts',
+  '/en/kentucky',
+  '/en/florida',
+  '/es/california',
+]
 const browser = await chromium.launch()
 let failures = 0
 console.log(`\n=== boot ${LABEL} ===`)
@@ -66,7 +79,7 @@ console.log(`\n=== boot ${LABEL} ===`)
         .map((e) => e.childNodes.length && [...e.childNodes].filter((n) => n.nodeType === 3).map((n) => n.textContent.trim()).join(' '))
         .join(' ').replace(/\s+/g, ' ').trim()
       return {
-        prerenderNodes: document.querySelectorAll('[data-prerender]').length,
+        prerenderNodes: document.querySelectorAll('[data-prerender]:not(script)').length,
         visibleChars: text.length,
         sample: text.slice(0, 70),
       }
@@ -96,26 +109,43 @@ console.log(`\n=== boot ${LABEL} ===`)
     // Sample during boot: the prerendered block must never become visible.
     for (let i = 0; i < 20; i++) {
       const visible = await page.evaluate(() => {
-        const el = document.querySelector('[data-prerender]')
+        const el = document.querySelector('[data-prerender]:not(script)')
         return el ? getComputedStyle(el).display !== 'none' : false
       })
       if (visible) flashed = true
       await page.waitForTimeout(25)
     }
-    await page.waitForFunction(() => !document.querySelector('[data-prerender]'), { timeout: 15000 })
+    await page.waitForFunction(
+      () => !document.querySelector('[data-prerender]:not(script)'),
+      { timeout: 15000 },
+    )
     const post = await page.evaluate(() => ({
-      leftovers: document.querySelectorAll('[data-prerender]').length,
+      leftovers: document.querySelectorAll('[data-prerender]:not(script)').length,
+      // Structured data must SURVIVE hydration. An unqualified prerender
+      // sweep used to delete every Article/BreadcrumbList on mount, so
+      // Google saw none of them.
+      ldJson: document.querySelectorAll('script[type="application/ld+json"]').length,
       bootFailedClass: document.documentElement.classList.contains('boot-failed'),
       headings: [...document.querySelectorAll('h1, h2')].map((h) => h.textContent.trim()),
     }))
     const dupes = post.headings.filter((h, i) => post.headings.indexOf(h) !== i)
     // Every prerendered heading should still exist after hydration.
     const missing = preHeadings.filter((h) => !post.headings.some((p) => p === h))
-    const ok = post.leftovers === 0 && !flashed && !post.bootFailedClass && dupes.length === 0 && missing.length === 0
+    // Structured data present before JS must still be present after it.
+    const rawLd = (html.match(/application\/ld\+json/g) ?? []).length
+    const ldKept = post.ldJson >= rawLd && rawLd > 0
+    const ok =
+      post.leftovers === 0 &&
+      !flashed &&
+      !post.bootFailedClass &&
+      dupes.length === 0 &&
+      missing.length === 0 &&
+      ldKept
     if (!ok) failures++
     console.log(
-      `  normal     ${route.padEnd(12)} leftovers=${post.leftovers} flash=${flashed} bootFailed=${post.bootFailedClass} dupHeadings=${dupes.length} prerenderHeadingsLost=${missing.length} ${ok ? 'OK' : 'FAIL'}`,
+      `  normal     ${route.padEnd(12)} leftovers=${post.leftovers} flash=${flashed} bootFailed=${post.bootFailedClass} dupHeadings=${dupes.length} prerenderHeadingsLost=${missing.length} ldJson=${post.ldJson}/${rawLd} ${ok ? 'OK' : 'FAIL'}`,
     )
+    if (!ldKept) console.log(`  ${''.padEnd(23)} structured data lost on hydration`)
     if (missing.length) console.log(`  ${''.padEnd(23)} lost: ${JSON.stringify(missing.slice(0, 4))}`)
   }
   await ctx.close()
