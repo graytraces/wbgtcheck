@@ -3,6 +3,7 @@ import type { DaySummary, HourVerdict } from './verdict'
 import { timelineHours } from './verdict'
 import { FLAG_HEX } from './flagStyles'
 import { hourLabel } from './hourLabel'
+import { formatWbgtF } from './units'
 
 /**
  * Share card: a 1080×1080 PNG for the team group chat. The day's peak flag
@@ -116,6 +117,9 @@ const NUMBER_PX = 340
 const UNIT_PX = 84
 const LABEL_PX = 110
 const ICON_PX = 132
+/** Left edge of the peak number, and the gap between it and the unit column. */
+const NUMBER_X = 48
+const UNIT_GAP = 16
 /** Ink-top offsets from the number's ink top, in unscaled number-size units. */
 const UNIT_INK_DROP = 65
 const CAPTION_INK_DROP = 164
@@ -152,13 +156,24 @@ export interface VerdictLayout {
  * label is the anchor (fixed ink bottom, so it always sits inside the coloured
  * panel); the number hangs from the top and gives up size if the two would
  * meet.
+ *
+ * `maxScale` is the caller's HORIZONTAL verdict, computed from the glyph
+ * advances (see drawShareCard). Printing the reading to a tenth added two
+ * glyphs to the widest thing on the card — "101.4" instead of "101" — and the
+ * unit and caption columns sit to its right, so the number can now run out of
+ * width before it runs out of height. Both limits shrink the same number, so
+ * they meet here rather than in two places that could disagree.
  */
-export function layoutVerdictBlock(number: InkExtent, label: InkExtent): VerdictLayout {
+export function layoutVerdictBlock(
+  number: InkExtent,
+  label: InkExtent,
+  maxScale = 1,
+): VerdictLayout {
   const labelInkH = Math.max(label.ascent + label.descent, 0)
   const numberInkH = Math.max(number.ascent + number.descent, 0)
   const room = LABEL_INK_BOTTOM - NUMBER_INK_TOP - labelInkH - MIN_INK_GAP
   const fit = numberInkH > 0 ? room / numberInkH : 1
-  const numberScale = Math.min(1, Math.max(0.5, fit))
+  const numberScale = Math.min(maxScale, Math.min(1, Math.max(0.5, fit)))
   const numberBaselineY = NUMBER_INK_TOP + number.ascent * numberScale
   const numberInkBottom = numberBaselineY + number.descent * numberScale
   const labelBaselineY = LABEL_INK_BOTTOM - label.descent
@@ -282,6 +297,30 @@ export function fitText(
   return { lines: wrapGreedy(ctx, text, maxWidth), px: minPx, fits: false }
 }
 
+/**
+ * The largest size at which EVERY hour's reading fits its block.
+ *
+ * One size for the whole band, not one per block: the hourly strip is read as
+ * a row, and a band where 99.8 is set smaller than 80.0 reads as a difference
+ * in kind. The band is sized by its widest member for the same reason the
+ * notices are — at a tenth, "101.4" is 16 cells' worth of glyphs wider than
+ * "101" and a 16-hour day gives each block 60px.
+ */
+export function fitBandNumber(
+  ctx: CanvasRenderingContext2D,
+  texts: string[],
+  maxWidth: number,
+  font: (px: number) => string,
+  startPx: number,
+  minPx: number,
+): number {
+  for (let px = startPx; px > minPx; px -= 1) {
+    ctx.font = font(px)
+    if (texts.every((s) => ctx.measureText(s).width <= maxWidth)) return px
+  }
+  return minPx
+}
+
 /** What the footer actually laid out — lets a check assert the notices fit. */
 export interface ShareCardRender {
   safety: FittedText
@@ -326,30 +365,51 @@ export function drawShareCard(
 
   // Display type is placed from measured ink (see layoutVerdictBlock) — fixed
   // 'top' coordinates put the number 134px lower in WebKit than in Chromium.
-  const numText = String(Math.round(model.peakWbgtF))
+  //
+  // To a TENTH, like every other reading on the site. Rounding to a whole
+  // degree here left the one surface where the number and the flag beside it
+  // could disagree — the flag comes from the value as printed to one decimal
+  // (see units.ts), so a peak of 86.95 drew "87" beside the band that starts
+  // below 87.0 — and it is the artifact that leaves the site and gets shown to
+  // an administrator.
+  const numText = formatWbgtF(model.peakWbgtF)
   const labelText = model.peakFlagLabel.toUpperCase()
+  const captionText = model.peakCaption.toUpperCase()
   ctx.textBaseline = 'alphabetic'
   ctx.font = display(NUMBER_PX)
   const numInk = inkExtent(ctx, numText, NUMBER_PX)
+  const numAdvance = ctx.measureText(numText).width
+  ctx.font = display(UNIT_PX)
+  const unitAdvance = ctx.measureText('°F').width
+  ctx.font = sans(34)
+  const captionAdvance = ctx.measureText(captionText).width
   ctx.font = display(LABEL_PX)
   const labelInk = inkExtent(ctx, labelText, LABEL_PX)
-  const layout = layoutVerdictBlock(numInk, labelInk)
+  // The unit and the caption stack in one column to the right of the number,
+  // so the number's width budget is the panel minus the wider of the two.
+  // Measured unscaled, which is conservative: both are drawn at `scale`.
+  const numberRoom = S - margin - NUMBER_X - UNIT_GAP - Math.max(unitAdvance, captionAdvance)
+  const widthFit = numAdvance > 0 ? numberRoom / numAdvance : 1
+  const layout = layoutVerdictBlock(numInk, labelInk, Math.max(0.5, Math.min(1, widthFit)))
 
   const scale = layout.numberScale
   ctx.font = display(NUMBER_PX * scale)
-  ctx.fillText(numText, 48, layout.numberBaselineY)
+  ctx.fillText(numText, NUMBER_X, layout.numberBaselineY)
   const numWidth = ctx.measureText(numText).width
 
   ctx.font = display(UNIT_PX * scale)
   const unitInk = inkExtent(ctx, '°F', UNIT_PX * scale)
-  ctx.fillText('°F', 64 + numWidth, layout.numberInkTop + UNIT_INK_DROP * scale + unitInk.ascent)
+  ctx.fillText(
+    '°F',
+    NUMBER_X + UNIT_GAP + numWidth,
+    layout.numberInkTop + UNIT_INK_DROP * scale + unitInk.ascent,
+  )
 
   ctx.font = sans(34)
-  const captionText = model.peakCaption.toUpperCase()
   const captionInk = inkExtent(ctx, captionText, 34)
   ctx.fillText(
     captionText,
-    64 + numWidth,
+    NUMBER_X + UNIT_GAP + numWidth,
     layout.numberInkTop + CAPTION_INK_DROP * scale + captionInk.ascent,
   )
 
@@ -364,6 +424,10 @@ export function drawShareCard(
   const n = model.hours.length
   if (n > 0) {
     const w = (S - margin * 2) / n
+    // Same rule as the peak above: the block's colour is the flag for the
+    // value as PRINTED, so the value printed on it is the one to a tenth.
+    const readings = model.hours.map((h) => formatWbgtF(h.wbgtF))
+    const readingPx = fitBandNumber(ctx, readings, w - 8, (px) => sans(px), 30, 16)
     model.hours.forEach((h, i) => {
       const hex = FLAG_HEX[h.flag]
       const x = margin + i * w
@@ -371,8 +435,8 @@ export function drawShareCard(
       ctx.fillRect(x, bandTop, Math.ceil(w) - 2, bandH)
       ctx.fillStyle = hex.fg
       ctx.textAlign = 'center'
-      ctx.font = sans(30)
-      ctx.fillText(String(Math.round(h.wbgtF)), x + w / 2, bandTop + 36)
+      ctx.font = sans(readingPx)
+      ctx.fillText(readings[i], x + w / 2, bandTop + 36)
       if (h.estimated) {
         ctx.font = sans(20)
         ctx.fillText(model.estLabel, x + w / 2, bandTop + 84)

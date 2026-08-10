@@ -78,21 +78,24 @@ const bias = (s) => s.replace('{{min}}', '1').replace('{{max}}', '3')
 const safetyOf = (l) => `${bias(l.verdict.conservativeNotice)} ${l.verdict.verifyOnsite}`
 const complianceOf = (l) => l.verdict.deviceOnlyNotice.replace('{{body}}', 'GHSA')
 
+// Readings carry a tenth, like every other reading on the site — so the widest
+// number this card can ever draw is a three-digit one with a decimal, and the
+// Spanish caption ("WBGT MÁXIMO") is the widest thing standing to its right.
 const CASES = [
-  { name: 'en-black-2digit', peakWbgtF: 93, peakFlag: 'black', peakFlagLabel: 'Black', locale: en },
-  { name: 'en-black-3digit', peakWbgtF: 101, peakFlag: 'black', peakFlagLabel: 'Black', locale: en },
+  { name: 'en-black-2digit', peakWbgtF: 93.2, peakFlag: 'black', peakFlagLabel: 'Black', locale: en },
+  { name: 'en-black-3digit', peakWbgtF: 101.4, peakFlag: 'black', peakFlagLabel: 'Black', locale: en },
   {
     name: 'en-compliance',
-    peakWbgtF: 93,
+    peakWbgtF: 93.2,
     peakFlag: 'black',
     peakFlagLabel: 'Black',
     locale: en,
     compliance: true,
   },
-  { name: 'es-red', peakWbgtF: 88, peakFlag: 'red', peakFlagLabel: 'Roja', locale: es },
+  { name: 'es-red', peakWbgtF: 88.6, peakFlag: 'red', peakFlagLabel: 'Roja', locale: es },
   {
     name: 'es-compliance',
-    peakWbgtF: 93,
+    peakWbgtF: 101.4,
     peakFlag: 'black',
     peakFlagLabel: 'Negra',
     locale: es,
@@ -108,13 +111,15 @@ function model(c) {
     peakWbgtF: c.peakWbgtF,
     peakFlag: c.peakFlag,
     peakFlagLabel: c.peakFlagLabel,
-    peakCaption: 'WBGT peak',
+    peakCaption: c.locale.share.wbgtPeakLabel,
     estLabel: 'EST',
     safetyNote: safetyOf(c.locale),
     complianceNote: c.compliance ? complianceOf(c.locale) : null,
+    // A 16-hour day gives each block 60px, and the band runs past 100 °F, so
+    // this is the width case for the hourly readings too.
     hours: Array.from({ length: 16 }, (_, i) => ({
       label: `${i + 6}`,
-      wbgtF: 80 + i,
+      wbgtF: 88.6 + i,
       flag: i > 10 ? 'black' : 'yellow',
       estimated: i % 5 === 0,
     })),
@@ -131,7 +136,10 @@ const measure = (m) => {
   const render = window.__draw(m)
   const ctx = canvas.getContext('2d')
   ctx.textBaseline = 'alphabetic'
-  const numText = String(Math.round(m.peakWbgtF))
+  // Must stay identical to formatWbgtF — this re-measures what was drawn, and
+  // measuring a different string is how the card's own numbers stop being
+  // pinned by anything.
+  const numText = m.peakWbgtF.toFixed(1)
   const labelText = m.peakFlagLabel.toUpperCase()
   ctx.font = '340px "Anton", "Arial Narrow", sans-serif'
   const n = ctx.measureText(numText)
@@ -165,6 +173,7 @@ const scanRows = () => {
   for (let y = 0; y < 620; y++) {
     let left = 0
     let right = 0
+    let maxX = -1
     for (let x = 0; x < width; x++) {
       const i = (y * width + x) * 4
       const differs =
@@ -172,8 +181,9 @@ const scanRows = () => {
       if (!differs) continue
       if (x < 540) left++
       else right++
+      maxX = x
     }
-    rows.push([left, right])
+    rows.push([left, right, maxX])
   }
   return rows
 }
@@ -237,6 +247,19 @@ for (const [engineName, engine] of [
     console.log(
       `  ${''.padEnd(16)} verdict ink runs ${JSON.stringify(stack)} gap ${gap}px ${
         ok && gap >= 10 ? 'OK' : 'FAIL — number and flag label collide'
+      }`,
+    )
+    // The reading carries a tenth now, so the number is two glyphs wider than
+    // the layout was tuned for and the unit/caption column stands to its
+    // right. Nothing in the verdict panel may cross the card's right margin —
+    // the canvas does not clip, it just draws past the edge.
+    const RIGHT_MARGIN = 1080 - 60
+    const rightmost = Math.max(...rows.slice(150).map((r) => r[2]))
+    const overhang = rightmost - RIGHT_MARGIN
+    if (overhang > 1) failures++
+    console.log(
+      `  ${''.padEnd(16)} verdict right edge ${rightmost} / ${RIGHT_MARGIN} ${
+        overhang > 1 ? `FAIL — ${overhang}px past the margin` : 'OK'
       }`,
     )
     const shot = await page.screenshot()
