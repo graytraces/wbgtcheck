@@ -351,3 +351,31 @@ describe('Massachusetts does not infer a competition exemption', () => {
     }
   })
 })
+
+/**
+ * The /states Massachusetts note describes the footnote corrected in a7ffef6,
+ * and both locales garbled the thing it restricts.
+ *
+ * EN said "any sport whose equipment the band modifies" — "the band" means
+ * the WBGT band, but this is a site about marching band, where that reading is
+ * not merely available, it is the likelier one. ES inverted subject and
+ * object outright ("cualquier deporte cuyo equipo modifique la banda" = the
+ * sport's team modifies the band), and `equipo` reads as team before
+ * equipment.
+ *
+ * The rule is: equipment that must be MODIFIED at that band stops games in
+ * that sport. Both locales must say so without leaning on a bare "the band".
+ */
+describe('the Massachusetts footnote note reads the way the footnote works', () => {
+  it('names the WBGT band explicitly rather than saying "the band"', () => {
+    expect(en.states.notes.ma).toMatch(/WBGT band/)
+    expect(es.states.notes.ma).toMatch(/banda WBGT/)
+  })
+
+  it('makes the equipment the thing modified, not the actor', () => {
+    expect(en.states.notes.ma).toMatch(/equipment has to be modified/i)
+    expect(es.states.notes.ma).toMatch(/equipo deba modificarse/i)
+    // The inverted Spanish reading that shipped.
+    expect(es.states.notes.ma).not.toMatch(/equipo modifique la banda/i)
+  })
+})
