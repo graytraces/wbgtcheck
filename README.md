@@ -59,17 +59,42 @@ monetization) — all pending an explicit go decision:
   pooldose pattern — **user decision 2026-08-09: on hold.** Commercial elements
   are too heavy for a site this new. Do not port it without a fresh decision.
 - **State policy pages**: six shipped on 2026-08-09 (SC · TN · IA · NC · NY ·
-  VA), each gated on reading that association's or legislature's own document.
-  Remaining verdict-table states and their blockers:
-  - **KY** — blocked, not deferred. khsaa.org served nothing to every fetch
-    attempt (root, /sports-medicine/, /forms/ge20.pdf, /forms/ge110.pdf, the
-    08-23-24 WBGT notice). Two record forms appear to exist — GE20 ("Heat Index
-    / Wet Bulb Globe Measurement and Record") and GE110 ("WET BULB GLOBE
-    TEMPERATURE (WBGT) MEASUREMENT AND RECORD") — so the old "Form GE20" claim
-    was dropped from /states rather than restated unverified. Retry from a
-    network that KHSAA answers.
-  - **FL · MO · MD · NJ · LA · CA · MA** — not attempted in the 2026-08-09 pass;
-    still research-tier. Same gate applies: read the primary document first.
+  VA); four more on 2026-08-10 (MA · FL · CA · KY), each gated on reading that
+  association's or legislature's own document.
+  - ~~**KY** — blocked~~ **shipped 2026-08-10, with a currency caveat.**
+    khsaa.org still answers nothing from here, so the document came from a
+    Wayback capture of KHSAA's own file ("Contest Alteration Due to WBGT
+    Readings", revised 8/22/24). The capture proves publication, not currency,
+    and the page leads with that above the table. If KHSAA ever answers, verify
+    the revision date and drop the notice.
+  - **MO · MD · NJ · LA** — still research-tier, and here is exactly what was
+    tried on 2026-08-10 so the next attempt does not repeat it:
+    - **MO** — mshsaa.org refuses connections outright (curl exit 000) on every
+      path tried. Wayback CDX for the domain returns only track-meet "heat
+      sheets", no policy document.
+    - **MD** — mpssaa.org returns 403 to automated fetches of `/assets/...`
+      and `/health-safety/`. CDX likewise surfaces only track heat sheets.
+      Needs the CDP-browser route that unblocked osaa.org, or a direct link.
+    - **NJ** — njsiaa.org 404s every guessed path. CDX shows the policy
+      documents existed under `/documents/heat-and-humidity-practice-policy`
+      and `/documents/heat-participation-policy-guidelines-bp` in 2018, but the
+      site has since been rebuilt. Try those Wayback captures, then look for
+      the current equivalents.
+    - **LA** — lhsaa.org's Sports Medicine page IS reachable, but the only
+      heat document it hosts is the generic NATA/Casa inter-association
+      acclimatization paper, not an LHSAA WBGT policy with thresholds. Nothing
+      state-specific to publish yet.
+    - Discovery was hampered by the session's WebSearch budget being exhausted
+      before this batch started; the Wayback CDX API (`/cdx/search/cdx`) and
+      the CloudFront-inside-the-shell trick did most of the work instead.
+  - **FL thresholds** — the statute (§ 1006.165(2)) is published and now on the
+    site, but it sets no numbers: it directs the FHSAA to establish them.
+    fhsaa.com returned HTTP 500 to every attempt, so Florida ships without a
+    band table and says so. Getting that document is the remaining work.
+  - **CA picker integration** — the three CIF category ladders are in the
+    oracle and on the page, but not in the policy picker: CIF assigns a
+    school's category by region from a separate 28-page roster. Wiring them in
+    needs the Texas class-prompt pattern, not a default.
   - **NY WBGT chart** — NY's heat-index ladder is published and now on the site,
     but its WBGT alternative chart is an image keyed to an external regional map
     (castlewilliams.com/wbgt-regions.html). Not reproduced — printing the wrong
@@ -111,14 +136,17 @@ monetization) — all pending an explicit go decision:
 
 From the 2026-08-09 three-perspective review gate (record only):
 
-- **KY retry**: khsaa.org still answers nothing to automated fetches — the KY
-  guide stays blocked, not deferred.
+- ~~**KY retry**~~: resolved 2026-08-10 through a Wayback capture — see the
+  state-pages entry above. khsaa.org itself still answers nothing.
 - **SCHSL and NYSPHSAA edition checks**: no newer editions were reachable to
   confirm currency; their verifiedOn dates attest the copies we hold.
 - **TSSAA 2026-27 edition**: re-verify before the 2027 season — the current
   policy is the October 2024 revision.
-- **CIF EXTREME_HEAT PDF**: unreadable through every route tried (Cloudflare
-  and CloudFront blocks); the heat side of CIF remains unverified.
+- ~~**CIF EXTREME_HEAT PDF**~~: read 2026-08-10. cifstate.org serves an HTML
+  shell for its `.pdf` URLs, and the shell contains the real CloudFront
+  address — fetching that returned the file. The p.103 band chart is an image,
+  so it was rendered to PNG at 170 dpi and read by eye (the TSSAA treatment).
+  The heat side of CIF is now verified and on /california.
 - **Pre-season source freshness re-verification (2027-05)**: walk EVERY
   source block in policyData.js and airPolicyData.js and confirm the cited
   document is still the current edition — verifiedOn means "confirmed

@@ -24,7 +24,7 @@
 
 ```
 wbgtcheck/
-├── scripts/prerender.mjs     # 32개 로케일 HTML + sitemap 생성 (policyData/airPolicyData 직접 import)
+├── scripts/prerender.mjs     # 40개 로케일 HTML + sitemap 생성 (policyData/airPolicyData 직접 import)
 └── src/
     ├── App.tsx               # 라우터 (bare path → /:lang 리다이렉트)
     ├── i18n.ts               # EN + ES
@@ -44,7 +44,7 @@ wbgtcheck/
     ├── utils/                # nws(시계열 확장·추정 폴백) · airnow(reportingarea.dat 파서) · verdict · geocode · shareCard · flagStyles · analytics
     ├── hooks/                # useWbgt(위치·정책·페치 상태머신) · useAirQuality(관측 staleness 추적) · useTheme
     ├── components/           # VerdictCard · TodayTimeline · WeekStrip · PolicyBandsTable · AirQualityGate · AirDataSources · ShareCardButton …
-    ├── pages/                # Home · 주별 가이드 8종(TX·GA·SC·TN·IA·NC·NY·VA) · 공기질 3종(WA·OR·CA) · WbgtVsHeatIndex · States · PrivacyPolicy · Disclaimer
+    ├── pages/                # Home · 주별 가이드 12종(TX·GA·SC·TN·IA·NC·NY·VA·MA·FL·CA·KY) · 공기질 3종(WA·OR·CA) · WbgtVsHeatIndex · States · PrivacyPolicy · Disclaimer
     ├── test/fixtures/        # thermofeel 회귀 CSV (입력 50케이스 + 기대값)
     └── locales/              # en.json · es.json (구조 패리티 테스트 가드)
 ```
@@ -53,8 +53,8 @@ wbgtcheck/
 
 ```bash
 npm run dev      # 개발 서버 — 워커 없이 NWS 직접 호출 (dev 전용 폴백)
-npm run build    # tsc + vite build + prerender (32 HTML + sitemap)
-npm test         # tsc --noEmit + vitest (33파일 349테스트)
+npm run build    # tsc + vite build + prerender (40 HTML + sitemap)
+npm test         # tsc --noEmit + vitest (33파일 359테스트)
 npm run preview  # 빌드 결과 미리보기
 
 npm run check:browser   # 아래 4종 전부 (빌드 먼저 — dist를 서빙한다)
@@ -89,6 +89,10 @@ Playwright는 워크스페이스 루트 설치본을 쓴다(`../node_modules`) �
 | `/:lang/north-carolina` | NCHSAA 가이드 (2025-26 핸드북 2컬럼 차트 · 기기 측정 · 도구 연동 제외 고지) |
 | `/:lang/new-york` | NYSPHSAA 가이드 (**열지수** 사다리 — WBGT 아님 · 앱+ZIP 명시) |
 | `/:lang/virginia` | Virginia 주법 가이드 (임계값 없음 — 교육구가 정함 · 얼음 80°F) |
+| `/:lang/massachusetts` | MIAA 가이드 (5밴드 · 임계값이 전국 최저 수준 · 기기 의무 · 경기/연습 분리) |
+| `/:lang/florida` | Zachary Martin Act 가이드 (주법 · 임계값 없음 — FHSAA 소관 · 현장 측정 의무) |
+| `/:lang/california` | CIF 가이드 (Category 1/2/3 3중 사다리 · NOAA 온라인 판독 명시 · 픽커 제외) |
+| `/:lang/kentucky` | KHSAA 가이드 (경기 변경 4밴드 · 부지 밖 판독 무효 · 웨이백 출처, 최신성 미확인) |
 | `/:lang/wbgt-vs-heat-index` | WBGT/습구/열지수 구분 교육 페이지 |
 | `/:lang/washington-air-quality` | WA DOH 334-332 공기질 가이드 (지속시간 3열 × 4밴드 · 2026-05 개정판) |
 | `/:lang/oregon-air-quality` | OSAA 공기질 가이드 (밴드별 조치 + 가시거리 폴백 표) |
@@ -101,11 +105,11 @@ lang은 `en`·`es` 2종. 라우트 추가 시 아래 "새 페이지 추가 체�
 ## 이 레포 고유 규칙 (가장 중요 — 위반 시 안전·법적 리스크)
 
 ### ① 정책 수치 오라클 — `src/data/policyData.js` 단일 소스 (열 축)
-- 모든 임계값·활동 수정 지침 수치는 **`policyData.js`에만** 존재한다. 각 블록에 1차 출처 URL + 확인일 주석 필수 (UIL 차트 · GHSA By-law 2.67 · NATA 2015 Table 5 · SCHSL 2024-04 · TSSAA 2024-10 · Iowa 합동 가이드 · NCHSAA 2025-26 핸드북 · NYSPHSAA 2023-05 · Va. Code §22.1-271.10, 전부 2026-08-09 검증).
+- 모든 임계값·활동 수정 지침 수치는 **`policyData.js`에만** 존재한다. 각 블록에 1차 출처 URL + 확인일 주석 필수 (UIL 차트 · GHSA By-law 2.67 · NATA 2015 Table 5 · SCHSL 2024-04 · TSSAA 2024-10 · Iowa 합동 가이드 · NCHSAA 2025-26 핸드북 · NYSPHSAA 2023-05 · Va. Code §22.1-271.10 — 2026-08-09 검증 / MIAA 2021-08 · Fla. Stat. §1006.165 · CIF 2026-27 Bylaws · KHSAA 2024-08 — 2026-08-10 검증).
 - **최신성 조항**: `verifiedOn`은 "그날 읽음"이 아니라 **"그날 그 문서가 협회 현행 정본임을 확인함"**을 뜻한다. 재검증 때는 수치 대조 전에 문서 자체가 대체되지 않았는지(신판 핸드북·개정판 발행)부터 확인할 것 — NC는 2015년 폐기 문서를 인용한 채 4곳이 완화 방향으로 틀려 있었다(2026-08 리뷰 게이트에서 적발, 현행 핸드북으로 재구축). 시즌 전(매년 5월) 전체 출처 블록 순회 재검증이 README 백로그에 있다.
 - **로케일 JSON에 임계값 숫자 리터럴 금지** — 카피는 `{{보간}}`으로만 수치를 받는다. `oracleCopy.test.ts`가 숫자 리터럴 존재 자체를 실패시킨다. 원문 인용에 수치가 있으면 인용문 자체를 상수화할 것 (`SCHSL_TOP_BOUNDARY_TEXT_QUOTE`가 그 예).
 - plain JS인 이유: `scripts/prerender.mjs`와 React가 **동일 객체**를 import해 prerender↔post-JS DOM 드리프트를 구조적으로 차단 (위키 prerender-wrs-prosewipe 패턴).
-- 새 주(州) 임계값은 협회 1차 문서를 fetch해 검증하기 전에는 **절대 추가 금지**. `verified: 'primary'` 행(TX·GA·SC·TN·IA·NC·NY·VA)만 수치를 실을 수 있고, 나머지는 research 분류 + "협회 확인 필요" 뱃지가 강제된다.
+- 새 주(州) 임계값은 협회 1차 문서를 fetch해 검증하기 전에는 **절대 추가 금지**. `verified: 'primary'` 행(TX·GA·SC·TN·IA·NC·NY·VA·MA·FL·CA·KY)만 수치를 실을 수 있고, 나머지는 research 분류 + "협회 확인 필요" 뱃지가 강제된다.
 - **모든 주가 이 사이트의 5색 깃발 모델에 맞지는 않는다.** NC는 임계값 계열(80/85/88/90)도 다르고 자체 색코드 이름이 이 사이트 깃발과 의미가 충돌하며, NY는 애초에 열지수 척도다. 둘은 `POLICIES`에서 **의도적으로 제외**되어 자체 표로만 렌더된다 — `policyOracle.test.ts`가 이 제외를 핀으로 고정한다. 맞지 않는 주를 억지로 `classifyWbgt`에 넣지 말 것.
 - 출처가 아무 말도 하지 않는 구간에 "정상 활동"을 지어내지 말 것. TSSAA green 밴드처럼 `extraKeys: ['guideline.notAddressedBelow']`로 침묵을 명시한다.
 - PDF가 Type3 subset 폰트를 쓰면 텍스트 추출이 조용히 틀린 글자를 낸다(TSSAA가 그렇다). 그 경우 pymupdf로 페이지를 PNG 렌더해 **눈으로 읽고** 수치를 옮길 것.
