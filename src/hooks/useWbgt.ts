@@ -189,12 +189,29 @@ export function useWbgt() {
     if (restoredFromStorage.current) trackLocationSet('saved')
   }, [])
 
+  /**
+   * The forecast is keyed on the POINT, not on the identity of the location
+   * object.
+   *
+   * The state-adoption effect at the bottom of this hook replaces `location`
+   * with a new object carrying the same coordinates — it only fills in the
+   * state abbreviation and the city label NWS reported. With `[location]` as
+   * the dependency, that swap tore this effect down and re-ran it: a reader
+   * who tapped "Use my location" got the verdict, and then watched the whole
+   * ready page turn back into "Loading…" for one more upstream round trip
+   * (points + gridpoint, twice). Nothing in the upgrade moves the point, so
+   * nothing in it needs a new forecast.
+   *
+   * The refresh button still forces one through `fetchTick`.
+   */
+  const lat = location?.lat ?? null
+  const lon = location?.lon ?? null
   useEffect(() => {
-    if (!location) return
+    if (lat === null || lon === null) return
     let cancelled = false
     setStatus('loading')
     setErrorKey(null)
-    fetchWbgt(location.lat, location.lon)
+    fetchWbgt(lat, lon)
       .then((res) => {
         if (cancelled) return
         setData(res)
@@ -209,7 +226,7 @@ export function useWbgt() {
     return () => {
       cancelled = true
     }
-  }, [location, fetchTick])
+  }, [lat, lon, fetchTick])
 
   const refetch = useCallback(() => {
     setFetchTick((t) => t + 1)
