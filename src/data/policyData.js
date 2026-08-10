@@ -884,15 +884,27 @@ export const NYSPHSAA_HEAT_INDEX_REFERENCE = {
 export const KY_RECHECK_INTERVAL_MINUTES = 30
 export const KY_REVISION = '8/22/24'
 /**
- * Kentucky states the on-site rule twice, and the second sentence is blunter
- * than any other state's: a reading taken off the property is not merely
- * discouraged, it is not valid. This is the clearest statement in the whole
- * oracle that a remote forecast cannot be the compliance reading.
+ * Kentucky's on-site rule appears at three different strengths, and this site
+ * initially quoted the two weaker ones while describing the second as
+ * unhedged. It is not: it still says "should".
+ *
+ * Both sentences below sit in SPORT-SPECIFIC rows (cross country, field
+ * hockey, soccer), not in the "ALL OUTDOOR SPORTS" column, and both are
+ * written as recommendations.
  */
 export const KY_ONSITE_ONLY_QUOTE =
   'It is strongly recommended that the WBGT be measured only at the competition or practice site.'
 export const KY_OFFSITE_INVALID_QUOTE =
   'The measurement should not be considered valid if taken off of the main school campus if the venue is on the school campus, or off property from the competition venue for non-campus venues.'
+/**
+ * THIS is the unconditional one — "must", "no ... permitted", no hedge — and
+ * it is in the Football column, repeated in every band below the stop level.
+ * It is the sentence the measurement-legality argument should rest on, and
+ * quoting the weaker two as though they were it overstated the other sports
+ * while understating football.
+ */
+export const KY_FOOTBALL_ONSITE_QUOTE =
+  'The WBGT measurement must be taken at the competition site with no off-site measurement permitted.'
 
 export const KHSAA_WBGT_REFERENCE = {
   id: 'khsaa',

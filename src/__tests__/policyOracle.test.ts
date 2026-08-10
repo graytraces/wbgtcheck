@@ -14,7 +14,9 @@ import {
   MIAA_TABLE_SCOPE_QUOTE,
   MIAA_NO_GAMES_FOOTNOTE_QUOTE,
   KHSAA_WBGT_REFERENCE,
+  KY_ONSITE_ONLY_QUOTE,
   KY_OFFSITE_INVALID_QUOTE,
+  KY_FOOTBALL_ONSITE_QUOTE,
   CIF_CATEGORIES,
   CIF_CATEGORY_1,
   CIF_CATEGORY_3,
@@ -75,6 +77,7 @@ import {
 } from '../data/policyOracle'
 import type { FlagColor, HeatPolicy } from '../data/policyOracle'
 import { guidelineSentences } from '../lib/guidelineSentences.js'
+import { STATE_DIRECTORY } from '../data/stateDirectory'
 import en from '../locales/en.json'
 import es from '../locales/es.json'
 
@@ -218,8 +221,38 @@ describe('policy oracle — guideline facts vs primary sources', () => {
     expect(KHSAA_WBGT_REFERENCE.rows[0].textKeys).toEqual(['kentucky.rows.stopAll'])
   })
 
-  it('Kentucky says an off-property reading is not valid, and the page says currency is unconfirmed', () => {
+  it('Kentucky quotes the unconditional football rule, not just the recommendations', () => {
+    // The two sentences the page used are BOTH recommendations, and both sit
+    // in sport-specific rows. The unhedged one is football's, and the page
+    // had described a "should" sentence as unhedged.
+    expect(KY_ONSITE_ONLY_QUOTE).toContain('strongly recommended')
     expect(KY_OFFSITE_INVALID_QUOTE).toContain('should not be considered valid')
+    expect(KY_FOOTBALL_ONSITE_QUOTE).toContain('must be taken at the competition site')
+    expect(KY_FOOTBALL_ONSITE_QUOTE).toContain('no off-site measurement permitted')
+    expect(KY_FOOTBALL_ONSITE_QUOTE).not.toMatch(/should|recommended/i)
+    for (const locale of [en, es]) {
+      expect(locale.kentucky.footballBody).toContain('{{quote}}')
+      // No claiming a "should" sentence is unhedged.
+      expect(locale.kentucky.invalidBody.toLowerCase()).not.toContain('without hedging')
+      expect(locale.kentucky.invalidBody.toLowerCase()).not.toContain('sin matices')
+    }
+  })
+
+  it('Kentucky is classified no stronger than the document it was read from', () => {
+    // The document is contest-alteration guidance and is written in "should"
+    // outside the football measurement line — it contains no general duty to
+    // use WBGT, so the directory row must not assert one. Iowa was downgraded
+    // for exactly this reason.
+    const ky = STATE_DIRECTORY.find((r) => r.abbr === 'KY')!
+    expect(ky.mandate).toBe('conditional')
+    // The on-site classification IS supported, by the football sentence.
+    expect(ky.measurement).toBe('device-required')
+    for (const locale of [en, es]) {
+      expect(locale.states.notes.ky.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('Kentucky page says currency is unconfirmed', () => {
     // Read from an archive because khsaa.org answers nothing — the page has to
     // carry that limitation, not bury it.
     expect(KHSAA_WBGT_REFERENCE.source.url).toContain('web.archive.org')

@@ -30,6 +30,7 @@ import {
   KY_REVISION,
   KY_ONSITE_ONLY_QUOTE,
   KY_OFFSITE_INVALID_QUOTE,
+  KY_FOOTBALL_ONSITE_QUOTE,
   CIF_CATEGORIES,
   CIF_LEGAL_BASIS,
   CIF_WBGT_REQUIRED_QUOTE,
@@ -764,6 +765,7 @@ function generateBodyContent(lang, page) {
     push(`<h2>${escapeHtml(t('kentucky.measurementHeading'))}</h2>`)
     push(`<p>${escapeHtml(t('kentucky.measurementBody', { quote: KY_ONSITE_ONLY_QUOTE }))}</p>`)
     push(`<p>${escapeHtml(t('kentucky.invalidBody', { quote: KY_OFFSITE_INVALID_QUOTE }))}</p>`)
+    push(`<p>${escapeHtml(t('kentucky.footballBody', { quote: KY_FOOTBALL_ONSITE_QUOTE }))}</p>`)
     push(`<p>${escapeHtml(t('kentucky.deviceWarning'))}</p>`)
     push(
       `<h2>${escapeHtml(t('kentucky.sourceHeading'))}</h2><p>${escapeHtml(t('kentucky.sourceBody', { verifiedOn: KHSAA_WBGT_REFERENCE.source.verifiedOn }))} <a href="${KHSAA_WBGT_REFERENCE.source.url}">${escapeHtml(KHSAA_WBGT_REFERENCE.source.name)}</a></p>`,

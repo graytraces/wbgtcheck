@@ -7,6 +7,7 @@ import {
   KHSAA_WBGT_REFERENCE,
   KY_ONSITE_ONLY_QUOTE,
   KY_OFFSITE_INVALID_QUOTE,
+  KY_FOOTBALL_ONSITE_QUOTE,
   KY_RECHECK_INTERVAL_MINUTES,
   KY_REVISION,
 } from '../data/policyOracle'
@@ -76,6 +77,9 @@ export default function Kentucky() {
         </h2>
         <p>{t('kentucky.measurementBody', { quote: KY_ONSITE_ONLY_QUOTE })}</p>
         <p className="mt-3">{t('kentucky.invalidBody', { quote: KY_OFFSITE_INVALID_QUOTE })}</p>
+        {/* The unconditional one. It is football-specific, which is what the
+            page previously blurred. */}
+        <p className="mt-3">{t('kentucky.footballBody', { quote: KY_FOOTBALL_ONSITE_QUOTE })}</p>
         <p className="mt-3 font-bold">{t('kentucky.deviceWarning')}</p>
       </section>
 

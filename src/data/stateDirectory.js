@@ -21,7 +21,7 @@
 export const STATE_DIRECTORY = [
   { abbr: 'TX', body: 'UIL', mandate: 'wbgt-required', measurement: 'apps-allowed', verified: 'primary', noteKey: 'tx' },
   { abbr: 'GA', body: 'GHSA', mandate: 'wbgt-required', measurement: 'device-required', verified: 'primary', noteKey: 'ga' },
-  { abbr: 'KY', body: 'KHSAA', mandate: 'wbgt-required', measurement: 'device-required', verified: 'primary', noteKey: 'ky' },
+  { abbr: 'KY', body: 'KHSAA', mandate: 'conditional', measurement: 'device-required', verified: 'primary', noteKey: 'ky' },
   { abbr: 'SC', body: 'SCHSL', mandate: 'wbgt-required', measurement: 'device-required', verified: 'primary', noteKey: 'sc' },
   // Iowa's joint guidance says WBGT is "recommended", not mandated — the prior
   // 'wbgt-required' row overstated it. The same document tells schools phone

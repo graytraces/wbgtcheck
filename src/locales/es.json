@@ -466,7 +466,7 @@
     "notes": {
       "tx": "Vigente desde el {{effectiveDate}}; cubre atletismo y banda de marcha. Umbrales regionales Clase 2/3 — vea la guía de Texas. Los recursos WBGT por internet están permitidos explícitamente; no se publica una lista de aprobación.",
       "ga": "Instrumento calibrado en el sitio requerido en cada práctica — vea la guía de Georgia.",
-      "ky": "Cuatro bandas WBGT para alterar competiciones con una parada tajante en lo alto, recomprobadas cada 30 minutos. Una lectura tomada fuera del recinto explícitamente no es válida. Leído de una captura de archivo web — khsaa.org no responde, así que la vigencia no está confirmada.",
+      "ky": "Cuatro bandas WBGT para alterar competiciones con una parada tajante en lo alto, recomprobadas cada 30 minutos. El fútbol americano debe medir en el sitio de competición sin medición externa permitida; los demás deportes reciben la misma regla como recomendación firme. El documento cubre solo alteraciones de competición — no se halló en él un deber general de usar WBGT. Leído de una captura de archivo web; khsaa.org no responde, así que la vigencia no está confirmada.",
       "sc": "Se exige que las escuelas tengan y usen un termómetro WBGT en el sitio; «phone apps are not scientifically approved» (las apps del teléfono no están aprobadas científicamente). La regla de permanencia fija las restricciones — vea la guía de Carolina del Sur.",
       "ia": "El WBGT es recomendado (no obligatorio) todo el año sobre 80 °F, con lecturas cada 30 minutos; la banda de marcha y las porristas tienen filas propias — vea la guía de Iowa.",
       "fl": "La Zachary Martin Act exige monitoreo del estrés por calor todo el año y zonas de enfriamiento, y exige que la lectura se mida en el sitio de la actividad. Los umbrales en sí son pautas de la FHSAA, que no hemos podido abrir.",
@@ -794,13 +794,14 @@
       "monitor": "Vigilar y monitorear a los atletas con atención para actuar si es necesario."
     },
     "recheckNote": "Todas las bandas por debajo del nivel de parada piden además volver a comprobar el WBGT cada {{interval}} minutos para detectar el paso a la banda siguiente.",
-    "scopeNote": "La fuente añade alteraciones por deporte sobre estas — estaciones de hidratación adicionales en los circuitos de campo traviesa, descansos de hidratación arbitrales en hockey sobre césped, y la regla de que en días de varias carreras el WBGT se comprueba antes del primer llamado de cada carrera. Esta tabla recoge solo la columna de todos los deportes; consulte la fuente para su deporte.",
+    "scopeNote": "La fuente añade alteraciones por deporte sobre estas — el fútbol americano lleva la regla de medición más estricta, el fútbol y el hockey sobre césped añaden descansos de hidratación arbitrales, y el campo traviesa añade estaciones de hidratación y una comprobación antes del primer llamado de cada carrera en días de varias carreras. Esta tabla recoge solo la columna de todos los deportes; consulte la fuente para su deporte.",
     "measurementHeading": "Una lectura tomada en otro lugar no cuenta",
-    "measurementBody": "Kentucky enuncia la regla una vez como recomendación firme: «{{quote}}»",
-    "invalidBody": "Y luego otra vez, sin matices: «{{quote}}»",
-    "deviceWarning": "Esto es lo más claro que se pone en todo este sitio. Un pronóstico — incluido este — no puede ser su lectura en Kentucky, porque por definición se toma fuera de la propiedad. Planifique con él; mida en el recinto.",
+    "measurementBody": "En la mayoría de los deportes la regla es una recomendación firme, y está en las filas por deporte y no en la columna de todos los deportes: «{{quote}}»",
+    "invalidBody": "Esas mismas filas van más lejos, aunque siguen en lenguaje de recomendación: «{{quote}}»",
+    "deviceWarning": "Así que para el fútbol americano un pronóstico no puede ser la lectura en absoluto, y para los demás deportes la KHSAA lo desaconseja con la forma más fuerte que admite una recomendación. Planifique con este sitio; mida en el recinto.",
     "sourceHeading": "Fuente",
     "sourceBody": "Las bandas y citas anteriores se leyeron del documento archivado de la KHSAA el {{verifiedOn}}.",
-    "ctaButton": "Planifique con el pronóstico"
+    "ctaButton": "Planifique con el pronóstico",
+    "footballBody": "El fútbol americano es la excepción, y es incondicional — «must», y nada permitido en su lugar: «{{quote}}» Se repite en todas las bandas por debajo del nivel de parada."
   }
 }

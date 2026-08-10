@@ -466,7 +466,7 @@
     "notes": {
       "tx": "Effective {{effectiveDate}}; covers athletics and marching band. Class 2/3 regional thresholds — see the Texas guide. Internet WBGT resources are explicitly allowed; no approval list is published.",
       "ga": "On-site calibrated instrument required at each practice — see the Georgia guide.",
-      "ky": "Four WBGT bands for contest alterations with a hard stop at the top, re-checked every 30 minutes. A reading taken off the venue property is explicitly not valid. Read from a web-archive capture — khsaa.org answers nothing, so currency is unconfirmed.",
+      "ky": "Four WBGT bands for contest alterations with a hard stop at the top, re-checked every 30 minutes. Football must measure at the competition site with no off-site measurement permitted; other sports get the same rule as a strong recommendation. The document covers contest alterations only — a general duty to use WBGT was not found in it. Read from a web-archive capture; khsaa.org answers nothing, so currency is unconfirmed.",
       "sc": "Schools are required to own and use an on-site WBGT thermometer; \"phone apps are not scientifically approved\". Range-hold rule locks in restrictions — see the South Carolina guide.",
       "ia": "WBGT is recommended (not mandated) year-round above 80 °F, readings every 30 minutes; marching band and cheer have their own rows — see the Iowa guide.",
       "fl": "The Zachary Martin Act requires heat-stress monitoring year-round and cooling zones, and requires the reading to be measured at the site of the activity. The thresholds themselves are FHSAA guidelines, which we have not been able to open.",
@@ -794,13 +794,14 @@
       "monitor": "Watch and monitor athletes carefully for necessary action."
     },
     "recheckNote": "Every band below the stop level also calls for the WBGT to be re-checked every {{interval}} minutes to catch a move into the next band.",
-    "scopeNote": "The source adds sport-specific alterations on top of these — extra hydration stations on cross-country courses, referee hydration breaks in field hockey, and a rule that on multi-race days the WBGT is checked before the first call for each race. This table carries only the all-sports column; read the source for your sport.",
+    "scopeNote": "The source adds sport-specific alterations on top of these — football carries the strictest measurement rule, soccer and field hockey add referee hydration breaks, and cross country adds hydration stations plus a check before the first call of each race on multi-race days. This table carries only the all-sports column; read the source for your sport.",
     "measurementHeading": "A reading taken elsewhere does not count",
-    "measurementBody": "Kentucky states the rule once as a strong recommendation: \"{{quote}}\"",
-    "invalidBody": "And then once more, without hedging: \"{{quote}}\"",
-    "deviceWarning": "That is as clear as this gets anywhere on this site. A forecast — including this one — cannot be your Kentucky reading, because it is by definition taken off the property. Plan with it; measure at the venue.",
+    "measurementBody": "In most sports the rule is a strong recommendation, and it sits in the sport-specific rows rather than the all-sports column: \"{{quote}}\"",
+    "invalidBody": "The same rows go further, though still in the language of recommendation: \"{{quote}}\"",
+    "deviceWarning": "So for football a forecast cannot be the reading at all, and for the other sports KHSAA recommends against it in about as strong a form as a recommendation takes. Plan with this site; measure at the venue.",
     "sourceHeading": "Source",
     "sourceBody": "The bands and quotations above were read from the archived KHSAA document on {{verifiedOn}}.",
-    "ctaButton": "Plan with the forecast"
+    "ctaButton": "Plan with the forecast",
+    "footballBody": "Football is the exception, and it is unconditional — \"must\", and nothing permitted in its place: \"{{quote}}\" It repeats in every band below the stop level."
   }
 }
