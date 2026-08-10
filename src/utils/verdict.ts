@@ -84,3 +84,25 @@ export function timelineHours(day: DaySummary): HourVerdict[] {
     (h) => h.localHour >= TIMELINE_START_HOUR && h.localHour <= TIMELINE_END_HOUR,
   )
 }
+
+/**
+ * Which day the hourly strip shows.
+ *
+ * An explicit pick from the week strip always wins. With no pick, the default
+ * is today — except late in the evening, when every hour left in today falls
+ * outside the strip's window and the panel renders "No forecast data for this
+ * period" while the week strip beside it says the hours are shown above. That
+ * is exactly the hour this site is for, planning tomorrow's practice the night
+ * before, so with nothing left to show for today it falls forward to the first
+ * day that has hours.
+ */
+export function pickTimelineDay(
+  days: DaySummary[],
+  selectedDate: string | null,
+): DaySummary | null {
+  const chosen = days.find((d) => d.date === selectedDate)
+  if (chosen) return chosen
+  const today = days[0] ?? null
+  if (today && timelineHours(today).length > 0) return today
+  return days.find((d) => timelineHours(d).length > 0) ?? today
+}

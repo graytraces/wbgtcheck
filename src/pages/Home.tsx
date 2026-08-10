@@ -21,7 +21,13 @@ import { airPolicyForState } from '../data/airPolicyOracle'
 import { airPageKeyByPolicy, pageSEO, statePageKeyByPolicy } from '../seo'
 import { STATE_GUIDES } from '../data/guideRegistry'
 import { buildHourlySeries } from '../utils/nws'
-import { annotateHours, groupByDay, currentVerdict, timelineHours } from '../utils/verdict'
+import {
+  annotateHours,
+  groupByDay,
+  currentVerdict,
+  timelineHours,
+  pickTimelineDay,
+} from '../utils/verdict'
 import {
   UIL_READING_BEFORE_PRACTICE_MAX_MINUTES,
   UIL_READING_INTERVAL_MINUTES,
@@ -82,14 +88,22 @@ export default function Home() {
   // "Monday is black" and "Monday is black at 3pm but amber by 6" are
   // different decisions. Same forecast data, so this is a view change.
   const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  // The rule lives in utils/verdict so it can be tested without a clock:
+  // see pickTimelineDay for why today is not always the answer.
   const selectedDay = useMemo(
-    () => days.find((d) => d.date === selectedDate) ?? today,
-    [days, selectedDate, today],
+    () => pickTimelineDay(days, selectedDate),
+    [days, selectedDate],
   )
   const showingToday = selectedDay !== null && today !== null && selectedDay.date === today.date
+  // Auto-advanced rather than chosen: name it "Tomorrow", which is what the
+  // reader means, instead of the weekday they did not click.
+  const autoAdvancedToNextDay =
+    selectedDate === null && !showingToday && selectedDay !== null && selectedDay.date === days[1]?.date
   const hourlyHeading = showingToday
     ? t('verdict.todayHeading')
-    : t('verdict.dayHeading', {
+    : autoAdvancedToNextDay
+      ? t('verdict.tomorrowHeading')
+      : t('verdict.dayHeading', {
         day: selectedDay
           ? new Intl.DateTimeFormat(i18n.language, { weekday: 'long' }).format(
               new Date(`${selectedDay.date}T12:00:00`),
@@ -270,7 +284,7 @@ export default function Home() {
         </section>
       )}
 
-      {location && status === 'ready' && days.length > 1 && (
+      {location && status === 'ready' && days.length > 1 && selectedDay && (
         <section>
           <h2 className="display-num mb-2 text-xl uppercase">{t('verdict.weekHeading')}</h2>
           <p className="mb-2 text-sm text-ink-muted">{t('verdict.weekDrillHint')}</p>
