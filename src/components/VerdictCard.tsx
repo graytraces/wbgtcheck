@@ -147,6 +147,16 @@ export default function VerdictCard({
               ) : (
                 t('verdict.nwsBadge')
               )}
+              {' · '}
+              {/* Which rule produced this flag. The card said where, when and
+                  how the reading was obtained and never whose ladder it was
+                  read against — while the PNG it exports has always printed
+                  "Georgia GHSA" in its footer. A coach justifying a decision
+                  to an administrator had nothing on screen naming the rule
+                  applied, and in a state with no verified policy that screen
+                  is a NATA fallback that looks exactly like a mandate.
+                  Same t() key the share card uses, so the two cannot drift. */}
+              {t(`policies.${policy.id}`)}
             </div>
           </div>
           <div className="flex flex-col items-center gap-1 text-center">

@@ -6,6 +6,7 @@ import VerdictCard from '../components/VerdictCard'
 import {
   UIL_CLASS_3,
   GHSA,
+  GENERIC_NATA,
   classifyWbgt,
   REMOTE_UNDERESTIMATE_MIN_C,
   REMOTE_UNDERESTIMATE_MAX_C,
@@ -254,6 +255,52 @@ describe('the card says where the day is going, not only where it is', () => {
       />,
     )
     expect(screen.queryByRole('link')).not.toBeInTheDocument()
+  })
+})
+
+/**
+ * The card named where the reading is, when it was taken and how it was
+ * obtained — and never whose rule turned it into a flag. The PNG it exports
+ * has printed "Georgia GHSA" in its footer all along, so the artifact that
+ * leaves the site could justify a decision and the screen it came from could
+ * not. In a state with no verified policy that screen is a NATA fallback
+ * rendered identically to a state mandate.
+ */
+describe('the card names the rule that produced the flag', () => {
+  it('prints the policy beside the reading, for a state ladder and for the fallback', () => {
+    for (const policy of [UIL_CLASS_3, GENERIC_NATA]) {
+      const view = render(
+        <VerdictCard
+          hour={{ ...hourAt(84), flag: classifyWbgt(policy, 84).flag }}
+          policy={policy}
+          locationLabel="Somewhere, US"
+          stateAbbr="OH"
+          timeZone="America/Chicago"
+        />,
+      )
+      // The same key ShareCardButton composes its footer from, so the screen
+      // and the PNG cannot name the rule differently.
+      expect(screen.getByText(en.verdict.wbgtLabel, { exact: false }).textContent).toContain(
+        i18n.t(`policies.${policy.id}`),
+      )
+      view.unmount()
+    }
+  })
+
+  it('distinguishes the fallback from a mandate by name', () => {
+    // The point of the line: these two screens were pixel-identical apart from
+    // the number, and one of them is not anybody's rule.
+    expect(i18n.t('policies.generic')).not.toBe(i18n.t('policies.ghsa'))
+    render(
+      <VerdictCard
+        hour={{ ...hourAt(84), flag: classifyWbgt(GENERIC_NATA, 84).flag }}
+        policy={GENERIC_NATA}
+        locationLabel="Columbus, OH"
+        stateAbbr="OH"
+        timeZone="America/New_York"
+      />,
+    )
+    expect(screen.getByText(i18n.t('policies.generic'), { exact: false })).toBeInTheDocument()
   })
 })
 
