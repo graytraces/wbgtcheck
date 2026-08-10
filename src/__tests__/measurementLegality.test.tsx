@@ -12,6 +12,8 @@ import VerdictCard from '../components/VerdictCard'
 import { requireFreshDist } from '../test/requireDist'
 import {
   MEASUREMENT_STANCES,
+  BAND_COVERAGE,
+  NYSPHSAA_WBGT_SOURCE,
   KY_ONSITE_STRENGTHS,
   stanceOf,
   requiresOnSiteReading,
@@ -316,6 +318,29 @@ describe('the /forecast-or-device page', () => {
         /last resort|último recurso/i,
       )
     }
+  })
+
+  /**
+   * The section in a source `name` is printed to readers, so it is a claim.
+   * Both sentences NYSPHSAA contributes outside the chart are bullets on page
+   * 1, and both were cited to "p.2 WBGT chart" — sending anyone who checked
+   * the citation to the wrong page of a two-page PDF.
+   */
+  it('cites NYSPHSAA page-1 sentences to a page-1 source', () => {
+    const rows = [
+      ...MEASUREMENT_STANCES.filter((r) => r.abbr === 'NY'),
+      ...BAND_COVERAGE.filter((r) => r.abbr === 'NY'),
+    ]
+    expect(rows).toHaveLength(2)
+    for (const row of rows) {
+      expect(row.source.name, 'page-1 sentence cited to the p.2 chart').not.toMatch(/p\.2/)
+      expect(row.source.name).toContain('p.1')
+      // Same document, so the same URL and the same read date.
+      expect(row.source.url).toBe(NYSPHSAA_WBGT_SOURCE.url)
+      expect(row.source.verifiedOn).toBe(NYSPHSAA_WBGT_SOURCE.verifiedOn)
+    }
+    // The chart's own source keeps its own section.
+    expect(NYSPHSAA_WBGT_SOURCE.name).toContain('p.2')
   })
 
   it('quotes the sentence that decides each stance, not a summary of it', () => {

@@ -1673,6 +1673,21 @@ export const NYSPHSAA_WBGT_SOURCE = {
    */
   verifiedOn: '2026-08-10',
 }
+/**
+ * The same file, cited for its PAGE ONE text.
+ *
+ * The section in a source `name` is printed to readers, and both sentences
+ * this document contributes outside the chart — NYSPHSAA_ONFIELD_WBGT_QUOTE
+ * and NYSPHSAA_EITHER_SCALE_QUOTE — are bullets on page 1, not rows of the
+ * page-2 chart. Attributing them to "p.2 WBGT chart" told a reader checking
+ * the citation to look on the wrong page of a two-page PDF. Same URL, same
+ * pinned file, same read date; only the section differs.
+ */
+export const NYSPHSAA_P1_SOURCE = {
+  name: 'NYSPHSAA Heat Index Procedures (updated May 3, 2023), p.1 procedures',
+  url: 'https://s3.amazonaws.com/nysphsaa.org/documents/2023/5/5/Heat_Index_Procedure_5_23.pdf',
+  verifiedOn: '2026-08-10',
+}
 /** The first bullet, which offers WBGT as an alternative to the heat index. */
 export const NYSPHSAA_EITHER_SCALE_QUOTE =
   'Feels Like Temperature (Heat index) or THI using a Wet Bulb Globe Temperature Indicator (see chart below) on the field will be checked 1 hour before the contest/practice by a certified athletic trainer, athletic director, or school designee when the air temperature is 80 degrees (Fahrenheit) or higher.'
@@ -1898,9 +1913,9 @@ export const FHSAA_MONITOR_INTERVAL_MINUTES = 30
  * §41.9.5 — the contest index, and the reason Florida cannot be one ladder.
  *
  * Read from the same handbook (pp.106-108) on 2026-08-10. Its contents are NOT
- * reproduced here: it is a per-sport matrix, twelve sports wide, and rendering
- * it is a separate change. What IS pinned is the fact a coach can be hurt by
- * not knowing — where it stops.
+ * reproduced here: it is a per-sport matrix, thirteen sports wide, and
+ * rendering it is a separate change. What IS pinned is the fact a coach can be
+ * hurt by not knowing — where it stops.
  *
  * §41.8 forbids all outdoor activity at 92.1. §41.9.5's hottest band is
  * ≥ 90.1, and it prescribes hydration breaks per sport rather than stopping
@@ -1913,7 +1928,15 @@ export const FHSAA_MONITOR_INTERVAL_MINUTES = 30
  */
 export const FHSAA_CONTEST_SECTION = '§41.9'
 export const FHSAA_CONTEST_TOP_BAND_MIN_F = 90.1
-export const FHSAA_CONTEST_SPORT_COUNT = 12
+/**
+ * The sports §41.9.5 names, counted off the matrix and not off a memory of it:
+ * Football, Golf, Cross Country, Lacrosse, Soccer, Baseball, Softball, Tennis,
+ * Track & Field, Beach Volleyball, Flag Football, Swimming & Diving, Water
+ * Polo. Thirteen. Re-counted 2026-08-11 from the same pinned handbook
+ * (sha256 d983d6ca…, pp.106-108); "12" undercounted it by one and /florida
+ * printed the number to readers as "about 12 sports".
+ */
+export const FHSAA_CONTEST_SPORT_COUNT = 13
 export const FHSAA_CONTEST_REFERENCE_QUOTE =
   'The index below shall be used for reference for any outdoor event:'
 export const FHSAA_CONTEST_POSTPONE_QUOTE =
@@ -2167,7 +2190,8 @@ export const MEASUREMENT_STANCES = [
   { abbr: 'KY', subject: KHSAA_WBGT_REFERENCE, source: KHSAA_WBGT_REFERENCE.source, quote: KY_FOOTBALL_ONSITE_QUOTE },
   { abbr: 'MA', subject: MIAA, source: MIAA_SOURCE, quote: MIAA_DEVICE_QUOTE },
   { abbr: 'NC', subject: NCHSAA_REFERENCE, source: NCHSAA_REFERENCE.source, quote: NCHSAA_DEVICE_QUOTE },
-  { abbr: 'NY', subject: NYSPHSAA_HEAT_INDEX_REFERENCE, source: NYSPHSAA_WBGT_SOURCE, quote: NYSPHSAA_ONFIELD_WBGT_QUOTE },
+  // p.1: the bullet quoted here is a procedure bullet, not a chart row.
+  { abbr: 'NY', subject: NYSPHSAA_HEAT_INDEX_REFERENCE, source: NYSPHSAA_P1_SOURCE, quote: NYSPHSAA_ONFIELD_WBGT_QUOTE },
   { abbr: 'SC', subject: SCHSL, source: SCHSL.source, quote: SCHSL_DEVICE_QUOTE },
   { abbr: 'TN', subject: TSSAA, source: TSSAA.source, quote: TSSAA_APP_QUOTE },
   { abbr: 'TX', subject: UIL_CLASS_3, source: UIL_FAQ_SOURCE, quote: UIL_FAQ_FORECAST_QUOTE },
@@ -2237,7 +2261,7 @@ export const BAND_COVERAGE = [
      */
     partialCoverage: NCHSAA_CHEER_JURISDICTION_QUOTE,
   },
-  { abbr: 'NY', coverage: 'athletics-only', source: NYSPHSAA_WBGT_SOURCE, scopeQuote: NYSPHSAA_EITHER_SCALE_QUOTE },
+  { abbr: 'NY', coverage: 'athletics-only', source: NYSPHSAA_P1_SOURCE, scopeQuote: NYSPHSAA_EITHER_SCALE_QUOTE },
   { abbr: 'SC', coverage: 'athletics-only', source: SCHSL.source, scopeQuote: SCHSL_TABLE_SCOPE_QUOTE },
   { abbr: 'TN', coverage: 'athletics-only', source: TSSAA.source, scopeQuote: TSSAA_EITHER_QUOTE },
   { abbr: 'TX', coverage: 'named', source: UIL_SOURCE, scopeQuote: UIL_MANDATE_2026_QUOTE },

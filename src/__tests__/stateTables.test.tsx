@@ -15,9 +15,13 @@ import {
   VHSL_LEVEL_COUNT,
   VHSL_ICE_LEVEL,
   VA_ICE_WBGT_F,
+  VA_MIN_TIERS,
   FHSAA_PRACTICE_REFERENCE,
   FHSAA_NO_OUTDOOR_WBGT_F,
   FHSAA_NO_OUTDOOR_QUOTE,
+  FHSAA_CONTEST_SECTION,
+  FHSAA_CONTEST_SPORT_COUNT,
+  FHSAA_CONTEST_REFERENCE_QUOTE,
   FHSAA_CONTEST_TOP_BAND_MIN_F,
   FHSAA_TRIGGER_WBGT_F,
   NYSPHSAA_WBGT_CATEGORIES,
@@ -91,6 +95,27 @@ describe('VHSL participation levels match the document', () => {
       const row = VHSL_REFERENCE.rows.find((r) => r.level === level)
       expect(row, `Level ${level} missing`).toBeDefined()
       expect(row!.sourceLabel, `Level ${level}`).toBe(label)
+    }
+  })
+
+  /**
+   * § 22.1-271.10(B)(3), re-read 2026-08-11 from law.lis.virginia.gov: the
+   * final tier outlines procedures for "the most severe heat or humidity level
+   * BEFORE the level at which all outdoor athletics practices or games shall
+   * be cancelled pursuant to subdivision 2". Five tiers plus a cancel line —
+   * six levels — which is exactly what VHSL prints. The old copy said the
+   * tiers escalate "up to the level at which activity is cancelled", under
+   * which a division could believe a five-level ladder ending in "cancel"
+   * complies, and be one modification tier short.
+   */
+  it('the statute\'s minimum tiers sit BELOW its cancel level, and the copy says so', () => {
+    expect(VA_MIN_TIERS).toBe(5)
+    expect(VHSL_LEVEL_COUNT).toBe(VA_MIN_TIERS + 1)
+    for (const dict of [en, es]) {
+      expect(dict.virginia.tiersBody).not.toMatch(
+        /up to the level at which activity is cancelled|hasta aquel en que la actividad se cancela/i,
+      )
+      expect(dict.virginia.tiersBody).toMatch(/BEFORE|ANTES/)
     }
   })
 
@@ -257,6 +282,32 @@ describe('FHSAA §41.8 practice index matches the handbook', () => {
     expect(FHSAA_TRIGGER_WBGT_F).toBe(82)
     const coolest = FHSAA_PRACTICE_REFERENCE.rows[FHSAA_PRACTICE_REFERENCE.rows.length - 1]
     expect(bounds(coolest.sourceLabel).high).toBeCloseTo(FHSAA_TRIGGER_WBGT_F, 5)
+  })
+
+  /**
+   * The sports §41.9.5 names, counted off the matrix rather than recalled:
+   * Football, Golf, Cross Country, Lacrosse, Soccer, Baseball, Softball,
+   * Tennis, Track & Field, Beach Volleyball, Flag Football, Swimming & Diving,
+   * Water Polo. Thirteen, re-counted 2026-08-11 from pp.106-108 of the pinned
+   * handbook. It was 12, and /florida printed the number to readers.
+   */
+  it('the contest index is thirteen sports wide, and the page states it exactly', () => {
+    expect(FHSAA_CONTEST_SPORT_COUNT).toBe(13)
+    for (const dict of [en, es]) {
+      // A counted number does not get hedged.
+      expect(dict.florida.contestBody).not.toMatch(/about \{\{sports\}\}|unos \{\{sports\}\}/)
+    }
+    renderAt('/en/florida', <Florida />)
+    expect(
+      screen.getByText(
+        i18n.t('florida.contestBody', {
+          section: FHSAA_CONTEST_SECTION,
+          sports: FHSAA_CONTEST_SPORT_COUNT,
+          quote: FHSAA_CONTEST_REFERENCE_QUOTE,
+          top: FHSAA_CONTEST_TOP_BAND_MIN_F,
+        }),
+      ),
+    ).toBeInTheDocument()
   })
 
   it('renders every band and the oracle numbers (EN)', () => {
