@@ -136,6 +136,7 @@ async function check(page, width, label) {
   const result = await page.evaluate(
     ([finder]) => {
       const doc = document.documentElement
+      const region0 = () => document.querySelector('.scroll-x-fade')
       const overflow = doc.scrollWidth - doc.clientWidth
       // eslint-disable-next-line no-new-func
       const offender = overflow > 1 ? new Function(`return (${finder})()`)() : null
@@ -155,25 +156,62 @@ async function check(page, width, label) {
           )
         }
       }
+      // The /states notes are prose in a table that is ALLOWED to scroll, so
+      // the sweep above cannot see them: moving them to their own row removed
+      // the page's horizontal scroll and left the note laid out against the
+      // table's columns, ~120px of every one of them off-screen at 390px
+      // ("covering practice AND comp…"). The Notes column is the reason that
+      // page exists, so its geometry gets asserted rather than assumed.
+      const notes = []
+      for (const el of document.querySelectorAll('[data-phone-note]')) {
+        if (el.getClientRects().length === 0) continue // hidden variant (desktop)
+        const region = el.closest('.scroll-x-fade')
+        if (!region || region.clientWidth === 0) continue
+        const rr = region.getBoundingClientRect()
+        const er = el.getBoundingClientRect()
+        const indent = Math.round(er.left - rr.left)
+        const overhang = Math.round(er.right - rr.right)
+        if (indent < -1 || overhang > 1) {
+          notes.push(`phone note clipped: indent ${indent}, overhang ${overhang} of ${region.clientWidth}px`)
+        }
+      }
+      // And it must stay put when the table is scrolled across, otherwise a
+      // reader who looks at the governing body loses the note entirely.
+      const before = region0()?.scrollLeft ?? 0
+      if (region0()) region0().scrollLeft = 9999
+      for (const el of document.querySelectorAll('[data-phone-note]')) {
+        if (el.getClientRects().length === 0) continue
+        const region = el.closest('.scroll-x-fade')
+        if (!region || region.clientWidth === 0) continue
+        const rr = region.getBoundingClientRect()
+        const er = el.getBoundingClientRect()
+        const indent = Math.round(er.left - rr.left)
+        if (indent < -1) notes.push(`phone note slid out under scroll: indent ${indent}`)
+        break // one is enough; they share a construction
+      }
+      if (region0()) region0().scrollLeft = before
+
       return {
         scrollWidth: doc.scrollWidth,
         clientWidth: doc.clientWidth,
         overflow,
         offender,
         tables,
+        notes,
       }
     },
     [findOffender.toString()],
   )
   checked++
-  if (result.overflow > 1 || result.tables.length > 0) {
+  if (result.overflow > 1 || result.tables.length > 0 || result.notes.length > 0) {
     failures++
     console.log(
       `FAIL ${width}px ${label} — scrollWidth ${result.scrollWidth} > clientWidth ${result.clientWidth} (+${result.overflow}px)` +
         (result.offender
           ? `\n     offender: ${result.offender.sel} (width ${result.offender.width}, right ${result.offender.right})`
           : '') +
-        result.tables.map((tv) => `\n     ${tv}`).join(''),
+        result.tables.map((tv) => `\n     ${tv}`).join('') +
+        result.notes.map((nv) => `\n     ${nv}`).join(''),
     )
   }
 }

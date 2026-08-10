@@ -98,7 +98,11 @@ export default function States() {
         aria-labelledby="states-table-heading"
         tabIndex={0}
       >
-        <p className="sr-only">{t('states.tableScrollHint')}</p>
+        {/* Arrow keys are the route in for a keyboard user and nonsense to a
+            touch one, who was being told to press keys they do not have. */}
+        <p className="sr-only hidden [@media(pointer:fine)]:block">
+          {t('states.tableScrollHint')}
+        </p>
         <table
           className="w-full min-w-[26rem] border-collapse text-sm sm:min-w-[44rem]"
           aria-labelledby="states-table-heading"
@@ -115,7 +119,12 @@ export default function States() {
                   the mandate to x=413 at 390px — past the edge. */}
               <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('states.colMandate')}</th>
               <th className="py-2 pr-3 font-bold uppercase tracking-wide">{t('states.colBody')}</th>
-              <th className="py-2 font-bold uppercase tracking-wide">{t('states.colNote')}</th>
+              {/* Hidden on phones like the cells under it. Left visible, it
+                  held open a 50px column with a heading and nothing beneath
+                  it — the notes are in their own row down there. */}
+              <th className="hidden py-2 font-bold uppercase tracking-wide sm:table-cell">
+                {t('states.colNote')}
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -142,8 +151,13 @@ export default function States() {
                 <tr key={row.abbr} className="border-b border-line align-top sm:border-b">
                   {/* Row header, not a plain cell: in a five-column prose
                       table a screen reader otherwise reads the mandate and the
-                      note without ever saying which state they belong to. */}
-                  <th scope="row" className="display-num py-2 pr-3 text-left text-xl font-normal">
+                      note without ever saying which state they belong to. The
+                      id is what the phone-only note row below points at. */}
+                  <th
+                    scope="row"
+                    id={`state-row-${row.abbr}`}
+                    className="display-num py-2 pr-3 text-left text-xl font-normal"
+                  >
                     {row.abbr}
                   </th>
                   <td className="py-2 pr-3">
@@ -164,8 +178,37 @@ export default function States() {
               return [
                 mainRow,
                 <tr key={`${row.abbr}-note`} className="border-b border-line sm:hidden">
-                  <td colSpan={4} className="pb-2 text-sm text-ink-muted">
-                    {note}
+                  {/* Moving the note to its own row stopped the PAGE from
+                      scrolling sideways and did nothing about the note, which
+                      still laid out inside the table's own overflow container:
+                      measured at 390px, region 358 wide against a 478px cell,
+                      so ~25% of every note sat off-screen — "covering practice
+                      AND comp…", "outdoor activity st…". The Notes column is
+                      the reason this page exists.
+
+                      So the width comes from the SCROLL CONTAINER, not from
+                      the table's columns: one page column wide (the layout is
+                      px-4 either side), pinned to the container's left edge so
+                      it stays put when the table is scrolled across.
+
+                      `headers` rather than a second `<th scope="row">` in this
+                      row: without an association a screen reader in table mode
+                      reads a paragraph of policy with nothing saying which
+                      state it belongs to, but an sr-only th is
+                      position:absolute, and Chromium still assigns it the
+                      first column — measured, it pushed this cell 58px in and
+                      clipped that much off every note again. Pointing at the
+                      row header that already exists costs no width. */}
+                  <td colSpan={4} headers={`state-row-${row.abbr}`} className="p-0">
+                    {/* data-phone-note is the handle the browser sweep needs:
+                        this is a geometry claim, and jsdom has no layout to
+                        make it against. */}
+                    <div
+                      data-phone-note
+                      className="sticky left-0 w-[calc(100vw-2rem)] pb-2 text-sm text-ink-muted"
+                    >
+                      {note}
+                    </div>
                   </td>
                 </tr>,
               ]

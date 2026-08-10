@@ -536,6 +536,67 @@ describe('the states directory table is readable and reachable', () => {
     expect(desktopNote, 'the desktop notes cell disappeared').toBeTruthy()
   })
 
+  /**
+   * Two things the note row was still getting wrong after it moved.
+   *
+   * Width: it laid out against the TABLE's columns rather than the scroll
+   * container, so measured at 390px the region was 358 wide against a 478px
+   * cell and ~25% of every note sat off-screen — "covering practice AND
+   * comp…", "outdoor activity st…". The wrapper now takes its width from the
+   * page column and pins to the container's left edge; the geometry itself is
+   * asserted in scripts/checks/no-hscroll-sweep.mjs, because jsdom has no
+   * layout to assert it against.
+   *
+   * Association: with no row header of its own, a screen reader in table mode
+   * read a paragraph of policy with nothing saying which state it belonged to.
+   * An sr-only `<th scope="row">` is the obvious fix and is
+   * position:absolute — Chromium still assigns it the first column, which
+   * measured 58px of the note's width straight back off. `headers` points at
+   * the row header that already exists and costs nothing.
+   */
+  it('ties each note to its state and bounds it by the scroll container', () => {
+    const { container } = renderStates()
+    const rows = [...container.querySelectorAll('tbody tr')]
+    const noteRows = rows.filter((r) => !r.querySelector('th[scope="row"]'))
+
+    for (const [i, noteRow] of noteRows.entries()) {
+      const abbr = STATE_DIRECTORY[i].abbr
+      const cell = noteRow.querySelector('td')!
+      // The header it names must exist, and must be the one carrying the state.
+      const headerId = cell.getAttribute('headers')
+      expect(headerId, `${abbr} note has no row header`).toBeTruthy()
+      const header = container.querySelector(`#${headerId}`)!
+      expect(header, `${abbr} note points at a header that is not there`).toBeTruthy()
+      expect(header.getAttribute('scope')).toBe('row')
+      expect(header.textContent).toBe(abbr)
+
+      // The note's width comes from the viewport column, not from the cell.
+      const wrapper = cell.querySelector('[data-phone-note]')!
+      expect(wrapper, `${abbr} note lost its wrapper`).toBeTruthy()
+      expect(wrapper.className).toContain('w-[calc(100vw-2rem)]')
+      expect(wrapper.className).toContain('sticky')
+    }
+  })
+
+  /**
+   * The hint said "use the arrow keys to reach the remaining columns" to
+   * everyone, including the touch reader who has none. It is the keyboard's
+   * only route into a focusable scroll container, so it stays — for pointers
+   * that can press keys.
+   */
+  it('offers the arrow-key hint only where there are arrow keys', () => {
+    const { container } = renderStates()
+    const hint = [...container.querySelectorAll('p')].find(
+      (p) => p.textContent === en.states.tableScrollHint,
+    )!
+    expect(hint, 'the keyboard hint is gone entirely').toBeTruthy()
+    expect(hint.className).toContain('[@media(pointer:fine)]:block')
+    expect(hint.className).toContain('hidden')
+    // Still announced, not merely visible — it is advice for a screen reader
+    // driving a scroll container by keyboard.
+    expect(hint.className).toContain('sr-only')
+  })
+
   it('gives the table a name and the scroll container a keyboard route in', () => {
     const { container } = renderStates()
     const table = container.querySelector('table')!
