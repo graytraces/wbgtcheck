@@ -52,6 +52,10 @@ const PAGE = `<!doctype html><meta charset="utf-8"><style>
   window.__draw = (model) => drawShareCard(document.getElementById('c'), model)
 </script>`
 
+// No blockAnalytics() here on purpose: this server never serves app HTML. It
+// answers every request with PAGE above — a bare canvas harness that imports
+// only shareCard.mjs — so no tag, and nothing to block. If this ever starts
+// loading dist/, it needs the helper like every other check.
 const server = http.createServer(async (req, res) => {
   const url = req.url.split('?')[0]
   if (url === '/anton.woff2') {

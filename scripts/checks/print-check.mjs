@@ -16,6 +16,7 @@ import http from 'node:http'
 import { readFile, writeFile, mkdir } from 'node:fs/promises'
 import path from 'node:path'
 import { createRequire } from 'node:module'
+import { blockAnalytics } from './blockAnalytics.mjs'
 const require = createRequire(WORKSPACE_PKG)
 const { chromium } = require('playwright')
 
@@ -68,7 +69,7 @@ const WBGT_FIXTURE = {
 }
 await ctx.route('**/api/wbgt*', (r) => r.fulfill({ contentType: 'application/json', body: JSON.stringify(WBGT_FIXTURE) }))
 await ctx.route('**/api/aqi*', (r) => r.fulfill({ status: 503, body: 'x' }))
-await ctx.route('**googletagmanager.com/**', (r) => r.abort())
+await blockAnalytics(ctx)
 const page = await ctx.newPage()
 await page.addInitScript((entries) => {
   localStorage.setItem('wbgt-location', JSON.stringify({ lat: 30.27, lon: -97.74, label: 'Austin, TX', stateAbbr: 'TX' }))

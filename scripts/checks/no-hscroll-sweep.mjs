@@ -21,6 +21,7 @@ import http from 'node:http'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { createRequire } from 'node:module'
+import { blockAnalytics } from './blockAnalytics.mjs'
 
 const require = createRequire(WORKSPACE_PKG)
 const { chromium } = require('playwright')
@@ -183,6 +184,7 @@ for (const width of WIDTHS) {
     viewport: { width, height: 844 },
     serviceWorkers: 'block',
   })
+  await blockAnalytics(context)
   const page = await context.newPage()
   for (const lang of LANGS) {
     for (const route of ROUTES) {
@@ -202,6 +204,7 @@ for (const width of WIDTHS) {
     viewport: { width, height: 844 },
     serviceWorkers: 'block',
   })
+  await blockAnalytics(readyContext)
   await readyContext.route('**/api/wbgt*', (route) =>
     route.fulfill({ contentType: 'application/json', body: JSON.stringify(WBGT_FIXTURE) }),
   )

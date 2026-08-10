@@ -21,6 +21,7 @@ import http from 'node:http'
 import { readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { createRequire } from 'node:module'
+import { blockAnalytics } from './blockAnalytics.mjs'
 const require = createRequire(WORKSPACE_PKG)
 const { chromium } = require('playwright')
 
@@ -65,7 +66,7 @@ console.log(`\n=== boot ${LABEL} ===`)
 {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' })
   await ctx.route('**/assets/*.js', (r) => r.abort())
-  await ctx.route('**googletagmanager.com/**', (r) => r.abort())
+  await blockAnalytics(ctx)
   const page = await ctx.newPage()
   for (const route of ROUTES) {
     await page.goto(`http://localhost:${PORT}${route}`, { waitUntil: 'domcontentloaded' })
@@ -96,7 +97,7 @@ console.log(`\n=== boot ${LABEL} ===`)
 // headings match what hydration renders.
 {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: 'block' })
-  await ctx.route('**googletagmanager.com/**', (r) => r.abort())
+  await blockAnalytics(ctx)
   await ctx.route('**/api/**', (r) => r.fulfill({ status: 503, body: 'x' }))
   const page = await ctx.newPage()
   for (const route of ROUTES) {

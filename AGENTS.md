@@ -71,6 +71,14 @@ jsdom에는 캔버스가 없고, 실제로 나간 버그들이 **엔진별 차�
 Playwright는 워크스페이스 루트 설치본을 쓴다(`../node_modules`) — 이 레포에는 devDependency로
 두지 않는다. 산출물(스크린샷·PDF)은 `.omc/screenshots/`에 떨어지며 git 추적 대상이 아니다.
 
+⚠️ **페이지를 로드하는 모든 체크 스크립트는 GA를 차단한다.** 체크는 실제 `dist/`를 서빙하고
+그 HTML에는 프로덕션 측정 ID가 그대로 들어 있으므로, 차단하지 않은 1회 로드 = GA4 속성의
+실제 page_view 1건이다(스윕은 1회 실행에 168렌더). 운영자 트래픽을 걸러내는 장치는 코드에도
+GA4 설정에도 없다. 브라우저를 여는 컨텍스트마다 `blockAnalytics()`
+(`scripts/checks/blockAnalytics.mjs`)를 **첫 네비게이션 전에** 호출할 것 — 컨텍스트가 2개면
+2번이다. `checkScriptsBlockAnalytics.test.ts`가 이를 강제하며, 면제는 파일명과 사유를 그
+테스트에 명시해야 한다(누락으로 면제되지 않는다).
+
 ## VALID_TOOLS Slug / 라우트
 
 `src/utils/routeValidation.ts`에 정의. 새 페이지 추가 시 반드시 slug 등록 — Worker가 `isValidPath()`로 pre-validation하므로 누락 시 Googlebot 포함 모든 요청에 404.
