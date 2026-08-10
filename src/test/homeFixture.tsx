@@ -120,6 +120,14 @@ export function stubForecastFetch(
      * state observable, which is what the reader actually sees.
      */
     delayMs?: number
+    /**
+     * ZIP → the place zippopotam answers with, so a test can drive the ZIP
+     * entry path. Anything not listed 404s, which is what the real service
+     * does. Needed to exercise re-entering the ZIP the reader is ALREADY on:
+     * the lookup is a deterministic centroid, so it returns coordinates
+     * identical to the ones already loaded.
+     */
+    zips?: Record<string, { lat: number; lon: number; city: string; stateAbbr: string }>
   } = {},
 ) {
   const start = Date.now() - 2 * 3_600_000
@@ -155,6 +163,20 @@ export function stubForecastFetch(
             windSpeed: fixture.windSpeed,
             skyCover: fixture.skyCover,
           },
+        })
+      }
+      if (url.includes('api.zippopotam.us/us/')) {
+        const place = options.zips?.[url.split('/').pop() ?? '']
+        if (!place) return Promise.resolve({ ok: false, status: 404, json: async () => ({}) })
+        return ok({
+          places: [
+            {
+              'place name': place.city,
+              latitude: String(place.lat),
+              longitude: String(place.lon),
+              'state abbreviation': place.stateAbbr,
+            },
+          ],
         })
       }
       if (url.includes('/api/aqi')) {

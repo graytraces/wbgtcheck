@@ -158,6 +158,11 @@ async function fetchWbgtDev(lat: number, lon: number): Promise<WbgtApiResponse> 
   }
 }
 
+/** Identity of a forecast point — see `loadedPointRef` in the hook. */
+function pointKey(lat: number, lon: number): string {
+  return `${lat},${lon}`
+}
+
 async function fetchWbgt(lat: number, lon: number): Promise<WbgtApiResponse> {
   if (import.meta.env.DEV) return fetchWbgtDev(lat, lon)
   const res = await fetchWithTimeout(`/api/wbgt?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}`)
@@ -206,6 +211,15 @@ export function useWbgt() {
    */
   const lat = location?.lat ?? null
   const lon = location?.lon ?? null
+  /**
+   * The point `data` is a forecast FOR, written only when one lands.
+   *
+   * `data !== null` cannot answer that question: after a move whose forecast
+   * failed, `data` still holds the PREVIOUS point's numbers. This is a heat
+   * safety tool, so the one thing it must never do is show one town's WBGT
+   * under another town's name — hence a key rather than a truthiness check.
+   */
+  const loadedPointRef = useRef<string | null>(null)
   useEffect(() => {
     if (lat === null || lon === null) return
     let cancelled = false
@@ -214,12 +228,14 @@ export function useWbgt() {
     fetchWbgt(lat, lon)
       .then((res) => {
         if (cancelled) return
+        loadedPointRef.current = pointKey(lat, lon)
         setData(res)
         setFetchedAt(Date.now())
         setStatus('ready')
       })
       .catch(() => {
         if (cancelled) return
+        loadedPointRef.current = null
         setStatus('error')
         setErrorKey('location.forecastFailed')
       })
@@ -233,7 +249,47 @@ export function useWbgt() {
   }, [])
 
   const applyLocation = useCallback(
-    (loc: SavedLocation, method: 'zip' | 'geolocation') => {
+    (incoming: SavedLocation, method: 'zip' | 'geolocation') => {
+      /**
+       * Re-applying the point the reader is ALREADY on.
+       *
+       * `setZip` and `useMyLocation` both set `status = 'locating'` before they
+       * know where they are going, and the fetch effect above — deliberately
+       * keyed on the POINT — is the only code that ever leaves that state. When
+       * the incoming coordinates equal the current ones, its deps do not
+       * change, so it never re-runs and `status` stays 'locating' forever: Home
+       * replaces the whole ready page with "Loading…", and neither escape it
+       * offers (the retry lives in the `'error'` branch, the refresh in the
+       * `'ready'` one) is reachable. Only a reload gets out.
+       *
+       * Two ordinary gestures land here. Retyping the ZIP you are on returns
+       * the same centroid by construction, and tapping "Use my location" twice
+       * inside `maximumAge` returns the browser's cached position — bit for
+       * bit the same reading.
+       */
+      const samePoint =
+        location !== null && location.lat === incoming.lat && location.lon === incoming.lon
+      /**
+       * Nor may re-applying it FORGET anything. The geolocation path knows only
+       * coordinates: it labels the point with them and saves `stateAbbr: null`,
+       * and the NWS state adoption below fills both in afterwards. Re-applying
+       * that raw result over an adopted location un-adopts it — and with a null
+       * state the policy re-derivation below falls back to the state default,
+       * so a Texas coach who explicitly chose UIL Class 3 was silently moved to
+       * the Class 2 default by tapping the location button a second time.
+       */
+      const loc: SavedLocation = samePoint
+        ? { ...incoming, label: location.label, stateAbbr: location.stateAbbr ?? incoming.stateAbbr }
+        : incoming
+      if (samePoint) {
+        // Restore the terminal status the fetch effect will not. Restoring
+        // 'ready' is only honest when the forecast for this exact point is in
+        // hand; when it is not (the first attempt failed), re-submitting can
+        // only mean retry — otherwise the pin merely moves from 'locating' to
+        // 'loading', which has no way out either.
+        if (loadedPointRef.current === pointKey(incoming.lat, incoming.lon)) setStatus('ready')
+        else setFetchTick((t) => t + 1)
+      }
       setLocation(loc)
       save(LOCATION_KEY, loc)
       trackLocationSet(method)
@@ -247,7 +303,7 @@ export function useWbgt() {
         return resolved
       })
     },
-    [],
+    [location],
   )
 
   const setZip = useCallback(
