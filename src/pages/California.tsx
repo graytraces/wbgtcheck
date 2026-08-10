@@ -14,6 +14,10 @@ import {
   CIF_CATEGORY_ROSTER_URL,
   CIF_ACCLIMATIZATION_DAYS_MIN,
   CIF_ACCLIMATIZATION_DAYS_MAX,
+  CIF_FIVE_DAY_QUOTE,
+  CIF_ONE_PRACTICE_QUOTE,
+  CIF_FOOTBALL_EQUIPMENT_QUOTE,
+  CIF_COOLING_METHOD_QUOTE,
   CIF_HEAT_SOURCE,
 } from '../data/policyOracle'
 
@@ -98,6 +102,22 @@ export default function California() {
             min: CIF_ACCLIMATIZATION_DAYS_MIN,
             max: CIF_ACCLIMATIZATION_DAYS_MAX,
           })}
+        </p>
+        <p className="mt-3">{t('california.coolingMethodBody', { cooling: CIF_COOLING_METHOD_QUOTE })}</p>
+      </section>
+
+      {/* The binding half. Quoted in CIF's own "shall" because describing it
+          as a gradual build turned a mandate into a suggestion. */}
+      <section className="border-2 border-flag-red bg-surface p-5">
+        <h2 className="display-num mb-2 text-2xl uppercase">
+          {t('california.acclimatizationMandateHeading')}
+        </h2>
+        <p>{t('california.acclimatizationMandateBody', { fiveDay: CIF_FIVE_DAY_QUOTE })}</p>
+        <p className="mt-3">
+          {t('california.acclimatizationLimitsBody', { onePractice: CIF_ONE_PRACTICE_QUOTE })}
+        </p>
+        <p className="mt-3">
+          {t('california.acclimatizationFootballBody', { football: CIF_FOOTBALL_EQUIPMENT_QUOTE })}
         </p>
       </section>
 

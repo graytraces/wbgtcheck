@@ -766,12 +766,17 @@
     "noDeviceBody": "Y después hace algo que ninguna otra asociación de este sitio hace. Para las escuelas que no tienen medidor, nombra una fuente en línea: «{{quote}}» — enlazando el propio mapa WBGT de la NOAA.",
     "noaaLink": "El mapa WBGT de la NOAA que enlaza la política",
     "stillNotCompliance": "Eso hace de California uno de los pocos estados donde una lectura WBGT en línea está contemplada explícitamente. Aun así, no convierte a este sitio en su lectura oficial: la CIF nombra el mapa de la NOAA, no este. Úselo para planificar y siga el procedimiento de su escuela para la lectura que cuenta.",
-    "acclimatizationHeading": "Aclimatación de otoño",
-    "acclimatizationBody": "La política pide una progresión gradual: empezar con sesiones ligeras en condiciones más frescas y luego aumentar intensidad y duración a lo largo de {{min}} a {{max}} días, con educación sobre hidratación y prácticas movidas a las horas más frescas del día.",
+    "acclimatizationHeading": "Aclimatación de otoño: una recomendación y un mandato",
+    "acclimatizationBody": "La política abre con un plan de cuatro pasos que describe como orientación — aumentar intensidad y duración a lo largo de {{min}} a {{max}} días, enseñar hidratación, mover las prácticas a las horas más frescas y mantener un método de enfriamiento corporal completo en cada recinto.",
     "airLink": "California también tiene una política de calidad del aire aparte — vea la guía de calidad del aire de la CIF",
     "sourceHeading": "Fuente",
     "sourceBody": "Todos los umbrales y citas anteriores se leyeron de la Constitución y Estatutos de la CIF el {{verifiedOn}}.",
-    "ctaButton": "Planifique con las banderas de California"
+    "ctaButton": "Planifique con las banderas de California",
+    "acclimatizationMandateHeading": "El periodo de cinco días no es orientativo",
+    "acclimatizationMandateBody": "Lo que sigue a ese plan está escrito con «shall» y rige la primera semana de pretemporada — donde la enfermedad por calor se concentra de verdad: «{{fiveDay}}»",
+    "acclimatizationLimitsBody": "Dentro de ese periodo los límites son fijos: «{{onePractice}}»",
+    "acclimatizationFootballBody": "Y el fútbol americano añade una progresión de protecciones a lo largo de esos mismos días: «{{football}}»",
+    "coolingMethodBody": "El requisito de enfriamiento es aparte de todo esto y aplica en todas partes: «{{cooling}}»"
   },
   "kentucky": {
     "pageTitle": "Alteraciones de competición por WBGT de la KHSAA de Kentucky",

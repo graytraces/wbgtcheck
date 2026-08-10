@@ -39,6 +39,10 @@ import {
   CIF_CATEGORY_ROSTER_URL,
   CIF_ACCLIMATIZATION_DAYS_MIN,
   CIF_ACCLIMATIZATION_DAYS_MAX,
+  CIF_FIVE_DAY_QUOTE,
+  CIF_ONE_PRACTICE_QUOTE,
+  CIF_FOOTBALL_EQUIPMENT_QUOTE,
+  CIF_COOLING_METHOD_QUOTE,
   CIF_HEAT_SOURCE,
   FL_STATUTE_SECTION,
   FL_STATUTE_CITATION,
@@ -796,6 +800,19 @@ function generateBodyContent(lang, page) {
           max: CIF_ACCLIMATIZATION_DAYS_MAX,
         }),
       )}</p>`,
+    )
+    push(
+      `<p>${escapeHtml(t('california.coolingMethodBody', { cooling: CIF_COOLING_METHOD_QUOTE }))}</p>`,
+    )
+    push(`<h2>${escapeHtml(t('california.acclimatizationMandateHeading'))}</h2>`)
+    push(
+      `<p>${escapeHtml(t('california.acclimatizationMandateBody', { fiveDay: CIF_FIVE_DAY_QUOTE }))}</p>`,
+    )
+    push(
+      `<p>${escapeHtml(t('california.acclimatizationLimitsBody', { onePractice: CIF_ONE_PRACTICE_QUOTE }))}</p>`,
+    )
+    push(
+      `<p>${escapeHtml(t('california.acclimatizationFootballBody', { football: CIF_FOOTBALL_EQUIPMENT_QUOTE }))}</p>`,
     )
     push(
       `<h2>${escapeHtml(t('california.sourceHeading'))}</h2><p>${escapeHtml(t('california.sourceBody', { verifiedOn: CIF_HEAT_SOURCE.verifiedOn }))} <a href="${CIF_HEAT_SOURCE.url}">${escapeHtml(CIF_HEAT_SOURCE.name)}</a></p>`,

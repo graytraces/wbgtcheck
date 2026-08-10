@@ -967,6 +967,32 @@ export const CIF_CATEGORY_ROSTER_URL = 'https://www.cifstate.org/sports-medicine
 export const CIF_ACCLIMATIZATION_DAYS_MIN = 10
 export const CIF_ACCLIMATIZATION_DAYS_MAX = 14
 
+/**
+ * The BINDING half of p.104, which this site initially skipped entirely.
+ *
+ * The four-step plan above it is advisory ("the following is a four-step
+ * plan"). Everything below is written in SHALL, applies to every fall outdoor
+ * sport, and governs the first week of preseason — which is when exertional
+ * heat illness actually concentrates. Describing it as a gradual build, as the
+ * copy once did, flattened a mandate into a suggestion.
+ */
+export const CIF_ACCLIMATIZATION_PERIOD_DAYS = 5
+export const CIF_ACCLIMATIZATION_MAX_PRACTICES_PER_DAY = 1
+export const CIF_ACCLIMATIZATION_PRACTICE_MAX_HOURS = 2
+export const CIF_FOOTBALL_HELMET_ONLY_DAYS = 3
+export const CIF_FOOTBALL_SHOULDER_PAD_DAYS = 2
+export const CIF_FOOTBALL_FULL_PADS_DAY = 6
+
+export const CIF_FIVE_DAY_QUOTE =
+  'Preseason practice shall begin with a five-day acclimatization period for all Fall student-athletes. All student-athletes, including those who arrive at preseason practice after the first day of practice, are required to undergo a five-day acclimatization period.'
+export const CIF_ONE_PRACTICE_QUOTE =
+  'Participants shall not engage in more than one on-field practice per day during the five-day acclimatization period. On-field practices shall last no longer than two hours.'
+export const CIF_FOOTBALL_EQUIPMENT_QUOTE =
+  'During the first three days of practice or testing activity, helmets shall be the only protective equipment student-athletes may wear. During the next two days of practice or testing activity, helmets, and shoulder pads shall be the only protective equipment student-athletes may wear. Student-athletes may practice in full pads on the sixth day of practice or testing activity.'
+/** Step 4's equipment sentence — the cooling method must be at every venue. */
+export const CIF_COOLING_METHOD_QUOTE =
+  'The school will have available a method to institute whole-body cooling to treat a student-athlete with exertional heat illness, especially heat stroke (e.g., ice tub, \u201ctaco tarp\u201d, ice towels) which is easily accessible at all practice and contest venues.'
+
 export const CIF_HEAT_SOURCE = {
   name: 'CIF 2026-27 Constitution and Bylaws \u2014 Extreme Heat and Air Quality Policy (pp.102-104)',
   url: 'https://cifstate.org/governance/constitution/EXTREME_HEAT_AND_AIR_QUALITY_POLICY.pdf',

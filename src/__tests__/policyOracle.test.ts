@@ -19,6 +19,10 @@ import {
   CIF_CATEGORY_1,
   CIF_CATEGORY_3,
   CIF_NO_DEVICE_QUOTE,
+  CIF_FIVE_DAY_QUOTE,
+  CIF_ONE_PRACTICE_QUOTE,
+  CIF_FOOTBALL_EQUIPMENT_QUOTE,
+  CIF_ACCLIMATIZATION_PERIOD_DAYS,
   CIF_NOAA_TOOL_URL,
   FL_ONSITE_MEASUREMENT_QUOTE,
   FL_YEAR_ROUND_QUOTE,
@@ -265,6 +269,25 @@ describe('policy oracle — guideline facts vs primary sources', () => {
       expect(Object.values(POLICIES)).not.toContain(policy)
     }
     expect(Object.keys(POLICIES)).not.toContain('cif-cat-1')
+  })
+
+  it("CIF's five-day acclimatization is quoted as a mandate, not a suggestion", () => {
+    // The page originally carried only the advisory four-step plan and called
+    // the whole thing a gradual build. The binding half is written in SHALL,
+    // covers every fall outdoor sport, and governs the week heat illness
+    // concentrates in.
+    expect(CIF_ACCLIMATIZATION_PERIOD_DAYS).toBe(5)
+    for (const quote of [CIF_FIVE_DAY_QUOTE, CIF_ONE_PRACTICE_QUOTE, CIF_FOOTBALL_EQUIPMENT_QUOTE]) {
+      expect(quote).toContain('shall')
+    }
+    expect(CIF_ONE_PRACTICE_QUOTE).toContain('no longer than two hours')
+    expect(CIF_FOOTBALL_EQUIPMENT_QUOTE).toContain('full pads on the sixth day')
+    for (const locale of [en, es]) {
+      expect(locale.california.acclimatizationMandateBody).toContain('{{fiveDay}}')
+      expect(locale.california.acclimatizationFootballBody).toContain('{{football}}')
+      // The advisory framing must not describe the mandatory period.
+      expect(locale.california.acclimatizationBody.toLowerCase()).not.toContain('asks for a gradual build')
+    }
   })
 
   it('CIF names an online WBGT source for schools without a meter', () => {

@@ -766,12 +766,17 @@
     "noDeviceBody": "And then it does something no other association on this site does. For schools that do not own a meter, it names an online source: \"{{quote}}\" — linking NOAA's own WBGT map.",
     "noaaLink": "The NOAA WBGT map the policy links",
     "stillNotCompliance": "That makes California one of the few states where an online WBGT reading is explicitly contemplated. It still does not make this site your official reading: CIF names NOAA's map, not this one. Use this to plan, and follow your school's own procedure for the reading that counts.",
-    "acclimatizationHeading": "Fall acclimatization",
-    "acclimatizationBody": "The policy asks for a gradual build: start with light workouts in cooler conditions, then increase intensity and duration over {{min}} to {{max}} days, with hydration education and practices moved to the cooler ends of the day.",
+    "acclimatizationHeading": "Fall acclimatization: a recommendation and a mandate",
+    "acclimatizationBody": "The policy opens with a four-step plan it describes as guidance — build intensity and duration over {{min}} to {{max}} days, teach hydration, move practices to the cooler ends of the day, and keep a whole-body cooling method at every venue.",
     "airLink": "California also has a separate air-quality policy — see the CIF air quality guide",
     "sourceHeading": "Source",
     "sourceBody": "All thresholds and quotations above were read from the CIF Constitution and Bylaws on {{verifiedOn}}.",
-    "ctaButton": "Plan around California flags"
+    "ctaButton": "Plan around California flags",
+    "acclimatizationMandateHeading": "The five-day period is not advisory",
+    "acclimatizationMandateBody": "What follows that plan is written in \"shall\", and it governs the opening week of preseason — where heat illness actually concentrates: \"{{fiveDay}}\"",
+    "acclimatizationLimitsBody": "Inside that period the limits are fixed: \"{{onePractice}}\"",
+    "acclimatizationFootballBody": "And football adds a pad progression across the same days: \"{{football}}\"",
+    "coolingMethodBody": "The cooling requirement is separate from all of it and applies everywhere: \"{{cooling}}\""
   },
   "kentucky": {
     "pageTitle": "Kentucky KHSAA WBGT Contest Alterations",
