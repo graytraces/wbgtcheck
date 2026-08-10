@@ -1420,11 +1420,10 @@ export const VA_STATUTE_SOURCE = {
 // only hard number, ice available at WBGT 80 (VA_ICE_WBGT_F), is exactly where
 // VHSL Level 2 first says "ensure ice is available".
 //
-// Constants only for now, no band table. The six levels carry duration caps
-// and work/rest splits rather than this site's five flags, and Level 6 is a
-// cancel line rather than a band — rendering them needs the same per-row copy
-// work the NC and KY tables have, which is a separate change from removing a
-// false claim.
+// The six levels carry duration caps and work/rest splits rather than this
+// site's five flags, and Level 6 is a cancel line rather than a band. So VHSL
+// is a ReferenceTable for the same reason NC and KY are: feeding six levels to
+// classifyWbgt would dress them up as this site's five flags.
 
 export const VHSL_SOURCE = {
   name: 'VHSL Heat Acclimatization Guidelines — Wet Bulb Globe Temperature (WBGT) Participation Recommendations (p.8)',
@@ -1519,6 +1518,315 @@ export const NYSPHSAA_WBGT_BLACK_QUOTE =
  */
 export const NYSPHSAA_WBGT_BLACK_MIN_F = { cat1: 86.2, cat2: 89.8, cat3: 92.1 }
 export const NYSPHSAA_CATEGORY_LOOKUP_URL = 'http://www.castlewilliams.com/wbgt-regions.html'
+/**
+ * Page 2 also reproduces a national "Heat safety regions" figure beside the
+ * chart — a SECOND embedded image (748x427), which the commit that added the
+ * constants above did not mention because it only extracted the first one.
+ *
+ * It does not rescue the dead lookup, and this site must not read a category
+ * off it. It is a coarse grayscale figure of the whole country: sampling it
+ * against its own legend puts most of New York in the Category 2 shade, but
+ * "most of" is not a school, the legend's three grays are ~40 levels apart in
+ * a JPEG, and NYSPHSAA's own instruction is to use the link — not the figure —
+ * to determine a location's category. Guessing Category 2 for a school that is
+ * actually Category 1 would move its stop line from 86.2 to 89.8: 3.6 °F of
+ * permission this site would have invented. So the page reports that the
+ * figure exists, and still shows all three ladders.
+ */
+export const NYSPHSAA_REGION_FIGURE_CAPTION = 'Fig. 2. Heat safety regions.'
+export const NYSPHSAA_CATEGORY_LOOKUP_QUOTE =
+  'Use this link to determine the category of your location.'
+
+// --- VHSL (Virginia) participation table, p.8 -----------------------------
+// Six levels, hottest first. Read from the PDF named in VHSL_SOURCE.
+//
+// Every number a cell prints lives in `vars` and reaches copy by
+// interpolation, so the locale strings stay number-free (content policy) and a
+// threshold cannot drift in translation. Keys are shared between rows wherever
+// the source prints the same sentence with different numbers — `durationHours`
+// serves Levels 1-3, which all read "3 hours maximum".
+//
+// The source's own column order is Level / WBGT / Duration / Fluid /
+// Practices / Scrimmages and Contests; each row's textKeys follow it.
+
+export const VHSL_REFERENCE = {
+  id: 'vhsl',
+  source: VHSL_SOURCE,
+  rows: [
+    {
+      level: 6,
+      sourceLabel: '90.0 +',
+      textKeys: [
+        'virginia.rows.cancel',
+        'virginia.rows.rehydrate',
+        'virginia.rows.indoorHeatPolicy',
+        'virginia.rows.delayContest',
+      ],
+      // The duration cell IS the cancel line, printed in caps. It is quoted
+      // rather than paraphrased — VHSL_CANCEL_QUOTE reaches the row verbatim.
+      vars: { oz: 24 },
+    },
+    {
+      level: 5,
+      sourceLabel: '87.5-89.9',
+      textKeys: [
+        'virginia.rows.durationWorkRest',
+        'virginia.rows.fluidWithIce',
+        'virginia.rows.practicesNoEquipment',
+        'virginia.rows.contestsMonitorHelmets',
+      ],
+      vars: { hours: 2, work: 40, rest: 20, min: 8, max: 10, every: 15, breaks: 4 },
+    },
+    {
+      level: 4,
+      sourceLabel: '85.0-87.4',
+      textKeys: [
+        'virginia.rows.durationWorkRest',
+        'virginia.rows.fluidWithIce',
+        'virginia.rows.practicesNonContact',
+        'virginia.rows.contestsMonitor',
+      ],
+      vars: {
+        hours: 3,
+        work: 45,
+        rest: 15,
+        min: 8,
+        max: 10,
+        every: 15,
+        breaks: 4,
+        instructional: 10,
+      },
+    },
+    {
+      level: 3,
+      sourceLabel: '82.5-84.9',
+      textKeys: [
+        'virginia.rows.durationHours',
+        'virginia.rows.fluidWithIce',
+        'virginia.rows.practicesRemoveHelmets',
+        'virginia.rows.contestsMonitor',
+      ],
+      vars: { hours: 3, min: 6, max: 8, every: 20, breaks: 3 },
+    },
+    {
+      level: 2,
+      sourceLabel: '80.0-82.4',
+      textKeys: [
+        'virginia.rows.durationHours',
+        'virginia.rows.fluidWithIce',
+        'virginia.rows.practicesFullGear',
+        'virginia.rows.contestsNoModifications',
+      ],
+      vars: { hours: 3, min: 4, max: 6, every: 20, breaks: 3 },
+    },
+    {
+      level: 1,
+      sourceLabel: '<80',
+      textKeys: [
+        'virginia.rows.durationHours',
+        'virginia.rows.fluidAdequate',
+        'virginia.rows.practicesFullGear',
+        'virginia.rows.contestsNoModifications',
+      ],
+      vars: { hours: 3, breaks: 3 },
+    },
+  ],
+}
+
+/**
+ * The statute's one number lands on a VHSL row, which is the cross-check that
+ * this is the document § 22.1-271.10 points at: ice at WBGT 80 is exactly
+ * where Level 2 first says "ensure ice is available". Derived, so the two
+ * cannot drift apart silently.
+ */
+export const VHSL_ICE_LEVEL = VHSL_REFERENCE.rows.find(
+  (row) => row.sourceLabel.startsWith(String(VA_ICE_WBGT_F)),
+).level
+
+// --- FHSAA (Florida) §41.8 practice index, p.106 --------------------------
+// Five bands, hottest first, read from the handbook named in FHSAA_SOURCE.
+//
+// ⚠️ This is the PRACTICE index. §41.9.5 prints a SECOND, per-sport index for
+// interscholastic contests, and the two do not end in the same place — see
+// FHSAA_CONTEST_* below. Do not present §41.8's top band as Florida's
+// stop-everything line.
+
+export const FHSAA_PRACTICE_REFERENCE = {
+  id: 'fhsaa-practice',
+  source: FHSAA_SOURCE,
+  rows: [
+    { sourceLabel: '≥ 92.1', textKeys: ['florida.rows.noOutdoor'], vars: {} },
+    {
+      sourceLabel: '90.1 - 92.0',
+      // Note: this row's break sentence is the one band that does NOT say
+      // "per hour of activity". The source prints "Five (5) separate four (4)
+      // minute rest breaks." full stop — inside a one-hour cap. Kept distinct.
+      textKeys: [
+        'florida.rows.maxHours',
+        'florida.rows.breaks',
+        'florida.rows.noEquipment',
+        'florida.rows.noConditioning',
+      ],
+      vars: { hours: 1, breaks: 5, minutes: 4 },
+    },
+    {
+      sourceLabel: '87.1 - 90.0',
+      textKeys: [
+        'florida.rows.maxHours',
+        'florida.rows.breaksPerHour',
+        'florida.rows.footballEquipment',
+        'florida.rows.footballPants',
+      ],
+      vars: { hours: 2, breaks: 4, minutes: 4 },
+    },
+    {
+      sourceLabel: '82.1 - 87.0',
+      textKeys: ['florida.rows.breaksPerHour'],
+      vars: { breaks: 3, minutes: 4 },
+    },
+    { sourceLabel: '< 82.0', textKeys: ['florida.rows.normal'], vars: {} },
+  ],
+}
+
+/**
+ * §41.6.2 — the mandate sentence. Florida does not recommend a WBGT, it
+ * requires one, which is what makes FL_ONSITE_MEASUREMENT_QUOTE binding rather
+ * than aspirational.
+ */
+export const FHSAA_DEVICE_MANDATE_QUOTE = 'Each member school shall monitor heat stress with a WBGT.'
+/** §41.7.1 — the reading is not optional above this, in any outdoor activity. */
+export const FHSAA_TRIGGER_WBGT_F = 82
+export const FHSAA_TRIGGER_QUOTE =
+  'Anytime the WBGT reading is reasonably expected to exceed 82 degrees, the WBGT device shall be used to record environmental conditions and modifications shall be implemented for the safety of participants in all outdoor athletic activities.'
+/** §41.7.5 — re-read cadence during the activity. */
+export const FHSAA_MONITOR_INTERVAL_MINUTES = 30
+
+/**
+ * §41.9.5 — the contest index, and the reason Florida cannot be one ladder.
+ *
+ * Read from the same handbook (pp.106-108) on 2026-08-10. Its contents are NOT
+ * reproduced here: it is a per-sport matrix, twelve sports wide, and rendering
+ * it is a separate change. What IS pinned is the fact a coach can be hurt by
+ * not knowing — where it stops.
+ *
+ * §41.8 forbids all outdoor activity at 92.1. §41.9.5's hottest band is
+ * ≥ 90.1, and it prescribes hydration breaks per sport rather than stopping
+ * play; there is no band in it at which an outdoor contest may not be held.
+ * So a reader who takes the practice table's top row as "Florida stops at
+ * 92.1" has been told something the contest index does not say. §41.9.3 lists
+ * postponement among the possible modifications, and §41.9.6 removes the
+ * official's discretion to refuse a principal's request — that is the stop
+ * mechanism for contests, and it is a judgement call, not a threshold.
+ */
+export const FHSAA_CONTEST_SECTION = '§41.9'
+export const FHSAA_CONTEST_TOP_BAND_MIN_F = 90.1
+export const FHSAA_CONTEST_SPORT_COUNT = 12
+export const FHSAA_CONTEST_REFERENCE_QUOTE =
+  'The index below shall be used for reference for any outdoor event:'
+export const FHSAA_CONTEST_POSTPONE_QUOTE =
+  'In no case may a contest official deny any request by a school principal or his/her designee to delay, suspend, or postpone an outdoor contest due to inclement weather, including oppressive heat as demonstrated by an official WBGT reading, or imply that the contest will be forfeited because of such request.'
+
+// --- NYSPHSAA (New York) WBGT chart, p.2 ----------------------------------
+// Three regional ladders and one shared action column, read by extracting the
+// page-2 image (see NYSPHSAA_WBGT_SOURCE).
+//
+// The chart's five rows are colour-coded green/yellow/orange/red/black, which
+// is this site's own flag vocabulary, so they render through FlagBadge — but
+// these are NOT HeatPolicy objects and must never reach classifyWbgt: which
+// ladder applies depends on a region this site cannot determine.
+//
+// ⚠️ Numerically identical to CIF_CATEGORY_1/2/3 today. Do NOT collapse them
+// into shared objects: different bodies, different documents, free to diverge
+// at any revision, and one object would attribute a CIF verifiedOn to a
+// NYSPHSAA claim.
+//
+// The chart prints °C beside every °F range. Only °F is carried here, matching
+// every other table in this file; the °C column is not reproduced rather than
+// half-reproduced.
+//
+// Source column order is Cat 3 / Cat 2 / Cat 1. These are stored 1 → 3, the
+// order California's categories render in, so the strictest ladder reads
+// first.
+
+const NYSPHSAA_WBGT_CATEGORY_1 = {
+  id: 'nysphsaa-wbgt-cat-1',
+  categoryNumber: 1,
+  bands: [
+    { flag: 'black', sourceLabel: '≥ 86.2°F' },
+    { flag: 'red', sourceLabel: '84.2 - 86.0°F' },
+    { flag: 'orange', sourceLabel: '81.1 - 84.0°F' },
+    { flag: 'yellow', sourceLabel: '76.3 - 81.0°F' },
+    { flag: 'green', sourceLabel: '< 76.1°F' },
+  ],
+}
+
+const NYSPHSAA_WBGT_CATEGORY_2 = {
+  id: 'nysphsaa-wbgt-cat-2',
+  categoryNumber: 2,
+  bands: [
+    { flag: 'black', sourceLabel: '≥ 89.8°F' },
+    { flag: 'red', sourceLabel: '87.8 - 89.6°F' },
+    { flag: 'orange', sourceLabel: '84.7 - 87.6°F' },
+    { flag: 'yellow', sourceLabel: '79.9 - 84.6°F' },
+    { flag: 'green', sourceLabel: '< 79.7°F' },
+  ],
+}
+
+const NYSPHSAA_WBGT_CATEGORY_3 = {
+  id: 'nysphsaa-wbgt-cat-3',
+  categoryNumber: 3,
+  bands: [
+    { flag: 'black', sourceLabel: '≥ 92.1°F' },
+    { flag: 'red', sourceLabel: '90.1 - 91.9°F' },
+    { flag: 'orange', sourceLabel: '87.1 - 90.0°F' },
+    { flag: 'yellow', sourceLabel: '82.2 - 86.9°F' },
+    { flag: 'green', sourceLabel: '< 82.0°F' },
+  ],
+}
+
+export const NYSPHSAA_WBGT_CATEGORIES = [
+  NYSPHSAA_WBGT_CATEGORY_1,
+  NYSPHSAA_WBGT_CATEGORY_2,
+  NYSPHSAA_WBGT_CATEGORY_3,
+]
+
+/**
+ * The Activity Guidelines column — one set of actions shared by all three
+ * ladders, which is the whole point of the regional split: same response,
+ * different temperature to trigger it.
+ */
+export const NYSPHSAA_WBGT_ACTIONS = [
+  { flag: 'black', textKeys: ['newYork.wbgtRows.noOutdoor'], vars: {} },
+  {
+    flag: 'red',
+    textKeys: [
+      'newYork.wbgtRows.maxHours',
+      'newYork.wbgtRows.footballNoEquipment',
+      'newYork.wbgtRows.restDistributed',
+    ],
+    vars: { hours: 1, rest: 20 },
+  },
+  {
+    flag: 'orange',
+    textKeys: [
+      'newYork.wbgtRows.maxHours',
+      'newYork.wbgtRows.footballEquipment',
+      'newYork.wbgtRows.footballPants',
+      'newYork.wbgtRows.breaks',
+    ],
+    vars: { hours: 2, breaks: 4, minutes: 4 },
+  },
+  {
+    flag: 'yellow',
+    textKeys: ['newYork.wbgtRows.discretion', 'newYork.wbgtRows.breaks'],
+    vars: { breaks: 3, minutes: 4 },
+  },
+  {
+    flag: 'green',
+    textKeys: ['newYork.wbgtRows.normal', 'newYork.wbgtRows.breaksWorkout'],
+    vars: { breaks: 3, minutes: 3 },
+  },
+]
 
 export const POLICIES = {
   'uil-class-2': UIL_CLASS_2,

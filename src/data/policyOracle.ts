@@ -29,6 +29,10 @@ import {
   NCHSAA_REFERENCE as NCHSAA_REFERENCE_RAW,
   NYSPHSAA_HEAT_INDEX_REFERENCE as NYSPHSAA_HEAT_INDEX_REFERENCE_RAW,
   KHSAA_WBGT_REFERENCE as KHSAA_WBGT_REFERENCE_RAW,
+  VHSL_REFERENCE as VHSL_REFERENCE_RAW,
+  FHSAA_PRACTICE_REFERENCE as FHSAA_PRACTICE_REFERENCE_RAW,
+  NYSPHSAA_WBGT_CATEGORIES as NYSPHSAA_WBGT_CATEGORIES_RAW,
+  NYSPHSAA_WBGT_ACTIONS as NYSPHSAA_WBGT_ACTIONS_RAW,
 } from './policyData.js'
 
 export {
@@ -146,6 +150,34 @@ export {
   VA_CONSISTENCY_QUOTE,
   VA_CANCEL_QUOTE,
   VA_STATUTE_SOURCE,
+  VHSL_SOURCE,
+  VHSL_CANCEL_WBGT_F,
+  VHSL_LEVEL_COUNT,
+  VHSL_CANCEL_QUOTE,
+  VHSL_TABLE_TITLE_QUOTE,
+  VHSL_ICE_LEVEL,
+  FHSAA_SOURCE,
+  FHSAA_NO_OUTDOOR_WBGT_F,
+  FHSAA_SECTION,
+  FHSAA_PURPOSE_QUOTE,
+  FHSAA_NO_OUTDOOR_QUOTE,
+  FHSAA_DEVICE_MANDATE_QUOTE,
+  FHSAA_TRIGGER_WBGT_F,
+  FHSAA_TRIGGER_QUOTE,
+  FHSAA_MONITOR_INTERVAL_MINUTES,
+  FHSAA_CONTEST_SECTION,
+  FHSAA_CONTEST_TOP_BAND_MIN_F,
+  FHSAA_CONTEST_SPORT_COUNT,
+  FHSAA_CONTEST_REFERENCE_QUOTE,
+  FHSAA_CONTEST_POSTPONE_QUOTE,
+  NYSPHSAA_WBGT_SOURCE,
+  NYSPHSAA_EITHER_SCALE_QUOTE,
+  NYSPHSAA_SUSPEND_BOTH_SCALES_QUOTE,
+  NYSPHSAA_WBGT_BLACK_QUOTE,
+  NYSPHSAA_WBGT_BLACK_MIN_F,
+  NYSPHSAA_CATEGORY_LOOKUP_URL,
+  NYSPHSAA_CATEGORY_LOOKUP_QUOTE,
+  NYSPHSAA_REGION_FIGURE_CAPTION,
   REMOTE_UNDERESTIMATE_MIN_C,
   REMOTE_UNDERESTIMATE_MAX_C,
   REMOTE_UNDERESTIMATE_MIN_F,
@@ -259,10 +291,44 @@ export interface NyReferenceRow extends ReferenceRow {
   required: boolean
 }
 
+/**
+ * Numbers a row interpolates into its own sentences. Rows carry these instead
+ * of the sentences carrying digits, so a threshold cannot drift in translation
+ * and cannot be edited without touching the oracle.
+ *
+ * `| undefined` because each row carries only the keys ITS sentences use — the
+ * hottest VHSL row has no work/rest split and the coolest has no ice interval.
+ * Reading an absent one back is a programming error, not a threshold of zero.
+ */
+export type RowVars = Record<string, number | undefined>
+
+export interface VarsReferenceRow extends ReferenceRow {
+  vars: RowVars
+}
+
+/** VHSL prints a Level number beside each WBGT range; the page shows both. */
+export interface VhslReferenceRow extends VarsReferenceRow {
+  level: number
+}
+
 export interface ReferenceTable<Row> {
   id: string
   source: PolicySource
   rows: Row[]
+}
+
+/** One of NYSPHSAA's three regional WBGT ladders. Never a HeatPolicy — see below. */
+export interface NyWbgtCategory {
+  id: string
+  categoryNumber: number
+  bands: Array<{ flag: FlagColor; sourceLabel: string }>
+}
+
+/** The Activity Guidelines column, shared by all three NYSPHSAA ladders. */
+export interface NyWbgtAction {
+  flag: FlagColor
+  textKeys: string[]
+  vars: RowVars
 }
 
 export const UIL_CLASS_2 = UIL_CLASS_2_RAW as HeatPolicy
@@ -304,6 +370,24 @@ export const NYSPHSAA_HEAT_INDEX_REFERENCE =
  * as this site's five flags, so it renders only as its own table.
  */
 export const KHSAA_WBGT_REFERENCE = KHSAA_WBGT_REFERENCE_RAW as ReferenceTable<ReferenceRow>
+
+/**
+ * Virginia, Florida and New York's own tables — the three this site spent a
+ * day telling readers did not exist.
+ *
+ * All three are ReferenceTables rather than POLICIES entries, each for its own
+ * reason. VHSL prints six levels with duration caps and work/rest splits, not
+ * five flags. FHSAA's §41.8 governs PRACTICES only, and §41.9 adds a separate
+ * per-sport contest index the tool would have to ask about before choosing.
+ * NYSPHSAA's ladder depends on a regional category this site cannot determine.
+ * Feeding any of them to classifyWbgt would print a confident verdict its own
+ * association contradicts.
+ */
+export const VHSL_REFERENCE = VHSL_REFERENCE_RAW as ReferenceTable<VhslReferenceRow>
+export const FHSAA_PRACTICE_REFERENCE =
+  FHSAA_PRACTICE_REFERENCE_RAW as ReferenceTable<VarsReferenceRow>
+export const NYSPHSAA_WBGT_CATEGORIES = NYSPHSAA_WBGT_CATEGORIES_RAW as NyWbgtCategory[]
+export const NYSPHSAA_WBGT_ACTIONS = NYSPHSAA_WBGT_ACTIONS_RAW as NyWbgtAction[]
 
 export function classifyWbgt(policy: HeatPolicy, wbgtF: number): PolicyBand {
   for (const band of policy.bands) {
