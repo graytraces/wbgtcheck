@@ -90,6 +90,8 @@
   "home": {
     "pageTitle": "WBGT Forecast with State Heat Policy Flags",
     "heroBadge": "Free · No account · Nothing to install",
+    "stateLadderHeading": "This state publishes its own ladder",
+    "stateLadderBody": "The flag above comes from the general NATA guideline — what this site falls back to when a state's own scale is not one of the picker's options. Your state publishes its own WBGT thresholds, and they can be considerably stricter than the fallback at the same reading. Read the guide before you plan around the flag.",
     "intro": "One screen for the morning call: hourly wet bulb globe temperature for your field, translated into your state's activity flags — rest ratios, equipment limits, practice caps — with a card you can drop in the team chat. Built for coaches, athletic trainers and marching band directors.",
     "sections": [
       {

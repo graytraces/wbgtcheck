@@ -18,7 +18,8 @@ import InstallHint from '../components/InstallHint'
 import { useWbgt, isStale } from '../hooks/useWbgt'
 import { useAirQuality } from '../hooks/useAirQuality'
 import { airPolicyForState } from '../data/airPolicyOracle'
-import { airPageKeyByPolicy, pageSEO } from '../seo'
+import { airPageKeyByPolicy, pageSEO, statePageKeyByPolicy } from '../seo'
+import { STATE_GUIDES } from '../data/guideRegistry'
 import { buildHourlySeries } from '../utils/nws'
 import { annotateHours, groupByDay, currentVerdict, timelineHours } from '../utils/verdict'
 import {
@@ -112,6 +113,28 @@ export default function Home() {
     setActivity,
     refetch: refetchAir,
   } = useAirQuality(location?.lat ?? null, location?.lon ?? null)
+  /**
+   * The heat-axis mirror of the air link below. The picker keys guides by
+   * POLICY id, and CA, KY, FL, NC, NY and VA have no policy id — they are not
+   * in the picker — so a ZIP in any of them produced the NATA fallback with
+   * no guide link and no notice, while the air axis on the same screen
+   * detected the state and linked its air guide. This keys by the DETECTED
+   * STATE instead, so every state with a guide gets one.
+   *
+   * Not a picker change: auto-selection is untouched. This surfaces the
+   * caveat those pages already carry, which was unreachable from here.
+   */
+  const detectedGuide = location?.stateAbbr
+    ? STATE_GUIDES.find((guide) => guide.abbr === location.stateAbbr)
+    : undefined
+  const pickerGuideKey = statePageKeyByPolicy[policyId]
+  const pickerGuideSlug = pickerGuideKey ? pageSEO[pickerGuideKey].path : null
+  // Only when the picker is not already pointing at this state's guide.
+  const showStateGuide = !!detectedGuide && detectedGuide.slug !== pickerGuideSlug
+  // The flag on screen is the generic ladder, not this state's — the case the
+  // /california page describes as "more permissive than every CIF ladder".
+  const flagIsFallback = policyId === 'generic'
+
   const airPolicy = airPolicyForState(location?.stateAbbr ?? null)
   const airPageKey = airPolicy ? airPageKeyByPolicy[airPolicy.id] : undefined
   const airPageSlug = airPageKey ? pageSEO[airPageKey].path : null
@@ -192,6 +215,26 @@ export default function Home() {
           timeZone={timeZone}
           fetchedAt={fetchedAt}
         />
+      )}
+
+      {/* Directly under the verdict: a reader who stops at the flag must
+          still have seen that their state has its own scale. */}
+      {location && status === 'ready' && current && showStateGuide && detectedGuide && (
+        <section className="border-2 border-flag-orange bg-surface p-5">
+          {flagIsFallback && (
+            <>
+              <h2 className="display-num mb-2 text-xl uppercase">
+                {t('home.stateLadderHeading')}
+              </h2>
+              <p className="mb-3">{t('home.stateLadderBody')}</p>
+            </>
+          )}
+          <p>
+            <Link to={`/${lang}/${detectedGuide.slug}`} className="font-semibold underline">
+              {t(detectedGuide.labelKey)} →
+            </Link>
+          </p>
+        </section>
       )}
 
       {/* Recording a reading belongs beside the reading. The full log is

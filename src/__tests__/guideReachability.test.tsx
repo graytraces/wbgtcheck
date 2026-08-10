@@ -11,6 +11,7 @@ import California from '../pages/California'
 import { POLICIES, type PolicyId } from '../data/policyOracle'
 import { pageSEO, statePageKeyByPolicy } from '../seo'
 import { STATE_GUIDES, AIR_GUIDES, GUIDE_SLUG_BY_ABBR } from '../data/guideRegistry'
+import { defaultPolicyFor } from '../hooks/useWbgt'
 import { STATE_DIRECTORY } from '../data/stateDirectory'
 import { VALID_TOOLS, VALID_PAGES } from '../utils/routeValidation'
 import { existsSync, readFileSync } from 'node:fs'
@@ -260,4 +261,66 @@ describe('the guide registry is the single source for both renderers', () => {
       }
     },
   )
+})
+
+/**
+ * The picker keys guides by POLICY id, and six states with guide pages have
+ * no policy id at all — CA, KY, FL, NC, NY and VA are deliberately not in the
+ * picker. So a ZIP in any of them fell to the generic NATA ladder with no
+ * guide link and no notice, while the air axis on the same screen detected
+ * the state and linked its air guide.
+ *
+ * The gap is a safety one, not a navigation one: /california says in as many
+ * words that the fallback is more permissive than every CIF ladder, and at
+ * 86.5°F the fallback shows yellow where CIF Category 1 shows black.
+ */
+describe('states outside the picker still reach their guide', () => {
+  const PICKERLESS = ['CA', 'KY', 'FL', 'NC', 'NY', 'VA']
+
+  it('every pickerless state has a guide page but no policy of its own', () => {
+    for (const abbr of PICKERLESS) {
+      expect(GUIDE_SLUG_BY_ABBR[abbr], `${abbr} has no guide page`).toBeTruthy()
+      // If one of these ever enters the picker this test should be revisited
+      // deliberately, not silently satisfied.
+      expect(defaultPolicyFor(abbr), `${abbr} now auto-selects a policy`).toBe('generic')
+    }
+  })
+
+  /**
+   * The condition Home.tsx renders on, kept here so the rule is checked
+   * rather than merely written: show the guide whenever the detected state
+   * has one AND the picker is not already pointing at it.
+   */
+  const wouldShowGuide = (abbr: string) => {
+    const detected = STATE_GUIDES.find((g) => g.abbr === abbr)
+    const pickerKey = statePageKeyByPolicy[defaultPolicyFor(abbr)]
+    const pickerSlug = pickerKey ? pageSEO[pickerKey].path : null
+    return !!detected && detected.slug !== pickerSlug
+  }
+
+  it('shows the guide for every pickerless state', () => {
+    for (const abbr of PICKERLESS) {
+      expect(wouldShowGuide(abbr), `${abbr} would still get no guide link`).toBe(true)
+    }
+  })
+
+  it('does not duplicate the link where the picker already carries it', () => {
+    // TX/GA/SC/IA/MA auto-select their own policy, and PolicyPicker renders
+    // that guide link itself — a second copy under the verdict would be noise.
+    for (const abbr of ['TX', 'GA', 'SC', 'IA', 'MA']) {
+      expect(wouldShowGuide(abbr), `${abbr} would show the link twice`).toBe(false)
+    }
+  })
+
+  it('says nothing at all for a state with no guide', () => {
+    expect(STATE_GUIDES.find((g) => g.abbr === 'CO')).toBeUndefined()
+    expect(wouldShowGuide('CO')).toBe(false)
+  })
+
+  it('carries the fallback notice in both locales', () => {
+    for (const dict of [en, es]) {
+      expect(dict.home.stateLadderHeading).toBeTruthy()
+      expect(dict.home.stateLadderBody).toMatch(/NATA/)
+    }
+  })
 })

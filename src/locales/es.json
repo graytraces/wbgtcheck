@@ -90,6 +90,8 @@
   "home": {
     "pageTitle": "Pronóstico WBGT con banderas de política estatal",
     "heroBadge": "Gratis · Sin cuenta · Nada que instalar",
+    "stateLadderHeading": "Este estado publica su propia escala",
+    "stateLadderBody": "La bandera de arriba viene de la guía general de la NATA, a la que este sitio recurre cuando la escala propia de un estado no está entre las opciones del selector. Su estado publica sus propios umbrales WBGT y pueden ser bastante más estrictos que ese respaldo con la misma lectura. Lea la guía antes de planificar según la bandera.",
     "intro": "Una sola pantalla para la decisión de la mañana: WBGT por hora para su campo, traducido a las banderas de actividad de su estado — proporciones de descanso, límites de equipo, topes de práctica — con una tarjeta lista para el chat del equipo. Hecho para entrenadores, preparadores físicos y directores de banda de marcha.",
     "sections": [
       {
