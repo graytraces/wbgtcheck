@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { pageSEO } from '../seo'
 import { VALID_TOOLS, VALID_PAGES } from '../utils/routeValidation'
 import { STATE_GUIDES } from '../data/guideRegistry'
+import { MEASUREMENT_STANCES, requiresOnSiteReading } from '../data/policyOracle'
 import en from '../locales/en.json'
 import es from '../locales/es.json'
 
@@ -142,6 +143,120 @@ describe('the seo layer agrees with the registry about what a state publishes', 
       expect(dict.seo.newYork.title).toMatch(/heat index|índice de calor/i)
       expect(dict.seo.newYork.description).toMatch(/both scales|ambas escalas/i)
     }
+  })
+})
+
+/**
+ * Google truncates a title around 60 characters, and what it cuts is the END —
+ * which is where the brand suffix lives and, on a title that ran long, where
+ * the distinguishing term ended up too. Twenty-seven of the forty-four titles
+ * on this site were over: eleven English and sixteen Spanish, the worst at 81.
+ * "Reglas WBGT de la SCHSL de Carolina del Sur: umbrales e instrumento" was
+ * printed to a Spanish reader as "…de Carolina del Sur: umbrales…", losing the
+ * one word (instrumento) that says what the page decides.
+ *
+ * Spanish is the binding constraint, not English: the same meaning runs 8-25%
+ * longer, so eleven Spanish titles were over while their English twins fit.
+ * Both locales are held to the same 60, which is why several Spanish titles
+ * now lead with the state name and a colon rather than a translated noun
+ * phrase — that construction spends the fewest characters before the term the
+ * reader is scanning for.
+ */
+describe('meta title length', () => {
+  const MAX = 60
+
+  for (const [lang, dict] of [['en', en], ['es', es]] as const) {
+    it(`every ${lang} seo title fits in ${MAX} characters`, () => {
+      const seo = dict.seo as Record<string, { title?: string }>
+      const over = Object.entries(seo)
+        .filter(([, v]) => (v?.title?.length ?? 0) > MAX)
+        .map(([k, v]) => `${k} (${v.title!.length})`)
+      expect(over, `${lang} titles over ${MAX}`).toEqual([])
+      // Guard the guard: an empty seo namespace would pass the filter above.
+      expect(Object.keys(seo).length).toBeGreaterThan(15)
+    })
+  }
+
+  it('the distinguishing term is ahead of the brand, not behind it', () => {
+    // A title is only short enough to survive if the brand is LAST. Any title
+    // that opens with the site name has spent its first 13 characters saying
+    // what every other result on the page also says.
+    for (const [lang, dict] of [['en', en], ['es', es]] as const) {
+      const seo = dict.seo as Record<string, { title?: string }>
+      for (const [key, value] of Object.entries(seo)) {
+        const title = value.title!
+        expect(title.startsWith('WBGT Check'), `${lang} seo.${key} leads with the brand`).toBe(
+          false,
+        )
+        expect(title.endsWith(' | WBGT Check'), `${lang} seo.${key} brand suffix`).toBe(true)
+      }
+    }
+  })
+})
+
+/**
+ * A title is the one surface with no test for truth: nothing renders it beside
+ * the page, so a claim about a state's rules can sit there contradicting the
+ * page's own body indefinitely. Two did — /virginia and /new-york, see the
+ * registry guard above.
+ *
+ * This is the same guard for the OTHER claim a title on this site can make:
+ * that the state will not accept a forecast. It is derived from the oracle's
+ * stance rather than from a list, so it covers the next title that says it.
+ */
+describe('a title that says "device" agrees with the oracle stance', () => {
+  const SEO_KEY_BY_ABBR: Record<string, string> = {
+    CA: 'california',
+    FL: 'florida',
+    GA: 'georgia',
+    IA: 'iowa',
+    KY: 'kentucky',
+    MA: 'massachusetts',
+    NC: 'northCarolina',
+    NY: 'newYork',
+    SC: 'southCarolina',
+    TN: 'tennessee',
+    TX: 'texas',
+    VA: 'virginia',
+  }
+
+  it('no state that accepts a remote reading is titled device-only', () => {
+    const permissive = MEASUREMENT_STANCES.filter(
+      (row) => !requiresOnSiteReading(row.subject),
+    )
+    // Guard the guard: if every state were device-required this would be vacuous.
+    expect(permissive.length).toBeGreaterThanOrEqual(2)
+    for (const row of permissive) {
+      const key = SEO_KEY_BY_ABBR[row.abbr]
+      expect(key, `no seo key mapped for ${row.abbr}`).toBeTruthy()
+      for (const [lang, dict] of [['en', en], ['es', es]] as const) {
+        const title = (dict.seo as Record<string, { title?: string }>)[key].title!
+        expect(
+          /device only|device required|solo instrumento|instrumento obligatorio/i.test(title),
+          `${lang} seo.${key} claims device-only but ${row.abbr} accepts a remote reading`,
+        ).toBe(false)
+      }
+    }
+  })
+
+  it('a device-only title belongs to a state the oracle says requires one', () => {
+    const stanceByAbbr = new Map(MEASUREMENT_STANCES.map((r) => [r.abbr, r.subject]))
+    let claims = 0
+    for (const [abbr, key] of Object.entries(SEO_KEY_BY_ABBR)) {
+      for (const dict of [en, es]) {
+        const title = (dict.seo as Record<string, { title?: string }>)[key].title!
+        if (!/device only|device required|solo instrumento|instrumento obligatorio/i.test(title)) {
+          continue
+        }
+        claims++
+        expect(
+          requiresOnSiteReading(stanceByAbbr.get(abbr)!),
+          `seo.${key} says device-only, oracle disagrees`,
+        ).toBe(true)
+      }
+    }
+    // At least one title makes the claim, so the assertion above ran.
+    expect(claims).toBeGreaterThan(0)
   })
 })
 

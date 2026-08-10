@@ -291,22 +291,22 @@
   },
   "seo": {
     "home": {
-      "title": "Pronóstico WBGT con banderas de política estatal | WBGT Check",
+      "title": "Pronóstico WBGT y banderas de política estatal | WBGT Check",
       "description": "Pronóstico gratuito de WBGT con banderas de actividad UIL y GHSA — WBGT por hora y tarjeta compartible para entrenadores y directores de banda de marcha.",
       "keywords": "pronóstico WBGT, temperatura de globo y bulbo húmedo, seguridad ante el calor, UIL WBGT, política de calor GHSA, banda de marcha calor"
     },
     "texas": {
-      "title": "Reglas WBGT de la UIL de Texas: umbrales, clases y medición | WBGT Check",
+      "title": "Texas: reglas WBGT de la UIL, umbrales y clases | WBGT Check",
       "description": "Reglas WBGT de la UIL para atletismo y banda de marcha en Texas: umbrales de Clase 2 y 3, modificaciones, lecturas 15 minutos antes y medición por app.",
       "keywords": "política WBGT UIL, reglas de calor Texas fútbol americano, plan de estrés por calor UIL, WBGT Clase 2 Clase 3, reglas de calor banda de marcha Texas"
     },
     "georgia": {
-      "title": "Política WBGT de la GHSA de Georgia: umbrales y regla de instrumento | WBGT Check",
+      "title": "Georgia: política WBGT de la GHSA e instrumento | WBGT Check",
       "description": "El estatuto 2.67 de la GHSA: umbrales WBGT, descansos obligatorios y por qué Georgia exige un instrumento calibrado en el sitio — las apps no cuentan.",
       "keywords": "política de calor GHSA, reglas WBGT Georgia, estatuto 2.67 GHSA, requisito de instrumento WBGT, reglas de calor fútbol americano Georgia"
     },
     "wbgtVsHeatIndex": {
-      "title": "WBGT vs índice de calor vs bulbo húmedo: ¿en qué se diferencian? | WBGT Check",
+      "title": "WBGT vs índice de calor vs bulbo húmedo | WBGT Check",
       "description": "El WBGT no es el índice de calor ni el bulbo húmedo simple. Qué mide cada número, por qué las políticas deportivas usan WBGT y cómo se comparan las escalas.",
       "keywords": "WBGT vs índice de calor, bulbo húmedo vs WBGT, temperatura de globo y bulbo húmedo explicada, índice de calor deportes, qué significa WBGT"
     },
@@ -321,27 +321,27 @@
       "keywords": "banda de marcha calor, banda de marcha WBGT, seguridad calor ensayo banda, UIL banda de marcha, Iowa banda de marcha WBGT"
     },
     "states": {
-      "title": "Reglas WBGT por estado: apps permitidas vs solo instrumento | WBGT Check",
+      "title": "Reglas WBGT por estado: apps o solo instrumento | WBGT Check",
       "description": "Qué estados exigen WBGT en deportes escolares, cuáles aceptan lecturas por app o web y cuáles requieren un instrumento en el sitio. Con fuentes y salvedades.",
       "keywords": "reglas WBGT por estado, políticas de calor deportes escolares, estados requisito instrumento WBGT, reglas de aclimatación al calor"
     },
     "southCarolina": {
-      "title": "Reglas WBGT de la SCHSL de Carolina del Sur: umbrales e instrumento | WBGT Check",
+      "title": "Carolina del Sur: reglas WBGT de la SCHSL | WBGT Check",
       "description": "Guías de calor de la SCHSL: umbrales de actividad WBGT, el termómetro obligatorio en el sitio, la regla de 15 minutos y por qué no valen las apps.",
       "keywords": "política de calor SCHSL, reglas WBGT Carolina del Sur, instrumento WBGT SCHSL, reglas de calor fútbol americano Carolina del Sur"
     },
     "iowa": {
-      "title": "Reglas WBGT de Iowa para deportes y banda de marcha | WBGT Check",
+      "title": "Iowa: reglas WBGT para deportes y banda | WBGT Check",
       "description": "Guía WBGT de IHSAA, IGHSAU, IHSMA e IHSSA: umbrales de Categoría 2, el disparador de 80 °F, lecturas cada 30 minutos y ajustes para banda y porristas.",
       "keywords": "política WBGT Iowa, reglas de calor IHSAA, banda de marcha IHSMA calor, WBGT Categoría 2 Iowa"
     },
     "tennessee": {
-      "title": "Política de calor de la TSSAA de Tennessee: WBGT o índice de calor | WBGT Check",
+      "title": "Tennessee: política de calor de la TSSAA | WBGT Check",
       "description": "La TSSAA deja que cada escuela lea WBGT o índice de calor. Los umbrales, la escala de índice con la que se emparejan y cuándo se permite una app.",
       "keywords": "política de calor TSSAA, reglas WBGT Tennessee, índice de calor TSSAA, app del clima TSSAA"
     },
     "northCarolina": {
-      "title": "Guías de calor de la NCHSAA de Carolina del Norte y su cuadro WBGT | WBGT Check",
+      "title": "Carolina del Norte: guías de calor NCHSAA | WBGT Check",
       "description": "El manual de la NCHSAA: WBGT con dispositivo aprobado, lecturas cada hora y un cuadro que llega a la suspensión total — y por qué queda fuera del selector.",
       "keywords": "guías de calor NCHSAA, cuadro WBGT Carolina del Norte, política de calor NCHSAA"
     },
@@ -366,37 +366,37 @@
       "keywords": "aviso legal WBGT Check"
     },
     "washingtonAir": {
-      "title": "Calidad del Aire Escolar en Washington: ¿Cancelar la Práctica? | WBGT Check",
+      "title": "Washington: calidad del aire y las prácticas | WBGT Check",
       "description": "Guía de calidad del aire del DOH de Washington para niños y jóvenes según la duración de la actividad, basada en PM2.5, con la lectura de AirNow.",
       "keywords": "política calidad del aire escuelas Washington, humo incendios cancelar práctica Washington, guía DOH humo escuelas, ICA cancelar práctica Washington"
     },
     "oregonAir": {
-      "title": "Reglas de Calidad del Aire de OSAA en Oregón: Cancelaciones | WBGT Check",
+      "title": "Oregón: reglas de calidad del aire de OSAA | WBGT Check",
       "description": "Acciones requeridas por banda de ICA para las escuelas de Oregón, la correspondencia 5-3-1 de visibilidad que publica OSAA y la lectura actual de su campo.",
       "keywords": "directrices calidad del aire OSAA, humo cancelar práctica Oregón, reglas ICA preparatorias Oregón, índice visibilidad 5-3-1 Oregón"
     },
     "californiaAir": {
-      "title": "Reglamento de Calidad del Aire de CIF en California: El Umbral | WBGT Check",
+      "title": "California: reglamento del aire de la CIF | WBGT Check",
       "description": "El reglamento estatal de calidad del aire de CIF para escuelas miembro, las lecturas que acepta y el ICA actual de su campo — junto a la bandera de calor.",
       "keywords": "reglamento calidad del aire CIF, ICA práctica preparatorias California, política humo escuelas California, CIF práctica aire libre calidad del aire"
     },
     "massachusetts": {
-      "title": "Política de calor WBGT de la MIAA de Massachusetts | WBGT Check",
+      "title": "Massachusetts: política WBGT de la MIAA | WBGT Check",
       "description": "Umbrales de la MIAA en temperatura de globo y bulbo húmedo (WBGT), la regla del instrumento en el sitio y en qué difieren partidos y prácticas.",
       "keywords": "política de calor MIAA, WBGT Massachusetts, modificación por calor MIAA"
     },
     "florida": {
-      "title": "Ley de seguridad ante el calor de Florida (Zachary Martin Act) | WBGT Check",
+      "title": "Florida: ley de calor (Zachary Martin Act) | WBGT Check",
       "description": "Qué exige la Zachary Martin Act de Florida sobre monitoreo del estrés por calor, zonas de enfriamiento y medición en el sitio.",
       "keywords": "Zachary Martin Act, ley de calor Florida, FHSAA estrés por calor, WBGT Florida"
     },
     "california": {
-      "title": "Política de calor WBGT de la CIF de California (Categorías 1-3) | WBGT Check",
+      "title": "California: categorías WBGT de la CIF | WBGT Check",
       "description": "Las tres escalas WBGT regionales de la CIF bajo AB 1653 y el estatuto 503.K, los umbrales de cancelación y la lectura de la NOAA que la CIF señala.",
       "keywords": "política de calor CIF, WBGT California, AB 1653, estatuto 503.K de la CIF"
     },
     "kentucky": {
-      "title": "Alteraciones de competición por WBGT de la KHSAA | WBGT Check",
+      "title": "Kentucky: alteraciones por WBGT de la KHSAA | WBGT Check",
       "description": "Las bandas WBGT de la KHSAA para alterar competiciones, la recomprobación cada 30 minutos y la regla de medir en el sitio para fútbol americano.",
       "keywords": "WBGT KHSAA, política de calor Kentucky, alteración de competición KHSAA"
     }

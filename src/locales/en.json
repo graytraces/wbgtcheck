@@ -296,17 +296,17 @@
       "keywords": "WBGT forecast, wet bulb globe temperature, heat safety, UIL WBGT, GHSA heat policy, practice heat guidelines, marching band heat"
     },
     "texas": {
-      "title": "Texas UIL WBGT Rules: Thresholds, Classes & Measurement | WBGT Check",
+      "title": "Texas UIL WBGT Rules: Thresholds and Classes | WBGT Check",
       "description": "UIL WBGT rules for Texas athletics and marching band: Class 2 vs Class 3 thresholds, activity modifications, 15-minute readings, and app measurement.",
       "keywords": "UIL WBGT policy, Texas heat rules football, UIL heat stress plan, UIL Class 2 Class 3 WBGT, Texas marching band heat rules"
     },
     "georgia": {
-      "title": "Georgia GHSA WBGT Policy: Thresholds & Device Rules | WBGT Check",
+      "title": "Georgia GHSA WBGT Policy: Thresholds & Device | WBGT Check",
       "description": "GHSA By-law 2.67 explained: WBGT thresholds, rest break requirements, and why Georgia requires an on-site calibrated instrument — apps do not count.",
       "keywords": "GHSA heat policy, Georgia WBGT rules, GHSA By-law 2.67, GHSA WBGT device requirement, Georgia football heat rules"
     },
     "wbgtVsHeatIndex": {
-      "title": "WBGT vs Heat Index vs Wet Bulb: What's the Difference? | WBGT Check",
+      "title": "WBGT vs Heat Index vs Wet Bulb: The Difference | WBGT Check",
       "description": "WBGT is not the heat index and not the plain wet bulb. What each number measures, why sports policies use WBGT, and how the scales roughly compare.",
       "keywords": "WBGT vs heat index, wet bulb vs WBGT, wet bulb globe temperature explained, heat index sports, WBGT meaning"
     },
@@ -326,12 +326,12 @@
       "keywords": "WBGT rules by state, state heat policies high school sports, WBGT device requirement states, heat acclimatization rules"
     },
     "southCarolina": {
-      "title": "South Carolina SCHSL WBGT Rules: Thresholds & Device Requirement | WBGT Check",
+      "title": "South Carolina SCHSL WBGT Rules: Device Only | WBGT Check",
       "description": "SCHSL heat guidelines: WBGT activity thresholds, the required on-site thermometer, the 15-minute range-hold rule, and why phone apps are not accepted.",
       "keywords": "SCHSL heat policy, South Carolina WBGT rules, SCHSL WBGT device, South Carolina football heat rules, SCHSL heat guidelines"
     },
     "iowa": {
-      "title": "Iowa WBGT Heat Rules for Sports and Marching Band | WBGT Check",
+      "title": "Iowa WBGT Heat Rules for Sports and Band | WBGT Check",
       "description": "Iowa's IHSAA, IGHSAU, IHSMA and IHSSA WBGT guidance: Category 2 thresholds, the 80°F trigger, 30-minute readings, marching band and cheer changes.",
       "keywords": "Iowa WBGT policy, IHSAA heat rules, IHSMA marching band heat, Iowa Category 2 WBGT, Iowa high school heat guidance"
     },
@@ -341,7 +341,7 @@
       "keywords": "TSSAA heat policy, Tennessee WBGT rules, TSSAA heat index, Tennessee football heat policy, TSSAA weather app"
     },
     "northCarolina": {
-      "title": "North Carolina NCHSAA Heat Guidelines & WBGT Chart | WBGT Check",
+      "title": "North Carolina NCHSAA WBGT Chart and Rules | WBGT Check",
       "description": "NCHSAA's handbook chart: WBGT read hourly on a scientifically approved device, stepping up to full suspension — and why it sits outside our picker.",
       "keywords": "NCHSAA heat guidelines, North Carolina WBGT chart, NCHSAA heat policy, North Carolina football heat rules"
     },
@@ -351,7 +351,7 @@
       "keywords": "NYSPHSAA WBGT chart, NYSPHSAA heat index, New York high school heat policy, NYSPHSAA WeatherBug"
     },
     "virginia": {
-      "title": "Virginia Heat Law & VHSL's Statewide WBGT Table | WBGT Check",
+      "title": "Virginia Heat Law & VHSL Statewide WBGT Table | WBGT Check",
       "description": "VHSL publishes a statewide WBGT participation table, and Virginia's 2025 statute makes each school division's own policy be consistent with it.",
       "keywords": "VHSL WBGT table, Virginia heat law athletes, 22.1-271.10, Virginia WBGT school board policy"
     },
@@ -366,17 +366,17 @@
       "keywords": "WBGT Check disclaimer"
     },
     "washingtonAir": {
-      "title": "Washington School Air Quality: Cancel or Move Practice? | WBGT Check",
+      "title": "Washington School Air Quality: Cancel Practice? | WBGT Check",
       "description": "Washington DOH air-quality guidance for children and youth, keyed to activity duration on the PM2.5 index, with the current AirNow reading for your field.",
       "keywords": "Washington school air quality policy, wildfire smoke practice cancellation Washington, WA DOH school smoke guidance, Washington AQI cancel practice"
     },
     "oregonAir": {
-      "title": "Oregon OSAA Air Quality Rules: Practice & Contest Cancellation | WBGT Check",
+      "title": "Oregon OSAA Air Quality Rules for Practice | WBGT Check",
       "description": "OSAA's required actions by AQI band for Oregon schools, its published 5-3-1 visibility mapping, and the current reading for your field.",
       "keywords": "OSAA air quality guidelines, Oregon smoke practice cancellation, Oregon high school AQI rules, 5-3-1 visibility index Oregon"
     },
     "californiaAir": {
-      "title": "California CIF Air Quality Bylaw: Outdoor Practice Threshold | WBGT Check",
+      "title": "California CIF Air Quality Bylaw for Practice | WBGT Check",
       "description": "CIF's statewide air-quality bylaw for member schools, the readings it accepts, and the current AQI for your field — shown next to the heat flag.",
       "keywords": "CIF air quality bylaw, California high school AQI practice, California school smoke policy, CIF outdoor practice air quality"
     },
@@ -386,12 +386,12 @@
       "keywords": "MIAA heat policy, Massachusetts WBGT, MIAA heat modification, wet bulb globe temperature Massachusetts"
     },
     "florida": {
-      "title": "Florida Heat Safety Law for Athletics (Zachary Martin Act) | WBGT Check",
+      "title": "Florida Heat Safety Law: Zachary Martin Act | WBGT Check",
       "description": "What Florida's Zachary Martin Act requires for heat stress monitoring, cooling zones and on-site measurement in high school athletics.",
       "keywords": "Zachary Martin Act, Florida heat law athletics, FHSAA heat stress, Florida WBGT"
     },
     "california": {
-      "title": "California CIF WBGT Heat Policy (Categories 1-3) | WBGT Check",
+      "title": "California CIF WBGT Heat Policy by Category | WBGT Check",
       "description": "CIF's three regional WBGT ladders under AB 1653 and Bylaw 503.K, the cancel thresholds, and the NOAA reading CIF points schools to.",
       "keywords": "CIF heat policy, California WBGT, AB 1653, CIF Bylaw 503.K, California heat categories"
     },
