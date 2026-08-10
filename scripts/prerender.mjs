@@ -13,6 +13,7 @@
  */
 
 import { readFileSync, writeFileSync, mkdirSync, existsSync, unlinkSync } from 'fs'
+import { execFileSync } from 'node:child_process'
 import { dirname, join } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -183,7 +184,37 @@ const SUPPORTED_LANGS = ['en', 'es']
 const localeMap = { en: 'en_US', es: 'es_US' }
 const SITE_URL = 'https://wbgtcheck.com'
 
-const today = new Date().toISOString().split('T')[0]
+/**
+ * Sitemap <lastmod>.
+ *
+ * This was `new Date()` — every rebuild stamped all 44 URLs with the day the
+ * build ran, whether or not a single character had changed. Google says
+ * outright that it ignores lastmod when a site's values are not credible, and
+ * "all 44 pages changed, again, today" is the canonical example of not
+ * credible. A cache purge or a retried deploy moved every date.
+ *
+ * HEAD's commit date instead: it cannot move without a commit. It is still one
+ * date for the whole site rather than one per page, and that is honest here —
+ * every page's prose is assembled from src/locales/*.json and
+ * src/data/policyData.js, two files that nearly every commit touches, so a
+ * per-page git date would be the same date with extra steps.
+ *
+ * Falls back to the wall clock only if git is unavailable (a tarball export),
+ * which is the one case where there is nothing better to say.
+ */
+function siteLastmod() {
+  try {
+    return execFileSync('git', ['log', '-1', '--format=%cs'], {
+      cwd: join(__dirname, '..'),
+      encoding: 'utf-8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim()
+  } catch {
+    return new Date().toISOString().split('T')[0]
+  }
+}
+
+const SITE_LASTMOD = siteLastmod()
 
 // Grundstein bias numbers interpolate from the oracle constants — locale
 // JSON holds only {{min}}/{{max}} templates (mirrors the React call sites).
@@ -191,28 +222,28 @@ const BIAS_PARAMS = { min: REMOTE_UNDERESTIMATE_MIN_C, max: REMOTE_UNDERESTIMATE
 
 // key must match the seo.* namespace in the locale files AND src/seo.ts
 const pages = [
-  { key: 'home', path: '', dateModified: today },
-  { key: 'texas', path: 'texas', dateModified: today },
-  { key: 'georgia', path: 'georgia', dateModified: today },
-  { key: 'southCarolina', path: 'south-carolina', dateModified: today },
-  { key: 'tennessee', path: 'tennessee', dateModified: today },
-  { key: 'iowa', path: 'iowa', dateModified: today },
-  { key: 'northCarolina', path: 'north-carolina', dateModified: today },
-  { key: 'newYork', path: 'new-york', dateModified: today },
-  { key: 'virginia', path: 'virginia', dateModified: today },
-  { key: 'massachusetts', path: 'massachusetts', dateModified: today },
-  { key: 'florida', path: 'florida', dateModified: today },
-  { key: 'california', path: 'california', dateModified: today },
-  { key: 'kentucky', path: 'kentucky', dateModified: today },
-  { key: 'wbgtVsHeatIndex', path: 'wbgt-vs-heat-index', dateModified: today },
-  { key: 'forecastOrDevice', path: 'forecast-or-device', dateModified: today },
-  { key: 'marchingBand', path: 'marching-band-heat-rules', dateModified: today },
-  { key: 'states', path: 'states', dateModified: today },
-  { key: 'washingtonAir', path: 'washington-air-quality', dateModified: today },
-  { key: 'oregonAir', path: 'oregon-air-quality', dateModified: today },
-  { key: 'californiaAir', path: 'california-air-quality', dateModified: today },
-  { key: 'privacy', path: 'privacy', dateModified: today },
-  { key: 'disclaimer', path: 'disclaimer', dateModified: today },
+  { key: 'home', path: '' },
+  { key: 'texas', path: 'texas' },
+  { key: 'georgia', path: 'georgia' },
+  { key: 'southCarolina', path: 'south-carolina' },
+  { key: 'tennessee', path: 'tennessee' },
+  { key: 'iowa', path: 'iowa' },
+  { key: 'northCarolina', path: 'north-carolina' },
+  { key: 'newYork', path: 'new-york' },
+  { key: 'virginia', path: 'virginia' },
+  { key: 'massachusetts', path: 'massachusetts' },
+  { key: 'florida', path: 'florida' },
+  { key: 'california', path: 'california' },
+  { key: 'kentucky', path: 'kentucky' },
+  { key: 'wbgtVsHeatIndex', path: 'wbgt-vs-heat-index' },
+  { key: 'forecastOrDevice', path: 'forecast-or-device' },
+  { key: 'marchingBand', path: 'marching-band-heat-rules' },
+  { key: 'states', path: 'states' },
+  { key: 'washingtonAir', path: 'washington-air-quality' },
+  { key: 'oregonAir', path: 'oregon-air-quality' },
+  { key: 'californiaAir', path: 'california-air-quality' },
+  { key: 'privacy', path: 'privacy' },
+  { key: 'disclaimer', path: 'disclaimer' },
 ]
 
 const locales = {}
@@ -226,6 +257,31 @@ function escapeHtml(s) {
 
 function escapeAttr(s) {
   return escapeHtml(s).replace(/"/g, '&quot;')
+}
+
+function unescapeHtml(s) {
+  return String(s)
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&amp;/g, '&')
+}
+
+/**
+ * The page's visible H1, read back out of the body this script has just built.
+ *
+ * Deliberately NOT a `{key}.pageTitle` lookup table. A table is a second place
+ * to state the same fact, and the drift it permits is precisely the one being
+ * closed here: a page renames its heading and the schema keeps the old name,
+ * with nothing rendering the two side by side to notice. The body is the
+ * ground truth, so the schema is derived from it and cannot disagree.
+ */
+function extractH1(bodyHtml, pageKey) {
+  const match = bodyHtml.match(/<h1(?:\s[^>]*)?>([\s\S]*?)<\/h1>/)
+  if (!match) {
+    throw new Error(`prerender: page "${pageKey}" rendered no <h1> for its schema to be named from`)
+  }
+  return unescapeHtml(match[1]).trim()
 }
 
 /** Mini-t: dot-path lookup with EN fallback + {{var}} interpolation. */
@@ -242,7 +298,7 @@ function getPageUrl(lang, pagePath) {
   return pagePath === '' ? `${SITE_URL}/${lang}` : `${SITE_URL}/${lang}/${pagePath}`
 }
 
-function generateMetaTags(lang, page) {
+function generateMetaTags(lang, page, h1) {
   const seoData = locales[lang].seo[page.key] ?? locales.en.seo[page.key]
   if (!seoData) {
     throw new Error(`Missing SEO data for key: "${page.key}" in lang: "${lang}"`)
@@ -263,12 +319,30 @@ function generateMetaTags(lang, page) {
 
   // WebApplication only for the actual application page (home). Content pages
   // get BreadcrumbList below. No aggregateRating anywhere — ever.
+  // name/headline is the page's own H1, NOT the <title>.
+  //
+  // Two things were wrong with using the title. It carries " | WBGT Check",
+  // which is a SERP disambiguator and belongs nowhere else — every schema on
+  // the site was publishing a headline with the brand stapled to it. And the
+  // title is written for a query while the H1 is written for the reader, so on
+  // several pages they simply said different things: the schema headline for
+  // /marching-band-heat-rules was "Marching Band Heat Rules by State" while the
+  // page's H1 read "Does your state's heat rule cover marching band?". Google
+  // treats a headline that disagrees with the visible heading as a quality
+  // signal, and it is the sibling repos' "H1 desync" defect wearing a hat
+  // (bug_script/scan_h1_desync.mjs).
+  //
+  // dateModified is GONE rather than corrected. It was `today` on all 22
+  // pages, restamped by every build whether or not anything changed — and
+  // nothing in this repo knows when a page last changed, because every page's
+  // prose comes from two shared files. Google's guidance is not to publish a
+  // date you cannot back; a constant on 24 pages is worse than its absence.
   const jsonLd =
     page.path === ''
       ? {
           '@context': 'https://schema.org',
           '@type': 'WebApplication',
-          name: title,
+          name: h1,
           url: canonicalUrl,
           description,
           applicationCategory: 'UtilityApplication',
@@ -279,10 +353,9 @@ function generateMetaTags(lang, page) {
       : {
           '@context': 'https://schema.org',
           '@type': 'Article',
-          headline: title,
+          headline: h1,
           description,
           inLanguage: localeMap[lang].replace('_', '-'),
-          dateModified: page.dateModified,
           author: { '@type': 'Organization', name: 'WBGT Check' },
           publisher: { '@type': 'Organization', name: 'WBGT Check', url: SITE_URL },
           mainEntityOfPage: { '@type': 'WebPage', '@id': canonicalUrl },
@@ -310,19 +383,19 @@ ${hreflangTags}${xDefaultTag}
     <script data-prerender="true" type="application/ld+json">${JSON.stringify(jsonLd)}</script>`
 }
 
-function generateBreadcrumbJsonLd(lang, page) {
+function generateBreadcrumbJsonLd(lang, page, h1) {
   if (page.path === '') return null
-  const homeName = locales[lang]?.seo?.home?.title ?? 'WBGT Check'
+  // Crumb names are what a reader would SEE, so neither of them is a <title>:
+  // both used to be, which printed the brand suffix twice in one breadcrumb —
+  // "WBGT Forecast … | WBGT Check > Texas UIL WBGT Rules: … | WBGT Check".
+  // Position 1 is the site, position 2 is the page's own H1.
+  const siteName = locales[lang]?.common?.siteName ?? locales.en.common.siteName
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: homeName, item: `${SITE_URL}/${lang}` },
-      {
-        '@type': 'ListItem',
-        position: 2,
-        name: locales[lang]?.seo?.[page.key]?.title ?? page.key,
-      },
+      { '@type': 'ListItem', position: 1, name: siteName, item: `${SITE_URL}/${lang}` },
+      { '@type': 'ListItem', position: 2, name: h1 },
     ],
   }
 }
@@ -1360,7 +1433,7 @@ function generateSitemap() {
       if (SITEMAP_EXCLUDE_KEYS.has(page.key)) continue
       urls.push(`  <url>
     <loc>${getPageUrl(lang, page.path)}</loc>
-    <lastmod>${page.dateModified}</lastmod>
+    <lastmod>${SITE_LASTMOD}</lastmod>
     <changefreq>${page.path === '' ? 'weekly' : 'monthly'}</changefreq>
     <priority>${page.path === '' ? '1.0' : '0.8'}</priority>
   </url>`)
@@ -1394,9 +1467,14 @@ for (const lang of SUPPORTED_LANGS) {
     html = html.replace(descRegex, '')
     for (const re of templateShareRegexes) html = html.replace(re, '')
 
-    html = html.replace('</head>', `${generateMetaTags(lang, page)}\n  </head>`)
+    // Body FIRST: the schema's name/headline is the H1 this renders, read back
+    // out of it rather than looked up in a parallel table.
+    const bodyContent = generateBodyContent(lang, page)
+    const h1 = extractH1(bodyContent, page.key)
 
-    const breadcrumb = generateBreadcrumbJsonLd(lang, page)
+    html = html.replace('</head>', `${generateMetaTags(lang, page, h1)}\n  </head>`)
+
+    const breadcrumb = generateBreadcrumbJsonLd(lang, page, h1)
     if (breadcrumb) {
       html = html.replace(
         '</head>',
@@ -1404,7 +1482,6 @@ for (const lang of SUPPORTED_LANGS) {
       )
     }
 
-    const bodyContent = generateBodyContent(lang, page)
     if (bodyContent) {
       html = html.replace('<div id="root"></div>', `<div id="root">${bodyContent}</div>`)
     }
