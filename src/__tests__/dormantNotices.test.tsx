@@ -24,6 +24,14 @@ import es from '../locales/es.json'
  *
  * guideReachability.test.tsx builds the notice by hand instead of mounting
  * Home, which is why nothing flagged the dormancy in either direction.
+ *
+ * ⚠️ The stand-in state must be one the PICKER cannot already offer. Home only
+ * reaches the ladder-notice branch when the flag on screen is not the detected
+ * state's own (`showStateGuide`), so mocking a registry value onto a state the
+ * picker auto-selects exercises nothing. Florida used to carry the
+ * 'association' case and stopped being usable for it the moment FHSAA §41.8
+ * entered the picker; Kentucky took it over, whose thresholds really are the
+ * association's (KHSAA) rather than a district's.
  */
 vi.mock('../data/guideRegistry', async () => {
   const actual =
@@ -34,7 +42,7 @@ vi.mock('../data/guideRegistry', async () => {
       if (guide.abbr === 'NY') return { ...guide, ladder: 'heat-index' }
       if (guide.abbr === 'VA')
         return { ...guide, ladder: 'no-state-numbers', numbersSetBy: 'districts' }
-      if (guide.abbr === 'FL')
+      if (guide.abbr === 'KY')
         return { ...guide, ladder: 'no-state-numbers', numbersSetBy: 'association' }
       return guide
     }),
@@ -101,7 +109,7 @@ describe('the dormant fallback notices are dormant by DATA, not by dead code', (
   it('a no-state-numbers guide still gets the right setBy, per registry value', async () => {
     for (const [abbr, setByKey] of [
       ['VA', 'stateNumbersSetByDistricts'],
-      ['FL', 'stateNumbersSetByAssociation'],
+      ['KY', 'stateNumbersSetByAssociation'],
     ] as const) {
       const view = await homeIn(abbr)
       expect(screen.getByText(en.home.stateNoNumbersHeading)).toBeInTheDocument()

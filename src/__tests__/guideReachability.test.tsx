@@ -399,11 +399,17 @@ describe('states outside the picker still reach their guide', () => {
 
   it('splits every guide state into exactly one of the two groups', () => {
     expect(PICKERLESS.length + IN_PICKER.length).toBe(STATE_GUIDES.length)
-    expect(PICKERLESS.map((g) => g.abbr).sort()).toEqual(['CA', 'FL', 'KY', 'NC', 'NY', 'VA'])
+    // Florida left this group when FHSAA §41.8 entered the picker. The five
+    // that remain each need a question this tool does not ask — CA and NY a
+    // regional category, KY and NC a different band family, VA six levels.
+    // Florida was the one that needed none: five bands onto five flags.
+    expect(PICKERLESS.map((g) => g.abbr).sort()).toEqual(['CA', 'KY', 'NC', 'NY', 'VA'])
     // Tennessee belongs here: TSSAA is a picker option, it simply is not
     // auto-selected. That distinction is the whole bug.
-    expect(IN_PICKER.map((g) => g.abbr).sort()).toEqual(['GA', 'IA', 'MA', 'SC', 'TN', 'TX'])
+    expect(IN_PICKER.map((g) => g.abbr).sort()).toEqual(['FL', 'GA', 'IA', 'MA', 'SC', 'TN', 'TX'])
     expect(defaultPolicyFor('TN')).toBe('generic')
+    // …and Florida, unlike Tennessee, IS auto-selected.
+    expect(defaultPolicyFor('FL')).toBe('fhsaa')
   })
 
   /** The condition Home.tsx renders the LINK on. */
@@ -424,7 +430,7 @@ describe('states outside the picker still reach their guide', () => {
   })
 
   it('does not duplicate the link where the picker already carries it', () => {
-    for (const abbr of ['TX', 'GA', 'SC', 'IA', 'MA']) {
+    for (const abbr of ['TX', 'GA', 'SC', 'IA', 'MA', 'FL']) {
       expect(wouldShowGuide(abbr), `${abbr} would show the link twice`).toBe(false)
     }
   })

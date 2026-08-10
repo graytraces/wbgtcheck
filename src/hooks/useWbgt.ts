@@ -55,6 +55,32 @@ export function defaultPolicyFor(stateAbbr: string | null): PolicyId {
   // MIAA is one statewide policy with no sub-categories, and every one of its
   // bands is stricter than the generic fallback — safe to select on arrival.
   if (stateAbbr === 'MA') return 'miaa'
+  /**
+   * Florida gets FHSAA §41.8, the PRACTICE index, and the choice is safe in
+   * the direction that matters rather than merely available.
+   *
+   * Policy 41 is two ladders (see FHSAA_CONTEST_* in policyData.js) and this
+   * tool does not ask which one the reader is in. Selecting the practice one
+   * is not a coin flip: §41.8 is the stricter of the two at every band and
+   * forbids outdoor activity at its top, while §41.9.5's hottest band
+   * prescribes hydration breaks and contains no band that stops a contest at
+   * all. So an unasked Florida reader gets the conservative answer, never the
+   * permissive one. Do not flip this to a contest ladder without adding the
+   * question first — that would be the Texas class prompt in reverse.
+   *
+   * ⚠️ Unlike MIAA and Iowa above, this default is NOT uniformly stricter than
+   * the generic NATA fallback it replaces, and the note would be dishonest if
+   * it claimed otherwise. At exactly 87.0 and exactly 90.0 — two readings out
+   * of every tenth in the published range — FHSAA reads one band cooler,
+   * because FHSAA prints those temperatures as the TOP of the band below
+   * ("82.1 - 87.0", "87.1 - 90.0") while NATA prints them as the bottom of the
+   * band above. Both sites are faithful to their own chart. The reason to
+   * select FHSAA anyway is not that it is stricter but that it GOVERNS: a
+   * Florida school answers to Policy 41, and a generic table it never adopted
+   * is not a safer answer for being two tenths more cautious.
+   * policyDefaults.test.ts pins both edges so neither can move unnoticed.
+   */
+  if (stateAbbr === 'FL') return 'fhsaa'
   return 'generic'
 }
 
@@ -65,6 +91,7 @@ export function policyMatchesState(stateAbbr: string | null, policyId: PolicyId)
   if (stateAbbr === 'SC') return policyId === 'schsl'
   if (stateAbbr === 'IA') return policyId === 'iowa'
   if (stateAbbr === 'MA') return policyId === 'miaa'
+  if (stateAbbr === 'FL') return policyId === 'fhsaa'
   // TSSAA is a picker option that is never auto-selected, so it was missing
   // here: a Tennessee reader who chose it lost the choice on the next ZIP
   // entry and silently fell back to generic. The flags are identical, so

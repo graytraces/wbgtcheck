@@ -64,6 +64,7 @@ export const statePageKeyByPolicy: Record<string, string> = {
   tssaa: 'tennessee',
   iowa: 'iowa',
   miaa: 'massachusetts',
+  fhsaa: 'florida',
 }
 
 /**

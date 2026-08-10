@@ -1,6 +1,14 @@
 import { describe, it, expect } from 'vitest'
 import { defaultPolicyFor, policyMatchesState } from '../hooks/useWbgt'
-import { POLICIES, UIL_CLASS_2, UIL_CLASS_3, classifyWbgt } from '../data/policyOracle'
+import {
+  POLICIES,
+  UIL_CLASS_2,
+  UIL_CLASS_3,
+  FHSAA,
+  FHSAA_NO_OUTDOOR_WBGT_F,
+  GENERIC_NATA,
+  classifyWbgt,
+} from '../data/policyOracle'
 
 /**
  * Which policy a location gets BEFORE the user picks one.
@@ -41,6 +49,8 @@ describe('default policy per state', () => {
     // MIAA: one statewide policy, no sub-categories, every band stricter than
     // the generic fallback — safe to select without asking.
     expect(defaultPolicyFor('MA')).toBe('miaa')
+    // FHSAA §41.8: five bands onto five flags, no question to ask first.
+    expect(defaultPolicyFor('FL')).toBe('fhsaa')
     expect(defaultPolicyFor('CO')).toBe('generic')
     expect(defaultPolicyFor(null)).toBe('generic')
     // NC and NY are deliberately absent from the picker (incompatible scales),
@@ -54,7 +64,7 @@ describe('default policy per state', () => {
   })
 
   it('every default is a policy the picker actually offers', () => {
-    for (const state of ['TX', 'GA', 'SC', 'IA', 'MA', 'TN', 'NC', 'NY', null]) {
+    for (const state of ['TX', 'GA', 'SC', 'IA', 'MA', 'FL', 'TN', 'NC', 'NY', null]) {
       expect(POLICIES[defaultPolicyFor(state)]).toBeDefined()
     }
   })
@@ -73,6 +83,8 @@ describe('policy ownership by state', () => {
     expect(policyMatchesState('SC', 'schsl')).toBe(true)
     expect(policyMatchesState('IA', 'iowa')).toBe(true)
     expect(policyMatchesState('MA', 'miaa')).toBe(true)
+    expect(policyMatchesState('FL', 'fhsaa')).toBe(true)
+    expect(policyMatchesState('FL', 'generic')).toBe(false)
     expect(policyMatchesState('MA', 'ghsa')).toBe(false)
     expect(policyMatchesState('GA', 'uil-class-3')).toBe(false)
   })
@@ -105,6 +117,7 @@ describe('an explicit choice survives re-location', () => {
       ['SC', 'schsl'],
       ['IA', 'iowa'],
       ['MA', 'miaa'],
+      ['FL', 'fhsaa'],
       ['TN', 'tssaa'],
     ]
     for (const [abbr, id] of selectable) {
@@ -113,8 +126,71 @@ describe('an explicit choice survives re-location', () => {
   })
 
   it('does not claim a match for a state with no policy of its own', () => {
-    for (const abbr of ['CA', 'KY', 'FL', 'NC', 'NY', 'VA', 'CO']) {
+    for (const abbr of ['CA', 'KY', 'NC', 'NY', 'VA', 'CO']) {
       expect(policyMatchesState(abbr, 'generic')).toBe(false)
     }
+  })
+})
+
+/**
+ * Auto-selecting Florida, and the reason it is defensible — which is NOT the
+ * reason Massachusetts and Iowa are.
+ *
+ * MIAA and Iowa were safe to select unasked partly because every band of each
+ * is stricter than the generic NATA fallback. Florida is not, and a comment
+ * claiming it was would be the kind of unchecked reassurance this repo keeps
+ * finding. At exactly two readings in the whole published range — 87.0 and
+ * 90.0 — FHSAA reads one band COOLER than the fallback, because FHSAA prints
+ * those temperatures as the top of the band below ("82.1 - 87.0",
+ * "87.1 - 90.0") while NATA prints them as the bottom of the band above.
+ *
+ * Both sites are faithful to their own chart, and Policy 41 is the chart a
+ * Florida school answers to. The point of pinning it is that the divergence is
+ * a KNOWN and bounded two tenths rather than something discovered later and
+ * mistaken for a regression.
+ */
+describe('what the Florida default changes for a Florida reader', () => {
+  const FLAGS = ['green', 'yellow', 'orange', 'red', 'black'] as const
+
+  it('differs from the NATA fallback at exactly the two named edges', () => {
+    const differing: string[] = []
+    for (let tenth = 780; tenth <= 950; tenth += 1) {
+      const wbgtF = tenth / 10
+      if (classifyWbgt(FHSAA, wbgtF).flag !== classifyWbgt(GENERIC_NATA, wbgtF).flag) {
+        differing.push(wbgtF.toFixed(1))
+      }
+    }
+    expect(differing).toEqual(['87.0', '90.0'])
+    // …and at both, FHSAA is the cooler flag, matching its own printed row.
+    for (const wbgtF of [87.0, 90.0]) {
+      const fl = classifyWbgt(FHSAA, wbgtF)
+      const nata = classifyWbgt(GENERIC_NATA, wbgtF)
+      expect(FLAGS.indexOf(fl.flag), `${wbgtF}`).toBeLessThan(FLAGS.indexOf(nata.flag))
+      // The row label a coach would check this against names the value as its
+      // upper bound, which is why the cooler flag is the faithful one.
+      expect(fl.sourceLabel).toContain(wbgtF.toFixed(1))
+    }
+  })
+
+  it('is the same flag as the fallback everywhere else in the range', () => {
+    // The change a Florida reader actually experiences is the guidance and the
+    // named policy, not a wholesale re-flagging — worth knowing before anyone
+    // reads the two edges above as a big move.
+    let same = 0
+    for (let tenth = 780; tenth <= 950; tenth += 1) {
+      const wbgtF = tenth / 10
+      if (classifyWbgt(FHSAA, wbgtF).flag === classifyWbgt(GENERIC_NATA, wbgtF).flag) same += 1
+    }
+    expect(same).toBe(171 - 2)
+  })
+
+  it('and the top band still stops outdoor activity where §41.8 says', () => {
+    expect(classifyWbgt(FHSAA, FHSAA_NO_OUTDOOR_WBGT_F).flag).toBe('black')
+    expect(
+      classifyWbgt(FHSAA, FHSAA_NO_OUTDOOR_WBGT_F).guideline.noOutdoorWorkouts,
+    ).toBe(true)
+    // A tenth below it is red, not black: 92.0 is the printed top of the
+    // 90.1-92.0 row.
+    expect(classifyWbgt(FHSAA, 92.0).flag).toBe('red')
   })
 })
