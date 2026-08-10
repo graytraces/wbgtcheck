@@ -1,8 +1,9 @@
 import { describe, it, expect, beforeAll } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
-import { readdirSync, readFileSync, existsSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { requireFreshDist } from '../test/requireDist'
 import type { ReactElement } from 'react'
 import i18n from '../i18n'
 import en from '../locales/en.json'
@@ -61,7 +62,8 @@ describe('personal address never appears', () => {
     expect(JSON.stringify(es)).not.toContain(BANNED)
   })
 
-  it.skipIf(!existsSync(DIST))('no built HTML contains the banned fragment (dist scan)', () => {
+  it('no built HTML contains the banned fragment (dist scan)', () => {
+    requireFreshDist()
     const files = distHtmlFiles()
     expect(files.length).toBeGreaterThan(0)
     for (const file of files) {
@@ -70,7 +72,8 @@ describe('personal address never appears', () => {
     }
   })
 
-  it.skipIf(!existsSync(DIST))('prerendered guide pages carry the correction mailto', () => {
+  it('prerendered guide pages carry the correction mailto', () => {
+    requireFreshDist()
     for (const lang of ['en', 'es']) {
       const html = readFileSync(join(DIST, lang, 'texas.html'), 'utf8')
       expect(html).toContain(`mailto:${FEEDBACK_EMAIL}`)

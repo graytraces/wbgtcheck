@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { requireFreshDist } from '../test/requireDist'
 
 /**
  * The check scripts serve the real dist/, which carries the real measurement
@@ -119,7 +120,8 @@ describe('the in-page analytics guard', () => {
     expect(INDEX.slice(guardAt)).not.toContain("'consent'")
   })
 
-  it.skipIf(!existsSync(DIST))('every built HTML carries the guard and no static tag', () => {
+  it('every built HTML carries the guard and no static tag', () => {
+    requireFreshDist()
     const walk = (dir: string): string[] =>
       readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
         e.isDirectory() ? walk(join(dir, e.name)) : e.name.endsWith('.html') ? [join(dir, e.name)] : [],

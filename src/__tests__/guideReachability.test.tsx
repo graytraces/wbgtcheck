@@ -14,7 +14,8 @@ import { STATE_GUIDES, AIR_GUIDES, GUIDE_SLUG_BY_ABBR } from '../data/guideRegis
 import { defaultPolicyFor } from '../hooks/useWbgt'
 import { STATE_DIRECTORY } from '../data/stateDirectory'
 import { VALID_TOOLS, VALID_PAGES } from '../utils/routeValidation'
-import { existsSync, readFileSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
+import { requireFreshDist } from '../test/requireDist'
 import { join } from 'node:path'
 
 /**
@@ -250,9 +251,8 @@ describe('the guide registry is the single source for both renderers', () => {
    * PRERENDERED hub does not exist for a reader whose JS failed — and since
    * the nav dropped to five items, /states is the only hub there is.
    */
-  it.skipIf(!existsSync(join(process.cwd(), 'dist')))(
-    'links every registered guide in the prerendered hub too, in both locales',
-    () => {
+  it('links every registered guide in the prerendered hub too, in both locales', () => {
+    requireFreshDist()
       for (const lang of ['en', 'es']) {
         const html = readFileSync(join(process.cwd(), 'dist', lang, 'states.html'), 'utf-8')
         for (const { slug } of ALL) {
@@ -511,17 +511,45 @@ describe('the states directory table is readable and reachable', () => {
     }
   })
 
-  it.skipIf(!existsSync(join(process.cwd(), 'dist')))(
-    'prerenders the legend under a heading, not as loose bullets',
-    () => {
+
+  /**
+   * React has a header-order guard; the prerender had none, so reverting just
+   * its thead to the old order passed 442/442 while the built page printed
+   * "Apps allowed" under *Governing body*. The prerendered table is what a
+   * JS-off reader and a crawler get, so it needs its own.
+   */
+  it('prerenders the columns in the same order the component renders them', () => {
+    requireFreshDist()
+    for (const lang of ['en', 'es'] as const) {
+      const dict = lang === 'en' ? en : es
+      const html = readFileSync(join(process.cwd(), 'dist', lang, 'states.html'), 'utf-8')
+      const head =
+        `<th>${dict.states.colState}</th>` +
+        `<th>${dict.states.colMeasurement}</th>` +
+        `<th>${dict.states.colMandate}</th>` +
+        `<th>${dict.states.colBody}</th>` +
+        `<th>${dict.states.colNote}</th>`
+      expect(html, `${lang} prerendered header order`).toContain(head)
+      // And the cells have to follow the header, not merely exist: California
+      // is measurement=apps-allowed, mandate=wbgt-required, body=CIF.
+      const caRow =
+        `<th scope="row">CA</th>` +
+        `<td>${dict.states.measurement['apps-allowed']}</td>` +
+        `<td>${dict.states.mandate['wbgt-required']}</td>` +
+        `<td>CIF (AB 1653)</td>`
+      expect(html, `${lang} prerendered cell order`).toContain(caRow)
+    }
+  })
+
+  it('prerenders the legend under a heading, not as loose bullets', () => {
+    requireFreshDist()
       for (const lang of ['en', 'es']) {
         const html = readFileSync(join(process.cwd(), 'dist', lang, 'states.html'), 'utf-8')
         const dict = lang === 'en' ? en : es
         expect(html).toContain(`<h2>${dict.states.legendHeading}</h2>`)
         expect(html).toContain(dict.states.legendMandateConditional)
       }
-    },
-  )
+  })
 })
 
 /**
