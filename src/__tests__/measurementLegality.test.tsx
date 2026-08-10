@@ -7,6 +7,7 @@ import i18n from '../i18n'
 import en from '../locales/en.json'
 import es from '../locales/es.json'
 import ForecastOrDevice from '../pages/ForecastOrDevice'
+import Virginia from '../pages/Virginia'
 import VerdictCard from '../components/VerdictCard'
 import { requireFreshDist } from '../test/requireDist'
 import {
@@ -70,6 +71,16 @@ const renderPage = () =>
     <MemoryRouter initialEntries={['/en/forecast-or-device']}>
       <Routes>
         <Route path="/:lang/*" element={<ForecastOrDevice />} />
+      </Routes>
+    </MemoryRouter>,
+  )
+
+/** The page /states' Virginia note tells the reader to go and read. */
+const renderVirginia = () =>
+  render(
+    <MemoryRouter initialEntries={['/en/virginia']}>
+      <Routes>
+        <Route path="/:lang/*" element={<Virginia />} />
       </Routes>
     </MemoryRouter>,
   )
@@ -422,5 +433,32 @@ describe('Virginia: the method is regulated after all', () => {
     // …and it says what VHSL actually says instead.
     expect(en.states.notes.va).toMatch(/should never replace/)
     expect(es.states.notes.va).toMatch(/should never replace/)
+  })
+
+  /**
+   * The gap this test exists to close: the note above says "see the Virginia
+   * guide", and the guide said measurement was unregulated. The previous
+   * assertion pinned the /states note and never rendered the page it points
+   * at, so the contradiction shipped green. This renders the destination.
+   */
+  it('the guide the note sends readers to carries the VHSL paragraph itself', () => {
+    const { container } = renderVirginia()
+    const text = container.textContent ?? ''
+    expect(text).toContain(VHSL_FORECAST_PLANNING_QUOTE)
+    expect(text).toContain(VHSL_FORECAST_NOT_REPLACE_QUOTE)
+    expect(text).not.toContain('{{')
+  })
+
+  it('scopes the silence to the statute rather than to Virginia', () => {
+    for (const dict of [en, es]) {
+      // A heading that says measurement is unregulated contradicts the row on
+      // /states and the paragraph directly beneath it.
+      expect(dict.virginia.measurementHeading).not.toMatch(
+        /not regulated|no está regulada/i,
+      )
+      expect(dict.virginia.measurementHeading).toMatch(/statute|estatuto/i)
+      expect(dict.virginia.vhslMeasurementBody).toContain('{{planning}}')
+      expect(dict.virginia.vhslMeasurementBody).toContain('{{notReplace}}')
+    }
   })
 })

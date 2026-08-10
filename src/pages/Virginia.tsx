@@ -12,6 +12,8 @@ import {
   VA_MIN_TIERS,
   VA_STATUTE_SOURCE,
   VHSL_CANCEL_QUOTE,
+  VHSL_FORECAST_NOT_REPLACE_QUOTE,
+  VHSL_FORECAST_PLANNING_QUOTE,
   VHSL_ICE_LEVEL,
   VHSL_LEVEL_COUNT,
   VHSL_REFERENCE,
@@ -55,9 +57,22 @@ export default function Virginia() {
         <p>{t('virginia.iceBody', { ice: VA_ICE_WBGT_F })}</p>
       </section>
 
+      {/* The heading used to read "Measurement is not regulated", which is a
+          claim about Virginia; the paragraph under it is a claim about the
+          STATUTE, and only the statute is silent. VHSL — the body the statute
+          points at, whose table this page reproduces below — devotes a
+          paragraph of p.1 to forecasting tools and apps, and /states now says
+          so. Those sentences belong on the page /states sends the reader to,
+          not only on /forecast-or-device. */}
       <section>
         <h2 className="display-num mb-2 text-2xl uppercase">{t('virginia.measurementHeading')}</h2>
         <p>{t('virginia.measurementBody')}</p>
+        <p className="mt-2">
+          {t('virginia.vhslMeasurementBody', {
+            planning: VHSL_FORECAST_PLANNING_QUOTE,
+            notReplace: VHSL_FORECAST_NOT_REPLACE_QUOTE,
+          })}
+        </p>
         <p className="mt-2">{t('virginia.reportingBody')}</p>
       </section>
 
