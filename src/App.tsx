@@ -4,6 +4,7 @@ import Layout from './components/Layout'
 import RouteErrorFallback from './components/RouteErrorFallback'
 import Home from './pages/Home'
 import { SUPPORTED_LANGS, VALID_TOOLS, VALID_PAGES } from './utils/routeValidation'
+import { clearPrerenderedCopy } from './utils/prerenderCleanup'
 
 function detectLang(): string {
   const raw = navigator.languages?.length ? navigator.languages : [navigator.language]
@@ -95,18 +96,8 @@ export default function App() {
     // Only set if a very slow boot already tripped the timer; harmless
     // otherwise, and it keeps the two states from disagreeing.
     document.documentElement.classList.remove('boot-failed')
-    // `:not(script)` is load-bearing. The prerender marks its JSON-LD blocks
-    // with the same attribute as its prose, so an unqualified sweep deleted
-    // every Article and BreadcrumbList on the site the moment React mounted —
-    // measured at 1-2 blocks in the served HTML and 0 in the post-JS DOM, on
-    // every page. Google reads structured data from the rendered DOM, so those
-    // schemas had been invalid since launch. Canonical and description survive
-    // only because the SEO component re-emits them; JSON-LD has no such
-    // re-emitter, so it must simply not be removed.
-    //
-    // The prose wipe is unaffected: prerendered body copy is what this line
-    // exists to clear, and none of it is a <script>.
-    document.querySelectorAll('[data-prerender]:not(script)').forEach((el) => el.remove())
+    // See prerenderCleanup: the selector there is deliberately qualified.
+    clearPrerenderedCopy()
   }, [])
   return <RouterProvider router={router} />
 }
