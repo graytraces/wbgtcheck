@@ -24,3 +24,24 @@ export function kmhToMs(kmh: number): number {
 export function formatWbgtF(wbgtF: number): string {
   return wbgtF.toFixed(1)
 }
+
+/**
+ * The printed reading, back as a number — the value every flag must be derived
+ * from.
+ *
+ * The whole-degree fix above left a half-tenth window behind: `formatWbgtF`
+ * printed `toFixed(1)` while the classifier still read the raw float, so a
+ * reading in [minF − 0.05, minF) rendered AS the boundary while carrying the
+ * band below it. A UIL Class 3 reading of 86.95 printed "87.0 °F" beside a
+ * YELLOW flag, and the chart the coach is holding says 87.0-90.0 is ORANGE —
+ * wrong in the permissive direction, at every inclusive lower bound of every
+ * policy.
+ *
+ * Deliberately defined as `Number(formatWbgtF(x))` rather than an independent
+ * `Math.round(x * 10) / 10`: two roundings of the same double can disagree at
+ * a tie, and the entire point is that the flag comes from the characters on
+ * screen. Change the format and the classification follows it.
+ */
+export function displayedWbgtF(wbgtF: number): number {
+  return Number(formatWbgtF(wbgtF))
+}

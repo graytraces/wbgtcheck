@@ -15,7 +15,7 @@ import { guidelineSentences } from '../utils/guidelineText'
 import { FLAG_ICON, FLAG_SOLID } from '../utils/flagStyles'
 import { trackVerdictView } from '../utils/analytics'
 import { cn } from '../lib/utils'
-import { formatWbgtF } from '../utils/units'
+import { displayedWbgtF, formatWbgtF } from '../utils/units'
 
 interface VerdictCardProps {
   hour: HourVerdict
@@ -40,7 +40,11 @@ export default function VerdictCard({
   onChangeLocation,
 }: VerdictCardProps) {
   const { t, i18n } = useTranslation()
-  const band = classifyWbgt(policy, hour.wbgtF)
+  // The flag comes from the number this card prints, not from the float behind
+  // it — see displayedWbgtF. annotateHours already snaps the series, and this
+  // repeats it so the card cannot contradict itself for a caller that does not.
+  const shownF = displayedWbgtF(hour.wbgtF)
+  const band = classifyWbgt(policy, shownF)
   const Icon = FLAG_ICON[band.flag]
   const sentences = guidelineSentences(band.flag, band.guideline, t)
   const boundary = nextBandBoundary(policy, band)
@@ -106,7 +110,7 @@ export default function VerdictCard({
           <div>
             <div className="flex items-baseline gap-2">
               <span className="display-num text-[6.5rem] leading-none sm:text-[8.5rem]">
-                {formatWbgtF(hour.wbgtF)}
+                {formatWbgtF(shownF)}
               </span>
               <span className="display-num text-3xl sm:text-4xl">°F</span>
             </div>

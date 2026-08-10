@@ -8,7 +8,7 @@ import {
   UIL_READING_BEFORE_PRACTICE_MAX_MINUTES,
   UIL_READING_INTERVAL_MINUTES,
 } from '../data/policyOracle'
-import { formatWbgtF } from '../utils/units'
+import { displayedWbgtF, formatWbgtF } from '../utils/units'
 
 interface WbgtLogProps {
   /** Currently displayed forecast estimate, or null when none. */
@@ -122,10 +122,15 @@ export default function WbgtLog({
     onsiteValue <= ONSITE_MAX_F
 
   const save = (wbgtF: number, source: 'forecast' | 'onsite') => {
+    // Store and classify the SAME number. The row printed the rounded value
+    // beside a flag taken from the raw one, so a meter reading typed as 86.95
+    // was filed as "87.0 °F — YELLOW" under a policy whose chart starts orange
+    // at 87.0.
+    const shownF = displayedWbgtF(wbgtF)
     const { persisted } = addEntry({
-      wbgtF: Math.round(wbgtF * 10) / 10,
+      wbgtF: shownF,
       source,
-      flagKey: `flags.${classifyWbgt(policy, wbgtF).flag}.label`,
+      flagKey: `flags.${classifyWbgt(policy, shownF).flag}.label`,
       policyKey: `policies.${policyId}`,
       locationLabel,
     })

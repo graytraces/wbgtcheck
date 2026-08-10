@@ -1,5 +1,6 @@
 import type { FlagColor, HeatPolicy } from '../data/policyOracle'
 import { classifyWbgt, isBorderline } from '../data/policyOracle'
+import { displayedWbgtF } from './units'
 import type { HourPoint } from './nws'
 
 export interface HourVerdict extends HourPoint {
@@ -32,18 +33,36 @@ function localParts(timeMs: number, timeZone: string): { date: string; hour: num
   return { date: `${get('year')}-${get('month')}-${get('day')}`, hour }
 }
 
+/**
+ * Every hour, carrying the flag for the number that will be PRINTED for it.
+ *
+ * The reading is snapped to its displayed precision here, once, and the flag
+ * is derived from the snapped value — so the reading, its flag, the log row it
+ * writes and the share card it draws can never disagree about which band a
+ * number is in. Classifying the raw float instead put a reading of 86.95 on
+ * screen as "87.0 °F" with the YELLOW flag while the UIL chart beside the
+ * coach says 87.0 begins ORANGE.
+ *
+ * `wbgtF` is overwritten rather than shadowed by a second field on purpose:
+ * every consumer downstream (verdict card, timeline, week strip, log
+ * quick-add, share card) already reads `wbgtF`, and a parallel "display value"
+ * would be a second number for one reading — the exact defect the display
+ * rules in utils/units.ts exist to prevent.
+ */
 export function annotateHours(
   points: HourPoint[],
   policy: HeatPolicy,
   timeZone: string,
 ): HourVerdict[] {
   return points.map((p) => {
-    const band = classifyWbgt(policy, p.wbgtF)
+    const shownF = displayedWbgtF(p.wbgtF)
+    const band = classifyWbgt(policy, shownF)
     const { date, hour } = localParts(p.time, timeZone)
     return {
       ...p,
+      wbgtF: shownF,
       flag: band.flag,
-      borderline: isBorderline(policy, p.wbgtF),
+      borderline: isBorderline(policy, shownF),
       localHour: hour,
       localDate: date,
     }
