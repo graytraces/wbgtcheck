@@ -108,6 +108,12 @@ export function stubForecastFetch(
     /** City/state NWS reports for the point — what the geolocation path adopts. */
     place?: FixturePlace
     /**
+     * The FORECAST's zone, as NWS reports it. Pass `awayTimeZone()` to put the
+     * field and the device on different clocks — the away-game case, and the
+     * only way a test can see which of the two a timestamp was stamped in.
+     */
+    timeZone?: string
+    /**
      * Delays every forecast response by this many ms. With an instant stub
      * React batches the commits around a re-fetch, so a spurious second round
      * trip is invisible to the DOM; a delay makes the intermediate "Loading…"
@@ -129,7 +135,7 @@ export function stubForecastFetch(
     'fetch',
     vi.fn((input: RequestInfo | URL) => {
       const url = String(input)
-      const fixture = wbgtFixture(start, 'America/Chicago', place)
+      const fixture = wbgtFixture(start, options.timeZone ?? 'America/Chicago', place)
       if (url.includes('/api/wbgt')) return ok(fixture)
       if (url.includes('/points/')) {
         return ok({

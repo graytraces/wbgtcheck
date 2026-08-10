@@ -425,6 +425,11 @@ export default function Home() {
           policy={policy}
           policyId={policyId}
           locationLabel={location.label}
+          // The FIELD's clock, the same one the verdict card above stamps
+          // with. WbgtLog grew the prop and nothing passed it, so the log
+          // still stamped the device: same Atlanta session, card "AT 9:00 AM",
+          // row "10:05 PM". This is the artifact with a Print button.
+          timeZone={timeZone}
         />
       )}
 

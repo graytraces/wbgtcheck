@@ -7,11 +7,13 @@ import {
   stubForecastFetch,
   renderHome,
   aqiFixture,
+  awayTimeZone,
   AUSTIN_TX,
 } from '../test/homeFixture'
 import { STATE_GUIDES } from '../data/guideRegistry'
 import { pageSEO, statePageKeyByPolicy, pickerLadderPageKeys } from '../seo'
 import { defaultPolicyFor } from '../hooks/useWbgt'
+import { WBGT_LOG_KEY, type WbgtLogEntry } from '../hooks/useWbgtLog'
 
 /**
  * What the HOME PAGE renders — not what a test-local re-implementation of its
@@ -135,6 +137,73 @@ describe('the fallback notice, as the page renders it', () => {
  * flow was guarded only by grepping Home.tsx for the string "scrollIntoView",
  * which cannot tell whether the editor opens, or where focus lands.
  */
+/**
+ * The log and the card have to be on one clock, and Home is where that is
+ * decided.
+ *
+ * 7af97f7 gave WbgtLog an optional `timeZone` prop and tested the component
+ * with it — but Home never passed it, so the shipped page still stamped every
+ * row in the device's zone while the card two screens above stamped the
+ * field's. Same Atlanta session on a phone set to UTC+9: card "RIGHT NOW · AT
+ * 9:00 AM", row "Aug 10, 2026 at 10:05 PM". A component test cannot see a
+ * missing prop at the call site, which is exactly how this survived its own fix.
+ */
+describe('the reading log runs on the same clock as the card above it', () => {
+  const STAMP = Date.parse('2026-08-10T13:05:00Z')
+  const TZ = awayTimeZone(STAMP)
+
+  const entry: WbgtLogEntry = {
+    id: 'row-1',
+    timestamp: STAMP,
+    wbgtF: 88.4,
+    source: 'forecast',
+    flagKey: 'flags.red.label',
+    policyKey: 'policies.generic',
+    locationLabel: 'Atlanta, GA',
+  }
+
+  const stampedIn = (timeZone?: string) =>
+    new Date(STAMP).toLocaleString('en', { dateStyle: 'medium', timeStyle: 'short', timeZone })
+
+  it('stamps rows in the forecast zone, not the device zone', async () => {
+    store.clear()
+    store.set('wbgt-uil-class', JSON.stringify('uil-class-3'))
+    store.set(
+      'wbgt-location',
+      JSON.stringify({ lat: AUSTIN_TX.lat, lon: AUSTIN_TX.lon, label: 'Atlanta, GA', stateAbbr: 'GA' }),
+    )
+    store.set(WBGT_LOG_KEY, JSON.stringify([entry]))
+    vi.unstubAllGlobals()
+    stubForecastFetch({ aqi: aqiFixture(), timeZone: TZ, place: { city: 'Atlanta', state: 'GA' } })
+
+    renderHome()
+    await waitFor(() => expect(screen.getByText(en.verdict.todayHeading)).toBeInTheDocument())
+    // The log section mounts with the verdict but fills from storage an effect
+    // later, so the history is one tick behind the heading above.
+    await waitFor(() =>
+      expect(screen.getByLabelText(en.wbgtLog.historyTitle)).toBeInTheDocument(),
+    )
+
+    const row = screen.getByLabelText(en.wbgtLog.historyTitle).querySelector('li')!
+    expect(stampedIn(TZ), 'the away zone matches the runner, so this proves nothing').not.toBe(
+      stampedIn(),
+    )
+    expect(row.textContent).toContain(stampedIn(TZ))
+    expect(row.textContent, 'the log is on the device clock').not.toContain(stampedIn())
+
+    // And the card above it is on that same clock — the two are one artifact
+    // to the reader, and the disagreement was between them.
+    const cardClock = new Intl.DateTimeFormat('en', {
+      timeZone: TZ,
+      hour: 'numeric',
+      minute: '2-digit',
+    }).format(new Date(Math.floor(Date.now() / 3_600_000) * 3_600_000))
+    expect(
+      screen.getByText(en.verdict.nowHeading, { exact: false }).textContent,
+    ).toContain(cardClock)
+  })
+})
+
 describe('the inline location editor', () => {
   it('opens beside the label and puts the cursor in the field', async () => {
     const view = await homeIn('TX', 'Austin, TX')
