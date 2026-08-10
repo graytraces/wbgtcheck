@@ -1211,9 +1211,14 @@ const MIAA_RED = {
   restMinutesPerHour: 20,
   footballEquipment: null,
   noConditioning: true,
+  // NOT coolingZoneRequired: that flag renders UIL's wording, and MIAA's rule
+  // is its own — ice water and towels in the zone, plus immersion tubs for any
+  // player showing signs. It rides an extraKey so the verdict card actually
+  // says it. MIAA_COOLING_ZONE_WBGT_F (84) is the threshold this band opens
+  // at; black short-circuits on noOutdoorWorkouts and needs no copy.
   coolingZoneRequired: false,
   noOutdoorWorkouts: false,
-  extraKeys: ['guideline.miaaNoEquipmentAnySport'],
+  extraKeys: ['guideline.miaaNoEquipmentAnySport', 'guideline.miaaCoolingZone'],
 }
 
 const MIAA_BLACK = {

@@ -70,6 +70,7 @@ import {
   SCHSL_CONTINUOUS_QUOTE,
 } from '../data/policyOracle'
 import type { FlagColor, HeatPolicy } from '../data/policyOracle'
+import { guidelineSentences } from '../lib/guidelineSentences.js'
 import en from '../locales/en.json'
 import es from '../locales/es.json'
 
@@ -323,6 +324,26 @@ describe('policy oracle — guideline facts vs primary sources', () => {
       [86.05, 'black'],
     ] as const) {
       expect(flagAt(MIAA, wbgt), `${wbgt} must resolve upward`).toBe(flag)
+    }
+  })
+
+  it('MIAA red carries the cooling-zone requirement onto the verdict card', () => {
+    // MIAA_COOLING_ZONE_WBGT_F was read from the source and then reached
+    // nothing: all five bands had coolingZoneRequired false, so a Massachusetts
+    // red verdict listed the time cap and equipment rules and silently dropped
+    // the immersion tubs. Red is the band that opens above 84; black
+    // short-circuits on noOutdoorWorkouts.
+    const red = MIAA.bands.find((b) => b.flag === 'red')!
+    expect(red.guideline.extraKeys).toContain('guideline.miaaCoolingZone')
+    expect(MIAA_COOLING_ZONE_WBGT_F).toBe(84)
+    // The rendered sentence list must actually contain it.
+    const sentences = guidelineSentences('red', red.guideline, (k: string) => k)
+    expect(sentences).toContain('guideline.miaaCoolingZone')
+    // UIL's own cooling-zone wording is not reused for Massachusetts.
+    expect(red.guideline.coolingZoneRequired).toBe(false)
+    expect(sentences).not.toContain('guideline.coolingZone')
+    for (const locale of [en, es]) {
+      expect(locale.guideline.miaaCoolingZone).not.toMatch(/\d/)
     }
   })
 

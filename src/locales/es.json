@@ -59,7 +59,8 @@
     "miaaNoEquipmentAnySport": "No puede usarse equipo de protección durante la actividad, en ningún deporte.",
     "cifContactSportsEquipment": "Fútbol americano y hockey sobre césped: solo casco, hombreras y shorts durante la práctica.",
     "cifRedContests": "Se permiten las competiciones con descansos de hidratación adicionales.",
-    "cifRedNoEquipment": "No puede usarse equipo de protección durante la práctica."
+    "cifRedNoEquipment": "No puede usarse equipo de protección durante la práctica.",
+    "miaaCoolingZone": "Debe haber agua helada y toallas en la zona de enfriamiento, y tinas de inmersión en agua fría disponibles para cualquier jugador con signos de enfermedad por calor."
   },
   "policies": {
     "uil-class-2": "UIL de Texas — Clase 2",
