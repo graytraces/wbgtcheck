@@ -129,7 +129,15 @@ export default function MarchingBand() {
               <tr key={row.abbr} className="border-b border-line align-top">
                 <th scope="row" className="display-num py-2 pr-3 text-left text-xl font-normal">
                   {GUIDE_SLUG_BY_ABBR[row.abbr] ? (
-                    <Link to={`/${lang}/${GUIDE_SLUG_BY_ABBR[row.abbr]}`} className="underline">
+                    <Link
+                      to={`/${lang}/${GUIDE_SLUG_BY_ABBR[row.abbr]}`}
+                      // px-1.5 is the tap target, not decoration: a two-letter
+                      // link is 13.8px wide at 320px, the narrowest thing on
+                      // the site, and horizontal padding is the only way to
+                      // widen an inline box. Vertical comes from the base rule
+                      // in index.css.
+                      className="px-1.5 underline"
+                    >
                       {row.abbr}
                     </Link>
                   ) : (

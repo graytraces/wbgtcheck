@@ -132,3 +132,73 @@ body {
     linear-gradient(to left, color-mix(in srgb, var(--color-ink) 22%, transparent), transparent)
       right / 0.875rem 100% no-repeat scroll;
 }
+
+/*
+ * 24px minimum tap target (WCAG 2.2 SC 2.5.8), and the ergonomics of a phone
+ * held at arm's length in the sun by a coach with sixty seconds before
+ * practice starts.
+ *
+ * Measured at 320 and 390px across every route in both locales: 79
+ * interactive elements were under 24px in at least one dimension. Most were
+ * at exactly 17px, which is not a design decision — it is the content-box
+ * height of a 14px inline link. An inline box is the font's ascent plus
+ * descent and ignores line-height entirely, so a link sitting in a 20px line
+ * looks 20px tall and is 17px tall to a finger. The smallest were 13.8px
+ * wide: the two-letter state links in the /forecast-or-device and
+ * /marching-band-heat-rules tables.
+ *
+ * `padding-block` on a non-replaced INLINE box is the whole fix, and it is
+ * free: CSS 2.1 §10.6.1 says vertical padding on an inline box starts at the
+ * edge of the content area and "has nothing to do with line-height", so the
+ * line box does not move, nothing rewraps, and no page can start scrolling
+ * sideways. These links paint no background and no border, so there is
+ * nothing to see either — only the hit area grows.
+ *
+ * Rejected on the way here: an absolutely positioned ::after overlay, which
+ * is the usual recipe. It does not work on the elements that need it. An
+ * abs-positioned child of an INLINE containing block resolves its percentage
+ * width against a containing block assembled from the inline's fragments, and
+ * Chromium computed `width: 100%` as 24px on a 302px two-line link — the
+ * overlay landed on a fraction of the link and moved the hit area rather than
+ * growing it. Measured, not assumed.
+ *
+ * Buttons and summaries are already block-level or inline-block, so
+ * min-height reaches them and padding is not needed. Tailwind utilities
+ * out-specify these `:where()` rules, so any component that sets its own
+ * height or padding keeps it.
+ *
+ * scripts/checks/tap-target-check.mjs holds the line, and it measures the
+ * user's question rather than the CSS: put a 24px fingertip on this thing and
+ * see whether you get this thing.
+ */
+@layer base {
+  :where(a[href]) {
+    padding-block: 5px;
+  }
+
+  :where(button, summary, [role='button'], select) {
+    min-height: 24px;
+  }
+}
+
+/*
+ * A paragraph whose children are adjacent links is a link ROW, not prose.
+ *
+ * The home page ends with seven guide links inside one <p class="text-sm">.
+ * Prose line-height there is 20px, the padded link boxes are 27px, and when
+ * the row wraps on a phone the boxes on consecutive lines overlap by 7px — so
+ * the lower half of every link's tap area belonged to the link below it. The
+ * links were reachable; they were reachable at the wrong place.
+ *
+ * `a + a` is the whole test, and it is exact: two link children with nothing
+ * between them. A paragraph of prose has words between its links and does not
+ * match, so paragraph rhythm across the 24 content pages is untouched.
+ *
+ * Unlayered on purpose. Tailwind's text-sm sets line-height from the utilities
+ * layer, and a rule inside @layer base — however specific — loses to it. An
+ * unlayered rule beats every layer, which is the same reason .scroll-x-fade
+ * above is not in a layer either.
+ */
+p:has(> a[href] + a[href]) {
+  line-height: 2rem;
+}

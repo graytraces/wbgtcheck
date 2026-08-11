@@ -32,7 +32,7 @@ export default function States() {
           than 86% of the way down it. */}
       <section>
         <h2 className="mb-2 font-bold uppercase tracking-wide">{t('states.guidesHeading')}</h2>
-        <ul className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+        <ul className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
           {STATE_GUIDES.map(({ slug, labelKey }) => (
             <li key={slug}>
               <Link to={`/${lang}/${slug}`} className="font-semibold underline">
@@ -46,7 +46,7 @@ export default function States() {
         <h2 className="mb-2 mt-4 font-bold uppercase tracking-wide">
           {t('states.topicGuidesHeading')}
         </h2>
-        <ul className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+        <ul className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
           {TOPIC_GUIDES.map(({ slug, labelKey }) => (
             <li key={slug}>
               <Link to={`/${lang}/${slug}`} className="font-semibold underline">
@@ -59,7 +59,7 @@ export default function States() {
           {t('states.airGuidesHeading')}
         </h2>
         <p className="mb-1 text-sm text-ink-muted">{t('states.airGuidesIntro')}</p>
-        <ul className="flex flex-wrap gap-x-6 gap-y-1 text-sm">
+        <ul className="flex flex-wrap gap-x-6 gap-y-3 text-sm">
           {AIR_GUIDES.map(({ slug, labelKey }) => (
             <li key={slug}>
               <Link to={`/${lang}/${slug}`} className="font-semibold underline">

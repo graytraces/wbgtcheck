@@ -17,7 +17,9 @@
     "check:boot": "node scripts/checks/boot-failure-check.mjs",
     "check:print": "node scripts/checks/print-check.mjs",
     "check:localga": "node scripts/checks/local-analytics-check.mjs",
-    "check:browser": "npm run check:hscroll && npm run check:sharecard && npm run check:boot && npm run check:print && npm run check:localga"
+    "check:taptargets": "node scripts/checks/tap-target-check.mjs",
+    "gen:og": "node scripts/gen-og-image.mjs",
+    "check:browser": "npm run check:hscroll && npm run check:sharecard && npm run check:boot && npm run check:print && npm run check:localga && npm run check:taptargets"
   },
   "dependencies": {
     "@fontsource/anton": "^5.2.5",
