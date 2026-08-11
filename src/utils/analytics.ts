@@ -28,31 +28,42 @@ function track(event: string, params: Record<string, string>) {
  * coaches' first. So each verdict view carries where this browser is in its
  * own sequence.
  *
- * A "qualifying visit" is a tab session in which a verdict was actually
- * rendered — not a page load, which counts bounces. Storage blocked means
- * every visit reads as the first, which is the honest degradation: we cannot
- * tell them apart, so we do not claim to.
+ * A "qualifying visit" is a local calendar DAY on which a verdict was actually
+ * rendered on this device — not a page load, which counts bounces, and not a
+ * tab, which counts neither people nor days. Storage blocked means every visit
+ * reads as the first, which is the honest degradation: we cannot tell them
+ * apart, so we do not claim to.
  */
 const VISIT_COUNT_KEY = 'wbgt-visit-count'
 const FIRST_SEEN_KEY = 'wbgt-first-seen'
 /**
- * Which local calendar day this tab last counted a visit on.
+ * Which local calendar day this TAB last counted a visit on.
  *
- * It held '1' and meant only "this tab has been counted", which under-counted
- * exactly the reader the product is betting on. Session storage survives a
- * reload, so a coach who leaves the tab open and checks it every morning —
- * the habit the whole hypothesis rests on — counted once for the season:
- * measured, six visits in six fresh tabs went 1→6 while three reloads inside
- * one tab moved nothing. And because the add-to-home-screen hint waits for
- * `priorVisitCount() >= 1`, that same coach was never offered the shortcut
- * either. The ~09-30 readout was instrumented against the hypothesis it
- * exists to test.
- *
- * Holding the DAY instead of a bare flag keeps the within-session dedupe
- * unchanged and lets the next morning through. Still one value, still session
- * storage, still never sent — the privacy disclosure describes it as it is.
+ * Session storage, so it dies with the tab — which is why it cannot be the
+ * whole answer, and why the day below it exists.
  */
 const COUNTED_KEY = 'wbgt-visit-counted'
+/**
+ * Which local calendar day this DEVICE last counted a visit on.
+ *
+ * The dedupe used to live only in the session key above, and a session is a
+ * TAB: six visits in six fresh tabs counted 1→6 on one afternoon while three
+ * reloads inside one tab counted nothing. Neither number is the thing the
+ * ~09-30 readout is asking for. The question is whether a coach comes back
+ * ACROSS DAYS, and a tab is not a day in either direction — it over-counts the
+ * reader who opens the site from three different links this afternoon and
+ * gives no shape at all to the reader who keeps one tab open.
+ *
+ * So a visit is at most one per local calendar day per device, and this is
+ * where that is remembered. localStorage, because the fact being recorded —
+ * "this device has already been counted today" — is a fact about the device
+ * and has to outlive the tab that established it.
+ *
+ * The session key stays. It is the guard when localStorage is blocked or
+ * full: without it a browser with no durable storage would count every
+ * verdict render in the tab, inflating a single afternoon into a season.
+ */
+const VISIT_DAY_KEY = 'wbgt-visit-day'
 
 const DAY_MS = 86_400_000
 
@@ -75,7 +86,7 @@ export function localCalendarDay(ms: number): number {
  * which reads as an earlier day than any real one — so it counts once and then
  * behaves normally.
  */
-function lastCountedDay(): number {
+function lastCountedDayInTab(): number {
   try {
     const day = Number(window.sessionStorage.getItem(COUNTED_KEY))
     return Number.isFinite(day) && day > 0 ? day : 0
@@ -112,27 +123,35 @@ export interface VisitStanding {
 }
 
 /**
- * Counts this visit at most once per tab session PER DAY, and returns where it
- * sits. The second half matters: a tab that stays open across midnight is a
- * reader coming back, and counting it as the same visit is what made the
- * season-long habit invisible.
+ * Counts this visit at most once per local calendar day per DEVICE, and
+ * returns where it sits.
+ *
+ * Both halves matter. A tab that stays open across midnight is a reader coming
+ * back, and counting it as the same visit is what made the season-long habit
+ * invisible; a second tab opened this afternoon is the SAME reader on the same
+ * day, and counting it again is what made a single afternoon look like a
+ * season. The unit is the day, so `ordinal` reads as "separate days this
+ * browser has reached a verdict on" — which is the retention question, stated
+ * in the only terms this site can honestly answer it in.
  */
 export function recordVisit(): VisitStanding {
   const now = Date.now()
   const today = localCalendarDay(now)
-  // Already counted only if it was counted TODAY. Anything earlier is the next
-  // morning in a tab that was never closed.
-  const counted = lastCountedDay() >= today
+  // Already counted only if it was counted TODAY, in this tab or in any other
+  // one on this device. Anything earlier is the next morning.
+  const counted = lastCountedDayInTab() >= today || readNumber(VISIT_DAY_KEY) >= today
   const prior = priorVisitCount()
   const ordinal = counted ? Math.max(prior, 1) : prior + 1
   const first = readNumber(FIRST_SEEN_KEY) || now
   try {
     if (!counted) {
       window.localStorage.setItem(VISIT_COUNT_KEY, String(ordinal))
+      window.localStorage.setItem(VISIT_DAY_KEY, String(today))
       if (!readNumber(FIRST_SEEN_KEY)) window.localStorage.setItem(FIRST_SEEN_KEY, String(now))
     }
   } catch {
-    // Blocked storage: the ordinal below is still true of this load.
+    // Blocked storage: the ordinal below is still true of this load, and the
+    // session key below still stops this tab counting itself twice.
   }
   try {
     if (!counted) window.sessionStorage.setItem(COUNTED_KEY, String(today))

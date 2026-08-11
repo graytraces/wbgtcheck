@@ -63,8 +63,9 @@ describe('privacy disclosure', () => {
       'wbgt:log:v1': /reading log/i,
       'wbgt-a2hs-dismissed': /add-to-home-screen/i,
       'wbgt-stale-reload': /session storage/i,
-      'wbgt-visit-count': /how many times you have opened a verdict/i,
+      'wbgt-visit-count': /separate days you have opened a verdict on/i,
       'wbgt-first-seen': /date of the first visit/i,
+      'wbgt-visit-day': /the day that count last moved/i,
       'wbgt-visit-counted': /counted twice/i,
     }
     const policyText = `${en.privacy.locationContent} ${en.privacy.logContent} ${en.privacy.storageContent}`
@@ -98,6 +99,11 @@ describe('privacy disclosure', () => {
     // kind of thing a reader is right to be suspicious of.
     expect(en.privacy.analyticsContent).toMatch(/not an identifier/i)
     expect(es.privacy.analyticsContent).toMatch(/no un identificador/i)
+    // The cap is what makes "visits" an honest word for the number: the
+    // counter moves at most once per local day per device, so a second tab
+    // this afternoon is not a second visit and the page may not imply it is.
+    expect(en.privacy.analyticsContent).toMatch(/at most one a day/i)
+    expect(es.privacy.analyticsContent).toMatch(/como máximo una al día/i)
   })
 
   it('states what a log entry holds, its cap, and how to delete it', () => {

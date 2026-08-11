@@ -58,13 +58,34 @@ describe('visit accounting', () => {
     expect(priorVisitCount()).toBe(1)
   })
 
-  it('picks up where the previous session left off', () => {
-    recordVisit()
+  /**
+   * A tab is not a visit, in either direction.
+   *
+   * The dedupe used to live only in session storage, so it died with the tab:
+   * measured, six opens in six fresh tabs on one afternoon counted 1→6. That
+   * is the same coach on the same day, and it is the number the ~09-30 readout
+   * divides retention by. The day stamp is on the DEVICE now, so a second tab
+   * this afternoon reads the first tab's mark.
+   */
+  it('does not count a second tab opened the same day', () => {
+    expect(recordVisit().ordinal).toBe(1)
     // A new tab session over the same device storage.
     window.sessionStorage.clear()
+    expect(recordVisit().ordinal, 'a second tab counted as a second visit').toBe(1)
+    window.sessionStorage.clear()
+    expect(recordVisit().ordinal).toBe(1)
+    expect(priorVisitCount()).toBe(1)
+  })
+
+  it('picks up where the previous day left off, in a fresh tab', () => {
+    recordVisit()
+    // Tomorrow, in a tab opened tomorrow: nothing on the device says today.
+    window.sessionStorage.clear()
+    store.set('wbgt-visit-day', String(localCalendarDay(Date.now() - 26 * 3_600_000)))
     expect(priorVisitCount()).toBe(1)
     expect(recordVisit().ordinal).toBe(2)
     window.sessionStorage.clear()
+    store.set('wbgt-visit-day', String(localCalendarDay(Date.now() - 26 * 3_600_000)))
     expect(recordVisit().ordinal).toBe(3)
   })
 
@@ -86,8 +107,15 @@ describe('visit accounting', () => {
    * hint's `priorVisitCount() >= 1` gate either. The ~09-30 readout was
    * instrumented against its own hypothesis.
    */
-  const setCountedDay = (at: number) =>
+  /**
+   * Both marks, because both were written together when the visit was counted:
+   * the tab's (session) and the device's (local). Stamping only the tab would
+   * describe a state the code cannot produce.
+   */
+  const setCountedDay = (at: number) => {
     window.sessionStorage.setItem('wbgt-visit-counted', String(localCalendarDay(at)))
+    store.set('wbgt-visit-day', String(localCalendarDay(at)))
+  }
 
   it('counts the next morning in a tab that was never closed', () => {
     expect(recordVisit().ordinal).toBe(1)
@@ -125,6 +153,24 @@ describe('visit accounting', () => {
     expect(day(2026, 7, 10)).toBeLessThan(day(2026, 7, 11))
     expect(day(2026, 6, 31)).toBeLessThan(day(2026, 7, 1))
     expect(day(2025, 11, 31)).toBeLessThan(day(2026, 0, 1))
+  })
+
+  /**
+   * The day the visit was counted on is written to BOTH stores.
+   *
+   * The device mark is what makes a second tab this afternoon not a second
+   * visit; the tab mark is what still stops a tab counting itself twice when
+   * localStorage is blocked or full, which is the one case the device mark
+   * cannot cover.
+   */
+  it('marks the day on the device and in the tab', () => {
+    recordVisit()
+    const today = String(localCalendarDay(Date.now()))
+    expect(store.get('wbgt-visit-day'), 'nothing on the device marks today').toBe(today)
+    expect(
+      window.sessionStorage.getItem('wbgt-visit-counted'),
+      'the tab-local guard is gone',
+    ).toBe(today)
   })
 
   it('reads every visit as the first when storage is blocked', () => {
