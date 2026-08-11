@@ -25,7 +25,7 @@ import {
   statePageKeyByPolicy,
   pickerLadderPageKeys,
 } from '../seo'
-import { STATE_GUIDES } from '../data/guideRegistry'
+import { STATE_GUIDES, TOPIC_GUIDES } from '../data/guideRegistry'
 import { feedbackMailto } from '../utils/feedback'
 import { priorVisitCount } from '../utils/analytics'
 import { buildHourlySeries } from '../utils/nws'
@@ -36,6 +36,7 @@ import {
   timelineHours,
   pickTimelineDay,
   restOfDayPeak,
+  nextDayPeak,
 } from '../utils/verdict'
 import {
   UIL_READING_BEFORE_PRACTICE_MAX_MINUTES,
@@ -52,6 +53,34 @@ interface HomeSection {
   heading: string
   body: string
 }
+
+/**
+ * Which prose section is ABOUT a topic guide, and which one.
+ *
+ * The two newest pages had exactly one route in — /states — and the home page
+ * argued for both of them without linking either. `home.sections[2]` says
+ * "UIL's 2026-27 standard names marching band alongside athletics";
+ * `home.sections[3]` says "Texas UIL explicitly accepts internet-based
+ * readings; Georgia GHSA requires a calibrated on-site instrument", which is
+ * /forecast-or-device's entire subject.
+ *
+ * Keyed by seoKey off the registry rather than by slug, so the URL, the label
+ * and the prerendered hub cannot drift apart. The link is a sibling of the
+ * paragraph rather than markup inside the string because prerender.mjs escapes
+ * these strings into HTML — tags in the copy would print as tags there.
+ */
+const SECTION_TOPIC_GUIDE: Record<number, string | undefined> = {
+  2: 'marchingBand',
+  3: 'forecastOrDevice',
+}
+
+/**
+ * The page that tells a reader in an unverified state what to ask their
+ * association for. The verdict card links it too, but only when the policy on
+ * screen requires an on-site reading — and the NATA fallback an uncovered
+ * state gets answers 'unspecified', so that link is never on an Ohio screen.
+ */
+const MEASUREMENT_GUIDE = TOPIC_GUIDES.find((guide) => guide.seoKey === 'forecastOrDevice')
 
 export default function Home() {
   const { t, i18n } = useTranslation()
@@ -135,22 +164,6 @@ export default function Home() {
     () => pickTimelineDay(days, selectedDate),
     [days, selectedDate],
   )
-  const showingToday = selectedDay !== null && today !== null && selectedDay.date === today.date
-  // Auto-advanced rather than chosen: name it "Tomorrow", which is what the
-  // reader means, instead of the weekday they did not click.
-  const autoAdvancedToNextDay =
-    selectedDate === null && !showingToday && selectedDay !== null && selectedDay.date === days[1]?.date
-  const hourlyHeading = showingToday
-    ? t('verdict.todayHeading')
-    : autoAdvancedToNextDay
-      ? t('verdict.tomorrowHeading')
-      : t('verdict.dayHeading', {
-        day: selectedDay
-          ? new Intl.DateTimeFormat(i18n.language, { weekday: 'long' }).format(
-              new Date(`${selectedDay.date}T12:00:00`),
-            )
-          : '',
-      })
   const allHours = useMemo(() => days.flatMap((d) => d.hours), [days])
   const current = useMemo(() => currentVerdict(allHours, now), [allHours, now])
   /**
@@ -166,6 +179,47 @@ export default function Home() {
     () => (current ? restOfDayPeak(allHours, current) : null),
     [allHours, current],
   )
+  /**
+   * The evening. `restOfDayPeak` answers with the current hour once the day's
+   * peak is behind the reader, the chip hides itself (verified live: shown in
+   * Honolulu at 11am, gone in Atlanta at 5pm) — and nothing replaced it, so
+   * tomorrow's peak sat in the week strip ~2.5 screens down. The site's own
+   * copy calls that the primary use: "plan tomorrow's practice with the
+   * forecast the night before."
+   *
+   * Same anchoring rule as above: `nextDayPeak` walks the series for the next
+   * local DATE after the hour on the card, never `days[1]`, which past local
+   * midnight is today.
+   */
+  const nextDay = useMemo(
+    () => (current ? nextDayPeak(allHours, current) : null),
+    [allHours, current],
+  )
+  const todayPeakSpent = current !== null && peakAhead !== null && peakAhead.time === current.time
+  const tomorrowPeak = todayPeakSpent ? nextDay : null
+  /** Tomorrow's local date, relative to the hour on the card. */
+  const tomorrowDate = nextDay?.localDate ?? null
+
+  const showingToday = selectedDay !== null && today !== null && selectedDay.date === today.date
+  /**
+   * Named "Tomorrow" rather than by a weekday, whether the page fell forward
+   * to it on its own or the peak chip sent the reader there. It used to be
+   * keyed on `days[1]`, which is tomorrow only at load — the same trap
+   * restOfDayPeak and nextDayPeak are anchored on an hour to avoid.
+   */
+  const autoAdvancedToNextDay =
+    !showingToday && selectedDay !== null && tomorrowDate !== null && selectedDay.date === tomorrowDate
+  const hourlyHeading = showingToday
+    ? t('verdict.todayHeading')
+    : autoAdvancedToNextDay
+      ? t('verdict.tomorrowHeading')
+      : t('verdict.dayHeading', {
+        day: selectedDay
+          ? new Intl.DateTimeFormat(i18n.language, { weekday: 'long' }).format(
+              new Date(`${selectedDay.date}T12:00:00`),
+            )
+          : '',
+      })
 
   const busy = status === 'locating' || status === 'loading'
   const lang = i18n.language
@@ -257,7 +311,10 @@ export default function Home() {
     ? // Nothing may be claimed about a state we cannot name.
       stateAbbr
       ? {
-          heading: t('home.stateUnverifiedHeading'),
+          // The heading said "this state" while the body two lines under it
+          // said "not OH's own rule" — one notice naming the state twice and
+          // refusing to name it once. It is named.
+          heading: t('home.stateUnverifiedHeading', { state: stateAbbr }),
           body: t('home.stateUnverifiedBody', { state: stateAbbr }),
         }
       : null
@@ -360,7 +417,13 @@ export default function Home() {
           timeZone={timeZone}
           fetchedAt={fetchedAt}
           onChangeLocation={() => setChangingLocation(true)}
-          peakAhead={peakAhead}
+          peakAhead={tomorrowPeak ?? peakAhead}
+          peakScope={tomorrowPeak ? 'tomorrow' : 'today'}
+          // Only for the tomorrow chip. Pinning `selectedDate` to today would
+          // also disable the fall-forward in pickTimelineDay, and the reader
+          // would be left on an empty strip once today's drawable hours run
+          // out — the late-evening hole, re-opened by a tap.
+          onPeakSelect={tomorrowPeak ? setSelectedDate : undefined}
         />
       )}
 
@@ -394,6 +457,20 @@ export default function Home() {
             </>
           )}
           <p className="flex flex-wrap gap-x-6 gap-y-1">
+            {/* First, because it is the only one of the three that helps.
+                A reader in one of the 34 uncovered states was told the site
+                cannot answer their question and then sent to a table their
+                state is not in — /states lists 16. This page does not know
+                Ohio's rule either, but it says what to ask OHSAA for and how
+                to read the answer, which is the next move from here. */}
+            {!detectedGuide && stateAbbr && MEASUREMENT_GUIDE && (
+              <Link
+                to={`/${lang}/${MEASUREMENT_GUIDE.slug}`}
+                className="font-semibold underline"
+              >
+                {t(MEASUREMENT_GUIDE.labelKey)} →
+              </Link>
+            )}
             {showStateGuide && detectedGuide ? (
               <Link to={`/${lang}/${detectedGuide.slug}`} className="font-semibold underline">
                 {t(detectedGuide.labelKey)} →
@@ -586,20 +663,37 @@ export default function Home() {
 
       <section className="max-w-3xl space-y-5">
         <p className="text-base">{t('home.intro')}</p>
-        {sections.map((_, i) => (
-          // Indexed t() calls: i18next does not interpolate inside
-          // returnObjects trees, and the bias numbers must come from the
-          // oracle constants.
-          <div key={t(`home.sections.${i}.heading`)}>
-            <h2 className="display-num mb-1 text-xl uppercase">{t(`home.sections.${i}.heading`)}</h2>
-            <p className="text-ink-muted">
-              {t(`home.sections.${i}.body`, {
-                min: REMOTE_UNDERESTIMATE_MIN_C,
-                max: REMOTE_UNDERESTIMATE_MAX_C,
-              })}
-            </p>
-          </div>
-        ))}
+        {sections.map((_, i) => {
+          const topicGuide = TOPIC_GUIDES.find(
+            (guide) => guide.seoKey === SECTION_TOPIC_GUIDE[i],
+          )
+          return (
+            // Indexed t() calls: i18next does not interpolate inside
+            // returnObjects trees, and the bias numbers must come from the
+            // oracle constants.
+            <div key={t(`home.sections.${i}.heading`)}>
+              <h2 className="display-num mb-1 text-xl uppercase">
+                {t(`home.sections.${i}.heading`)}
+              </h2>
+              <p className="text-ink-muted">
+                {t(`home.sections.${i}.body`, {
+                  min: REMOTE_UNDERESTIMATE_MIN_C,
+                  max: REMOTE_UNDERESTIMATE_MAX_C,
+                })}
+              </p>
+              {topicGuide && (
+                <p className="mt-1">
+                  <Link
+                    to={`/${lang}/${topicGuide.slug}`}
+                    className="font-semibold underline"
+                  >
+                    {t(topicGuide.labelKey)} →
+                  </Link>
+                </p>
+              )}
+            </div>
+          )
+        })}
         <p className="text-sm">
           <Link to={`/${lang}/states`} className="mr-4 font-semibold underline">
             {t('common.nav.states')}

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, beforeEach, afterEach, vi } from 'vitest'
-import { act, screen, fireEvent, waitFor } from '@testing-library/react'
+import { act, screen, fireEvent, waitFor, within } from '@testing-library/react'
 import i18n from '../i18n'
 import en from '../locales/en.json'
 import {
@@ -8,9 +8,13 @@ import {
   renderHome,
   aqiFixture,
   awayTimeZone,
+  wbgtFixture,
   AUSTIN_TX,
 } from '../test/homeFixture'
-import { STATE_GUIDES } from '../data/guideRegistry'
+import { buildHourlySeries } from '../utils/nws'
+import { annotateHours, currentVerdict, restOfDayPeak, nextDayPeak } from '../utils/verdict'
+import { formatWbgtF } from '../utils/units'
+import { STATE_GUIDES, TOPIC_GUIDES } from '../data/guideRegistry'
 import { pageSEO, statePageKeyByPolicy, pickerLadderPageKeys } from '../seo'
 import { defaultPolicyFor } from '../hooks/useWbgt'
 import { WBGT_LOG_KEY, type WbgtLogEntry } from '../hooks/useWbgtLog'
@@ -201,7 +205,10 @@ describe('a state with no verified policy is told so', () => {
     const view = await homeIn('OH', 'Columbus, OH')
     expect(STATE_GUIDES.find((g) => g.abbr === 'OH'), 'Ohio grew a guide').toBeUndefined()
 
-    const heading = screen.getByText(en.home.stateUnverifiedHeading)
+    // The heading said "this state" while the body two lines under it said
+    // "not OH's own rule". One notice, one voice: both name it.
+    const heading = screen.getByText(i18n.t('home.stateUnverifiedHeading', { state: 'OH' }))
+    expect(heading.textContent, 'the heading still refuses to name the state').toContain('OH')
     const notice = heading.closest('section')!
     expect(notice.textContent).toContain('OH')
     expect(notice.textContent).not.toMatch(/\{\{|\}\}/)
@@ -213,6 +220,52 @@ describe('a state with no verified policy is told so', () => {
     expect(notice.querySelector('a[href="/en/states"]')).not.toBeNull()
     const report = notice.querySelector<HTMLAnchorElement>('a[href^="mailto:"]')!
     expect(report.getAttribute('href')).toBe(feedbackMailto('wbgtcheck state policy: OH'))
+    view.unmount()
+  })
+
+  /**
+   * The majority case, and it was a dead end. 43215 was told the site cannot
+   * help and handed a table Ohio is not in — /states lists 16 states — with
+   * nothing to plan against meanwhile and no route to the page that answers
+   * the question a reader in an uncovered state actually has: what to ask
+   * their association for.
+   *
+   * The verdict card links /forecast-or-device only where the policy requires
+   * an on-site reading, and the NATA fallback an uncovered state gets answers
+   * 'unspecified', so this is not a second entry point competing with that
+   * one — on an Ohio screen it is the only one.
+   */
+  it('points an uncovered state at the measurement guide and says what to do meanwhile', async () => {
+    const view = await homeIn('OH', 'Columbus, OH')
+    const notice = screen
+      .getByText(i18n.t('home.stateUnverifiedHeading', { state: 'OH' }))
+      .closest('section')!
+
+    const guide = TOPIC_GUIDES.find((g) => g.seoKey === 'forecastOrDevice')!
+    const link = notice.querySelector<HTMLAnchorElement>(`a[href="/en/${guide.slug}"]`)
+    expect(link, 'no route out but a table Ohio is not in').not.toBeNull()
+    // Ahead of the directory: it is the one of the two that answers something.
+    const states = notice.querySelector('a[href="/en/states"]')!
+    expect(
+      link!.compareDocumentPosition(states) & Node.DOCUMENT_POSITION_FOLLOWING,
+      'the dead-end link still comes first',
+    ).toBeTruthy()
+
+    // And the copy replaces the number it removes: the reader is told what to
+    // plan against until their association answers.
+    expect(notice.textContent).toMatch(/plan against the NATA ladder in the meantime/i)
+    expect(notice.textContent).toMatch(/higher flag/i)
+    view.unmount()
+  })
+
+  it('offers the measurement guide only where no state guide exists', async () => {
+    // Georgia has its own guide and a policy that already carries the device
+    // notice on the card. A second link to the same page under the notice
+    // would be the competing entry point this fix was told to avoid.
+    const guide = TOPIC_GUIDES.find((g) => g.seoKey === 'forecastOrDevice')!
+    const view = await homeIn('KY', 'Louisville, KY')
+    const notice = screen.getByText(en.home.stateLadderHeading).closest('section')!
+    expect(notice.querySelector(`a[href="/en/${guide.slug}"]`)).toBeNull()
     view.unmount()
   })
 
@@ -313,8 +366,10 @@ describe('the fold answers the question the coach is asking', () => {
    * would go on naming an afternoon peak the reader has already stood through.
    *
    * So the anchor is the hour the card is showing, which tracks the minute
-   * tick. Five hours on, the fixture's afternoon has passed its peak and the
-   * only honest answer is silence.
+   * tick. Five hours on, the fixture's afternoon has passed its peak, and
+   * nothing on the card may still call that number something ahead of the
+   * reader TODAY. (What the chip says instead — tomorrow — is the evening case
+   * below; this test is only about the stale claim.)
    */
   it('stops naming the peak once it has been and gone', async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true })
@@ -340,8 +395,124 @@ describe('the fold answers the question the coach is asking', () => {
 
     // The 12pm peak is still on the hourly strip, where it belongs as history.
     expect(screen.getAllByText('91.4').length).toBeGreaterThan(0)
-    // It is no longer being announced as something the coach can plan around.
-    expect(peakLine()?.textContent ?? '', 'the peak line drifted').not.toContain('91.4')
+    // It is no longer being announced as something still ahead of the reader
+    // today. The lead-in comes from the string itself, so a chip that names
+    // ANY reading as the rest of today's peak fails this — which is what a
+    // revert to days[0].peak produces.
+    const restOfToday = en.verdict.peakAhead.split('{{')[0].trim()
+    expect(peakLine()?.textContent ?? '', 'the peak line drifted').not.toContain(restOfToday)
+  })
+})
+
+/**
+ * The other check, and the site's own copy calls it the primary one: "plan
+ * tomorrow's practice with the forecast the night before."
+ *
+ * The peak chip correctly hides once the day's peak is behind the reader
+ * (verified live: shown in Honolulu at 11am, gone in Atlanta at 5pm) — and
+ * nothing replaced it, so tomorrow's peak lived only in the week strip ~2.5
+ * screens down. The morning call got a one-screen answer and the PLANNING call
+ * did not.
+ */
+describe('the evening, which the copy calls the primary use', () => {
+  // 23:00 CDT on 2026-08-10: one hour left in the local day, so the hottest
+  // hour still ahead today IS the hour on the card and the today chip is
+  // right to hide.
+  const AT_11PM_CDT = Date.parse('2026-08-11T04:00:00+00:00')
+  const TZ = 'America/Chicago'
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
+
+  /** The same series Home builds — not a second model of it. */
+  const series = () =>
+    annotateHours(buildHourlySeries(wbgtFixture(AT_11PM_CDT - 2 * 3_600_000)), UIL_CLASS_3, TZ)
+
+  const seedEvening = async () => {
+    vi.useFakeTimers({ shouldAdvanceTime: true })
+    vi.setSystemTime(AT_11PM_CDT)
+    store.clear()
+    store.set('wbgt-uil-class', JSON.stringify('uil-class-3'))
+    store.set('wbgt-policy', JSON.stringify('uil-class-3'))
+    store.set('wbgt-location', JSON.stringify(AUSTIN_TX))
+    vi.unstubAllGlobals()
+    stubForecastFetch({ aqi: aqiFixture() })
+    renderHome()
+    await waitFor(() => expect(screen.getByText(en.verdict.weekHeading)).toBeInTheDocument())
+  }
+
+  it('answers with tomorrow once today has no peak left to name', async () => {
+    await seedEvening()
+    const hours = series()
+    const current = currentVerdict(hours, AT_11PM_CDT)!
+    // The premise. Without it this test would pass on the today chip.
+    expect(restOfDayPeak(hours, current), 'today still has a peak ahead').toBe(current)
+
+    const peak = nextDayPeak(hours, current)!
+    expect(peak.localDate).not.toBe(current.localDate)
+    const expected = i18n.t('verdict.peakTomorrow', {
+      value: formatWbgtF(peak.wbgtF),
+      flag: en.flags[classifyWbgt(UIL_CLASS_3, peak.wbgtF).flag].label,
+      time: new Intl.DateTimeFormat('en', { timeZone: TZ, hour: 'numeric' }).format(
+        new Date(peak.time),
+      ),
+    })
+    expect(
+      screen.getByText(expected),
+      'the evening reader is still sent to the week strip',
+    ).toBeInTheDocument()
+  })
+
+  it('sends the reader to tomorrow\'s hours, not to what is left of today', async () => {
+    await seedEvening()
+    // Move the strip off tomorrow first, the way a reader browsing the week
+    // does — otherwise the default already sits there and a link that did
+    // nothing would look right.
+    const days = within(screen.getByLabelText(en.verdict.weekHeading)).getAllByRole('button')
+    fireEvent.click(days[days.length - 1])
+    expect(screen.queryByText(en.verdict.tomorrowHeading)).not.toBeInTheDocument()
+
+    fireEvent.click(document.querySelector('a[href="#hourly-view"]')!)
+    expect(
+      screen.getByText(en.verdict.tomorrowHeading),
+      'the chip named tomorrow and pointed at another day',
+    ).toBeInTheDocument()
+  })
+})
+
+/**
+ * /forecast-or-device and /marching-band-heat-rules shipped with exactly one
+ * route in — /states — while the home page argued for both of them and linked
+ * neither. `home.sections[2]` names marching band in UIL's 2026-27 standard;
+ * `home.sections[3]` is the measurement question end to end ("Texas UIL
+ * explicitly accepts internet-based readings; Georgia GHSA requires a
+ * calibrated on-site instrument").
+ */
+describe('the two newest guides have a route in from the tool', () => {
+  it('links each one from the section that argues for it', async () => {
+    renderHome()
+    for (const [index, seoKey] of [
+      [2, 'marchingBand'],
+      [3, 'forecastOrDevice'],
+    ] as const) {
+      const guide = TOPIC_GUIDES.find((g) => g.seoKey === seoKey)!
+      const heading = screen.getByText(en.home.sections[index].heading)
+      const block = heading.parentElement!
+      const link = block.querySelector<HTMLAnchorElement>(`a[href="/en/${guide.slug}"]`)
+      expect(link, `${guide.slug} has no link from the section about it`).not.toBeNull()
+      // The label comes from the registry, so the URL and the words cannot
+      // drift from the page they name.
+      expect(link!.textContent).toContain(i18n.t(guide.labelKey))
+    }
+  })
+
+  it('does not hang a guide link off a section that is not about one', async () => {
+    renderHome()
+    for (const index of [0, 1]) {
+      const block = screen.getByText(en.home.sections[index].heading).parentElement!
+      expect(block.querySelectorAll('a')).toHaveLength(0)
+    }
   })
 })
 
