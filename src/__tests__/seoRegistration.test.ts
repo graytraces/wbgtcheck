@@ -165,15 +165,24 @@ describe('the seo layer agrees with the registry about what a state publishes', 
 describe('meta title length', () => {
   const MAX = 60
 
+  // The key set comes from the REGISTRY, not from Object.keys(locale.seo).
+  // The seo namespace also holds seo.ogCard, which is share-card copy and has
+  // no title — a sweep over the raw namespace reads `undefined.length` on it.
+  // Deriving from pageSEO also means these assertions cover exactly the pages
+  // that ship, and gain a page the day it is registered.
+  const pageKeys = Object.values(pageSEO).map((p) => p.key)
+  const titleOf = (dict: typeof en | typeof es, key: string) =>
+    (dict.seo as Record<string, { title?: string }>)[key].title!
+
   for (const [lang, dict] of [['en', en], ['es', es]] as const) {
     it(`every ${lang} seo title fits in ${MAX} characters`, () => {
-      const seo = dict.seo as Record<string, { title?: string }>
-      const over = Object.entries(seo)
-        .filter(([, v]) => (v?.title?.length ?? 0) > MAX)
-        .map(([k, v]) => `${k} (${v.title!.length})`)
+      // Guard the guard: an empty key set would make the filter below vacuous.
+      expect(pageKeys.length).toBeGreaterThan(15)
+      const over = pageKeys
+        .map((key) => [key, titleOf(dict, key)] as const)
+        .filter(([, title]) => title.length > MAX)
+        .map(([key, title]) => `${key} (${title.length})`)
       expect(over, `${lang} titles over ${MAX}`).toEqual([])
-      // Guard the guard: an empty seo namespace would pass the filter above.
-      expect(Object.keys(seo).length).toBeGreaterThan(15)
     })
   }
 
@@ -182,9 +191,8 @@ describe('meta title length', () => {
     // that opens with the site name has spent its first 13 characters saying
     // what every other result on the page also says.
     for (const [lang, dict] of [['en', en], ['es', es]] as const) {
-      const seo = dict.seo as Record<string, { title?: string }>
-      for (const [key, value] of Object.entries(seo)) {
-        const title = value.title!
+      for (const key of pageKeys) {
+        const title = titleOf(dict, key)
         expect(title.startsWith('WBGT Check'), `${lang} seo.${key} leads with the brand`).toBe(
           false,
         )
