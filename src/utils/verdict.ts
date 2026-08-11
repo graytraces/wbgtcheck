@@ -120,6 +120,41 @@ export function restOfDayPeak(hours: HourVerdict[], from: HourVerdict): HourVerd
   return peak
 }
 
+/**
+ * The hottest hour of the first local day AFTER `from`'s, or null.
+ *
+ * The evening half of the same question. Once the day's peak is behind the
+ * reader, `restOfDayPeak` correctly answers with the hour they are standing in
+ * and the chip above hides itself — and the site's own copy calls the evening
+ * the primary use: "plan tomorrow's practice with the forecast the night
+ * before." Tomorrow's peak then lived only in the week strip, ~2.5 screens
+ * down, so the morning check had a one-screen answer and the PLANNING check
+ * did not.
+ *
+ * Anchored on an hour rather than on `days[1]`, for the reason restOfDayPeak
+ * is: `days` is memoised on the payload and `buildHourlySeries` starts at the
+ * hour of the FETCH, so `days[1]` is "tomorrow" only at load. Past local
+ * midnight in a tab left open, `days[0]` is yesterday and `days[1]` is TODAY —
+ * a chip reading "tomorrow peaks at" off it would name an afternoon that is
+ * hours away, not a day away. Scanning for the next date present in the series
+ * cannot make that mistake, and it also skips a gap correctly if the forecast
+ * ever has one.
+ */
+export function nextDayPeak(hours: HourVerdict[], from: HourVerdict): HourVerdict | null {
+  let nextDate: string | null = null
+  for (const h of hours) {
+    if (h.localDate <= from.localDate) continue
+    if (nextDate === null || h.localDate < nextDate) nextDate = h.localDate
+  }
+  if (nextDate === null) return null
+  let peak: HourVerdict | null = null
+  for (const h of hours) {
+    if (h.localDate !== nextDate) continue
+    if (!peak || h.wbgtF > peak.wbgtF) peak = h
+  }
+  return peak
+}
+
 /** Daytime window shown on the today timeline (planning hours, local time). */
 const TIMELINE_START_HOUR = 6
 const TIMELINE_END_HOUR = 21

@@ -208,6 +208,7 @@
     "dayNoHoursLeft": "No hours left to show today",
     "peakRestLabel": "peak, rest of today",
     "peakAhead": "Rest of today peaks at {{value}} °F — {{flag}} at {{time}}",
+    "peakTomorrow": "Tomorrow peaks at {{value}} °F — {{flag}} at {{time}}",
     "noData": "No forecast data for this period.",
     "boundariesHeading": "Flag thresholds — {{policy}}",
     "boundariesNote": "Thresholds in °F WBGT, exactly as published by the source.",

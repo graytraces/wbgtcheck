@@ -5,6 +5,7 @@ import {
   currentVerdict,
   timelineHours,
   restOfDayPeak,
+  nextDayPeak,
 } from '../utils/verdict'
 import type { HourPoint } from '../utils/nws'
 import { UIL_CLASS_3, classifyWbgt } from '../data/policyOracle'
@@ -116,5 +117,67 @@ describe('restOfDayPeak', () => {
     const hours = day([[6, 90]])
     const orphan = { ...hours[0], localDate: '2026-09-01' }
     expect(restOfDayPeak(hours, orphan)).toBeNull()
+  })
+})
+
+/**
+ * The evening half. Once `restOfDayPeak` answers with the hour the reader is
+ * standing in, the fold has nothing left to say about today — and the site's
+ * own copy calls the evening the primary use: "plan tomorrow's practice with
+ * the forecast the night before."
+ */
+describe('nextDayPeak', () => {
+  const day = (offsets: Array<[number, number]>) =>
+    annotateHours(
+      offsets.map(([o, f]) => point(o, f)),
+      UIL_CLASS_3,
+      TZ,
+    )
+
+  it('answers with the hottest hour of the next local day', () => {
+    // Offsets from 06:00 CDT on the 10th: 12 is 18:00 the same day, 26/30 are
+    // 08:00 and 12:00 on the 11th.
+    const hours = day([[0, 84], [12, 88], [26, 79], [30, 93]])
+    const evening = hours.find((h) => h.localHour === 18)!
+    const peak = nextDayPeak(hours, evening)!
+    expect(peak.wbgtF).toBe(93)
+    expect(peak.localDate).toBe('2026-08-11')
+  })
+
+  /**
+   * The trap this function exists to avoid, stated as a test.
+   *
+   * `days` is memoised on the payload and the series starts at the hour of the
+   * FETCH, so past local midnight in a tab left open `days[0]` is YESTERDAY
+   * and `days[1]` is today. A chip reading "tomorrow peaks at" off `days[1]`
+   * would name an afternoon a few hours away as though it were a day away —
+   * and at 1am that is the difference between a rest day and a practice.
+   */
+  it('does not mistake today for tomorrow past local midnight', () => {
+    // 20 lands at 02:00 on the 11th — the hour a coach checking after midnight
+    // is standing in. 30 is that afternoon; 44 is the 12th.
+    const hours = day([[0, 93], [12, 85], [20, 79], [30, 91], [44, 88]])
+    const afterMidnight = hours.find((h) => h.localDate === '2026-08-11')!
+    expect(afterMidnight.localHour).toBe(2)
+
+    const peak = nextDayPeak(hours, afterMidnight)!
+    expect(peak.localDate).toBe('2026-08-12')
+    expect(peak.wbgtF).toBe(88)
+    // What blind indexing would have answered: days[1] is TODAY here, and its
+    // peak is this afternoon.
+    expect(groupByDay(hours)[1].date).toBe('2026-08-11')
+    expect(groupByDay(hours)[1].peak?.wbgtF).toBe(91)
+  })
+
+  it('skips a gap rather than assuming the series is contiguous', () => {
+    // Nothing at all for the 11th: the next day present is the 12th.
+    const hours = day([[6, 90], [44, 87]])
+    const peak = nextDayPeak(hours, hours[0])!
+    expect(peak.localDate).toBe('2026-08-12')
+  })
+
+  it('is null at the end of the forecast, so the chip says nothing', () => {
+    const hours = day([[6, 90], [12, 88]])
+    expect(nextDayPeak(hours, hours[1])).toBeNull()
   })
 })

@@ -208,6 +208,7 @@
     "dayNoHoursLeft": "No quedan horas por mostrar hoy",
     "peakRestLabel": "máximo, resto del día",
     "peakAhead": "El resto del día llega a {{value}} °F — {{flag}} a las {{time}}",
+    "peakTomorrow": "Mañana llega a {{value}} °F — {{flag}} a las {{time}}",
     "noData": "Sin datos de pronóstico para este período.",
     "boundariesHeading": "Umbrales de bandera — {{policy}}",
     "boundariesNote": "Umbrales en °F WBGT, tal como los publica la fuente.",

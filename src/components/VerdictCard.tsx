@@ -51,6 +51,22 @@ interface VerdictCardProps {
    * current hour is already the peak, the headline is the peak.
    */
   peakAhead?: HourVerdict | null
+  /**
+   * Which day `peakAhead` belongs to, so the chip can say so.
+   *
+   * A caller that has run out of today — the evening, which the home copy
+   * calls the primary use — hands tomorrow's peak instead of nothing. The
+   * sentence has to change with it: "rest of today peaks at" about tomorrow
+   * afternoon would be a lie about when to be on the field.
+   */
+  peakScope?: 'today' | 'tomorrow'
+  /**
+   * Retargets the hourly strip at the day the chip names, if the caller owns
+   * that selection. Without it the tomorrow chip would scroll to a strip still
+   * showing what is left of today — a link that answers a different question
+   * from the one it asked.
+   */
+  onPeakSelect?: (localDate: string) => void
 }
 
 export default function VerdictCard({
@@ -62,6 +78,8 @@ export default function VerdictCard({
   fetchedAt = null,
   onChangeLocation,
   peakAhead = null,
+  peakScope = 'today',
+  onPeakSelect,
 }: VerdictCardProps) {
   const { t, i18n } = useTranslation()
   // The flag comes from the number this card prints, not from the float behind
@@ -206,6 +224,7 @@ export default function VerdictCard({
           <p className="mt-3">
             <a
               href="#hourly-view"
+              onClick={() => onPeakSelect?.(peakAhead.localDate)}
               className={cn(
                 'inline-flex items-start gap-2 px-3 py-2 text-base font-bold ring-1 ring-current sm:text-lg',
                 FLAG_SOLID[peakBand.flag],
@@ -213,7 +232,7 @@ export default function VerdictCard({
             >
               <PeakIcon className="mt-1 h-5 w-5 shrink-0" strokeWidth={2.5} aria-hidden="true" />
               <span>
-                {t('verdict.peakAhead', {
+                {t(peakScope === 'tomorrow' ? 'verdict.peakTomorrow' : 'verdict.peakAhead', {
                   value: formatWbgtF(peakAhead.wbgtF),
                   flag: t(`flags.${peakBand.flag}.label`),
                   time: peakTimeLabel,

@@ -328,6 +328,87 @@ describe('the card says where the day is going, not only where it is', () => {
     )
     expect(screen.queryByRole('link')).not.toBeInTheDocument()
   })
+
+  /**
+   * The evening. Once the day's peak is behind the reader the chip above is
+   * right to say nothing about today — and the home copy calls the evening the
+   * PRIMARY use ("plan tomorrow's practice with the forecast the night
+   * before"), so saying nothing at all left that reader with the week strip
+   * ~2.5 screens down. The caller hands tomorrow's peak instead, and the
+   * sentence has to change with it: "rest of today peaks at" about tomorrow
+   * afternoon is a claim about when to be on the field, and it would be false.
+   */
+  describe('and when today is spent, where tomorrow is going', () => {
+    const TOMORROW = AT + 24 * 3600_000
+    const tomorrowPeak: HourVerdict = {
+      ...peakHour(93.2, TOMORROW),
+      localDate: '2026-08-11',
+    }
+
+    const renderTomorrow = (onPeakSelect?: (date: string) => void) =>
+      render(
+        <VerdictCard
+          hour={{ ...hourAt(80), time: AT }}
+          policy={UIL_CLASS_3}
+          locationLabel="Austin, TX"
+          stateAbbr="TX"
+          timeZone="America/Chicago"
+          peakAhead={tomorrowPeak}
+          peakScope="tomorrow"
+          onPeakSelect={onPeakSelect}
+        />,
+      )
+
+    it('says tomorrow, not "rest of today"', () => {
+      renderTomorrow()
+      const expected = i18n.t('verdict.peakTomorrow', {
+        value: '93.2',
+        flag: en.flags[classifyWbgt(UIL_CLASS_3, 93.2).flag].label,
+        time: new Intl.DateTimeFormat('en', {
+          timeZone: 'America/Chicago',
+          hour: 'numeric',
+        }).format(new Date(TOMORROW)),
+      })
+      expect(screen.getByText(expected)).toBeInTheDocument()
+      // Two days, two sentences. If they were the same string the chip would
+      // be telling an evening reader to plan this afternoon.
+      expect(en.verdict.peakTomorrow).not.toBe(en.verdict.peakAhead)
+      expect(screen.getByRole('link').textContent).not.toContain(
+        en.verdict.peakAhead.split('{{')[0].trim(),
+      )
+    })
+
+    it('keeps the triple coding and what the band costs', () => {
+      renderTomorrow()
+      const link = screen.getByRole('link')
+      const peak = classifyWbgt(UIL_CLASS_3, 93.2)
+      expect(link.className).toContain(`bg-flag-${peak.flag}`)
+      expect(link.querySelector('svg')).not.toBeNull()
+      expect(link.textContent).toContain(en.flags[peak.flag].label)
+      expect(link.textContent).toContain(
+        guidelineSentences(peak.flag, peak.guideline, i18n.t)[0],
+      )
+    })
+
+    /**
+     * The strip it scrolls to is showing what is left of TODAY unless someone
+     * retargets it, so without this the link answers a different question from
+     * the one it asked.
+     */
+    it('tells the caller which day to retarget the hourly strip at', () => {
+      const picked: string[] = []
+      renderTomorrow((date) => picked.push(date))
+      screen.getByRole('link').click()
+      expect(picked, 'the chip scrolls to a strip showing another day').toEqual(['2026-08-11'])
+    })
+
+    it('asks for nothing when the caller does not own that selection', () => {
+      // The today chip passes no handler: pinning the strip to today would
+      // disable the late-evening fall-forward in pickTimelineDay.
+      renderWithPeak(80, 93.2)
+      expect(() => screen.getByRole('link').click()).not.toThrow()
+    })
+  })
 })
 
 /**
